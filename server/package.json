@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon bin/www.js",
+    "start": "node bin/www.js",
+    "client": "cd ../client && npm start",
+    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+  },
+  "author": "Thomas Denneulin - Sofian Amirou - Cyrine Bouzayene - Sajeevan Puvikaran - Vidushan Chooriyakumaran",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
+    "debug": "^3.1.0",
+    "express": "^4.16.2",
+    "generate-password": "^1.4.0",
+    "is-url-external": "^1.0.3",
+    "jsonwebtoken": "^8.2.0",
+    "mongoose": "^5.0.9",
+    "mongoose-schema-extend": "^0.2.2",
+    "morgan": "^1.9.0",
+    "multer": "^1.3.0",
+    "nodemailer": "^4.6.2",
+    "nodemon": "^1.18.6",
+    "pdfkit": "^0.8.3"
+  }
+}

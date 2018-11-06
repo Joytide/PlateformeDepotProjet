@@ -1,0 +1,43 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "draft-js": "^0.10.5",
+    "history": "^4.7.2",
+    "i18next": "^10.6.0",
+    "jwt-decode": "^2.2.0",
+    "material-auto-rotating-carousel": "^1.7.0",
+    "material-design-icons": "^3.0.1",
+    "material-ui": "^0.20.0",
+    "material-ui-chip-input": "^0.18.7",
+    "material-ui-country-flags": "^3.0.1",
+    "react": "^16.2.0",
+    "react-bootstrap": "^0.32.1",
+    "react-checkbox-group": "^3.3.4",
+    "react-dom": "^16.2.0",
+    "react-dropzone-component": "^3.1.2",
+    "react-files": "^2.4.3",
+    "react-flag-kit": "0.2.3",
+    "react-grid-system": "^3.1.2",
+    "react-i18next": "^7.5.1",
+    "react-material-ui-form-validator": "^1.1.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.1.0",
+    "react-swipeable-views": "^0.12.13",
+    "react-tag-input": "^4.7.2",
+    "react-validation": "^3.0.7",
+    "reactstrap": "^5.0.0-beta.2",
+    "redux": "^3.7.2",
+    "video-react": "^0.9.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:3001"
+}

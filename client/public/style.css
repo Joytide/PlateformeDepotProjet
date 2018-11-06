@@ -1,0 +1,16 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+/*Style for inputFile*/
+.files-dropzone{
+    background-color: #eee;
+    height: 150px;
+    border : dashed;
+    border-width: 5px;
+    cursor: pointer;
+}
+
+.file-add{
+    overflow: hidden;
+}

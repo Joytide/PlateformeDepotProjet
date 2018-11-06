@@ -1,0 +1,27 @@
+img {
+    margin: auto;
+}
+
+.carousel {
+    width:600px;
+    height:400px;
+    margin: auto;
+  }
+
+
+  .middle {
+    top: 25%;
+    left: 50%;
+    opacity: 0;
+    text-align: center;
+  }
+  
+  .container:hover .description {
+    opacity: 0;
+  }
+  
+  .text {
+    background-color: rgb(161, 162, 165);
+    color: white;
+ 
+  }
