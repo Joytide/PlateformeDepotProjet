@@ -4,7 +4,6 @@ var mongoose = require('mongoose');
 var Comment = mongoose.model('Comment');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
-const Person = mongoose.model('Person');
 
 exports.list_all_comments = function (req, res) {
   const projectId = req.params.projectID;
