@@ -23,7 +23,8 @@ const Person = mongoose.model('Person', PersonSchema);
 //Student Class
 const StudentSchema = new Schema({
 	id_specialization: {
-		type: Number,
+		type: Schema.Types.ObjectId,
+        ref: 'Specialization',
 		required: true
 	},
 	study_year: {
@@ -42,7 +43,8 @@ const Partner = Person.discriminator('Partner', PartnerSchema);
 //Administration Class
 const AdministrationSchema = new Schema({
 	id_specialization: {
-		type: Number,
+		type: Schema.Types.ObjectId,
+        ref: 'Specialization',
 		required: true
 	},
 	password: {

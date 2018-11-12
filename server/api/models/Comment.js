@@ -1,13 +1,18 @@
+'use strict';
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 //Comment Class
 const CommentSchema = new Schema({
 	id_project: {
-		type: String
+		type: Schema.Types.ObjectId,
+        ref: 'Project',
+		required: true
 	},
 	author: {
-		type: PersonSchema,
+        type: Schema.Types.ObjectId,
+        ref: 'Person',
 		required: true
 	},
 	content: {

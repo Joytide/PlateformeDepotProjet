@@ -23,6 +23,6 @@ const TaskSchema = new Schema({
     default: ['pending']
   }
 });
-const Tasks = mongoose.model('Tasks', TaskSchema);
+const Task = mongoose.model('Task', TaskSchema);
 
-module.exports = Tasks;
+module.exports = Task;

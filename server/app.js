@@ -1,13 +1,20 @@
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+'use strict';
+
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
 
 var app = express();
 
-mongoose = require('mongoose'),
-Task = require('./api/models/todoListModel'), //created model loading here
-Schema = require('./api/models/schemaModel'),
+/* ========== LOADING ALL MONGOOSE MODELS ========== */
+
+const mongoose = require('mongoose');
+const Comment = require('./api/models/Comment'); 
+const Person = require('./api/models/Person'); 
+const Project = require('./api/models/Project'); 
+const Specialization = require('./api/models/Specialization'); 
+const Task = require('./api/models/Task'); 
 
 mongoose.Promise = global.Promise;
 //mongoose.connect('mongodb://pi2:csstv2018@ds159187.mlab.com:59187/projectdb');
