@@ -23,7 +23,6 @@ mongoose.connect('mongodb://localhost:27017/Tododb');
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
 // Route for handling File updates.
 var fileUpload = require('./api/routes/filesRoutes');
 fileUpload(app);
