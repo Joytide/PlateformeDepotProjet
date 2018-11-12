@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 
 var app = express();
 
+const port = 3001;
+
 /* ========== LOADING ALL MONGOOSE MODELS ========== */
 
 const mongoose = require('mongoose');
@@ -74,4 +76,6 @@ app.use(function(err, req, res, next) {
   res.send(err.message);
 });
 
-module.exports = app;
+app.listen(port, () => {
+    console.log('Server running on port 3001');
+});
