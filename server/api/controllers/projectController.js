@@ -1,6 +1,5 @@
 'use strict';
 
-const generator = require('generate-password');
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
@@ -32,10 +31,8 @@ exports.list_all_projects = function (req, res) {
 
 exports.create_a_project = function (req, res) {
   let name;
-  let editKey = generator.generate({
-    length: 15,
-    numbers: true
-  });
+  let editKey = generatePassword(15);
+
   let mail = {
     from: 'no.reply.projets.pulv@gmail.com',
     subject: 'Soumission d\'un projet',
@@ -208,4 +205,17 @@ exports.destroy = (req, res) => {
       res.send('ok!');
     }
   });
+}
+
+function generatePassword(size) {
+  let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let pass = "";
+  for (let i = 0; i < size; i++) {
+    pass += characters[randomInt(characters.length)];
+  }
+  return pass;
+}
+
+function randomInt(max) {
+  return Math.random() * max;
 }
