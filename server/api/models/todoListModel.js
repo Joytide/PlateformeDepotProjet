@@ -22,5 +22,5 @@ var TaskSchema = new Schema({
     default: ['pending']
   }
 });
-
-module.exports = mongoose.model('Tasks', TaskSchema);
+var Tasks = mongoose.model('Tasks', TaskSchema)
+module.exports = Tasks;

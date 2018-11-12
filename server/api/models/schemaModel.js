@@ -9,11 +9,12 @@ Boolean
 Mixed
 ObjectId
 Array
-});*/
+});
+
+*/
 
 
 var mongoose = require('mongoose');
-var extend = require('mongoose-schema-extend');
 var Schema = mongoose.Schema;
 
 //Person Class
@@ -31,10 +32,10 @@ var PersonSchema = new Schema({
 		required: true
 	}
 });
-module.exports = mongoose.model('Person', PersonSchema);
+var Person = mongoose.model('Person', PersonSchema);
 
 //Student Class
-var StudentSchema = PersonSchema.extend({
+var StudentSchema = new Schema({
 	id_specialization: {
 		type: Number,
 		required: true
@@ -44,16 +45,16 @@ var StudentSchema = PersonSchema.extend({
 		required: true
 	}
 });
-module.exports = mongoose.model('Student', StudentSchema);
+var Student = Person.discriminator('Student', StudentSchema);
 
 //Partner Class
-var PartnerSchema = PersonSchema.extend({
+var PartnerSchema = new Schema({
 	company: String
 });
-module.exports = mongoose.model('Partner', PartnerSchema);
+var Partner = Person.discriminator('Partner', PartnerSchema);
 
 //Administration Class
-var AdministrationSchema = PersonSchema.extend({
+var AdministrationSchema = new Schema({
 	id_specialization: {
 		type: Number,
 		required: true
@@ -63,7 +64,7 @@ var AdministrationSchema = PersonSchema.extend({
 		required: true
 	}
 });
-module.exports = mongoose.model('Administration', AdministrationSchema);
+var Administration = Person.discriminator('Administration', AdministrationSchema);
 
 //Comment Class
 var CommentSchema = new Schema({
@@ -85,7 +86,7 @@ var CommentSchema = new Schema({
 		}
 	] // CommentSchema
 });
-module.exports = mongoose.model('Comment', CommentSchema);
+var Comment = mongoose.model('Comment', CommentSchema);
 
 //Project Class
 var ProjectSchema = new Schema({
@@ -138,7 +139,7 @@ var ProjectSchema = new Schema({
 		required: true
 	}
 })
-module.exports = mongoose.model('Project', ProjectSchema);
+var Project = mongoose.model('Project', ProjectSchema);
 
 //Specialization Class
 var SpecializationSchema = new Schema({
@@ -155,4 +156,5 @@ var SpecializationSchema = new Schema({
 		required: true
 	}
 });
-module.exports = mongoose.model('Specialization', SpecializationSchema);
+var Specialization = mongoose.model('Specialization', SpecializationSchema)
+module.exports = { Student, Partner, Administration, Comment, Project, Specialization };
