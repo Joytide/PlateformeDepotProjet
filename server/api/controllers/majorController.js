@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-Specialization = mongoose.model('Specialization');
+var Specialization = mongoose.model('Specialization');
 
 exports.list_all_majors = function (req, res) {
     Specialization.find({}, function (err, task) {
