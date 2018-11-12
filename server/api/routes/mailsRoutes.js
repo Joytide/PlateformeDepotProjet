@@ -1,5 +1,5 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+'use strict';
+
 const mail = require('../controllers/mailController');
 
 module.exports = (app) => {

@@ -1,8 +1,8 @@
 'use strict';
-module.exports = function (app) {
-  var project = require('../controllers/projectController');
 
-  // projects routes
+const project = require('../controllers/projectController');
+
+module.exports = function (app) {
   app.route('/api/projects')
     .get(project.list_all_projects)
     .post(project.create_a_project)

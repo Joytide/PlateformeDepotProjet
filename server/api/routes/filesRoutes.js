@@ -1,7 +1,6 @@
-const express = require('express');
-const fs = require('fs');
+'use strict';
+
 const multer = require('multer');
-const router = express.Router();
 const path = require('path');
 
 const storage = multer.diskStorage({

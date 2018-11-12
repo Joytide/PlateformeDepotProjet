@@ -1,9 +1,8 @@
 'use strict';
 
-module.exports = function (app) {
-    var admin = require('../controllers/adminController');
+const admin = require('../controllers/adminController');
 
-    // todoList Routes
+module.exports = function (app) {
     app.route('/api/admin')
         .get(admin.list_all_admins)
         .post(admin.create_an_admin);
