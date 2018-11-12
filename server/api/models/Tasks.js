@@ -1,9 +1,10 @@
 'use strict';
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 
-var TaskSchema = new Schema({
+const TaskSchema = new Schema({
   name: {
     type: String,
     required: 'Kindly enter the name of the task'
@@ -22,5 +23,6 @@ var TaskSchema = new Schema({
     default: ['pending']
   }
 });
-var Tasks = mongoose.model('Tasks', TaskSchema)
+const Tasks = mongoose.model('Tasks', TaskSchema);
+
 module.exports = Tasks;
