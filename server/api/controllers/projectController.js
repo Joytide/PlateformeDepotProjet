@@ -215,5 +215,5 @@ function generatePassword(size) {
 }
 
 function randomInt(max) {
-  return Math.random() * max;
+  return Math.floor(Math.random() * max - 1);
 }
