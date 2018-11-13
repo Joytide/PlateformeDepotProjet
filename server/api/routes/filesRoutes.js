@@ -5,10 +5,10 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '.uploads/')
+        cb(null, './uploads')
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname))
+        cb(null, file.fieldname + '_' + Date.now() + path.extname(file.originalname))
     }
 })
 const upload = multer({ storage: storage })
@@ -20,9 +20,6 @@ module.exports = (app) => {
                 return next(new Error('No files uploaded'));
             }
             console.log(req.files);
-            /* req.files.forEach((file) => {
-                fs.unlinkSync(path.join(__dirname, file.path));
-             });*/
             res.send(req.files)
         });
 };
