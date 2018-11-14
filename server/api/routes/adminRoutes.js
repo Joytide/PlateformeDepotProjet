@@ -1,5 +1,7 @@
 'use strict';
 
+// NON UTILISE POUR LE MOMENT. LE CONTROLLER N'EST PAS CHARGÉ DANS APP.JS
+
 const admin = require('../controllers/adminController');
 
 module.exports = function (app) {

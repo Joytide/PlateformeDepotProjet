@@ -52,8 +52,8 @@ partner_routes(app);
 var major_routes = require('./api/routes/majorsRoutes');
 major_routes(app);
 
-var api_routes = require('./api/routes/adminRoutes');
-api_routes(app);
+//var api_routes = require('./api/routes/adminRoutes');
+//api_routes(app);
 
 var comments_routes = require('./api/routes/commentsRoute')
 comments_routes(app);

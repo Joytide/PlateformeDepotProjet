@@ -1,5 +1,7 @@
 'use strict';
 
+// NON UTILISE POUR LE MOMENT. LE CONTROLLER N'EST PAS CHARGÉ DANS APP.JS
+
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var Admin = mongoose.model('Administration');
