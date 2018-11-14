@@ -10,6 +10,6 @@ module.exports = function (app) {
     app.route('/api/admin/:adminId')
         .put(admin.update_an_admin);
 
-    app.route('/api/login')
-        .post(admin.handle_login);
+    /*app.route('/api/login')
+        .post(admin.handle_login);*/
 };
