@@ -32,7 +32,7 @@ mongoose.connect('mongodb://localhost:27017/Tododb', (err) => {
 
 
 
-//app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Route for handling File updates.
@@ -57,6 +57,9 @@ api_routes(app);
 
 var comments_routes = require('./api/routes/commentsRoute')
 comments_routes(app);
+
+var auth_routes = require('./api/routes/authRoutes')
+auth_routes(app);
 
 app.use('/static', express.static('./.uploads'));
 // uncomment after placing your favicon in /public
