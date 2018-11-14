@@ -7,8 +7,15 @@ const LocalStrategy = require('passport-local').Strategy;
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 
+const jwt = require('jsonwebtoken');
+
 const Person = mongoose.model('Person');
 
+const config = require('../../config.json');
+
+// Strategy pour log l'utilisateur avec son nom d'utilisateur & mot de passe.
+// Si les identifiants sont bon. Alors on lui renvoie son token jwt pour
+// s'authentifier sur les requêtes à l'API
 passport.use('login', new LocalStrategy({
     usernameField: "username",
     passwordField: "password"
@@ -19,52 +26,65 @@ passport.use('login', new LocalStrategy({
             if (!user) {
                 return done(null, false, { message: "Incorrect username or password" });
             } else {
-                return done(null, user);
+                let userToken = jwt.sign(
+                    { id: user._id },
+                    config.jwt.secret,
+                    {
+                        expiresIn: 60 * 60 * 24
+                    }
+                );
+                return done(null, userToken);
             }
         });
     }
 ));
 
+
+// Strategy pour identifier l'utilisateur sur les éléments de l'API
 passport.use('jwt', new JWTstrategy({
     //secret we used to sign our JWT
-    secretOrKey: 'top_secret',
+    secretOrKey: config.jwt.secret,
     //we expect the user to send the token as a query paramater with the name 'token'
-    jwtFromRequest: ExtractJWT.fromUrlQueryParameter('token')
+    jwtFromRequest: req => {
+        return req.body.token;
+    }
 }, async (token, done) => {
     try {
         //Pass the user details to the next middleware
-        return done(null, token.user);
+        Person.findOne({ _id: token.id }, (err, person) => {
+            if (err) return done(err);
+            return done(null, person);
+        })
     } catch (error) {
         done(error);
     }
 }));
 
-passport.serializeUser(function (user, done) {
-    console.log(user);
-    done(null, user._id);
+
+exports.areAuthorized = authorized => {
+    return (req, res, next) => {
+        if (!req.user) {
+            next(new Error('Unauthorized access'));
+        } else {
+            if (authorized.constructor === Array && authorized.indexOf(req.user.__t) != -1) {
+                next();
+            } else {
+                next(new Error('Unauthorized access'));
+            }
+        }
+    }
+}
+
+
+passport.serializeUser(function (token, done) {
+    done(null, token);
 });
 
 passport.deserializeUser(function (id, done) {
-    console.log(id);
+    console.log("deserializeUser", id);
     User.findById({ _id: id }, function (err, user) {
         done(err, user);
     });
 });
-
-exports.login = (req, res, next) => {
-    passport.authenticate('login', { session: false }, (err, passportUser, info) => {
-        if (err) {
-            return next(err);
-        }
-
-        if (passportUser) {
-            const user = passportUser;
-
-            return res.json({ user: user });
-        }
-
-        return status(400).info;
-    })(req, res, next);
-}
 
 exports.passport = passport;
