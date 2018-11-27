@@ -100,6 +100,22 @@ class ProjectsListCard extends React.Component {
         }
     }
 
+    handleTitleValue(title) {
+        if (title !== "") {
+            var tmp = this.state.projectToDisplay.filter(project => {
+                if (project.titles.include(this.state.title)) {
+                    return true;
+                }
+            })
+            this.setState({ projectSeen: tmp , loaded : true});
+        }
+        else {
+            this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
+        }
+    }
+
+
+
     render() {
         const lng = this.props.lng;
         //let lng = this.state.lng;
@@ -137,7 +153,7 @@ class ProjectsListCard extends React.Component {
                                 <CardTitle style={{ textAlign: 'center' }} title={i18n.t('project.title', {lng})}></CardTitle>
                                 <hr />
                                 <CardText style = {{backgroundColor : "#f7f4f4"}}>
-                                    <ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
+                                    <ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
 
                                     <Container fluid>
                                         <List>

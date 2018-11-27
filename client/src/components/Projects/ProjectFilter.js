@@ -13,8 +13,10 @@ class ProjectFilter extends React.Component {
         this.changeYearValue = this.changeYearValue.bind(this);
         this.changeMajorValue = this.changeMajorValue.bind(this);
         this.changeMotsClesValue = this.changeMotsClesValue.bind(this);
+        this.changeTitleValue = this.changeTitleValue.bind(this);
 
         this.state = {
+          title : [],
           years : [],
           majors : [],
           mots_cles_value : "",
@@ -45,6 +47,15 @@ class ProjectFilter extends React.Component {
         });
     }
 
+    changeTitleValue(e,value){
+        
+        this.setState({title:value}, function(){
+            console.log(this.state.title);
+            this.props.getTitleValue(this.state.title);
+        });
+    }
+
+
     componentDidMount() {
         fetch('/api/majors/major/:major')
             .then(res => res.json())
@@ -67,6 +78,15 @@ class ProjectFilter extends React.Component {
                             openIcon={<FilterIcone />}
                         />
                         <CardText expandable={true}>
+                            <Row>
+                                <Col md={6}>
+                                    <TextField
+                                        floatingLabelText={i18n.t('title.label', {lng})}
+                                        onChange={this.changeTitleValue}
+                                        fullwidth
+                                        />
+                                </Col>
+                            </Row>
                             <Row>
                                 <Col md={3}>
                                     <SelectField
