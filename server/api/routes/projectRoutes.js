@@ -22,6 +22,9 @@ module.exports = function (app) {
   app.route('/api/export/:projectId')
     .get(project.export_a_project);
 
+  app.route('/api/projects/:title')
+    .get(project.find_by_name);
+
 
   // app.route('/tasks/:taskId')
   //   .get(todoList.read_a_task)
