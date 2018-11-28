@@ -23,7 +23,7 @@ module.exports = function (app) {
     .get(project.export_a_project);
 
   app.route('/api/projects/:title')
-    .get(project.find_by_name);
+    .get(project.filter_by_name);
 
 
   // app.route('/tasks/:taskId')
