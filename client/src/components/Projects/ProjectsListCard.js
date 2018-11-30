@@ -100,10 +100,10 @@ class ProjectsListCard extends React.Component {
         }
     }
 
-    handleTitleValue(title) {
-        if (title !== "") {
+    handleTitleValue(title_value) {
+        if (title_value !== "") {
             var tmp = this.state.projectToDisplay.filter(project => {
-                if (project.titles.include(this.state.title)) {
+                if (project.title.includes(title_value)) {
                     return true;
                 }
             })

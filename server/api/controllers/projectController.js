@@ -75,7 +75,7 @@ exports.create_a_project = function (req, res) {
         "email": req.body.email,
         "company": req.body.company
       });
-
+      
       new_partner.save((err, partner) => {
         if (err) {
           res.send(err);

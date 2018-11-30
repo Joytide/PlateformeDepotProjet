@@ -49,9 +49,9 @@ class ProjectFilter extends React.Component {
 
     changeTitleValue(e,value){
         
-        this.setState({title:value}, function(){
-            console.log(this.state.title);
-            this.props.getTitleValue(this.state.title);
+        this.setState({title_value:value}, function(){
+            console.log(this.state.title_value);
+            this.props.getTitleValue(this.state.title_value);
         });
     }
 
