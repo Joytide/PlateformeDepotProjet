@@ -107,7 +107,10 @@ class ProjectFilter extends React.Component {
                                         value={this.state.majorValue}
                                     >
                                     <MenuItem value="" primaryText="" />
-                                    {this.state.majors.map(major => <MenuItem value={major} primaryText={major}/>)}
+                                    <MenuItem value="IBO" primaryText={i18n.t('ibo.label', {lng})}/>
+                                    <MenuItem value="NE" primaryText={i18n.t('ne.label', {lng})}/>
+                                    <MenuItem value="IF" primaryText={i18n.t('if.label', {lng})}/>
+                                    <MenuItem value="MNM" primaryText={i18n.t('mnm.label', {lng})}/>
                                     </SelectField>
 
                                 </Col>
