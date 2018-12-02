@@ -114,14 +114,20 @@ class ProjectFilter extends React.Component {
                                     </SelectField>
 
                                 </Col>
-                                <Col md={6}>
+                                <Col md={3}>
                                     <TextField
                                         floatingLabelText={i18n.t('keywords.label', {lng})}
                                         onChange={this.changeMotsClesValue}
                                         fullwidth
                                     />
                                 </Col>
-
+                                <Col md={3}>
+                                    <TextField
+                                        floatingLabelText={i18n.t('firm.label', {lng})}
+                                        onChange={this.changeCompanyValue}
+                                        fullwidth
+                                    />
+                                </Col>
                             </Row>
                         </CardText>
                     </Card>
