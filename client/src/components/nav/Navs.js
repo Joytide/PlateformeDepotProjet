@@ -74,8 +74,11 @@ class Navs extends React.Component {
 		return (
 			<div>
 				<AppBar
-					title={<img style={this.styles.title} src="/logo_pulv.png" height="50" width="50" />}
-					onTitleClick={this.handleclick.bind(this)}
+					title={
+					<Link to="/">
+						<img style={this.styles.title} src="/logo_pulv.png" height="50" width="50"/>
+					</Link>
+				}
 					iconElementRight={menu}
 					showMenuIconButton={false} />
 			</div>
