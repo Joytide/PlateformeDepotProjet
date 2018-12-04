@@ -23,8 +23,6 @@ import i18n from '../components/i18n';
  * Deposit a project
  */
 class Deposit extends Component {
-
-
   constructor(props) {
     super(props);
     const lng = this.props.lng;
@@ -54,7 +52,7 @@ class Deposit extends Component {
     this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
     { name: i18n.t('ne.label', { lng }), key: "NE" },
     { name: i18n.t('if.label', { lng }), key: "IF" },
-    { name: i18n.t('mnm.label', { lng }), key: "MNM" }]
+    { name: i18n.t('mnm.label', { lng }), key: "MNM" }];
   }
 
   componentWillUpdate(nextProps) {
@@ -63,13 +61,13 @@ class Deposit extends Component {
       this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
       { name: i18n.t('ne.label', { lng }), key: "NE" },
       { name: i18n.t('if.label', { lng }), key: "IF" },
-      { name: i18n.t('mnm.label', { lng }), key: "MNM" }]
+      { name: i18n.t('mnm.label', { lng }), key: "MNM" }];
     }
   }
 
   //STEP
   handleNext = () => {
-    console.log("Finished :" + this.state.finished)
+    console.log("Finished :" + this.state.finished);
     const { stepIndex } = this.state;
     if (!this.state.finished) {
       this.setState({
@@ -77,7 +75,7 @@ class Deposit extends Component {
         finished: stepIndex >= 2
       }, () => {
         this.handleSubmit();
-      })
+      });
     }
     else {
       this.setState({
@@ -85,8 +83,6 @@ class Deposit extends Component {
         finished: stepIndex >= 2
       });
     }
-
-
   };
 
   handlePrev = () => {
@@ -97,23 +93,22 @@ class Deposit extends Component {
   };
 
   handleSpe(e, index, values) {
-    this.setState({ majors_concerned: values }, () => { console.log(this.state.majors_concerned) })
-  }
+    this.setState({ majors_concerned: values }, () => { console.log(this.state.majors_concerned) });
+  };
 
   handleBlur(event) {
-    console.log(this.state)
+    console.log(this.state);
     fetch("/api/partners/" + this.state.email)
       .then((res) => res.json())
       .then((partner) => {
         try {
-          this.setState({ first_name: partner.first_name, last_name: partner.last_name, company: partner.company })
+          this.setState({ first_name: partner.first_name, last_name: partner.last_name, company: partner.company });
         } catch (e) {
           console.log("Email not found");
         }
       })
-      .catch((err) => { console.log("Email not found") })
-    console.log("passed")
-
+      .catch((err) => { console.log("Email not found") });
+    console.log("passed");
   }
 
   FilesUpload() {
@@ -140,21 +135,21 @@ class Deposit extends Component {
           });
         })
         .catch((err) => { return reject(err) })
-    })
-
+    });
   }
 
   addViewFile() {
-
     const lng = this.props.lng;
+
     var Delete = (e) => {
       const fileIdToRemove = e.target.getAttribute('data-key')
       this.state.files.splice(this.state.files.findIndex((file) => {
         return file.id === fileIdToRemove;
       }), 1);
       this.addViewFile();
-    }
+    };
 
+    // Lisibiilité ?
     const html = (
       this.state.files.map((file, index) => {
         return (
@@ -173,25 +168,24 @@ class Deposit extends Component {
     console.log(event);
     this.setState({ files: event }, () => {
       console.log(this.state.files);
-      this.addViewFile()
+      this.addViewFile();
     });
   }
 
   handleKeyWords(key) {
-
     var keys = [];
     key.forEach(element => {
-      keys.push(element)
+      keys.push(element);
     });
-    console.log(keys)
+    console.log(keys);
     this.setState({ keyWords: keys });
-    console.log(this.state.keyWords)
+    console.log(this.state.keyWords);
   }
 
   handleSubmit() {
-    console.log("finished : " + this.state.finished)
+    console.log("finished : " + this.state.finished);
     if (this.state.finished) {
-      console.log("Passed")
+      console.log("Passed");
       this.FilesUpload()
         .then(() => {
           const form = {
@@ -205,7 +199,7 @@ class Deposit extends Component {
             media_files: this.state.urls,
             first_name: this.state.first_name,
             last_name: this.state.last_name
-          }
+          };
 
           console.log(form);
           try {
@@ -223,7 +217,7 @@ class Deposit extends Component {
               })
               .catch((error) => {
                 console.log(error)
-              })
+              });
           }
           catch (error) {
             return console.log(error);
@@ -265,7 +259,7 @@ class Deposit extends Component {
     switch (stepIndex) {
       //Information about the partner
       case 0:
-        return <div>
+        return (<div>
 
           <Container>
             <h2>Proposer un projet a nos élèves</h2>
@@ -290,9 +284,9 @@ Des renseignements plus précis, ainsi qu'un calendrier seront fournis en septem
 
 Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
       </Container>
-        </div>
+        </div>);
 
-        break
+        break;
 
       case 1:
         return <div>
