@@ -55,7 +55,8 @@ exports.findByMail = (req, res) => {
 					res.send(err);
 				if (!partner)
 					res.json({});
-				res.json(partner);
+				else
+					res.json(partner);
 			});
 	} else {
 		res.send(new Error("Missing email argument"));
@@ -70,8 +71,24 @@ exports.findById = (req, res) => {
 				res.send(err);
 			if (!partner)
 				res.json({});
-			res.json(partner);
+			else
+				res.json(partner);
 		});
+}
+
+exports.findByKey = (req, res) => {
+	console.log("here");
+	console.log(req.params.key)
+	Partner.findOne({ key: req.params.key })
+		.populate('projects')
+		.exec((err, partner) => {
+			if (err)
+				res.send(err);
+			if (!partner)
+				res.json({});
+			else
+				res.json(partner);
+		})
 }
 
 exports.updatePartner = (req, res) => {

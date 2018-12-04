@@ -16,8 +16,8 @@ module.exports = function (app) {
     .put(project.update_a_project)
     .delete(project.delete_a_project);
 
-  app.route('/api/edit/:editKey')
-    .get(project.find_by_edit_key);
+  /*app.route('/api/edit/:editKey')
+    .get(project.find_by_edit_key);*/
 
   app.route('/api/export/:projectId')
     .get(project.export_a_project);
