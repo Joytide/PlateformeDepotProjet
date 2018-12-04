@@ -5,25 +5,14 @@ const Partner = mongoose.model('Partner');
 const Project = mongoose.model('Project');
 
 exports.listPartners = function (req, res) {
-	Partner.find({}, function (err, partner) {
-		if (err)
-			res.send(err);
-		res.json(partner);
-	});
+	Partner.find()
+		.populate('projects')
+		.exec((err, partner) => {
+			if (err)
+				res.send(err);
+			res.json(partner);
+		});
 };
-
-exports.listProject = (req, res) => {
-	if (req.body.id) {
-		Project.find({ partner: req.body.id })
-			.populate('comments')
-			.exec((err, projects) => {
-				if (err) res.send(err);
-				else res.json(projects);
-			});
-	} else {
-		res.send(new Error('Missing id parameter'));
-	}
-}
 
 exports.addProject = (partnerId, projectId) => {
 	return new Promise((resolve, reject) => {
@@ -59,19 +48,34 @@ exports.createPartner = function (data) {
 
 exports.findByMail = (req, res) => {
 	if (req.params.email) {
-		Partner.findOne({ email: req.params.email }, (err, partner) => {
-			if (err) {
-				res.send(err);
-			}
-			res.json(partner);
-		});
+		Partner.findOne({ email: req.params.email })
+			.populate('projects')
+			.exec((err, partner) => {
+				if (err)
+					res.send(err);
+				if (!partner)
+					res.json({});
+				res.json(partner);
+			});
 	} else {
 		res.send(new Error("Missing email argument"));
 	}
 }
 
+exports.findById = (req, res) => {
+	Partner.findOne({ _id: req.params.id })
+		.populate('projects')
+		.exec((err, partner) => {
+			if (err)
+				res.send(err);
+			if (!partner)
+				res.json({});
+			res.json(partner);
+		});
+}
+
 exports.updatePartner = (req, res) => {
-	Partner.findOneAndUpdate({ _id: req.params.partnerId }, req.body, { new: true }, (err, partner) => {
+	Partner.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }, (err, partner) => {
 		if (err) {
 			res.send(err);
 		}
@@ -80,17 +84,17 @@ exports.updatePartner = (req, res) => {
 }
 
 exports.deletePartner = (req, res) => {
-	Partner.findByIdAndRemove(req.params.partnerId, function (err, note) {
+	Partner.findByIdAndRemove(req.params.id, function (err, note) {
 		if (err) {
 			console.log(err);
 			if (err.kind === 'ObjectId') {
-				return res.status(404).send({ message: "Partner not found with id " + req.params.partnerId });
+				return res.status(404).send({ message: "Partner not found with id " + req.params.id });
 			}
-			return res.status(500).send({ message: "Could not delete Partner with id " + req.params.partnerId });
+			return res.status(500).send({ message: "Could not delete Partner with id " + req.params.id });
 		}
 
 		if (!note) {
-			return res.status(404).send({ message: "Partner not found with id " + req.params.partnerId });
+			return res.status(404).send({ message: "Partner not found with id " + req.params.id });
 		}
 
 		res.send({ message: "Partner deleted successfully!" })
