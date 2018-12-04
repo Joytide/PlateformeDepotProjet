@@ -38,7 +38,8 @@ const Student = Person.discriminator('Student', StudentSchema);
 
 //Partner Class
 const PartnerSchema = new Schema({
-	company: String
+	company: String,
+	key: String
 });
 const Partner = Person.discriminator('Partner', PartnerSchema);
 
