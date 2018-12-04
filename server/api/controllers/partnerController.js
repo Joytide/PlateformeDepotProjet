@@ -1,7 +1,8 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Partner = mongoose.model('Partner');
+const mongoose = require('mongoose');
+const Partner = mongoose.model('Partner');
+const Project = mongoose.model('Project');
 
 exports.listPartners = function (req, res) {
 	Partner.find({}, function (err, partner) {
@@ -10,6 +11,28 @@ exports.listPartners = function (req, res) {
 		res.json(partner);
 	});
 };
+
+exports.listProject = (req, res) => {
+	if (req.body.id) {
+		Project.find({ partner: req.body.id })
+			.populate('comments')
+			.exec((err, projects) => {
+				if (err) res.send(err);
+				else res.json(projects);
+			});
+	} else {
+		res.send(new Error('Missing id parameter'));
+	}
+}
+
+exports.addProject = (partnerId, projectId) => {
+	return new Promise((resolve, reject) => {
+		Partner.findByIdAndUpdate(partnerId, { $push: { projects: projectId } }, { new: true }, (err, partner) => {
+			if (err) reject(err);
+			else resolve(partner);
+		});
+	});
+}
 
 // Return a promise when creating a Partner
 exports.createPartner = function (data) {

@@ -39,7 +39,13 @@ const Student = Person.discriminator('Student', StudentSchema);
 //Partner Class
 const PartnerSchema = new Schema({
 	company: String,
-	key: String
+	key: String,
+	projects: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Project'
+		}
+	]
 });
 const Partner = Person.discriminator('Partner', PartnerSchema);
 
