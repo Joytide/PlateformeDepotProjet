@@ -4,8 +4,7 @@ const partner = require('../controllers/partnerController');
 
 module.exports = function (app) {
   app.route('/api/partners')
-    .get(partner.list_all_partners)
-    .post(partner.create_a_partner);
+    .get(partner.list_all_partners);
 
   app.route('/api/partners/:partnerId')
     .put(partner.update_a_partner)
