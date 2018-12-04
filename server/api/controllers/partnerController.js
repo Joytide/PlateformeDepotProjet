@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 var Partner = mongoose.model('Partner');
 
-exports.list_all_partners = function (req, res) {
+exports.listPartners = function (req, res) {
 	Partner.find({}, function (err, partner) {
 		if (err)
 			res.send(err);
@@ -34,16 +34,20 @@ exports.createPartner = function (data) {
 	});
 };
 
-exports.find_by_mail = (req, res) => {
-	Partner.findOne({ email: req.params.email }, (err, partner) => {
-		if (err) {
-			res.send(err);
-		}
-		res.json(partner);
-	});
+exports.findByMail = (req, res) => {
+	if (req.params.email) {
+		Partner.findOne({ email: req.params.email }, (err, partner) => {
+			if (err) {
+				res.send(err);
+			}
+			res.json(partner);
+		});
+	} else {
+		res.send(new Error("Missing email argument"));
+	}
 }
 
-exports.update_a_partner = (req, res) => {
+exports.updatePartner = (req, res) => {
 	Partner.findOneAndUpdate({ _id: req.params.partnerId }, req.body, { new: true }, (err, partner) => {
 		if (err) {
 			res.send(err);
@@ -52,7 +56,7 @@ exports.update_a_partner = (req, res) => {
 	});
 }
 
-exports.delete_a_partner = (req, res) => {
+exports.deletePartner = (req, res) => {
 	Partner.findByIdAndRemove(req.params.partnerId, function (err, note) {
 		if (err) {
 			console.log(err);
