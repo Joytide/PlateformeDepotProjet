@@ -29,7 +29,7 @@ exports.list_all_projects = function (req, res) {
 		});
 };
 
-exports.create_a_project = function (req, res) {
+exports.createProject = (req, res) => {
 	let name;
 	let editKey = generatePassword(15);
 
@@ -42,72 +42,53 @@ exports.create_a_project = function (req, res) {
 	let json = req.body;
 	json.edit_key = editKey;
 
-	Partner.findOne({ email: req.body.email }, (err, partner) => {
-		if (err) {
+	Partner.findOne({ email: req.body.email }, async (err, partner) => {
+		if (err)
 			res.send(err);
-		}
-		if (partner != null) {
-			json.partner = partner;
-			json.status = 'pending';
-			var new_project = new Project(json);
 
-			new_project.save(function (err, project) {
-				if (err)
-					res.send(err);
-				else {
-					name = partner.first_name;
-					mail.text = `Bonjour ${name}, \n
-          Votre demande de soumission a bien été enregistrée. \n 
-          Voici votre lien pour l'éditer. \n
-          http://localhost:3000/Edit/${editKey}`
-					smtpTransporter.sendMail(mail, (err, result) => {
-						if (err) {
-							smtpTransporter.close();
-							console.log(err);
-							res.send(err);
-						} else {
-							res.send('Mail ok!');
-							smtpTransporter.close();
-						}
-					});
-				}
-			});
-		} else {
-			partnerController.createPartner(req.body).then((partner) => {
-				json.partner = partner._id;
-				json.status = 'pending';
-				var newProject = new Project(json);
-				newProject.save(function (err, project) {
-					if (err)
-						res.send(err);
-					else {
+		if (partner == null) {
+			partner = await partnerController.createPartner(req.body);
+		}
+
+		json.partner = partner._id;
+		json.status = 'pending';
+		var new_project = new Project(json);
+
+		new_project.save(function (err, project) {
+			if (err)
+				res.send(err);
+			else {
+				partnerController.addProject(partner._id, project._id)
+					.then((partner) => {
 						name = partner.first_name;
 						mail.text = `Bonjour ${name}, \n
-		  Votre demande de soumission a bien été enregistrée. \n 
-		  Voici votre lien pour l'éditer. \n
-		  http://localhost:3000/Edit/${editKey}`
+				  Votre demande de soumission a bien été enregistrée. \n 
+				  Voici votre lien pour l'éditer. \n
+				  http://localhost:3000/Edit/${editKey}`
 						smtpTransporter.sendMail(mail, (err, result) => {
 							if (err) {
 								smtpTransporter.close();
 								console.log(err);
 								res.send(err);
 							} else {
-								smtpTransporter.close();
 								res.send('Mail ok!');
+								smtpTransporter.close();
 							}
 						});
-					}
-				});
-			}).catch(err => {
-				res.send(err);
-			});
-		}
+					})
+					.catch(err => {
+						res.send(err);
+					});
+			}
+		});
 	});
 };
 
-exports.read_a_project = (req, res) => {
+exports.findById = (req, res) => {
+	console.log(req.params.projectId);
 	Project.findById(req.params.projectId)
 		.populate('comments')
+		.populate('partner')
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);
