@@ -31,7 +31,6 @@ exports.list_all_projects = function (req, res) {
 
 exports.createProject = (req, res) => {
 	let name;
-	let editKey = generatePassword(15);
 
 	let mail = {
 		from: 'no.reply.projets.pulv@gmail.com',
@@ -40,7 +39,6 @@ exports.createProject = (req, res) => {
 	};
 
 	let json = req.body;
-	json.edit_key = editKey;
 
 	Partner.findOne({ email: req.body.email }, async (err, partner) => {
 		if (err)

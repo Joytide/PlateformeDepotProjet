@@ -37,10 +37,6 @@ const ProjectSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    edit_key: {
-        type: String,
-        required: true
-    },
     likes: Array, //(StudentSchema)
     comments: [
         {
