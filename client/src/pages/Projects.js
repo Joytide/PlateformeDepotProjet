@@ -40,7 +40,7 @@ class Projects extends Component {
             return (<div></div>)
         } else {
             return (
-                <ProjectsListCard lng={this.props.lng} projects={this.state.projects} />
+                <ProjectsListCard lng={this.props.lng} projects={this.state.projects} showPartner={true}/>
             )
         }
     }

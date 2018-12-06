@@ -21,6 +21,7 @@ const partnerController = require('./partnerController');
 exports.listProjects = function (req, res) {
 	Project.find({})
 		.populate({ path: 'comments', populate: { path: 'responses' } })
+		.populate('partner')
 		.exec(function (err, projects) {
 			if (err)
 				res.send(err);
