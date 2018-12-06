@@ -5,11 +5,11 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
 const JWTstrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
 
 const jwt = require('jsonwebtoken');
 
 const Person = mongoose.model('Person');
+const Partner = mongoose.model('Partner');
 
 const config = require('../../config.json');
 
@@ -60,6 +60,26 @@ passport.use('jwt', new JWTstrategy({
     }
 }));
 
+exports.logPartner = (req, res) => {
+    if (req.body.key) {
+        Partner.findOne({ key: req.body.key }, (err, partner) => {
+            if (err) res.send(err);
+            else {
+                let userToken = jwt.sign(
+                    { id: partner._id },
+                    config.jwt.secret,
+                    {
+                        expiresIn: 60 * 60 * 24
+                    }
+                );
+
+                res.json({ token: userToken });
+            }
+        });
+    } else {
+        res.send(new Error('Missing key parameter'));
+    }
+}
 
 exports.areAuthorized = authorized => {
     return (req, res, next) => {
