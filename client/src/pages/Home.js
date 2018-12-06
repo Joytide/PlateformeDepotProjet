@@ -38,12 +38,12 @@ class Home extends Component {
 
 function JumbotronPresentation(props) {
   const lng = props.lng;
-  const videoURL = 'https://www.devinci.fr/wordpress/video/poleleonarddevinci.mp4';
+  /*const videoURL = 'https://www.devinci.fr/wordpress/video/poleleonarddevinci.mp4';
   const style = {
     video: {
       height: 600 + 'px',
     }
-  }
+  }*/
 
   return (
     <div className="welcome"

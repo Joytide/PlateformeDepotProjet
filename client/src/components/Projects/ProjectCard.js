@@ -10,9 +10,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 
-import ProjectComment from './ProjectComment';
-import i18n from '../i18n';
-
 /*
  * i18n integration
  * Card content when expanded 
@@ -144,7 +141,6 @@ class ProjectCard extends React.Component {
 
 	render() {
 		const project = this.props.project;
-		const lng = this.props.lng;
 		let partner;
 
 		if (this.props.showPartner) {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Files from 'react-files';
-import ReactDOM from 'react-dom';
 import {FormGroup,Label} from "reactstrap";
 import i18n from '../../i18n';
 class FilesInputs extends Component {

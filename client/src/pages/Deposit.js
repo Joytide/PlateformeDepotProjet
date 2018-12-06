@@ -7,9 +7,7 @@ import KeyWords from '../components/Deposit/FormComponents/KeyWords';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
-import TextField from 'material-ui/TextField'
 import Checkbox from 'material-ui/Checkbox';
-import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import CircularProgress from 'material-ui/CircularProgress';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
@@ -56,7 +54,7 @@ class Deposit extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    if (this.props.lng != nextProps.lng) {
+    if (this.props.lng !== nextProps.lng) {
       const lng = nextProps.lng;
       this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
       { name: i18n.t('ne.label', { lng }), key: "NE" },
@@ -236,7 +234,7 @@ class Deposit extends Component {
           temp.push(e.target.value);
         }
         else {
-          var index = temp.indexOf(e.target.value)
+          let index = temp.indexOf(e.target.value)
           if (index > -1) {
             temp.splice(index, 1);
           }
@@ -285,8 +283,6 @@ Des renseignements plus précis, ainsi qu'un calendrier seront fournis en septem
 Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
       </Container>
         </div>);
-
-        break;
 
       case 1:
         return <div>
@@ -430,13 +426,13 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
           return <CircularProgress />
         }
         else {
-          <Container lng={lng} >
+          return (<Container lng={lng}>
             <Row>
               <Col md={8} offset={{ md: 2 }}>
                 <div> {i18n.t('message.label', { lng })} </div>
               </Col>
             </Row>
-          </Container>
+          </Container>);
         }
       default:
         return 'You\'re a long way from home sonny jim!';

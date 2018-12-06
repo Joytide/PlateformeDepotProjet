@@ -20,31 +20,33 @@ class ProjectsListCard extends React.Component {
 
 	handledropDownValue(dropDownValue, filterName) {
 		if (filterName === "Année" && dropDownValue !== "Majeure") {
-			this.state.annee_value = dropDownValue !== "Année" ? dropDownValue : "";
+			this.setState({
+				annee_value: (dropDownValue !== "Année" ? dropDownValue : "")
+			});
 		} if (filterName === "Majeure" && dropDownValue !== "Année") {
-			this.state.majeur_value = dropDownValue !== "Majeure" ? dropDownValue : "";
+			this.setState({
+				majeur_value: (dropDownValue !== "Majeure" ? dropDownValue : "")
+			});
 		}
 		if (dropDownValue === "") {
 			this.setState({ projectSeen: this.state.projectToDisplay, loaded: true });
 		}
 
 		if (this.state.annee_value !== "" && this.state.annee_value !== null) {
-			var tmp = this.state.projectToDisplay.filter(project => {
-				if (project.study_year.length === 1 && project.study_year === this.state.annee_value) {
-					return true;
-				} if (project.study_year.length > 1 && project.study_year.includes(this.state.annee_value)) {
+			let tmp = this.state.projectToDisplay.filter(project => {
+				if (project.study_year.includes(this.state.annee_value)) {
 					return true;
 				}
+				return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true })
 		}
 		if (this.state.majeur_value !== "" && this.state.majeur_value !== null) {
-			var tmp = this.state.projectToDisplay.filter(project => {
-				if (project.majors_concerned.length === 1 && project.majors_concerned === this.state.majeur_value) {
-					return true;
-				} if (project.majors_concerned.length > 1 && project.majors_concerned.includes(this.state.majeur_value)) {
+			let tmp = this.state.projectToDisplay.filter(project => {
+				if (project.majors_concerned.includes(this.state.majeur_value)) {
 					return true;
 				}
+				return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true });
 		}
@@ -52,12 +54,12 @@ class ProjectsListCard extends React.Component {
 
 	handleMotsClesValue(mots_cles_value) {
 		if (mots_cles_value !== "") {
-			var tmp = this.state.projectToDisplay.filter(project => {
+			let tmp = this.state.projectToDisplay.filter(project => {
 				for (var element of project.keywords) {
-					if (element.includes(mots_cles_value.toLowerCase())) {
+					if (element.includes(mots_cles_value.toLowerCase()))
 						return true;
-					}
 				}
+				return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true });
 		} else {
@@ -70,7 +72,7 @@ class ProjectsListCard extends React.Component {
 		console.log(this.props.projects);
 		let ProjectList = this.props.projects.map(project =>
 			<Grid item xs={5}>
-				<ProjectCard key={project.id} project={project} lng={lng} admin={this.props.admin} showPartner={this.props.showPartner}/>
+				<ProjectCard key={project.id} project={project} lng={lng} admin={this.props.admin} showPartner={this.props.showPartner} />
 			</Grid>
 		)
 		return (
