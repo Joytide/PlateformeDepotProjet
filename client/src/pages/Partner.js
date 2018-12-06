@@ -31,15 +31,6 @@ class Partner extends React.Component {
         if (this.state.loaded) {
             return (
                 <div>
-                    <Grid container spacing={24} alignItems="center" justify="center">
-                        <Grid item xs={10}>
-                            <Paper>
-                                <Typography align="center" variant="h2">Bienvenue ...</Typography>
-                                <Typography align="center" variant="subtitle2">Bienvenue ...</Typography>
-                            </Paper>
-                        </Grid>
-                    </Grid>
-
                     <ProjectsListCard lng={this.props.lng} projects={this.state.partner.projects} showPartner={false} />
                 </div>
             )
