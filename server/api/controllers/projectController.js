@@ -18,14 +18,13 @@ const smtpTransporter = mailer.createTransport({
 const partnerController = require('./partnerController');
 
 
-exports.list_all_projects = function (req, res) {
+exports.listProjects = function (req, res) {
 	Project.find({})
 		.populate({ path: 'comments', populate: { path: 'responses' } })
-		.exec(function (err, task) {
+		.exec(function (err, projects) {
 			if (err)
 				res.send(err);
-			console.log(task)
-			res.json(task);
+			res.json(projects);
 		});
 };
 

@@ -4,7 +4,7 @@ const project = require('../controllers/projectController');
 
 module.exports = function (app) {
   app.route('/api/projects')
-    .get(project.list_all_projects)
+    .get(project.listProjects)
     .post(project.createProject)
     .delete(project.destroy);
 
@@ -21,10 +21,4 @@ module.exports = function (app) {
 
   app.route('/api/export/:projectId')
     .get(project.export_a_project);
-
-
-  // app.route('/tasks/:taskId')
-  //   .get(todoList.read_a_task)
-  //   .put(todoList.update_a_task)
-  //   .delete(todoList.delete_a_task);
 };
