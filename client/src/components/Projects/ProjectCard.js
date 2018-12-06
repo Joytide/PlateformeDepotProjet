@@ -145,7 +145,15 @@ class ProjectCard extends React.Component {
 	render() {
 		const project = this.props.project;
 		const lng = this.props.lng;
+		let partner;
 
+		if (this.props.showPartner) {
+			partner = (<Grid item xs={6}>
+				<Typography variant="subtitle1" component="h2">
+					Proposé par : {project.partner.company}
+				</Typography>
+			</Grid>)
+		}
 		return (
 			<div>
 				<Card style={{ borderBottom: 2, marginBottom: 8 }}>
@@ -156,11 +164,7 @@ class ProjectCard extends React.Component {
 									{project.title}
 								</Typography>
 							</Grid>
-							<Grid item xs={6}>
-								<Typography variant="subtitle1" component="h2">
-									Proposé par : {project.partner.company}
-								</Typography>
-							</Grid>
+							{partner}							
 						</Grid>
 						<Typography color="textSecondary" gutterBottom>
 							Le {new Date(project.edit_date).toLocaleDateString()}
