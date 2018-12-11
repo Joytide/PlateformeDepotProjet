@@ -44,6 +44,7 @@ class App extends Component {
             <Route exact path="/login" render={(routeProps) => (<Login lng={lng} {...routeProps} />)} />
             <Route exact path="/login/partner/:key([a-zA-Z0-9]{16})" render={(routeProps) => (<LoginPartner lng={lng} {...routeProps} />)} />
             <Route exact path="/protected" render={(routeProps) => (<Protected lng={lng} {...routeProps} />)} />
+            <Route component={NoMatch} />
           </Switch>
         </div>
       </BrowserRouter>
@@ -52,3 +53,13 @@ class App extends Component {
 }
 
 export default App;
+
+function NoMatch({ location }) {
+  return (
+    <div>
+      <h3>
+        Page not found
+      </h3>
+    </div>
+  );
+}
