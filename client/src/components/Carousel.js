@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { AutoRotatingCarousel, Slide } from 'material-auto-rotating-carousel';
 
 
@@ -51,7 +50,7 @@ export default class Caroussel extends React.Component {
       return (
         <a href ='' onClick={() => window.location.href=item.link} >
           <Slide lng={lng}
-            media={<img src={item.src} />}
+            media={<img src={item.src} alt=""/>}
             title={item.captionHeader}
             subtitle={item.caption}
             key={item.src} />
