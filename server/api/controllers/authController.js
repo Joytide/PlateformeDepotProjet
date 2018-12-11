@@ -64,6 +64,8 @@ exports.logPartner = (req, res) => {
     if (req.body.key) {
         Partner.findOne({ key: req.body.key }, (err, partner) => {
             if (err) res.send(err);
+            if (!partner)
+                res.status(401).send({type:"NotExisting"});
             else {
                 let userToken = jwt.sign(
                     { id: partner._id },
@@ -77,7 +79,7 @@ exports.logPartner = (req, res) => {
             }
         });
     } else {
-        res.send(new Error('Missing key parameter'));
+        res.status(400).send({message: "Missing key parameter", type:"MissingParameter"});
     }
 }
 
