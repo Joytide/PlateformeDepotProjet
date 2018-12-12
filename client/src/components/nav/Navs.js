@@ -1,15 +1,10 @@
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import FlatButton from 'material-ui/FlatButton';
-import { Container, Row, Col } from 'react-grid-system'
+import { Container, Row } from 'react-grid-system'
 import FlagIcon from 'react-flag-kit/lib/FlagIcon';
 import IconButton from 'material-ui/IconButton';
-import ToolbarGroup from 'material-ui/Toolbar/ToolbarGroup'
 import { Link } from 'react-router-dom';
-import {
-	Icon_Flag_US,
-	Icon_Flag_FR
-} from 'material-ui-country-flags';
 import i18n from '../i18n';
 
 class Navs extends React.Component {
@@ -53,14 +48,14 @@ class Navs extends React.Component {
 					case "FR":
 						return (<IconButton onClick={this.props.handleLngChange} className = "FR">
 							<FlagIcon code = "FR"/>
-						</IconButton>)
-						break;
+						</IconButton>);
 					case "EN":
 						return (
 							<IconButton onClick={this.props.handleLngChange} className="EN">
 								<FlagIcon code = "GB"/>
-							</IconButton>)
-						break;
+							</IconButton>);
+					default:
+							return (<div></div>);
 				}
 
 			} else {

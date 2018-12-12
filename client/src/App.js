@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Route, Router, Switch, BrowserRouter } from "react-router-dom";
+import { Route, Switch, BrowserRouter } from "react-router-dom";
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import Deposit from './pages/Deposit';
 import Connection from './pages/Connection';
 import Admin from './pages/Admin';
+import Partner from './pages/Partner'
 import Login from './pages/Login';
 import Protected from './pages/Protected';
 import EditDeposit from './pages/EditDeposit';
@@ -35,6 +36,7 @@ class App extends Component {
             <Route exact path="/Deposit" render={(routeProps) => (<Deposit lng={lng} {...routeProps} />)} />
             <Route exact path="/Connection" render={(routeProps) => (<Connection lng={lng} {...routeProps} />)} />
             <Route exact path="/Admin" render={(routeProps) => (<Admin lng={lng} {...routeProps} />)} />
+            <Route exact path="/partner/:key" render={(routeProps) => (<Partner lng={lng} {...routeProps} />)} />
             <Route exact path="/Edit/:editKey" render={(routeProps) => (<EditDeposit lng={lng} {...routeProps} />)}/>
             <Route exact path="/Forgot" render={(routeProps) => (<ForgetPass lng={lng} {...routeProps} />)}/>
             <Route exact path="/Admin/Validation" render={(routeProps) => (<ProjectValidation lng={lng} {...routeProps} />)}/>

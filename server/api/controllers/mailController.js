@@ -2,6 +2,9 @@
 
 const mongoose = require('mongoose');
 const Project = mongoose.model('Project');
+const Partner = mongoose.model('Partner');
+
+const config = require('../../config');
 
 const mailer = require('nodemailer');
 const smtpTransporter = mailer.createTransport({
@@ -33,31 +36,39 @@ exports.sendMails = (request, response) => {
     });
 };
 
-exports.retrieveEdit = (request, response) => {
-    Project.find({ 'partner.email': request.body.email }, (err, projects) => {
-        if (err) {
-            response.send(err);
-        }
-        const urls = projects.map((project) => `http://localhost:3000/Edit/${project.edit_key} \n`);
-        const recipient = request.body.email;
-        const subject = "URL d'édition des projets soumis sur DeVinci Plateforme."
-        let content = `Bonjour ${projects[0].partner.first_name}, \nVoici les liens permettant d'éditer le(s) projet(s) que vous avez soumis: \n`
-        urls.forEach((url) => { content += url });
-        let mail = {
-            from: 'no.reply.projets.pulv@gmail.com',
-            to: recipient,
-            subject: subject,
-            text: content // html content possible. ;)
-        }
-        smtpTransporter.sendMail(mail, (err, res) => {
-            if (err) {
-                smtpTransporter.close();
-                console.log(err);
-                response.send('err');
+exports.retrieveEdit = (req, res) => {
+    if (req.body.email != undefined) {
+        Partner.findOne({ 'email': req.body.email }, (err, partner) => {
+            if (err)
+                res.send(err);
+            else if(partner) {
+                const recipient = req.body.email;
+                const subject = "URL d'édition des projets soumis sur DeVinci Plateforme."
+                const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
+                const content = `Bonjour ${partner.first_name} ${partner.last_name}, \nVoici le lien permettant d'éditer le(s) projet(s) que vous avez soumis: \n${link}`
+                const mail = {
+                    from: 'no.reply.projets.pulv@gmail.com',
+                    to: recipient,
+                    subject: subject,
+                    text: content // html content possible. ;)
+                }
+
+                res.send(mail);
+                /*smtpTransporter.sendMail(mail, (err, res) => {
+                    if (err) {
+                        smtpTransporter.close();
+                        console.log(err);
+                        response.send(err);
+                    } else {
+                        smtpTransporter.close();
+                        response.send('Mail sent');
+                    }
+                });*/
             } else {
-                smtpTransporter.close();
-                response.send('Mail sent');
+                res.send(new Error('Not found'));
             }
         });
-    });
+    } else {
+        res.send(new Error('Missing email parameter'));
+    }
 };

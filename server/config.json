@@ -1,0 +1,13 @@
+{
+    "api" : {
+        "port": 3001
+    },
+    "client" : {
+        "hostname": "localhost",
+        "port": 3000,
+        "protocol": "http"
+    },
+    "jwt": {
+        "secret": "TRcnD6uHYGKuR3lueV9j"
+    }
+}

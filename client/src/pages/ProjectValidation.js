@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Navs from '../components/nav/Navs.js';
 import ProjectsListCard from '../components/Projects/ProjectsListCard';
 import withAuth from '../components/withAuth';
 
