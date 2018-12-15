@@ -36,7 +36,7 @@ class ProjectCard extends React.Component {
 		this.handleRejection = this.handleRejection.bind(this)
 		this.handleExpandClick = this.handleExpandClick.bind(this)
 	}
-
+	
 	handleExpandClick = () => {
 		this.setState(state => ({ expanded: !state.expanded }));
 	};
@@ -84,6 +84,7 @@ class ProjectCard extends React.Component {
             .catch((err) => { console.log("Error occured : " + err) })
             */
 	}
+
     /**
          * Update the project and set the status to "refused"
          * @param {*} event 
@@ -142,9 +143,10 @@ class ProjectCard extends React.Component {
 	render() {
 		const project = this.props.project;
 		let partner;
+		var debut = project.description[1];
 
 		if (this.props.showPartner) {
-			partner = (<Grid item xs={6}>
+			partner = (<Grid item xs={4} >
 				<Typography variant="subtitle1" component="h2">
 					Proposé par : {project.partner.company}
 				</Typography>
@@ -152,10 +154,10 @@ class ProjectCard extends React.Component {
 		}
 		return (
 			<div>
-				<Card style={{ borderBottom: 2, marginBottom: 8 }}>
+				<Card style={{ borderBottom: 2, marginBottom: 8 }} onClick = {""}>
 					<CardContent>
-						<Grid container>
-							<Grid item xs={6}>
+						<Grid container justify= "space-between">
+							<Grid item xs={7}>
 								<Typography variant="h5" component="h2">
 									{project.title}
 								</Typography>
@@ -166,42 +168,30 @@ class ProjectCard extends React.Component {
 							Le {new Date(project.edit_date).toLocaleDateString()}
 						</Typography>
 						<hr></hr>
+						
+						<Grid item xs={10}>
+								<CardContent>
+									{project.description.substring(1,220) +" ..."}
+								</CardContent>
+						</Grid>
+						<hr></hr>
 					</CardContent>
 
 					<CardActions disableActionSpacing>
-						<Grid container>
-							<Grid item xs={11}>
-								<Grid container spacing={8}>
-									{
-										project.study_year.sort().map(major => {
-											return <Grid item><Chip label={major} color="primary" /></Grid>
-										})
-									}
-									{
-										project.majors_concerned.sort().map(major => {
-											return <Grid item><Chip label={major} color="secondary" /></Grid>
-										})
-									}
-								</Grid>
+							<Grid container spacing={8}>
+								{
+									project.study_year.sort().map(major => {
+										return <Grid item><Chip label={major} color="primary" /></Grid>
+									})
+								}
+								{
+									project.majors_concerned.sort().map(major => {
+										return <Grid item><Chip label={major} color="secondary" /></Grid>
+									}) 
+								}
 							</Grid>
-
-							<Grid item xs={1}>
-								<IconButton
-									onClick={this.handleExpandClick}
-									aria-expanded={this.state.expanded}
-									aria-label="Show more"
-								>
-									<ExpandMoreIcon />
-								</IconButton>
-							</Grid>
-						</Grid>
 					</CardActions>
 
-					<Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-						<CardContent>
-							{project.description}
-						</CardContent>
-					</Collapse>
 				</Card>
 			</div>);
 	}
