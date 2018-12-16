@@ -11,6 +11,7 @@ import Protected from './pages/Protected';
 import EditDeposit from './pages/EditDeposit';
 import ForgetPass from './pages/ForgetPass';
 import ProjectValidation from './pages/ProjectValidation';
+import ProjectPage from './pages/ProjectPage';
 import Nav from './components/nav/Navs'
 
 class App extends Component {
@@ -33,6 +34,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" render={(routeProps) => (<Home lng={lng} {...routeProps} />)} />
             <Route exact path="/Projects" render={(routeProps) => (<Projects lng={lng} {...routeProps} />)} />
+            <Route exact path="/Projects/:key" render={(routeProps) => (<ProjectPage lng={lng} {...routeProps} />)}/>
             <Route exact path="/Deposit" render={(routeProps) => (<Deposit lng={lng} {...routeProps} />)} />
             <Route exact path="/Connection" render={(routeProps) => (<Connection lng={lng} {...routeProps} />)} />
             <Route exact path="/Admin" render={(routeProps) => (<Admin lng={lng} {...routeProps} />)} />

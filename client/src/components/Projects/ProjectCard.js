@@ -10,6 +10,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 
+import {Link} from 'react-router-dom';
+import { Route, Switch, BrowserRouter } from "react-router-dom";
+
+
 /*
  * i18n integration
  * Card content when expanded 
@@ -143,7 +147,6 @@ class ProjectCard extends React.Component {
 	render() {
 		const project = this.props.project;
 		let partner;
-		var debut = project.description[1];
 
 		if (this.props.showPartner) {
 			partner = (<Grid item xs={4} >
@@ -152,47 +155,51 @@ class ProjectCard extends React.Component {
 				</Typography>
 			</Grid>)
 		}
+
 		return (
 			<div>
-				<Card style={{ borderBottom: 2, marginBottom: 8 }} onClick = {""}>
-					<CardContent>
-						<Grid container justify= "space-between">
-							<Grid item xs={7}>
-								<Typography variant="h5" component="h2">
-									{project.title}
-								</Typography>
-							</Grid>
-							{partner}							
-						</Grid>
-						<Typography color="textSecondary" gutterBottom>
-							Le {new Date(project.edit_date).toLocaleDateString()}
-						</Typography>
-						<hr></hr>
-						
-						<Grid item xs={10}>
-								<CardContent>
-									{project.description.substring(1,220) +" ..."}
-								</CardContent>
-						</Grid>
-						<hr></hr>
-					</CardContent>
+				<Link to={`/Projects/${this.props.project._id}`} key ={this.props.project._id} onmouseover="false">
+					<Card style={{ borderBottom: 2, marginBottom: 8 }}>
 
-					<CardActions disableActionSpacing>
-							<Grid container spacing={8}>
-								{
-									project.study_year.sort().map(major => {
-										return <Grid item><Chip label={major} color="primary" /></Grid>
-									})
-								}
-								{
-									project.majors_concerned.sort().map(major => {
-										return <Grid item><Chip label={major} color="secondary" /></Grid>
-									}) 
-								}
+						<CardContent>
+							<Grid container justify= "space-between">
+								<Grid item xs={7}>
+									<Typography variant="h5" component="h2">
+										{project.title}
+									</Typography>
+								</Grid>
+								{partner}
 							</Grid>
-					</CardActions>
+							<Typography color="textSecondary" gutterBottom>
+								Le {new Date(project.edit_date).toLocaleDateString()}
+							</Typography>
+							<hr></hr>
+							
+							<Grid item xs={10}>
+									<CardContent style={{color:"black"}}>
+										{project.description.substring(1,220) +" ..."}
+									</CardContent>
+							</Grid>
+							<hr></hr>
+						</CardContent>
 
-				</Card>
+						<CardActions disableActionSpacing>
+								<Grid container spacing={8}>
+									{
+										project.study_year.sort().map(major => {
+											return <Grid item><Chip label={major} color="primary" /></Grid>
+										})
+									}
+									{
+										project.majors_concerned.sort().map(major => {
+											return <Grid item><Chip label={major} color="secondary" /></Grid>
+										}) 
+									}
+								</Grid>
+						</CardActions>
+
+					</Card>
+				</Link>
 			</div>);
 	}
 }
