@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
+import nl2br from 'react-newline-to-break';
 
 class ProjectPage extends React.Component {
 	constructor(props) {
@@ -60,7 +61,7 @@ class ProjectPage extends React.Component {
                                 
                                 <Grid xs={8}>
                                     <Typography  component="body1">
-                                            {project.description}
+                                            {nl2br(project.description)}
                                     </Typography>
                                 </Grid>
                         </Paper>
