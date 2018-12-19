@@ -20,6 +20,7 @@ import Button from '@material-ui/core/Button';
 import i18n from '../i18n';
 import { Link } from 'react-router-dom';
 import FlagIcon from 'react-flag-kit/lib/FlagIcon';
+import Icon from '@material-ui/core/Icon';
 
 const styles = theme => ({
   root: {
@@ -67,9 +68,17 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     color: '#FFFFFF',
   },
+  languageButton: {
+    fontSize: 30,
+    color: '#FFFFFF',
+  },
+  languageButtonMobile: {
+    fontSize: 30,
+    color: '#000000',
+    }
 });
 
-class PrimaryAppBar extends React.Component {
+class Navs extends React.Component {
   constructor(props) {
     super(props)
     this.styles = {
@@ -77,7 +86,9 @@ class PrimaryAppBar extends React.Component {
         cursor: 'pointer',
       },
     };
-    this.state = {lng: 'en'}
+    this.state = {
+      lng: 'en'
+    }
   }
   
   state = {
@@ -161,16 +172,13 @@ class PrimaryAppBar extends React.Component {
               <div>{i18n.t('submit.label', {lng} )}</div>
           </MenuItem>
         </Link>
-        <MenuItem onClick={this.handleProfileMenuOpen}>
-          <IconButton color="inherit">
+        <MenuItem  color="inherit" className={classes.menuButton}>
+          <IconButton onClick={this.props.handleLngChange} className ="EN">
+            <Icon className={classes.languageButtonMobile}>translate</Icon>
+          </IconButton>
+          <IconButton onClick={this.handleProfileMenuOpen} color="inherit">
             <AccountCircle />
           </IconButton>
-          <IconButton>
-          <FlagIcon code = "GB"/>
-        </IconButton>
-        <IconButton>
-          <FlagIcon code = "FR"/>
-        </IconButton>
         </MenuItem>
       </Menu>
     );
@@ -200,12 +208,8 @@ class PrimaryAppBar extends React.Component {
                 </Button>
               </Link>
 
-              <IconButton>
-                <FlagIcon code = "GB"/>
-              </IconButton>
-
-              <IconButton>
-              <FlagIcon code = "FR"/>
+              <IconButton onClick={this.props.handleLngChange} className ="EN">
+              	<Icon className={classes.languageButton}>translate</Icon>
               </IconButton>
               
               <IconButton
@@ -231,8 +235,8 @@ class PrimaryAppBar extends React.Component {
   }
 }
 
-PrimaryAppBar.propTypes = {
+Navs.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(PrimaryAppBar);
+export default withStyles(styles)(Navs);
