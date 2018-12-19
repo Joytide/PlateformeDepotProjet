@@ -19,6 +19,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import i18n from '../i18n';
 import { Link } from 'react-router-dom';
+import FlagIcon from 'react-flag-kit/lib/FlagIcon';
 
 const styles = theme => ({
   root: {
@@ -28,23 +29,12 @@ const styles = theme => ({
     flexGrow: 1,
   },
   menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
   },
   title: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
-  },
-  searchIcon: {
-    width: theme.spacing.unit * 9,
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   inputRoot: {
     color: 'inherit',
@@ -75,19 +65,19 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit,
+    color: '#FFFFFF',
   },
 });
 
 class PrimaryAppBar extends React.Component {
-  
   constructor(props) {
-		super(props)
-		this.styles = {
-			title: {
-				cursor: 'pointer',
-			},
-		};
-		this.state = {lng: 'en'}
+    super(props)
+    this.styles = {
+      title: {
+        cursor: 'pointer',
+      },
+    };
+    this.state = {lng: 'en'}
   }
   
   state = {
@@ -112,6 +102,14 @@ class PrimaryAppBar extends React.Component {
     this.setState({ mobileMoreAnchorEl: null });
   };
 
+  handleclick(event) {
+    window.location.replace("/");
+  }
+  
+  handleButtonClick(event) {
+
+	}
+
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
     const { classes } = this.props;
@@ -128,13 +126,13 @@ class PrimaryAppBar extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem component={Link} to="/Connection" color="inherit" className={classes.button}>
+        <MenuItem component={Link} to="/Connection" color="inherit" className={classes.menuButton}>
             <div>{i18n.t('login.label', {lng} )}</div>
         </MenuItem>
-        <MenuItem component={Link} to="/Admin" color="inherit" className={classes.button}>
+        <MenuItem component={Link} to="/Admin" color="inherit" className={classes.menuButton}>
             <div>{i18n.t('admin.label', {lng} )}</div>
         </MenuItem>
-        <MenuItem component={Link} to="/forgot" color="inherit" className={classes.button}>
+        <MenuItem component={Link} to="/forgot" color="inherit" className={classes.menuButton}>
             <div>{i18n.t('linkLost.label', {lng} )}</div>
         </MenuItem>
       </Menu>
@@ -148,46 +146,67 @@ class PrimaryAppBar extends React.Component {
         open={isMobileMenuOpen}
         onClose={this.handleMobileMenuClose}
       >
-        <MenuItem component={Link} to="/" color="inherit" className={classes.button}>
-            <div>{i18n.t('home.label', {lng} )}</div>
-        </MenuItem>
-        <MenuItem component={Link} to="/Projects" color="inherit" className={classes.button}>
-            <div>{i18n.t('projects.label', {lng} )}</div>
-        </MenuItem>
-        <MenuItem component={Link} to="/Deposit" color="inherit" className={classes.button}>
-            <div>{i18n.t('submit.label', {lng} )}</div>
-        </MenuItem>
-
+        <Link to="/">
+          <MenuItem color="inherit" className={classes.menuButton}>
+              <div>{i18n.t('home.label', {lng} )}</div>
+          </MenuItem>
+        </Link>
+        <Link to="/Projects">
+          <MenuItem color="inherit" className={classes.menuButton}>
+              <div>{i18n.t('projects.label', {lng} )}</div>
+          </MenuItem>
+        </Link>
+        <Link to="/Deposit">
+          <MenuItem color="inherit" className={classes.menuButton}>
+              <div>{i18n.t('submit.label', {lng} )}</div>
+          </MenuItem>
+        </Link>
         <MenuItem onClick={this.handleProfileMenuOpen}>
           <IconButton color="inherit">
             <AccountCircle />
           </IconButton>
+          <IconButton>
+          <FlagIcon code = "GB"/>
+        </IconButton>
+        <IconButton>
+          <FlagIcon code = "FR"/>
+        </IconButton>
         </MenuItem>
       </Menu>
     );
 
     return (
       <div className={classes.root}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton className={classes.menuButton} color="inherit" aria-label="Open drawer">
-              <MenuIcon />
-            </IconButton>
-            <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-              Material-UI
-            </Typography>
+        <AppBar position="static" color='primary'>
+           <Toolbar>
+            <Link to="/">
+             <img style={this.styles.title} src="/logo_pulv.png" height="50" width="50"/>
+            </Link>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
+              <Link to="/">
+                <Button color="inherit" className={classes.button}>
+                  <div>{i18n.t('home.label', {lng} )}</div>
+                </Button>
+              </Link>
+              <Link to="/Projects">
+                <Button color="inherit" className={classes.button}>
+                  <div>{i18n.t('projects.label', {lng} )}</div>
+                </Button>
+              </Link>
+              <Link to="/Deposit">
+                <Button color="inherit" className={classes.button}>
+                  <div>{i18n.t('submit.label', {lng} )}</div>
+                </Button>
+              </Link>
 
-              <Button component={Link} to="/" color="inherit" className={classes.button}>
-                <div>{i18n.t('home.label', {lng} )}</div>
-              </Button>
-              <Button component={Link} to="/Projects" color="inherit" className={classes.button}>
-                <div>{i18n.t('projects.label', {lng} )}</div>
-              </Button>
-              <Button component={Link} to="/Deposit" color="inherit" className={classes.button}>
-                <div>{i18n.t('submit.label', {lng} )}</div>
-              </Button>
+              <IconButton>
+                <FlagIcon code = "GB"/>
+              </IconButton>
+
+              <IconButton>
+              <FlagIcon code = "FR"/>
+              </IconButton>
               
               <IconButton
                 aria-owns={isMenuOpen ? 'material-appbar' : undefined}
