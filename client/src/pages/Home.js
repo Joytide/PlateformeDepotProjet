@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import i18n from '../components/i18n';
 //import ContainerPULV from '../components/ContainerPULV';
-import { Container, Row, Col } from 'react-grid-system'
-import Carousel from '../components/Carousel.js'
-import FlatButton from 'material-ui/FlatButton';
+import { Container, Row, Col } from 'react-grid-system';
+import Carousel from '../components/Carousel.js';
+import Button from '@material-ui/core/Button';
 
 class Home extends Component {
 
@@ -87,18 +87,32 @@ function ContainerPULV(props) {
           <h2><b>{i18n.t('hybridation.h2', { lng })}</b></h2><br />
           <h3><b>{i18n.t('approche.h3', { lng })}</b></h3><br />
           <p>{i18n.t('presentation.p', { lng })}</p>
-          <FlatButton onClick={() => window.location.href = "https://www.devinci.fr/le-pole/la-transversalite/"} secondary={true} size="lg" label={i18n.t('transvality.label', { lng })} />{' '}
-          <FlatButton onClick={() => window.location.href = "https://www.devinci.fr/le-pole/chiffres-cles/"} secondary={true} size="lg" label={i18n.t('keys.label', { lng })} />{' '}
-          <FlatButton onClick={() => window.location.href = "https://www.devinci.fr/le-pole/le-projet-leonard-de-vinci/"} secondary={true} size="lg" label={i18n.t('projectt.label', { lng })} />{' '}
-          <FlatButton onClick={() => window.location.href = "https://www.devinci.fr/programmes/"} secondary={true} size="lg" label={i18n.t('program.label', { lng })} />{' '}
+          <Button onClick={() => window.location.href = "https://www.devinci.fr/le-pole/la-transversalite/"} color="secondary">
+            <div>{i18n.t('transvality.label', { lng })}</div>
+          </Button>{' '}
+          <Button onClick={() => window.location.href = "https://www.devinci.fr/le-pole/chiffres-cles/"} color="secondary">
+            <div>{i18n.t('keys.label', { lng })}</div>
+          </Button>{' '}
+          <Button onClick={() => window.location.href = "https://www.devinci.fr/le-pole/le-projet-leonard-de-vinci/"} color="secondary">
+            <div>{i18n.t('projectt.label', { lng })}</div>
+          </Button>{' '}
+          <Button onClick={() => window.location.href = "https://www.devinci.fr/programmes/"} color="secondary">
+            <div>{i18n.t('program.label', { lng })}</div>
+          </Button>{' '}
         </Col>
         <Col>
           <h2><b>{i18n.t('schools.h2', { lng })}</b></h2><br />
           <h3><b>{i18n.t('campus.h3', { lng })}</b></h3><br />
           <p>{i18n.t('leonard.p', { lng })}.</p>
-          <FlatButton onClick={() => window.location.href = "https://www.iim.fr/"} secondary={true} size="lg" label='IIM' />{' '}
-          <FlatButton onClick={() => window.location.href = "https://www.esilv.fr/"} secondary={true} size="lg" label='ESILV' />{' '}
-          <FlatButton onClick={() => window.location.href = "https://www.emlv.fr/"} secondary={true} size="lg" label='EMLV' />{' '}
+          <Button onClick={() => window.location.href = "https://www.iim.fr/"} color="secondary">
+            <div>IIM</div>
+          </Button>{' '}
+          <Button onClick={() => window.location.href = "https://www.esilv.fr/"} color="secondary">
+            <div>ESILV</div>
+          </Button>{' '}
+          <Button onClick={() => window.location.href = "https://www.emlv.fr/"} color="secondary">
+            <div>EMLV</div>
+          </Button>{' '}
         </Col>
       </Row>
     </Container>
