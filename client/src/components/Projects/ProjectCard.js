@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from '../i18n';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -145,12 +146,13 @@ class ProjectCard extends React.Component {
 
 	render() {
 		const project = this.props.project;
+		const lng = this.props.lng;
 		let partner;
 
 		if (this.props.showPartner) {
 			partner = (<Grid item xs={4} >
 				<Typography variant="subtitle1" component="h2">
-					Proposé par : {project.partner.company}
+				{i18n.t('partner.label', { lng })} : {project.partner.company}
 				</Typography>
 			</Grid>)
 		}
@@ -170,7 +172,7 @@ class ProjectCard extends React.Component {
 								{partner}
 							</Grid>
 							<Typography color="textSecondary" gutterBottom>
-								Le {new Date(project.edit_date).toLocaleDateString()}
+								{new Date(project.sub_date).toLocaleDateString()}
 							</Typography>
 							<hr></hr>
 							

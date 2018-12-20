@@ -1,4 +1,5 @@
 import React from 'react';
+import i18n from '../components/i18n';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -25,6 +26,7 @@ class ProjectPage extends React.Component {
 
     render () {
         const project = this.state.project
+        const lng = this.props.lng;
 
         if (this.state.loaded) {
         return(
@@ -52,7 +54,7 @@ class ProjectPage extends React.Component {
                                     </Grid>
                                     <Grid>
                                         <Typography variant="subtitle1">
-                                            Proposé par : {project.partner.company}, le {new Date(project.edit_date).toLocaleDateString()}
+                                            {i18n.t('partner.label', { lng })} : {project.partner.company}, {new Date(project.edit_date).toLocaleDateString()}
                                          </Typography> 
                                     </Grid>
 								</Grid>
