@@ -147,10 +147,10 @@ class ProjectCard extends React.Component {
 	render() {
 		const project = this.props.project;
 		const lng = this.props.lng;
+		
 		let partner;
-
 		if (this.props.showPartner) {
-			partner = (<Grid item xs={4} >
+			partner = (<Grid item xs >
 				<Typography variant="subtitle1" component="h2">
 				{i18n.t('partner.label', { lng })} : {project.partner.company}
 				</Typography>
@@ -163,25 +163,28 @@ class ProjectCard extends React.Component {
 					<Card style={{ borderBottom: 2, marginBottom: 8 }}>
 
 						<CardContent>
-							<Grid container justify= "space-between">
+							<Grid container justify= "space-between" xs={12}>
 								<Grid item xs={7}>
 									<Typography variant="h5" component="h2">
 										{project.title}
 									</Typography>
 								</Grid>
-								{partner}
+								<Grid container xs direction="column">
+									{partner}
+									<Typography color="textSecondary" gutterBottom>
+										{new Date(project.sub_date).toLocaleDateString()}
+									</Typography>
+								</Grid>
 							</Grid>
-							<Typography color="textSecondary" gutterBottom>
-								{new Date(project.sub_date).toLocaleDateString()}
-							</Typography>
+
 							<hr></hr>
 							
 							<Grid item xs={10} >
-									<CardContent style={{color:"black"}}>
+									<CardContent style={{color:"black", paddingTop: 1, paddingBottom: 1}}>
 										{project.description.substring(1,220) +" ..."}
 									</CardContent>
 							</Grid>
-							<hr></hr>
+
 						</CardContent>
 
 						<CardActions disableActionSpacing>
