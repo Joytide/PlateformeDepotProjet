@@ -3,15 +3,14 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
+//import Collapse from '@material-ui/core/Collapse';
+//import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+//import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 
 import {Link} from 'react-router-dom';
-import { Route, Switch, BrowserRouter } from "react-router-dom";
 
 
 /*
@@ -175,7 +174,7 @@ class ProjectCard extends React.Component {
 							</Typography>
 							<hr></hr>
 							
-							<Grid item xs={10}>
+							<Grid item xs={10} >
 									<CardContent style={{color:"black"}}>
 										{project.description.substring(1,220) +" ..."}
 									</CardContent>
@@ -184,17 +183,28 @@ class ProjectCard extends React.Component {
 						</CardContent>
 
 						<CardActions disableActionSpacing>
-								<Grid container spacing={8}>
+								<Grid container xs={12}>
+									<Grid container spacing={8} xs>
 									{
 										project.study_year.sort().map(major => {
 											return <Grid item><Chip label={major} color="primary" /></Grid>
 										})
 									}
+									</Grid>
+									<Grid  container spacing={8} xs>
 									{
 										project.majors_concerned.sort().map(major => {
 											return <Grid item><Chip label={major} color="secondary" /></Grid>
 										}) 
 									}
+									</Grid>
+									<Grid container spacing={8} xs>
+									{
+										project.keywords.sort().map(keyword => {
+											return <Grid item><Chip label={keyword} color="grey" /></Grid>
+										}) 
+									}
+									</Grid>
 								</Grid>
 						</CardActions>
 
