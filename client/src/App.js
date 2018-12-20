@@ -21,7 +21,7 @@ class App extends Component {
   }
 
   handleLngChange(event) {
-    this.setState({ lng: event.target.className.toLowerCase() });
+    //this.setState({ lng: event.target.className.toLowerCase() });
     if (this.state.lng==='fr') this.setState({ lng: 'en' });
     if (this.state.lng==='en') this.setState({ lng: 'fr' });
 
