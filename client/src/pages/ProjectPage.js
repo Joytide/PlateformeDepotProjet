@@ -51,6 +51,11 @@ class ProjectPage extends React.Component {
                                                 return <Grid item><Chip label={major} color="secondary" /></Grid>
                                             }) 
                                         }
+                                        {
+                                            project.keywords.sort().map(keyword => {
+                                                return <Grid item><Chip label={keyword} color="grey" /></Grid>
+                                            }) 
+									    }
                                     </Grid>
                                     <Grid>
                                         <Typography variant="subtitle1">
