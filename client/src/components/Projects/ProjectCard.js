@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 /*
@@ -40,7 +40,7 @@ class ProjectCard extends React.Component {
 		this.handleRejection = this.handleRejection.bind(this)
 		this.handleExpandClick = this.handleExpandClick.bind(this)
 	}
-	
+
 	handleExpandClick = () => {
 		this.setState(state => ({ expanded: !state.expanded }));
 	};
@@ -147,29 +147,29 @@ class ProjectCard extends React.Component {
 	render() {
 		const project = this.props.project;
 		const lng = this.props.lng;
-		
+
 		let partner;
 		if (this.props.showPartner) {
 			partner = (<Grid item xs >
 				<Typography variant="subtitle1" component="h2">
-				{i18n.t('partner.label', { lng })} : {project.partner.company}
+					{i18n.t('partner.label', { lng })} : {project.partner.company}
 				</Typography>
 			</Grid>)
 		}
 
 		return (
 			<div>
-				<Link to={`/Projects/${this.props.project._id}`} key ={this.props.project._id} onmouseover="false">
+				<Link to={`/Projects/${this.props.project._id}`} key={this.props.project._id}>
 					<Card style={{ borderBottom: 2, marginBottom: 8 }}>
 
 						<CardContent>
-							<Grid container justify= "space-between" xs={12}>
+							<Grid container justify="space-between">
 								<Grid item xs={7}>
 									<Typography variant="h5" component="h2">
 										{project.number} - {project.title}
 									</Typography>
 								</Grid>
-								<Grid container xs direction="column">
+								<Grid item xs={5}>
 									{partner}
 									<Typography color="textSecondary" gutterBottom>
 										{new Date(project.sub_date).toLocaleDateString()}
@@ -178,38 +178,42 @@ class ProjectCard extends React.Component {
 							</Grid>
 
 							<hr></hr>
-							
+
 							<Grid item xs={10} >
-									<CardContent style={{color:"black", paddingTop: 1, paddingBottom: 1}}>
-										{project.description.substring(1,220) +" ..."}
-									</CardContent>
+								<CardContent style={{ color: "black", paddingTop: 1, paddingBottom: 1 }}>
+									{project.description.substring(1, 220) + " ..."}
+								</CardContent>
 							</Grid>
 
 						</CardContent>
 
 						<CardActions disableActionSpacing>
-								<Grid container xs={12}>
-									<Grid container spacing={8} xs>
+								<Grid container spacing={8}>
 									{
-										project.study_year.sort().map(major => {
-											return <Grid item><Chip label={major} color="primary" /></Grid>
+										project.study_year.sort().map((year, index) => {
+											return (<Grid key={index} item>
+												<Chip label={year} color="primary" />
+											</Grid>);
 										})
 									}
-									</Grid>
-									<Grid  container spacing={8} xs>
+								</Grid>
+								<Grid container spacing={8}>
 									{
-										project.majors_concerned.sort().map(major => {
-											return <Grid item><Chip label={major} color="secondary" /></Grid>
-										}) 
+										project.majors_concerned.sort().map((major, index) => {
+											return (<Grid key={index} item>
+												<Chip label={major} color="secondary" />
+											</Grid>);
+										})
 									}
-									</Grid>
-									<Grid container spacing={8} xs>
+								</Grid>
+								<Grid container spacing={8}>
 									{
-										project.keywords.sort().map(keyword => {
-											return <Grid item><Chip label={keyword} color="grey" /></Grid>
-										}) 
+										project.keywords.sort().map((keyword, index) => {
+											return (<Grid key={index} item>
+												<Chip label={keyword} />
+											</Grid>);
+										})
 									}
-									</Grid>
 								</Grid>
 						</CardActions>
 
