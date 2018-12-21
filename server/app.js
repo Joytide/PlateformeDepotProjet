@@ -30,10 +30,15 @@ mongoose.connect('mongodb://localhost:27017/Tododb', (err) => {
   }
 });
 
-
+const auth = require('./api/controllers/authController');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(auth.passport.initialize());
+app.use(auth.passport.session());
+
+var auth_routes = require('./api/routes/authRoutes')
+auth_routes(app);
 
 // Route for handling File updates.
 var fileUpload = require('./api/routes/filesRoutes');
@@ -57,9 +62,6 @@ major_routes(app);
 
 var comments_routes = require('./api/routes/commentsRoute')
 comments_routes(app);
-
-var auth_routes = require('./api/routes/authRoutes')
-auth_routes(app);
 
 app.use('/static', express.static('./.uploads'));
 // uncomment after placing your favicon in /public
