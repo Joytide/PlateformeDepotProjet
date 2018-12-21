@@ -47,7 +47,7 @@ class App extends Component {
 						<Route exact path="/" render={(routeProps) => (<Home lng={lng} {...routeProps} />)} />
 						<Route exact path="/Projects" render={(routeProps) => (<Projects lng={lng} {...routeProps} />)} />
 						<Route exact path="/Projects/:key" render={(routeProps) => (<ProjectPage lng={lng} {...routeProps} />)} />
-						<Route exact path="/Deposit" render={(routeProps) => (<Deposit lng={lng} {...routeProps} />)} />
+						<Route exact path="/deposit" render={(routeProps) => (<Deposit lng={lng} {...routeProps} />)} />
 						<Route exact path="/Connection" render={(routeProps) => (<Connection lng={lng} {...routeProps} />)} />
 						<Route exact path="/Admin" render={(routeProps) => (<Admin lng={lng} {...routeProps} />)} />
 						<Route exact path="/partner" render={(routeProps) => (<Partner lng={lng} {...routeProps} />)} />
@@ -77,7 +77,7 @@ function NoMatch({ location }) {
 							404 !
                     	</Typography>
 						<Typography variant="h4" align="center">
-							😢
+						<span role="img" aria-labelledby="jsx-a11y/accessible-emoji" >😢</span>
                     	</Typography>
 						<Typography variant="subtitle1" align="center">
 							La page n'existe pas 
