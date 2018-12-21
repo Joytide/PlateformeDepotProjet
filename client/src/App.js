@@ -46,7 +46,7 @@ class App extends Component {
             <Route exact path="/Deposit" render={(routeProps) => (<Deposit lng={lng} {...routeProps} />)} />
             <Route exact path="/Connection" render={(routeProps) => (<Connection lng={lng} {...routeProps} />)} />
             <Route exact path="/Admin" render={(routeProps) => (<Admin lng={lng} {...routeProps} />)} />
-            <Route exact path="/partner/:key" render={(routeProps) => (<Partner lng={lng} {...routeProps} />)} />
+            <Route exact path="/partner" render={(routeProps) => (<Partner lng={lng} {...routeProps} />)} />
             <Route exact path="/Edit/:editKey" render={(routeProps) => (<EditDeposit lng={lng} {...routeProps} />)} />
             <Route exact path="/Forgot" render={(routeProps) => (<ForgetPass lng={lng} {...routeProps} />)} />
             <Route exact path="/Admin/Validation" render={(routeProps) => (<ProjectValidation lng={lng} {...routeProps} />)} />
