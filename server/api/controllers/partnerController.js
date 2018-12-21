@@ -122,7 +122,11 @@ function generatePassword(size) {
 	let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	let pass = "";
 	for (let i = 0; i < size; i++) {
-		pass += characters[randomInt(characters.length)];
+		let rnd = randomInt(characters.length);
+		if (characters[rnd] != undefined)
+			pass += characters[randomInt(characters.length)];
+		else
+			i--;
 	}
 	return pass;
 }
