@@ -178,15 +178,6 @@ exports.destroy = (req, res) => {
 	});
 }
 
-function generatePassword(size) {
-	let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	let pass = "";
-	for (let i = 0; i < size; i++) {
-		pass += characters[randomInt(characters.length)];
-	}
-	return pass;
-}
-
 function randomInt(max) {
 	return Math.floor(Math.random() * max - 1);
 }
