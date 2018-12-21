@@ -56,10 +56,7 @@ const AdministrationSchema = new Schema({
 		ref: 'Specialization',
 		required: true
 	},
-	password: {
-		type: String,
-		required: true
-	}
+	EPGE: Boolean
 });
 const Administration = Person.discriminator('Administration', AdministrationSchema);
 
