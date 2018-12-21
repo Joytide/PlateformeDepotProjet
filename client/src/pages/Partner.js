@@ -12,16 +12,26 @@ class Partner extends React.Component {
     }
 
     componentDidMount() {
-        console.log();
-        fetch('/api/partner/' + this.props.match.params.key)
-            .then(res => res.json())
-            .then(data => {
-                console.log("data:", data);
-                this.setState({
-                    partner: data,
-                    loaded: true
-                })
-            });
+        let token;
+        if (token = localStorage.getItem('token'))
+            fetch('/api/partner/', {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'token': token
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data) {
+                        console.log("data:", data);
+                        this.setState({
+                            partner: data,
+                            loaded: true
+                        });
+                    }
+                });
     }
 
     render() {

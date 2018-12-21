@@ -4,14 +4,22 @@ const mongoose = require('mongoose');
 const Partner = mongoose.model('Partner');
 const Project = mongoose.model('Project');
 
-exports.listPartners = function (req, res) {
-	Partner.find()
-		.populate('projects')
-		.exec((err, partner) => {
-			if (err)
-				res.send(err);
-			res.json(partner);
-		});
+exports.listAllPartners = function (req, res) {
+	console.log(req.user);
+	if (req.user.__t == "EPGE") {
+		Partner.find()
+			.populate('projects')
+			.exec((err, partner) => {
+				if (err)
+					res.send(err);
+				res.json(partner);
+			});
+	} else if (req.user.__t == "Partner") {
+		Partner.findById(req.user._id).populate('projects').exec((err,partner) => {
+			if(err) res.send(err);
+			else res.json(partner);
+		})
+	}
 };
 
 exports.addProject = (partnerId, projectId) => {
