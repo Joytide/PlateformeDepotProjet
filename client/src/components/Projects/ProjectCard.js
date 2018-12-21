@@ -1,14 +1,18 @@
 import React from 'react';
+import i18n from '../i18n';
 
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
+//import Collapse from '@material-ui/core/Collapse';
+//import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+//import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
+
+import {Link} from 'react-router-dom';
+
 
 /*
  * i18n integration
@@ -36,7 +40,7 @@ class ProjectCard extends React.Component {
 		this.handleRejection = this.handleRejection.bind(this)
 		this.handleExpandClick = this.handleExpandClick.bind(this)
 	}
-
+	
 	handleExpandClick = () => {
 		this.setState(state => ({ expanded: !state.expanded }));
 	};
@@ -84,6 +88,7 @@ class ProjectCard extends React.Component {
             .catch((err) => { console.log("Error occured : " + err) })
             */
 	}
+
     /**
          * Update the project and set the status to "refused"
          * @param {*} event 
@@ -141,68 +146,75 @@ class ProjectCard extends React.Component {
 
 	render() {
 		const project = this.props.project;
+		const lng = this.props.lng;
+		
 		let partner;
-
 		if (this.props.showPartner) {
-			partner = (<Grid item xs={6}>
+			partner = (<Grid item xs >
 				<Typography variant="subtitle1" component="h2">
-					Proposé par : {project.partner.company}
+				{i18n.t('partner.label', { lng })} : {project.partner.company}
 				</Typography>
 			</Grid>)
 		}
+
 		return (
 			<div>
-				<Card style={{ borderBottom: 2, marginBottom: 8 }}>
-					<CardContent>
-						<Grid container>
-							<Grid item xs={6}>
-								<Typography variant="h5" component="h2">
-									{project.title}
-								</Typography>
-							</Grid>
-							{partner}							
-						</Grid>
-						<Typography color="textSecondary" gutterBottom>
-							Le {new Date(project.edit_date).toLocaleDateString()}
-						</Typography>
-						<hr></hr>
-					</CardContent>
+				<Link to={`/Projects/${this.props.project._id}`} key ={this.props.project._id} onmouseover="false">
+					<Card style={{ borderBottom: 2, marginBottom: 8 }}>
 
-					<CardActions disableActionSpacing>
-						<Grid container>
-							<Grid item xs={11}>
-								<Grid container spacing={8}>
+						<CardContent>
+							<Grid container justify= "space-between" xs={12}>
+								<Grid item xs={7}>
+									<Typography variant="h5" component="h2">
+										{project.title}
+									</Typography>
+								</Grid>
+								<Grid container xs direction="column">
+									{partner}
+									<Typography color="textSecondary" gutterBottom>
+										{new Date(project.sub_date).toLocaleDateString()}
+									</Typography>
+								</Grid>
+							</Grid>
+
+							<hr></hr>
+							
+							<Grid item xs={10} >
+									<CardContent style={{color:"black", paddingTop: 1, paddingBottom: 1}}>
+										{project.description.substring(1,220) +" ..."}
+									</CardContent>
+							</Grid>
+
+						</CardContent>
+
+						<CardActions disableActionSpacing>
+								<Grid container xs={12}>
+									<Grid container spacing={8} xs>
 									{
 										project.study_year.sort().map(major => {
 											return <Grid item><Chip label={major} color="primary" /></Grid>
 										})
 									}
+									</Grid>
+									<Grid  container spacing={8} xs>
 									{
 										project.majors_concerned.sort().map(major => {
 											return <Grid item><Chip label={major} color="secondary" /></Grid>
-										})
+										}) 
 									}
+									</Grid>
+									<Grid container spacing={8} xs>
+									{
+										project.keywords.sort().map(keyword => {
+											return <Grid item><Chip label={keyword} color="grey" /></Grid>
+										}) 
+									}
+									</Grid>
 								</Grid>
-							</Grid>
+						</CardActions>
 
-							<Grid item xs={1}>
-								<IconButton
-									onClick={this.handleExpandClick}
-									aria-expanded={this.state.expanded}
-									aria-label="Show more"
-								>
-									<ExpandMoreIcon />
-								</IconButton>
-							</Grid>
-						</Grid>
-					</CardActions>
-
-					<Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
-						<CardContent>
-							{project.description}
-						</CardContent>
-					</Collapse>
-				</Card>
+					</Card>
+				</Link>
 			</div>);
 	}
 }

@@ -298,7 +298,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   onBlur={this.handleBlur}
                   name="email"
                   value={this.state.email}
-                  fullWidth={true} />
+                  fullWidth={true}
+                  maxlength = {40}
+                  />
               </Col>
             </Row>
 
@@ -310,7 +312,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   floatingLabelText={i18n.t('company.label', { lng })}
                   onChange={this.handleChange}
                   name="company" value={this.state.company}
-                  fullWidth={true} />
+                  fullWidth={true} 
+                  maxlength = {70}
+                  />
               </Col>
             </Row>
 
@@ -321,7 +325,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   errorMessages={i18n.t('field.label', { lng })}
                   floatingLabelText={i18n.t('firstname.label', { lng })}
                   onChange={this.handleChange} fullWidth={true}
-                  name="first_name" value={this.state.first_name} />
+                  name="first_name" value={this.state.first_name} 
+                  maxlength = {30}
+                  />
               </Col>
             </Row>
             <Row>
@@ -331,7 +337,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   errorMessages={i18n.t('field.label', { lng })}
                   floatingLabelText={i18n.t('lastname.label', { lng })}
                   onChange={this.handleChange} fullWidth={true}
-                  name="last_name" value={this.state.last_name} />
+                  name="last_name" value={this.state.last_name} 
+                  maxlength = {30}
+                  />
               </Col>
             </Row>
 
@@ -352,7 +360,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   onChange={this.handleChange} fullWidth={true}
                   name="title" value={this.state.title}
                   validators={['required']}
-                  errorMessages={i18n.t('field.label', { lng })} />
+                  errorMessages={i18n.t('field.label', { lng })} 
+                  maxlength = {100}
+                  />
               </Col>
             </Row>
             <br />
@@ -406,7 +416,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   rows={10}
                   name="description"
                   onChange={this.handleChange}
-                  fullWidth={true} />
+                  fullWidth={true} 
+                  maxlength = {3000}
+                  />
               </Col>
             </Row>
             <Row>

@@ -71,15 +71,15 @@ class ProjectsListCard extends React.Component {
 		const lng = this.props.lng;
 		console.log(this.props.projects);
 		let ProjectList = this.props.projects.map(project =>
-			<Grid item xs={5}>
+			<Grid item xs={10}>
 				<ProjectCard key={project.id} project={project} lng={lng} admin={this.props.admin} showPartner={this.props.showPartner} />
 			</Grid>
 		)
 		return (
 			<div>
-				<Grid container style={{ marginTop: 4 }} justify="center">
+				<Grid container style={{ marginTop: 12}} justify="center">
 					<Grid item xs={11}>
-						<Paper>
+						<Paper  style={{ paddingTop: 12}}>
 							<Typography align="center" variant="display2" paragraph>
 								{i18n.t('project.title', { lng })}
 							</Typography>
