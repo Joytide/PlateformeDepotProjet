@@ -166,7 +166,7 @@ class ProjectCard extends React.Component {
 							<Grid container justify= "space-between" xs={12}>
 								<Grid item xs={7}>
 									<Typography variant="h5" component="h2">
-										{project.title}
+										{project.number} - {project.title}
 									</Typography>
 								</Grid>
 								<Grid container xs direction="column">

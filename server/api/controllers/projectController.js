@@ -52,33 +52,38 @@ exports.createProject = (req, res) => {
 		json.status = 'pending';
 		var new_project = new Project(json);
 
-		new_project.save(function (err, project) {
-			if (err)
-				res.send(err);
-			else {
-				partnerController.addProject(partner._id, project._id)
-					.then((partner) => {
-						name = partner.first_name;
-						mail.text = `Bonjour ${name}, \n
-				  Votre demande de soumission a bien été enregistrée. \n 
-				  Voici votre lien pour l'éditer. \n
-				  http://localhost:3000/Edit/${editKey}`
-						smtpTransporter.sendMail(mail, (err, result) => {
-							if (err) {
-								smtpTransporter.close();
-								console.log(err);
-								res.send(err);
-							} else {
-								res.send('Mail ok!');
-								smtpTransporter.close();
-							}
+		Project.count({}, (err, count) => {
+			if(err) res.send(err);
+			new_project.number = (count+1).toString().padStart(3,'0');
+
+			new_project.save(function (err, project) {
+				if (err)
+					res.send(err);
+				else {
+					partnerController.addProject(partner._id, project._id)
+						.then((partner) => {
+							name = partner.first_name;
+							mail.text = `Bonjour ${name}, \n
+					  Votre demande de soumission a bien été enregistrée. \n 
+					  Voici votre lien pour l'éditer. \n
+					  http://localhost:3000/Edit/${editKey}`
+							smtpTransporter.sendMail(mail, (err, result) => {
+								if (err) {
+									smtpTransporter.close();
+									console.log(err);
+									res.send(err);
+								} else {
+									res.send('Mail ok!');
+									smtpTransporter.close();
+								}
+							});
+						})
+						.catch(err => {
+							res.send(err);
 						});
-					})
-					.catch(err => {
-						res.send(err);
-					});
-			}
-		});
+				}
+			});
+		});		
 	});
 };
 
