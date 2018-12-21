@@ -12,8 +12,8 @@ class Partner extends React.Component {
     }
 
     componentDidMount() {
-        let token;
-        if (token = localStorage.getItem('token'))
+        let token = localStorage.getItem('token');
+        if (token)
             fetch('/api/partner/', {
                 method: "GET",
                 headers: {
