@@ -1,4 +1,5 @@
 import React from 'react';
+import {Redirect} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -8,11 +9,11 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     root: {
-      ...theme.mixins.gutters(),
-      paddingTop: theme.spacing.unit * 2,
-      paddingBottom: theme.spacing.unit * 2,
+        ...theme.mixins.gutters(),
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2,
     },
-  });
+});
 
 class LoginPartner extends React.Component {
     constructor(props) {
@@ -58,18 +59,29 @@ class LoginPartner extends React.Component {
                         Vous êtes connecté
                     </Typography>
                     <Typography component="p">
-                        Vous allez être rediriger 
+                        Vous allez être redirigé vers votre profil
+                        {
+                            setTimeout(function () {
+                                return <Redirect to='/login' />;
+                            }.bind(this), 5000)
+                        }
                     </Typography>
                 </div>
             );
         } else if (this.state.error) {
             content = (
-                <div>Une erreur est survenue</div>
+                <div>
+                    <Typography variant="h5" component="h3">
+                        Vous êtes connecté
+                    </Typography>
+                    <Typography component="p">
+                        Vous allez être redirigé
+                    </Typography>
+                </div>
             );
         } else {
             content = (
                 <div>
-
                     <CircularProgress />
                 </div>
             );

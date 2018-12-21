@@ -33,7 +33,7 @@ exports.addProject = (partnerId, projectId) => {
 
 // Return a promise when creating a Partner
 exports.createPartner = function (data) {
-	return new Promise((resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
 		let newPartner = new Partner({
 			"first_name": data.first_name,
 			"last_name": data.last_name,
@@ -41,7 +41,8 @@ exports.createPartner = function (data) {
 			"company": data.company
 		});
 
-		newPartner.key = generatePassword(16);
+		newPartner.key = await generatePassword(16);
+		console.log(newPartner.key);
 
 		if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
 			newPartner.save(err => {
@@ -127,16 +128,24 @@ exports.deletePartner = (req, res) => {
 }
 
 function generatePassword(size) {
-	let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	let pass = "";
-	for (let i = 0; i < size; i++) {
-		let rnd = randomInt(characters.length);
-		if (characters[rnd] != undefined)
-			pass += characters[randomInt(characters.length)];
-		else
-			i--;
-	}
-	return pass;
+	return new Promise((resolve, reject) => {
+		let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		let key = "";
+		for (let i = 0; i < size; i++) {
+			let rnd = randomInt(characters.length);
+			if (characters[rnd] != undefined)
+				key += characters[randomInt(characters.length)];
+			else
+				i--;
+		}
+	
+		// Prevent key collision
+		Partner.count({key:key}, (err, count) => {
+			if(err) reject(err);
+			if(count == 0) resolve(key);
+			else resolve(generatePassword(size));
+		});
+	});	
 }
 
 function randomInt(max) {
