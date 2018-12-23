@@ -1,5 +1,8 @@
 import React from 'react';
 import ProjectsListCard from '../components/Projects/ProjectsListCard';
+import AuthService from '../components/AuthService';
+
+const authService = new AuthService();
 
 class Partner extends React.Component {
     constructor(props) {
@@ -12,17 +15,11 @@ class Partner extends React.Component {
     }
 
     componentDidMount() {
-        let token = localStorage.getItem('token');
-        if (token)
-            fetch('/api/partner/', {
-                method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'token': token
-                }
+        if (authService.isLoggedIn())
+            console.log("here");
+            authService.fetch('/api/partner/', {
+                method: "GET"
             })
-                .then(res => res.json())
                 .then(data => {
                     if (data) {
                         console.log("data:", data);
