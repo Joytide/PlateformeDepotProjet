@@ -23,8 +23,9 @@
     "react-files": "^2.4.3",
     "react-flag-kit": "0.2.3",
     "react-grid-system": "^3.1.2",
-    "react-i18next": "^7.5.1",
+    "react-i18next": "^7.13.0",
     "react-material-ui-form-validator": "^1.1.0",
+    "react-newline-to-break": "^1.0.6",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.0",
@@ -33,8 +34,7 @@
     "react-validation": "^3.0.7",
     "reactstrap": "^5.0.0-beta.2",
     "redux": "^3.7.2",
-    "video-react": "^0.9.4",
-    "react-newline-to-break": "^1.0.6"
+    "video-react": "^0.9.4"
   },
   "scripts": {
     "start": "react-scripts start",
