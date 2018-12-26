@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper';
 
 const styles = theme => ({
   root: {
+    padding: theme.spacing.unit * 2,
     flexGrow: 1,
   },
   paper: {
@@ -49,8 +50,8 @@ class HomePage extends React.Component {
     return (
       <div>
         <Grid className={classes.root}>
-          <Grid container xs direction="column" justify="center" alignItems="center" spacing={24}>
-            <Grid item xs={12}>
+          <Grid container direction="column" justify="center" alignItems="center" spacing={24}>
+            <Grid item>
               <Paper className={classes.paper}>
                 <Typography variant="h3">
                   Projets Innovation Industrielle 18/19
@@ -69,7 +70,7 @@ class HomePage extends React.Component {
               </Paper>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item>
               <Paper className={classes.paper}>
                 <Grid xs container direction="row" justify="center" alignItems="center">
                   <Carousel />
@@ -78,7 +79,7 @@ class HomePage extends React.Component {
             </Grid>
 
 
-            <Grid item xs={12}>
+            <Grid item>
               <Paper className={classes.paper}>
                 <Typography variant="h5">Proposez un projet à nos élèves !</Typography>
                 <Typography>
@@ -87,7 +88,7 @@ class HomePage extends React.Component {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item>
               <Paper className={classes.paper}>
                 <Typography variant="h5">Comment ça marche ?</Typography>
                 <Typography>
@@ -98,7 +99,7 @@ class HomePage extends React.Component {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item>
               <Paper className={classes.paper}>
                 <Typography variant="h5">Quel va être mon rôle ?</Typography>
                 <Typography>
@@ -112,7 +113,7 @@ class HomePage extends React.Component {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item>
               <Paper className={classes.paper}>
                 <Typography variant="h5">Comment proposer un projet ?</Typography>
                 <Typography>
@@ -124,7 +125,7 @@ class HomePage extends React.Component {
                 </Typography>
               </Paper>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item>
               <Paper className={classes.paper}>
                 <Typography variant="h5">Merci de votre participation, et à très bientôt.</Typography>
                 <Typography style={{textAlign: 'right'}}>

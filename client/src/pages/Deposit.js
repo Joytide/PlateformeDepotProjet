@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
-//import Navs from '../components/nav/Navs.js';
-import FilesInputs from '../components/Deposit/FormComponents/FilesInputs';
 import ReactDOM from 'react-dom';
-import { Container, Row, Col } from 'react-grid-system'
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+
+import FilesInputs from '../components/Deposit/FormComponents/FilesInputs';
 import KeyWords from '../components/Deposit/FormComponents/KeyWords';
+
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
-
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 
+import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 import i18n from '../components/i18n';
+
 /**
  * Deposit a project
  */
@@ -28,18 +28,16 @@ import i18n from '../components/i18n';
 const styles = theme => ({
   root: {
     flexGrow: 1,
+    width: '100%',
+    maxWidth: 1150,
+    margin: 'auto',
+    padding: theme.spacing.unit * 2,
   },
   paper: {
-    margin: 'auto',
     padding: theme.spacing.unit * 2,
     textAlign: 'left',
     color: theme.palette.text.secondary,
-    maxWidth: 1150,
-    flexGrow: 1,
   },
-  conteneur: {
-    margin:'auto',
-  }
 });
 
 
@@ -49,7 +47,7 @@ class Deposit extends Component {
     const lng = this.props.lng;
     this.state = {
       finished: false,
-      stepIndex: 0,
+      stepIndex: 2,
       title: "",
       study_year: [],
       majors_concerned: [],
@@ -301,49 +299,51 @@ class Deposit extends Component {
       case 0:
         return (
         <div>
-          <Grid container direction="column" xs justify="center" alignItems="center" className={classes.conteneur}>
+          <Grid container direction="column" xs justify="center" alignItems="center">
             <Grid item className={classes.paper}>
               <Typography variant="h6">Proposer un projet a nos élèves</Typography>
               <Typography>
-                Proposer un projet vous permettra de coopérer avec une équipe d'élèves ingénieurs motivés et innovants et de contribuer à leur formation en les impliquant dans des problématiques actuelles.
-                Entreprises ou laboratoires, c'est aussi un moyen de vous faire connaître auprès de ceux qui répondront dans les années futures à vos offres de stages et d'emplois.
+                Proposer un projet vous permettra de coopérer avec une équipe d'élèves ingénieurs motivés et innovants et de contribuer à leur formation en les impliquant dans des problématiques actuelles. <br/>
+                Entreprises ou laboratoires, c'est aussi un moyen de vous faire connaître auprès de ceux qui répondront dans les années futures à vos offres de stages et d'emplois. <br/>
               </Typography>
             </Grid>
             <Grid item className={classes.paper}>
               <Typography variant="h6">Comment ça marche ?</Typography>
               <Typography>
-                Un groupe projet est constitué de 4 élèves (3 ou 5 éventuellement) qui travailleront chacun une dizaine d'heures par semaine sur votre projet.
-                Chaque groupe sera suivi et encadré par un enseignant de l'école ("directeur de projet") à même de les guider scientifiquement.
-                Ces projets concernent les élèves d'année 4 et d'année 5, avec un fonctionnement similaire et un calendrier un peu différent : les projets démarrent pour tous mi/fin septembre, et se terminent fin janvier pour les années 5 et fin mars pour les années 4.
-                Les élèves partant en stage après, il peut être possible que votre projet soit "poursuivi" en stage par un élève de l'équipe.
+                Un groupe projet est constitué de 4 élèves (3 ou 5 éventuellement) qui travailleront chacun une dizaine d'heures par semaine sur votre projet. <br/>
+                Chaque groupe sera suivi et encadré par un enseignant de l'école ("directeur de projet") à même de les guider scientifiquement. <br/>
+                Ces projets concernent les élèves d'année 4 et d'année 5, avec un fonctionnement similaire et un calendrier un peu différent : les projets démarrent pour tous mi/fin septembre, et se terminent fin janvier pour les années 5 et fin mars pour les années 4. <br/>
+                Les élèves partant en stage après, il peut être possible que votre projet soit "poursuivi" en stage par un élève de l'équipe. <br/>
               </Typography>
             </Grid>
             <Grid item className={classes.paper}>
               <Typography variant="h6">Quel va être mon rôle ?</Typography>
               <Typography>
-                Si votre projet est choisi, vous devenez alors "partenaire du projet".
-                L'équipe d'élèves prend alors contact avec vous pour démarrer le projet, puis vous tient au courant de l'évolution de ses travaux, par des échéances fixées ensemble, et enfin organise avec vous la clôture de projet la dernière semaine de janvier pour les années 5, de mars pour les années 4.
-                L'équipe sera suivie régulièrement tout au long de son projet par son "directeur de projet", qui sera aussi chargé de l'évaluer.
-                Plusieurs revues projets et pitchs jalonneront le projet, qui se terminera par un showroom auquel vous serez bien entendu invité.
+                Si votre projet est choisi, vous devenez alors "partenaire du projet". <br/>
+                L'équipe d'élèves prend alors contact avec vous pour démarrer le projet, puis vous tient au courant de l'évolution de ses travaux, par des échéances fixées ensemble, et enfin organise avec vous la clôture de projet la dernière semaine de janvier pour les années 5, de mars pour les années 4. <br/>
+                L'équipe sera suivie régulièrement tout au long de son projet par son "directeur de projet", qui sera aussi chargé de l'évaluer. <br/>
+                Plusieurs revues projets et pitchs jalonneront le projet, qui se terminera par un showroom auquel vous serez bien entendu invité. <br/>
               </Typography>
             </Grid>
             <Grid item className={classes.paper}>
               <Typography variant="h6">Comment proposer un projet ?</Typography>
               <Typography>
-                Cliquez sur [SUIVANT] en bas de la page. Vous devrez alors donner des information sur le partenaire puis décrire le projet proposé, et cibler les compétences voulues et attendues.
-                Pour plus d'informations, vous pouvez trouver une présentation succincte  de ces projets, ainsi que des exemples effectués les années précédentes en http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-5/ pour les années 5 et http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-4/ pour les années 4.
-                Des renseignements plus précis, ainsi qu'un calendrier seront fournis en septembre.
-                Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
+                Cliquez sur [SUIVANT] en bas de la page. Vous devrez alors donner des information sur le partenaire puis décrire le projet proposé, et cibler les compétences voulues et attendues. <br/>
+                Pour plus d'informations, vous pouvez trouver une présentation succincte  de ces projets, ainsi que des exemples effectués les années précédentes en http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-5/ pour les années 5 et http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-4/ pour les années 4. <br/>
+                Des renseignements plus précis, ainsi qu'un calendrier seront fournis en septembre. <br/>
+                Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr <br/>
               </Typography>
             </Grid>
           </Grid>
         </div>);
 
-      case 1:
-        return (<div>
-          <h2 lng={lng} style={{ textAlign: 'center' }}>{i18n.t('tellus.label', { lng })}</h2>
-          <Grid container direction="column" xs justify="center" alignItems="center" className={classes.conteneur}>
-            <Grid item xs>
+      case 1: //Applying padding to the parent with at least half the spacing value applied to the child : Negative margin workarounds
+        return (<div style={{ padding: 12 }}>
+          <Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
+            <Grid item>
+              <Typography lng={lng} variant='h6' align='center'>{i18n.t('tellus.label', { lng })}</Typography>
+            </Grid>
+            <Grid item>
               <TextValidator lng={lng}
                 label={i18n.t('email.label', { lng })}
                 placeholder={i18n.t('email.label', { lng })}
@@ -358,7 +358,7 @@ class Deposit extends Component {
                 />
             </Grid>
 
-            <Grid item xs>
+            <Grid item>
               <TextValidator lng={lng}
                 validators={['required']}
                 errorMessages={i18n.t('field.label', { lng })}
@@ -371,7 +371,7 @@ class Deposit extends Component {
                 />
             </Grid>
 
-            <Grid item xs>
+            <Grid item>
               <TextValidator lng={lng}
                 validators={['required']}
                 errorMessages={i18n.t('field.label', { lng })}
@@ -383,7 +383,7 @@ class Deposit extends Component {
                 />
             </Grid>
 
-            <Grid item xs>
+            <Grid item>
               <TextValidator lng={lng}
                 validators={['required']}
                 errorMessages={i18n.t('field.label', { lng })}
@@ -402,10 +402,12 @@ class Deposit extends Component {
        */
       case 2:
         return(
-          <div lng={lng} >
-            <h2 style={{ textAlign: 'center' }}>{i18n.t('projectPres.h2', { lng })}</h2>
-            <Grid container xs={12} direction="column" justify="center" alignItems="center" spacing={24}>
-              <Grid xs={6} item>
+          <div lng={lng} style={{ padding: 12 }}>
+            <Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
+              <Grid item>
+                <Typography align='center' variant='h6'>{i18n.t('projectPres.h2', { lng })}</Typography>
+              </Grid>
+              <Grid item>
                 <TextValidator
                   label={i18n.t('titleproj.label', { lng })}
                   placeholder={i18n.t('titleproj.label', { lng })}
@@ -418,31 +420,36 @@ class Deposit extends Component {
               </Grid>
               <br />
 
-              <Grid xs={6} item direction="row">
-                {this.years.map((years) => 
-                  <Grid>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onChange={this.handleChange}
-                          value={years.key}
-                          name="year"
-                        />
-                      }
-                      label={years.name}
-                    />
-                  </Grid>
-                )}
+              <Grid item>
+                <Typography variant="subtitle1" align='center'>
+                  {i18n.t('years.label', { lng })}
+                </Typography>
+                <Grid container direction="row" justify='center'>
+                  {this.years.map((years) => 
+                    <Grid item>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={this.handleChange}
+                            value={years.key}
+                            name="year"
+                          />
+                        }
+                        label={years.name}
+                      />
+                    </Grid>
+                  )}
+                </Grid>
               </Grid>
               <br />
 
               <Grid item>
-                <Typography variant="subtitle1">
+                <Typography variant="subtitle1" align='center'>
                   {i18n.t('majors.label', { lng })}
                 </Typography>
-                <Grid direction="column">
+                <Grid container>
                   {this.majors.map((major) => 
-                    <Grid>
+                    <Grid item xs>
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -511,13 +518,10 @@ class Deposit extends Component {
           return <CircularProgress />
         }
         else {
-          return (<Container lng={lng}>
-            <Row>
-              <Col md={8} offset={{ md: 2 }}>
+          return (
+            <Grid container lng={lng}>
                 <div> {i18n.t('message.label', { lng })} </div>
-              </Col>
-            </Row>
-          </Container>);
+            </Grid>);
         }
       default:
         return 'You\'re a long way from home sonny jim!';
@@ -531,10 +535,10 @@ class Deposit extends Component {
     return (
       <div id="deposit-body">
         <Grid className={classes.root}>
-          <Paper zDepth={1} style={{ width: '100%', maxWidth: 1000, margin: 'auto', marginTop: 10 }}>
+          <Paper zDepth={1}>
             <Stepper activeStep={stepIndex}>
               <Step>
-                <StepLabel>Appel à projets</StepLabel>
+              <StepLabel lng={lng} >{i18n.t('callForProjects.label', { lng })}</StepLabel>
               </Step>
               <Step>
                 <StepLabel lng={lng} >{i18n.t('partnerInfo.label', { lng })}</StepLabel>
@@ -549,45 +553,45 @@ class Deposit extends Component {
 
             <div>
               {finished ? (
-
-                <Container lng={lng} >
-                  <Row>
-                    <Col md={8} offset={{ md: 2 }}>
-                      {this.state.submited ? (<div><div>{i18n.t('message.label', { lng })}</div>
-                        <br />
-                        <a
-                          href="#"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            this.setState({ stepIndex: 0, finished: false });
-                          }}
-                        >
-                          {i18n.t('click.label', { lng })}
-                        </a> {i18n.t('example.label', { lng })}
-                      </div>) : (
-                          <div style={{ textAlign: 'center' }}><CircularProgress /></div>)}
-                    </Col>
-                  </Row>
-                </Container>
+                <Grid container>
+                  {this.state.submited ? (
+                    <div>
+                      <div>{i18n.t('message.label', { lng })}</div>
+                      <br />
+                      <a
+                        href="#"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          this.setState({ stepIndex: 0, finished: false });
+                        }}
+                      >
+                        {i18n.t('click.label', { lng })}
+                      </a>
+                      {i18n.t('example.label', { lng })}
+                    </div>
+                  ) : (
+                    <div style={{ textAlign: 'center' }}><CircularProgress /></div>
+                  )}
+                </Grid>
               ) : (
-                  <div>
-                    <ValidatorForm ref="form" onSubmit={this.handleNext}>
-                      {this.getStepContent(stepIndex)}
-                      <div style={{ marginTop: 12, paddingBottom: 30, textAlign: 'center' }}>
-                        <Button lng={lng} variant='contained' color='secondary' disabled={stepIndex === 0} onClick={this.handlePrev} style={{ marginRight: 12 }}>
-                          <Typography>
-                            {i18n.t('back.label', { lng })}
-                          </Typography>
-                        </Button>
-                        <Button lng={lng} variant='contained' color='secondary' type="submit">
-                          <Typography>
+                <div>
+                  <ValidatorForm ref="form" onSubmit={this.handleNext}>
+                    {this.getStepContent(stepIndex)}
+                    <div style={{ marginTop: 12, paddingBottom: 30, textAlign: 'center' }}>
+                      <Button lng={lng} variant='contained' color='secondary' disabled={stepIndex === 0} onClick={this.handlePrev} style={{ marginRight: 12 }}>
+                        <Typography>
+                          {i18n.t('back.label', { lng })}
+                        </Typography>
+                      </Button>
+                      <Button lng={lng} variant='contained' color='secondary' type="submit">
+                        <Typography>
                           {stepIndex === 2 ? i18n.t('finish.label', { lng }) : i18n.t('next.label', { lng })}
-                          </Typography>
-                        </Button>
-                      </div>
-                    </ValidatorForm>
-                  </div>
-                )}
+                        </Typography>
+                      </Button>
+                    </div>
+                  </ValidatorForm>
+                </div>
+              )}
             </div>
           </Paper>
         </Grid>
@@ -596,4 +600,4 @@ class Deposit extends Component {
   }
 }
 
-export default withStyles()(Deposit);
+export default withStyles(styles, { withTheme: true })(Deposit);
