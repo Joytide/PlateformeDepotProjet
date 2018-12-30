@@ -47,7 +47,7 @@ class Deposit extends Component {
     const lng = this.props.lng;
     this.state = {
       finished: false,
-      stepIndex: 2,
+      stepIndex: 0,
       title: "",
       study_year: [],
       majors_concerned: [],
