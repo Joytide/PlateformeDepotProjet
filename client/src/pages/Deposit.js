@@ -268,18 +268,18 @@ class Deposit extends Component {
         break;
       
       case "major":
-        var temp = this.state.majors_concerned;
+        var temp2 = this.state.majors_concerned;
           if (e.target.checked) {
-            temp.push(e.target.value);
+            temp2.push(e.target.value);
           }
           else {
-            let index = temp.indexOf(e.target.value)
+            let index = temp2.indexOf(e.target.value)
             if (index > -1) {
-              temp.splice(index, 1);
+              temp2.splice(index, 1);
             }
           }
           console.log(this.state.majors_concerned)
-          this.setState({ majors_concerned: temp });
+          this.setState({ majors_concerned: temp2 });
           break;
       
       default:
@@ -492,7 +492,6 @@ class Deposit extends Component {
                 <TextValidator
                   placeholder={i18n.t('descriptionProj.label', { lng })}
                   label="Description *"
-                  multiLine={true}
                   value={this.state.description}
                   validators={["required"]}
                   errorMessages={i18n.t('field.label', { lng })}
