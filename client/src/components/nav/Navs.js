@@ -179,7 +179,7 @@ class Navs extends React.Component {
         <AppBar position="static" color='primary'>
            <Toolbar>
             <Link to="/">
-             <img style={this.styles.title} src="/logo_pulv.png" height="50" width="50"/>
+             <img style={this.styles.title} alt="logo PULV" src="/logo_pulv.png" height="50" width="50"/>
             </Link>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
