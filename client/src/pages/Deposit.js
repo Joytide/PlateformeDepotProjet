@@ -1,22 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-<<<<<<< HEAD
-
-import Grid from '@material-ui/core/Grid';
-
-import KeyWords from '../components/Deposit/FormComponents/KeyWords';
-import Paper from '@material-ui/core/Paper';
-import FlatButton from 'material-ui/FlatButton'
-import RaisedButton from 'material-ui/RaisedButton'
-import Checkbox from 'material-ui/Checkbox';
-import MenuItem from 'material-ui/MenuItem';
-import CircularProgress from 'material-ui/CircularProgress';
-import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
-import {Step, Stepper, StepLabel,} from 'material-ui/Stepper';
-import i18n from '../components/i18n';
-
-
-=======
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -38,7 +21,6 @@ import Grid from '@material-ui/core/Grid';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 import i18n from '../components/i18n';
 
->>>>>>> master
 /**
  * Deposit a project
  */
@@ -315,100 +297,6 @@ class Deposit extends Component {
     switch (stepIndex) {
       //Information about the partner
       case 0:
-<<<<<<< HEAD
-        return (<div>
-
-          <Grid container >
-            <h2>Proposer un projet a nos élèves</h2>
-            <p> Proposer un projet vous permettra de coopérer avec une équipe d'élèves ingénieurs motivés et innovants et de contribuer à leur formation en les impliquant dans des problématiques actuelles.
-            Entreprises ou laboratoires, c'est aussi un moyen de vous faire connaître auprès de ceux qui répondront dans les années futures à vos offres de stages et d'emplois. </p>
-
-            <h2>Comment ça marche ?</h2>
-            <p>Un groupe projet est constitué de 4 élèves (3 ou 5 éventuellement) qui travailleront chacun une dizaine d'heures par semaine sur votre projet. Chaque groupe sera suivi et encadré par un enseignant de l'école ("directeur de projet") à même de les guider scientifiquement.
-            Ces projets concernent les élèves d'année 4 et d'année 5, avec un fonctionnement similaire et un calendrier un peu différent : les projets démarrent pour tous mi/fin septembre, et se terminent fin janvier pour les années 5 et fin mars pour les années 4. Les élèves partant en stage après, il peut être possible que votre projet soit "poursuivi" en stage par un élève de l'équipe.
-            </p>
-
-            <h2>Quel va être mon rôle ?</h2>
-            <p>Si votre projet est choisi, vous devenez alors "partenaire du projet". L'équipe d'élèves prend alors contact avec vous pour démarrer le projet, puis vous tient au courant de l'évolution de ses travaux, par des échéances fixées ensemble, et enfin organise avec vous la clôture de projet la dernière semaine de janvier pour les années 5, de mars pour les années 4.
-            L'équipe sera suivie régulièrement tout au long de son projet par son "directeur de projet", qui sera aussi chargé de l'évaluer. Plusieurs revues projets et pitchs jalonneront le projet, qui se terminera par un showroom auquel vous serez bien entendu invité.</p>
-
-            <h2>Comment proposer un projet ?</h2>
-            <p>Cliquez sur [SUIVANT] en bas de la page. Vous devrez alors donner des information sur le partenaire puis décrire le projet proposé, et cibler les compétences voulues et attendues.
-
-            Pour plus d'informations, vous pouvez trouver une présentation succincte  de ces projets, ainsi que des exemples effectués les années précédentes 
-            des <a href="http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-5/" target="_blank">projets d'innovation industrielle</a> des années 5 
-            et des <a href="http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-4/" target="_blank">projets d'innovation</a> des années 4.
-            Des renseignements plus précis, ainsi qu'un calendrier seront fournis en septembre.
-
-
-            Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr</p>
-          </Grid>
-        </div>);
-
-      case 1:
-        return <div>
-          <h2 lng={lng} style={{ textAlign: 'center' }}>{i18n.t('tellus.label', { lng })}</h2>
-          <Grid container >
-          
-            <Grid container justify="center">
-              <Grid md={6}>
-                <TextValidator lng={lng}
-                  floatingLabelText={i18n.t('email.label', { lng })}
-                  validators={['required', 'isEmail']}
-                  errorMessages={[i18n.t('field.label', { lng }), i18n.t('notvalid.label', { lng })]}
-                  onChange={this.handleChange}
-                  onBlur={this.handleBlur}
-                  name="email"
-                  value={this.state.email}
-                  fullWidth={true}
-                  maxlength = {40}
-                  />
-              </Grid>
-            </Grid>
-
-            <Grid container justify="center">
-              <Grid md={6}>
-                <TextValidator lng={lng}
-                  validators={['required']}
-                  errorMessages={i18n.t('field.label', { lng })}
-                  floatingLabelText={i18n.t('company.label', { lng })}
-                  onChange={this.handleChange}
-                  name="company" value={this.state.company}
-                  fullWidth={true} 
-                  maxlength = {70}
-                  />
-              </Grid>
-            </Grid>
-
-            <Grid container justify="center">
-              <Grid md={6}>
-                <TextValidator lng={lng}
-                  validators={['required']}
-                  errorMessages={i18n.t('field.label', { lng })}
-                  floatingLabelText={i18n.t('firstname.label', { lng })}
-                  onChange={this.handleChange} fullWidth={true}
-                  name="first_name" value={this.state.first_name} 
-                  maxlength = {30}
-                  />
-              </Grid >
-            </Grid>
-
-            <Grid container justify="center">
-              <Grid md={6}>
-                <TextValidator lng={lng}
-                  validators={['required']}
-                  errorMessages={i18n.t('field.label', { lng })}
-                  floatingLabelText={i18n.t('lastname.label', { lng })}
-                  onChange={this.handleChange} fullWidth={true}
-                  name="last_name" value={this.state.last_name} 
-                  maxlength = {30}
-                  />
-              </Grid>
-            </Grid>
-
-          </Grid>
-        </div>
-=======
         return (
         <div>
           <Grid container direction="column" xs justify="center" alignItems="center">
@@ -508,20 +396,11 @@ class Deposit extends Component {
             </Grid>
           </Grid>
         </div>);
->>>>>>> master
 
       /**
        * Information about the project
        */
       case 2:
-<<<<<<< HEAD
-        return <div lng={lng} >
-          <h2 style={{ textAlign: 'center' }}>{i18n.t('projectPres.h2', { lng })}</h2>
-          <Grid container>
-            
-            <Grid container justify="center">
-              <Grid md={6}>
-=======
         return(
           <div lng={lng} style={{ padding: 12 }}>
             <Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
@@ -529,7 +408,6 @@ class Deposit extends Component {
                 <Typography align='center' variant='h6'>{i18n.t('projectPres.h2', { lng })}</Typography>
               </Grid>
               <Grid item>
->>>>>>> master
                 <TextValidator
                   label={i18n.t('titleproj.label', { lng })}
                   placeholder={i18n.t('titleproj.label', { lng })}
@@ -538,33 +416,6 @@ class Deposit extends Component {
                   validators={['required']}
                   errorMessages={i18n.t('field.label', { lng })} 
                   maxlength = {100}
-<<<<<<< HEAD
-                  />
-              </Grid>
-            </Grid>
-            
-            <Grid container justify="center" >
-                <Grid md={2}>
-                  <br/>
-                  <Checkbox
-                    label={i18n.t('year4.label', { lng })}
-                    name="year"
-                    value="A4"
-                    onCheck={this.handleChange} />
-                </Grid>
-                <Grid md={2}>
-                  <br/>
-                  <Checkbox
-                    label={i18n.t('year5.label', { lng })}
-                    name="year"
-                    value="A5"
-                    onCheck={this.handleChange} />
-                </Grid>
-            </Grid>
-
-            <Grid container justify="center">
-              <Grid md={6}>
-=======
                 />
               </Grid>
               <br />
@@ -614,7 +465,6 @@ class Deposit extends Component {
                 </Grid>
                 
                 {/*BUG
->>>>>>> master
                 <SelectValidator
                   multiple={true}
                   value={this.state.majors_concerned}
@@ -630,16 +480,6 @@ class Deposit extends Component {
                     insetChildren={true}
                     //checked={this.state.majors_concerned.indexOf(major.key) > -1}
                     value={major.key}
-<<<<<<< HEAD
-                    primaryText={major.name}
-                  />)}
-                </SelectValidator>
-              </Grid>
-            </Grid>
-
-            <Grid container justify="center">
-              <Grid md={6}>
-=======
                   >
                   {major.name}
                   </MenuItem>
@@ -649,7 +489,6 @@ class Deposit extends Component {
               <br/>
 
               <Grid item>
->>>>>>> master
                 <TextValidator
                   placeholder={i18n.t('descriptionProj.label', { lng })}
                   label="Description *"
@@ -662,27 +501,6 @@ class Deposit extends Component {
                   onChange={this.handleChange}
                   fullWidth={true} 
                   maxlength = {3000}
-<<<<<<< HEAD
-                  />
-              </Grid>
-            </Grid>
-
-            <Grid container justify="center">
-              <Grid md={6}>
-                <KeyWords lng={lng} change={this.handleKeyWords} />
-              </Grid>
-            </Grid>
-            
-            <Grid container justify="center">
-              <Grid md={6}>
-                <FilesInputs lng={lng} change={this.handleFiles} />
-              </Grid>
-            </Grid>
-
-          </Grid>
-        </div>;
-
-=======
                 />
               </Grid>
 
@@ -694,7 +512,6 @@ class Deposit extends Component {
               </Grid>
             </Grid>
           </div>)
->>>>>>> master
       case 3:
         if (!this.state.submited) {
           return (
@@ -704,17 +521,9 @@ class Deposit extends Component {
         }
         else {
           return (
-<<<<<<< HEAD
-          <Grid container justify="center">
-            <Grid md={8}>
-              <div> {i18n.t('message.label', { lng })} </div>
-            </Grid>
-          </Grid>);
-=======
             <Grid container lng={lng}>
                 <div> {i18n.t('message.label', { lng })} </div>
             </Grid>);
->>>>>>> master
         }
       default:
         return 'You\'re a long way from home sonny jim!';
@@ -724,77 +533,6 @@ class Deposit extends Component {
   render() {
     const lng = this.props.lng;
     const { finished, stepIndex } = this.state;
-<<<<<<< HEAD
-
-    return (
-      <div id="deposit-body">
-        <Grid container style={{ marginTop: 12}} justify="center">
-          <Grid item xs={11}>
-            <Paper style={{ padding: 30}}>
-
-              <Grid container justify="center">
-                <Grid xs ={10}>
-                  <Stepper activeStep={stepIndex} >
-                      <Step>
-                        <StepLabel>Appel à projets</StepLabel>
-                      </Step>
-                      <Step>
-                        <StepLabel lng={lng} >{i18n.t('partnerInfo.label', { lng })}</StepLabel>
-                      </Step>
-                      <Step>
-                        <StepLabel lng={lng} >{i18n.t('projectInfo.label', { lng })}</StepLabel>
-                      </Step>
-                      <Step>
-                        <StepLabel lng={lng} >{i18n.t('submission.label', { lng })}</StepLabel>
-                      </Step>
-                    </Stepper>
-                  </Grid>
-              </Grid>
-
-              <div>
-                {finished ? (
-
-                  <Grid container justify="center">
-                   <Grid md={8}>
-                        {this.state.submited ? (<div><div>{i18n.t('message.label', { lng })}</div>
-                          <br />
-                          <a
-                            href="#"
-                            onClick={(event) => {
-                              event.preventDefault();
-                              this.setState({ stepIndex: 0, finished: false });
-                            }}
-                          >
-                            {i18n.t('click.label', { lng })}
-                          </a> {i18n.t('example.label', { lng })}
-                        </div>) : (
-                            <div style={{ textAlign: 'center' }}><CircularProgress /></div>)}
-                    </Grid>
-                  </Grid>
-                ) : (//remettre stepIndex à getStepContent
-                    <div>
-                      <ValidatorForm ref="form" onSubmit={this.handleNext}>
-                        {this.getStepContent(stepIndex)} 
-                        <div style={{ marginTop: 12, paddingBottom: 30, textAlign: 'center' }}>
-                          <FlatButton lng={lng}
-                            label={i18n.t('back.label', { lng })}
-                            disabled={stepIndex === 0}
-                            onClick={this.handlePrev}
-                            style={{ marginRight: 12 }}
-                          />
-                          <RaisedButton lng={lng}
-                            label={stepIndex === 2 ? i18n.t('finish.label', { lng }) : i18n.t('next.label', { lng })}
-                            type="submit"
-                            primary={true}
-                          />
-                        </div>
-                      </ValidatorForm>
-                    </div>
-                  )}
-              </div>
-            </Paper>
-          </Grid>
-=======
     const { classes } = this.props;
     return (
       <div id="deposit-body">
@@ -858,7 +596,6 @@ class Deposit extends Component {
               )}
             </div>
           </Paper>
->>>>>>> master
         </Grid>
       </div>
     );
