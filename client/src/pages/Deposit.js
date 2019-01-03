@@ -17,13 +17,14 @@ import {
   StepLabel,
 } from 'material-ui/Stepper';
 import i18n from '../components/i18n';
+import TextFieldHint from 'material-ui/TextField/TextFieldHint';
 /**
  * Deposit a project
  */
 class Deposit extends Component {
   constructor(props) {
     super(props);
-    const lng = this.props.lng;
+
     this.state = {
       finished: false,
       stepIndex: 0,
@@ -44,41 +45,41 @@ class Deposit extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyWords = this.handleKeyWords.bind(this);
     this.handleFiles = this.handleFiles.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    //this.handleBlur = this.handleBlur.bind(this);
 
 
-    this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
+    /*this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
     { name: i18n.t('ne.label', { lng }), key: "NE" },
     { name: i18n.t('if.label', { lng }), key: "IF" },
-    { name: i18n.t('mnm.label', { lng }), key: "MNM" }];
+    { name: i18n.t('mnm.label', { lng }), key: "MNM" }];*/
   }
 
-  componentWillUpdate(nextProps) {
-    if (this.props.lng !== nextProps.lng) {
-      const lng = nextProps.lng;
-      this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
-      { name: i18n.t('ne.label', { lng }), key: "NE" },
-      { name: i18n.t('if.label', { lng }), key: "IF" },
-      { name: i18n.t('mnm.label', { lng }), key: "MNM" }];
-    }
+  componentWillMount() {
+    const lng = this.props.lng;
+
+    fetch('/api/specializations')
+      .then(res => res.json())
+      .then(majors => {
+        this.majors = [];
+        majors.map(major => {
+          this.majors.push(major);
+        });
+
+        console.log("majors", this.majors);
+      })
+      .catch(console.error.bind(console));
   }
 
   //STEP
   handleNext = () => {
-    console.log("Finished :" + this.state.finished);
     const { stepIndex } = this.state;
+
     if (!this.state.finished) {
       this.setState({
         stepIndex: stepIndex + 1,
         finished: stepIndex >= 2
       }, () => {
         this.handleSubmit();
-      });
-    }
-    else {
-      this.setState({
-        stepIndex: stepIndex + 1,
-        finished: stepIndex >= 2
       });
     }
   };
@@ -94,8 +95,9 @@ class Deposit extends Component {
     this.setState({ majors_concerned: values }, () => { console.log(this.state.majors_concerned) });
   };
 
-  handleBlur(event) {
-    console.log(this.state);
+  // Inutile pour le moment. On verra avec le token pour remplir automatiquement si le partenaire est déjà authentifié
+
+  /*handleBlur(event) {
     fetch("/api/partners/" + this.state.email)
       .then((res) => res.json())
       .then((partner) => {
@@ -106,8 +108,7 @@ class Deposit extends Component {
         }
       })
       .catch((err) => { console.log("Email not found") });
-    console.log("passed");
-  }
+  }*/
 
   FilesUpload() {
     return new Promise((resolve, reject) => {
@@ -246,9 +247,7 @@ class Deposit extends Component {
       default:
         this.setState({
           [e.target.name]: e.target.value
-        })
-        console.log(this.state.email)
-        console.log(this.state.title)
+        });
     }
   }
 
@@ -299,8 +298,8 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   name="email"
                   value={this.state.email}
                   fullWidth={true}
-                  maxlength = {40}
-                  />
+                  maxlength={40}
+                />
               </Col>
             </Row>
 
@@ -312,9 +311,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   floatingLabelText={i18n.t('company.label', { lng })}
                   onChange={this.handleChange}
                   name="company" value={this.state.company}
-                  fullWidth={true} 
-                  maxlength = {70}
-                  />
+                  fullWidth={true}
+                  maxlength={70}
+                />
               </Col>
             </Row>
 
@@ -325,9 +324,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   errorMessages={i18n.t('field.label', { lng })}
                   floatingLabelText={i18n.t('firstname.label', { lng })}
                   onChange={this.handleChange} fullWidth={true}
-                  name="first_name" value={this.state.first_name} 
-                  maxlength = {30}
-                  />
+                  name="first_name" value={this.state.first_name}
+                  maxlength={30}
+                />
               </Col>
             </Row>
             <Row>
@@ -337,9 +336,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   errorMessages={i18n.t('field.label', { lng })}
                   floatingLabelText={i18n.t('lastname.label', { lng })}
                   onChange={this.handleChange} fullWidth={true}
-                  name="last_name" value={this.state.last_name} 
-                  maxlength = {30}
-                  />
+                  name="last_name" value={this.state.last_name}
+                  maxlength={30}
+                />
               </Col>
             </Row>
 
@@ -360,9 +359,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   onChange={this.handleChange} fullWidth={true}
                   name="title" value={this.state.title}
                   validators={['required']}
-                  errorMessages={i18n.t('field.label', { lng })} 
-                  maxlength = {100}
-                  />
+                  errorMessages={i18n.t('field.label', { lng })}
+                  maxlength={100}
+                />
               </Col>
             </Row>
             <br />
@@ -393,13 +392,13 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   floatingLabelText={i18n.t('majors.label', { lng })}
                   validators={["required"]}
                   errorMessages={i18n.t('field.label', { lng })}>
-
+                  {console.log("majors", this.majors)}
                   {this.majors.map((major) => <MenuItem
-                    key={major.key}
+                    key={major._id}
                     insetChildren={true}
-                    checked={this.state.majors_concerned.indexOf(major.key) > -1}
-                    value={major.key}
-                    primaryText={major.name}
+                    checked={this.state.majors_concerned.indexOf(major._id) > -1}
+                    value={major._id}
+                    primaryText={lng == "fr" ? major.name.fr : major.name.en}
                   />)}
                 </SelectValidator>
               </Col>
@@ -416,9 +415,9 @@ Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr
                   rows={10}
                   name="description"
                   onChange={this.handleChange}
-                  fullWidth={true} 
-                  maxlength = {3000}
-                  />
+                  fullWidth={true}
+                  maxlength={3000}
+                />
               </Col>
             </Row>
             <Row>
