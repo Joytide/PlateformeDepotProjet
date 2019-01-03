@@ -99,28 +99,38 @@ app.listen(port, () => {
 function initDB() {
 	if (Specialization.count({}, (err, count) => {
 		if(err) throw err;
-		if (count != 4) {
+		if (count < 5) {
 			console.log("Creating specializations");
 
 			let IBO = new Specialization();
-			IBO.name = "Information, Big Data et Objects connectés";
+			IBO.name.fr = "Informatique, Big Data et Objects connectés";
+			IBO.name.en = "Computer science, Big Data and IoT";
 			IBO.abbreviation = "IBO";
 			IBO.save();
 
 			let NE = new Specialization();
-			NE.name = "Nouvelles énergies";
+			NE.name.fr = "Nouvelles énergies";
+			NE.name.en = "New Energies";
 			NE.abbreviation = "NE";
 			NE.save();
 			
 			let IF = new Specialization();
-			IF.name = "Ingénierie Financière";
+			IF.name.fr = "Ingénierie Financière";
+			IF.name.en = "Financial Engineering";
 			IF.abbreviation = "IF";
 			IF.save();
 
 			let MNM = new Specialization();
-			MNM.name = "Mécanique Numérique et Modélisation";
+			MNM.name.fr = "Mécanique Numérique et Modélisation";
+			MNM.name.en = "Computational Mechanics and Modelling";
 			MNM.abbreviation = "MNM";
 			MNM.save();
+
+			let Test = new Specialization();
+			Test.name.fr = "Nom de test pour la majeur";
+			Test.name.en = "Major test name";
+			Test.abbreviation = "Test";
+			Test.save();
 		}
 	}));
 }
