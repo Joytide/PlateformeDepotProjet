@@ -6,7 +6,6 @@ const Project = mongoose.model('Project');
 const crypto = require('crypto');
 
 exports.listAllPartners = function (req, res) {
-	console.log(req.user);
 	if (req.user.__t == "EPGE") {
 		Partner.find()
 			.populate('projects')
@@ -16,10 +15,18 @@ exports.listAllPartners = function (req, res) {
 				res.json(partner);
 			});
 	} else if (req.user.__t == "Partner") {
-		Partner.findById(req.user._id).populate('projects').exec((err, partner) => {
-			if (err) res.send(err);
-			else res.json(partner);
-		})
+		Partner.findById(req.user._id)
+			.populate({
+				path: 'projects',
+				populate: {
+					path: "majors_concerned"
+				}
+			})
+			.exec((err, partner) => {
+				console.log(partner.projects);
+				if (err) res.send(err);
+				else res.json(partner);
+			});
 	}
 };
 
@@ -130,8 +137,8 @@ exports.deletePartner = (req, res) => {
 
 function generatePassword(size) {
 	return new Promise((resolve, reject) => {
-		crypto.randomBytes(size/2, function (err, buffer) {
-			if(err) reject(err);
+		crypto.randomBytes(size / 2, function (err, buffer) {
+			if (err) reject(err);
 			var key = buffer.toString('hex');
 
 			// Prevent key collision
