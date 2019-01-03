@@ -201,7 +201,7 @@ class ProjectCard extends React.Component {
 									{
 										project.majors_concerned.sort().map((major, index) => {
 											return (<Grid key={index} item>
-												<Chip label={major} color="secondary" />
+												<Chip label={major.abbreviation} color="secondary" />
 											</Grid>);
 										})
 									}

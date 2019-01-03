@@ -22,6 +22,7 @@ exports.listProjects = function (req, res) {
 	Project.find({})
 		.populate({ path: 'comments', populate: { path: 'responses' } })
 		.populate('partner')
+		.populate('majors_concerned')
 		.exec(function (err, projects) {
 			if (err)
 				res.send(err);
@@ -92,6 +93,7 @@ exports.findById = (req, res) => {
 	Project.findById(req.params.projectId)
 		.populate('comments')
 		.populate('partner')
+		.populate('majors_concerned')
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);
