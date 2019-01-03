@@ -130,7 +130,7 @@ exports.deletePartner = (req, res) => {
 
 function generatePassword(size) {
 	return new Promise((resolve, reject) => {
-		crypto.randomBytes(size, function (err, buffer) {
+		crypto.randomBytes(size/2, function (err, buffer) {
 			if(err) reject(err);
 			var key = buffer.toString('hex');
 
