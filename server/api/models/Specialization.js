@@ -4,8 +4,14 @@ const mongoose = require('mongoose');
 
 const SpecializationSchema = mongoose.Schema({
     name: {
-        type: String,
-        required: true
+        fr: {
+            type: String,
+            required: true
+        },
+        en: {
+            type: String,
+            required: true
+        }
     },
     abbreviation: {
         type: String,
