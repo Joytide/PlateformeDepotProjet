@@ -3,11 +3,11 @@
 var mongoose = require('mongoose');
 var Specialization = mongoose.model('Specialization');
 
-exports.list_all_majors = function (req, res) {
-    Specialization.find({}, function (err, task) {
+exports.listAll = function (req, res) {
+    Specialization.find({}, function (err, specializations) {
         if (err)
             res.send(err);
-        res.json(task);
+        res.json(specializations);
     });
 };
 

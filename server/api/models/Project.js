@@ -12,10 +12,11 @@ const ProjectSchema = new Schema({
         type: String,
         required: true
     },
-    majors_concerned: {
-        type: Array,
+    majors_concerned: [{
+        type: Schema.Types.ObjectId,
+        ref: "Specialization",
         required: true
-    },
+    }],
     study_year: {
         type: Array,
         required: true

@@ -22,12 +22,13 @@ const Task = require('./api/models/Task');
 mongoose.Promise = global.Promise;
 //mongoose.connect('mongodb://pi2:csstv2018@ds159187.mlab.com:59187/projectdb');
 mongoose.connect('mongodb://localhost:27017/Tododb', (err) => {
-  if (err) {
-    console.error(colors.red(err.message));
-    process.exit(-1);
-  } else {
-    console.log("Successfuly connected to database".green);
-  }
+	if (err) {
+		console.error(colors.red(err.message));
+		process.exit(-1);
+	} else {
+		console.log("Successfuly connected to database".green);
+		initDB();
+	}
 });
 
 const auth = require('./api/controllers/authController');
@@ -54,8 +55,8 @@ project_routes(app); //register the route
 var partner_routes = require('./api/routes/partnerRoutes');
 partner_routes(app);
 
-var major_routes = require('./api/routes/majorsRoutes');
-major_routes(app);
+var specializationRoutes = require('./api/routes/specializationRoutes');
+specializationRoutes(app);
 
 //var api_routes = require('./api/routes/adminRoutes');
 //api_routes(app);
@@ -75,22 +76,51 @@ app.use(logger('dev'));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+	var err = new Error('Not Found');
+	err.status = 404;
+	next(err);
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.send(err.message);
+	// render the error page
+	res.status(err.status || 500);
+	res.send(err.message);
 });
 
 app.listen(port, () => {
-  console.log('Server running on port 3001'.green);
+	console.log('Server running on port 3001'.green);
 });
+
+function initDB() {
+	if (Specialization.count({}, (err, count) => {
+		if(err) throw err;
+		if (count != 4) {
+			console.log("Creating specializations");
+
+			let IBO = new Specialization();
+			IBO.name = "Information, Big Data et Objects connectés";
+			IBO.abbreviation = "IBO";
+			IBO.save();
+
+			let NE = new Specialization();
+			NE.name = "Nouvelles énergies";
+			NE.abbreviation = "NE";
+			NE.save();
+			
+			let IF = new Specialization();
+			IF.name = "Ingénierie Financière";
+			IF.abbreviation = "IF";
+			IF.save();
+
+			let MNM = new Specialization();
+			MNM.name = "Mécanique Numérique et Modélisation";
+			MNM.abbreviation = "MNM";
+			MNM.save();
+		}
+	}));
+}
