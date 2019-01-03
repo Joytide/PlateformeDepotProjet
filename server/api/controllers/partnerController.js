@@ -3,6 +3,7 @@
 const mongoose = require('mongoose');
 const Partner = mongoose.model('Partner');
 const Project = mongoose.model('Project');
+const crypto = require('crypto');
 
 exports.listAllPartners = function (req, res) {
 	console.log(req.user);
@@ -15,8 +16,8 @@ exports.listAllPartners = function (req, res) {
 				res.json(partner);
 			});
 	} else if (req.user.__t == "Partner") {
-		Partner.findById(req.user._id).populate('projects').exec((err,partner) => {
-			if(err) res.send(err);
+		Partner.findById(req.user._id).populate('projects').exec((err, partner) => {
+			if (err) res.send(err);
 			else res.json(partner);
 		})
 	}
@@ -129,23 +130,18 @@ exports.deletePartner = (req, res) => {
 
 function generatePassword(size) {
 	return new Promise((resolve, reject) => {
-		let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-		let key = "";
-		for (let i = 0; i < size; i++) {
-			let rnd = randomInt(characters.length);
-			if (characters[rnd] != undefined)
-				key += characters[randomInt(characters.length)];
-			else
-				i--;
-		}
-	
-		// Prevent key collision
-		Partner.count({key:key}, (err, count) => {
+		crypto.randomBytes(size, function (err, buffer) {
 			if(err) reject(err);
-			if(count == 0) resolve(key);
-			else resolve(generatePassword(size));
+			var key = buffer.toString('hex');
+
+			// Prevent key collision
+			Partner.count({ key: key }, (err, count) => {
+				if (err) reject(err);
+				if (count == 0) resolve(key);
+				else resolve(generatePassword(size));
+			});
 		});
-	});	
+	});
 }
 
 function randomInt(max) {
