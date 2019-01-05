@@ -1,7 +1,15 @@
 import React from "react";
+import ReactDOM from 'react-dom';
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from "@material-ui/core/Checkbox";
+
+import Check from "@material-ui/icons/Check";
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -16,9 +24,11 @@ import Button from "components/CustomButtons/Button.jsx";
 import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
+import checkboxAdnRadioStyle from "assets/jss/material-dashboard-react/checkboxAdnRadioStyle.jsx";
+
 import { api } from "config.json"
 
-const styles = {
+const styles = theme => ({
     cardCategoryWhite: {
         "&,& a,& a:hover,& a:focus": {
             color: "rgba(255,255,255,.62)",
@@ -45,132 +55,163 @@ const styles = {
             fontWeight: "400",
             lineHeight: "1"
         }
+    },
+    root: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    formControl: {
+        margin: theme.spacing.unit,
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing.unit * 2,
     }
-};
+});
 
 class CreateUser extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            type: "",
+            labelWidth: 0,
+            admin: true
+        }
+
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
-    }
+    handleChange = event => {
+        this.setState({ [event.target.name]: event.target.value });
+    };
+
+    handleCheckboxChange = name => event => {
+        this.setState({ [name]: event.target.checked });
+    };
 
     render() {
         const { classes } = this.props;
+        let companyField;
+        let adminCheckbox;
+        if (this.state.type === "partner") {
+            companyField = (
+                <GridContainer>
+                    <GridItem xs={12} sm={12} md={3}>
+                        <FormControl className={classes.formControl} fullWidth={true}>
+                            <CustomInput
+                                labelText="Entreprise"
+                                id="company"
+                                formControlProps={{
+                                    fullWidth: true
+                                }}
+                            />
+                        </FormControl>
+                    </GridItem>
+                </GridContainer>);
+        }
+
+        if (this.state.type === "EPGE" || this.state.type === "administration") {
+            adminCheckbox = (
+                <GridContainer>
+                    <GridItem xs={12} sm={12} md={3}>
+                        <FormControl className={classes.formControl} >
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={this.state.admin}
+                                        onChange={this.handleCheckboxChange('admin')}
+                                        value="admin"
+                                        color="primary"
+                                    />
+                                }
+                                label="Administrateur"
+                            />
+                        </FormControl>
+                    </GridItem>
+                </GridContainer >
+            );
+        }
         return (
             <GridContainer>
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <CardHeader color="primary">
-                            <h4 className={classes.cardTitleWhite}>Créer un ut</h4>
+                            <h4 className={classes.cardTitleWhite}>Créer un utilisateur</h4>
                             <p className={classes.cardCategoryWhite}>Complete your profile</p>
                         </CardHeader>
                         <CardBody>
                             <GridContainer>
-                                <GridItem xs={12} sm={12} md={5}>
-                                    <CustomInput
-                                        labelText="Company (disabled)"
-                                        id="company-disabled"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                        inputProps={{
-                                            disabled: true
-                                        }}
-                                    />
-                                </GridItem>
                                 <GridItem xs={12} sm={12} md={3}>
-                                    <CustomInput
-                                        labelText="Username"
-                                        id="username"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
-                                </GridItem>
-                                <GridItem xs={12} sm={12} md={4}>
-                                    <CustomInput
-                                        labelText="Email address"
-                                        id="email-address"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
-                                </GridItem>
-                            </GridContainer>
-                            <GridContainer>
-                                <GridItem xs={12} sm={12} md={6}>
-                                    <CustomInput
-                                        labelText="First Name"
-                                        id="first-name"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
-                                </GridItem>
-                                <GridItem xs={12} sm={12} md={6}>
-                                    <CustomInput
-                                        labelText="Last Name"
-                                        id="last-name"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
+                                    <FormControl className={classes.formControl} >
+                                        <InputLabel htmlFor="type-simple">Type</InputLabel>
+                                        <Select
+                                            value={this.state.type}
+                                            onChange={this.handleChange}
+                                            inputProps={{
+                                                name: 'type',
+                                                id: 'type-simple',
+                                            }}
+                                        >
+                                            <MenuItem value=""><em></em></MenuItem>
+                                            <MenuItem value="student">Elève</MenuItem>
+                                            <MenuItem value="partner">Partenaire</MenuItem>
+                                            <MenuItem value="administration">Administration</MenuItem>
+                                            <MenuItem value="EPGE">EPGE</MenuItem>
+                                        </Select>
+                                    </FormControl>
                                 </GridItem>
                             </GridContainer>
+
+                            {companyField}
+
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <CustomInput
-                                        labelText="City"
-                                        id="city"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
+                                    <FormControl className={classes.formControl} fullWidth={true}>
+                                        <CustomInput
+                                            labelText="Nom"
+                                            id="lastName"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                        />
+                                    </FormControl>
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={4}>
-                                    <CustomInput
-                                        labelText="Country"
-                                        id="country"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
-                                </GridItem>
-                                <GridItem xs={12} sm={12} md={4}>
-                                    <CustomInput
-                                        labelText="Postal Code"
-                                        id="postal-code"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                    />
+                                    <FormControl className={classes.formControl} fullWidth={true}>
+                                        <CustomInput
+                                            labelText="Prénom"
+                                            id="firstName"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                        />
+                                    </FormControl>
                                 </GridItem>
                             </GridContainer>
+
                             <GridContainer>
-                                <GridItem xs={12} sm={12} md={12}>
-                                    <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-                                    <CustomInput
-                                        labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                                        id="about-me"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                        inputProps={{
-                                            multiline: true,
-                                            rows: 5
-                                        }}
-                                    />
+                                <GridItem xs={12} sm={12} md={8}>
+                                    <FormControl className={classes.formControl} fullWidth={true}>
+                                        <CustomInput
+                                            labelText="Adresse mail"
+                                            id="email"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                        />
+                                    </FormControl>
                                 </GridItem>
                             </GridContainer>
+
+                            {adminCheckbox}
                         </CardBody>
                         <CardFooter>
-                            <Button color="primary">Update Profile</Button>
+                            <Button color="primary">Créer l'utilisateur</Button>
                         </CardFooter>
                     </Card>
                 </GridItem>
-            </GridContainer>
+            </GridContainer >
         );
     }
 }

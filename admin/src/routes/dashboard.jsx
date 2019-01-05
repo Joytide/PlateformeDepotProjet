@@ -8,7 +8,6 @@ import Notifications from "@material-ui/icons/Notifications";
 // core components/views
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
 import UserProfile from "views/UserProfile/UserProfile.jsx";
-import TableList from "views/TableList/TableList.jsx";
 import UserList from "views/UserList/UserList.jsx";
 import CreateUser from "views/CreateUser/CreateUser.jsx";
 import Icons from "views/Icons/Icons.jsx";
@@ -43,13 +42,6 @@ const dashboardRoutes = [
     navbarName: "Ajouter un utilisateur",
     icon: PersonAdd,
     component: CreateUser
-  },
-  {
-    path: "/table",
-    sidebarName: "Table List",
-    navbarName: "Table List",
-    icon: "content_paste",
-    component: TableList
   },
   {
     path: "/icons",
