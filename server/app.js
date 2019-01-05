@@ -38,6 +38,13 @@ app.use(bodyParser.json());
 app.use(auth.passport.initialize());
 app.use(auth.passport.session());
 
+app.use((req,res,next) => {
+	res.header("Access-Control-Allow-Origin", "http://localhost:3002");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+	next();
+});
+
 var auth_routes = require('./api/routes/authRoutes')
 auth_routes(app);
 
@@ -58,8 +65,8 @@ partner_routes(app);
 var specializationRoutes = require('./api/routes/specializationRoutes');
 specializationRoutes(app);
 
-//var api_routes = require('./api/routes/adminRoutes');
-//api_routes(app);
+var adminRoutes = require('./api/routes/adminRoutes');
+adminRoutes(app);
 
 var comments_routes = require('./api/routes/commentsRoute')
 comments_routes(app);

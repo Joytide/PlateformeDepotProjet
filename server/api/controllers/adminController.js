@@ -5,6 +5,17 @@
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var Admin = mongoose.model('Administration');
+const Person = mongoose.model('Person');
+
+
+exports.listUsers = (req, res) => {
+    Person.find({}, (err, persons) => {
+        res.json(persons);
+    });
+}
+
+
+
 
 /* Il est possible que l'on se passe totalement de ce controller car on passera par l'adfs pour gérer les accès */
 
