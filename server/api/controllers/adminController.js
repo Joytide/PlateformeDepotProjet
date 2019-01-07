@@ -6,11 +6,13 @@ var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var Admin = mongoose.model('Administration');
 const Person = mongoose.model('Person');
+const Specialization = mongoose.model('Specialization');
 
 
 exports.listUsers = (req, res) => {
     Person.find({}, (err, persons) => {
-        res.json(persons);
+        if(err) res.send(err);
+        else res.json(persons);
     });
 }
 

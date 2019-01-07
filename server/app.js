@@ -38,11 +38,15 @@ app.use(bodyParser.json());
 app.use(auth.passport.initialize());
 app.use(auth.passport.session());
 
-app.use((req,res,next) => {
+app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "http://localhost:3002");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+	if (req.method === 'OPTIONS')
+		res.sendStatus(200);
+	else
+		next();
 
-	next();
 });
 
 var auth_routes = require('./api/routes/authRoutes')
@@ -105,7 +109,7 @@ app.listen(port, () => {
 
 function initDB() {
 	if (Specialization.count({}, (err, count) => {
-		if(err) throw err;
+		if (err) throw err;
 		if (count < 5) {
 			console.log("Creating specializations");
 
@@ -120,7 +124,7 @@ function initDB() {
 			NE.name.en = "New Energies";
 			NE.abbreviation = "NE";
 			NE.save();
-			
+
 			let IF = new Specialization();
 			IF.name.fr = "Ingénierie Financière";
 			IF.name.en = "Financial Engineering";

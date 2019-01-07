@@ -1,15 +1,22 @@
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
-import Person from "@material-ui/icons/Person";
 import People from "@material-ui/icons/People";
 import PersonAdd from "@material-ui/icons/PersonAdd";
-import BubbleChart from "@material-ui/icons/BubbleChart";
 import Notifications from "@material-ui/icons/Notifications";
 // core components/views
+
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
+
+// User related things
 import UserProfile from "views/UserProfile/UserProfile.jsx";
 import UserList from "views/UserList/UserList.jsx";
 import CreateUser from "views/CreateUser/CreateUser.jsx";
+
+// Specialization related things
+import SpecializationList from "views/SpecializationList/SpecializationList.jsx";
+import CreateSpecialization from "views/CreateSpecialization/CreateSpecialization.jsx";
+
+// Others
 import Icons from "views/Icons/Icons.jsx";
 import NotificationsPage from "views/Notifications/Notifications.jsx";
 import Settings from "views/Settings/Settings.jsx"
@@ -21,14 +28,14 @@ const dashboardRoutes = [
     navbarName: "Accueil",
     icon: Dashboard,
     component: DashboardPage
-  },
+  },/*
   {
     path: "/user",
     sidebarName: "User Profile",
     navbarName: "Profile",
     icon: Person,
     component: UserProfile
-  },
+  },*/
   {
     path: "/users",
     sidebarName: "Liste utilisateurs",
@@ -44,11 +51,18 @@ const dashboardRoutes = [
     component: CreateUser
   },
   {
-    path: "/icons",
-    sidebarName: "Icons",
-    navbarName: "Icons",
-    icon: BubbleChart,
-    component: Icons
+    path: "/specializations",
+    sidebarName: "Liste majeures",
+    navbarName: "Liste des majeures",
+    icon: "list",
+    component: SpecializationList
+  },
+  {
+    path: "/createSpecialization",
+    sidebarName: "Créer majeure",
+    navbarName: "Créer une majeure",
+    icon: "add",
+    component: CreateSpecialization
   },
   {
     path: "/notifications",

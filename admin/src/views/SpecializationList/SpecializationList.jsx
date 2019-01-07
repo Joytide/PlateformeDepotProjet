@@ -48,24 +48,24 @@ const styles = {
     }
 };
 
-class UserList extends React.Component {
+class SpecializationList extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             loading: true,
-            users: []
+            specializations: []
         };
     }
 
     componentWillMount() {
         console.log(api);
-        fetch(api.host + ":" + api.port + "/api/admin/user", { crossDomain: true })
+        fetch(api.host + ":" + api.port + "/api/specialization", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
-                let userData = data.map(user => [user.__t, user.company || "-", user.last_name, user.first_name, user.email]);
+                let specializationsData = data.map(specialization => [specialization.abbreviation, specialization.name.fr, specialization.name.en, ""]);
 
-                this.setState({ users: userData, loading: false });
+                this.setState({ specializations: specializationsData, loading: false });
             });
     }
 
@@ -80,16 +80,16 @@ class UserList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Liste des utilisateurs</h4>
+                                <h4 className={classes.cardTitleWhite}>Liste des majeures</h4>
                                 <p className={classes.cardCategoryWhite}>
-                                Liste de tous les utilisateurs existants sur la plateforme
+                                    Liste de toutes les majeures existantes sur la plateforme
             </p>
                             </CardHeader>
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Type", "Entreprise", "Nom", "Prénom", "Email", "Actions"]}
-                                    tableData={this.state.users}
+                                    tableHead={["Abbréviation", "Nom (fr)", "Nom (en)", "Actions"]}
+                                    tableData={this.state.specializations}
                                 />
                             </CardBody>
                         </Card>
@@ -100,4 +100,4 @@ class UserList extends React.Component {
     }
 }
 
-export default withStyles(styles)(UserList);
+export default withStyles(styles)(SpecializationList);
