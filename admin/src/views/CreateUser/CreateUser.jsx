@@ -76,10 +76,15 @@ class CreateUser extends React.Component {
         this.state = {
             type: "",
             labelWidth: 0,
-            admin: true
+            admin: false,
+            lastName: "",
+            firstName: "",
+            email: "",
+            company: ""
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.createUser = this.createUser.bind(this);
     }
 
     handleChange = event => {
@@ -89,6 +94,30 @@ class CreateUser extends React.Component {
     handleCheckboxChange = name => event => {
         this.setState({ [name]: event.target.checked });
     };
+
+    createUser() {
+        let data = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            admin: this.state.admin,
+            email: this.state.email,
+            company: this.state.company,
+            type: this.state.type
+        }
+
+        fetch(api.host + ":" + api.port + "/api/user", {
+            method: "PUT",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+            });
+    }
 
     render() {
         const { classes } = this.props;
@@ -101,7 +130,11 @@ class CreateUser extends React.Component {
                         <FormControl className={classes.formControl} fullWidth={true}>
                             <CustomInput
                                 labelText="Entreprise"
-                                id="company"
+                                inputProps={{
+                                    value: this.state.company,
+                                    onChange: this.handleChange,
+                                    name: "company"
+                                }}
                                 formControlProps={{
                                     fullWidth: true
                                 }}
@@ -144,13 +177,13 @@ class CreateUser extends React.Component {
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={3}>
                                     <FormControl className={classes.formControl} >
-                                        <InputLabel htmlFor="type-simple">Type</InputLabel>
+                                        <InputLabel htmlFor="type">Type</InputLabel>
                                         <Select
                                             value={this.state.type}
                                             onChange={this.handleChange}
                                             inputProps={{
                                                 name: 'type',
-                                                id: 'type-simple',
+                                                id: 'type',
                                             }}
                                         >
                                             <MenuItem value=""><em></em></MenuItem>
@@ -170,7 +203,11 @@ class CreateUser extends React.Component {
                                     <FormControl className={classes.formControl} fullWidth={true}>
                                         <CustomInput
                                             labelText="Nom"
-                                            id="lastName"
+                                            inputProps={{
+                                                value: this.state.lastName,
+                                                onChange: this.handleChange,
+                                                name: "lastName"
+                                            }}
                                             formControlProps={{
                                                 fullWidth: true
                                             }}
@@ -181,7 +218,11 @@ class CreateUser extends React.Component {
                                     <FormControl className={classes.formControl} fullWidth={true}>
                                         <CustomInput
                                             labelText="Prénom"
-                                            id="firstName"
+                                            inputProps={{
+                                                value: this.state.firstName,
+                                                onChange: this.handleChange,
+                                                name: "firstName"
+                                            }}
                                             formControlProps={{
                                                 fullWidth: true
                                             }}
@@ -195,7 +236,11 @@ class CreateUser extends React.Component {
                                     <FormControl className={classes.formControl} fullWidth={true}>
                                         <CustomInput
                                             labelText="Adresse mail"
-                                            id="email"
+                                            inputProps={{
+                                                value: this.state.email,
+                                                onChange: this.handleChange,
+                                                name: "email"
+                                            }}
                                             formControlProps={{
                                                 fullWidth: true
                                             }}
@@ -207,7 +252,7 @@ class CreateUser extends React.Component {
                             {adminCheckbox}
                         </CardBody>
                         <CardFooter>
-                            <Button color="primary">Créer l'utilisateur</Button>
+                            <Button color="primary" onClick={this.createUser}>Créer l'utilisateur</Button>
                         </CardFooter>
                     </Card>
                 </GridItem>

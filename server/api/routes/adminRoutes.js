@@ -16,6 +16,6 @@ module.exports = function (app) {
     /*app.route('/api/login')
         .post(admin.handle_login);*/
 
-    app.route('/api/admin/user')
-        .get(admin.listUsers);
+    /*app.route('/api/admin/user')
+        .get(admin.listUsers);*/
 };

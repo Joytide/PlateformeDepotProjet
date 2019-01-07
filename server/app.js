@@ -69,8 +69,11 @@ partner_routes(app);
 var specializationRoutes = require('./api/routes/specializationRoutes');
 specializationRoutes(app);
 
-var adminRoutes = require('./api/routes/adminRoutes');
-adminRoutes(app);
+var userRoutes = require('./api/routes/userRoutes');
+userRoutes(app);
+
+/*var adminRoutes = require('./api/routes/adminRoutes');
+adminRoutes(app);*/
 
 var comments_routes = require('./api/routes/commentsRoute')
 comments_routes(app);

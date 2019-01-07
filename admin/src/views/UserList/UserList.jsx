@@ -60,10 +60,10 @@ class UserList extends React.Component {
 
     componentWillMount() {
         console.log(api);
-        fetch(api.host + ":" + api.port + "/api/admin/user", { crossDomain: true })
+        fetch(api.host + ":" + api.port + "/api/user", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
-                let userData = data.map(user => [user.__t, user.company || "-", user.last_name, user.first_name, user.email]);
+                let userData = data.map(user => [user.EPGE ? "EPGE" : user.__t, user.company || "-", user.last_name, user.first_name, user.email]);
 
                 this.setState({ users: userData, loading: false });
             });
