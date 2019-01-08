@@ -53,12 +53,10 @@ class UserProfile extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log(api);
 		fetch(api.host + ":" + api.port + "/api/user/" + this.props.match.params.id)
 			.then(res => res.json())
 			.then(data => {
 				if (data) {
-					console.log(data);
 					this.setState({
 						user: data,
 						loading: false,
