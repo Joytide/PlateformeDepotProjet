@@ -6,6 +6,8 @@ const Student = mongoose.model('Student');
 const Partner = mongoose.model('Partner');
 const Administration = mongoose.model('Administration');
 
+const partnerController = require('./partnerController');
+
 exports.list = (req, res) => {
     Person.find({})
         .exec((err, persons) => {
@@ -20,16 +22,12 @@ exports.create = (req, res) => {
     if (data.firstName && data.lastName && data.email && data.type) {
         if (data.type === "partner") {
             if (data.company) {
-                let partner = new Partner();
-                partner.first_name = data.firstName;
-                partner.last_name = data.lastName;
-                partner.email = data.email;
-                partner.company = data.company;
-
-                partner.save((err, p) => {
-                    if (err) res.send(err);
-                    else res.json(p);
-                });
+                data.last_name = data.lastName;
+                data.first_name = data.firstName;
+                partnerController.createPartner(data).then(
+                    valid => res.send(valid),
+                    err => res.send(err)
+                );
             } else {
                 res.status(400).send(new Error(`Missing a parameter. Expected parameters : 
                     (string) firstName, 

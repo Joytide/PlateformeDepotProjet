@@ -50,7 +50,6 @@ exports.createPartner = function (data) {
 		});
 
 		newPartner.key = await generatePassword(16);
-		console.log(newPartner.key);
 
 		if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
 			newPartner.save(err => {
