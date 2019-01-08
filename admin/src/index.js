@@ -7,8 +7,6 @@ import "assets/css/material-dashboard-react.css?v=1.5.0";
 
 import indexRoutes from "routes/index.jsx";
 
-import UserProfile from "views/UserProfile/UserProfile"
-
 const hist = createBrowserHistory();
 
 ReactDOM.render(
