@@ -33,7 +33,8 @@ const dashboardRoutes = [
     sidebarName: "User Profile",
     navbarName: "Profile",
     icon: "person",
-    component: UserProfile
+    component: UserProfile,
+    invisible: true
   },
   {
     path: "/createUser",

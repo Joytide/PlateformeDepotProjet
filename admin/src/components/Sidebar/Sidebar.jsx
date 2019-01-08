@@ -27,6 +27,7 @@ const Sidebar = ({ ...props }) => {
     <List className={classes.list}>
       {routes.map((prop, key) => {
         if (prop.redirect) return null;
+        if (prop.invisible) return null;
         var activePro = " ";
         var listItemClasses;
         listItemClasses = classNames({
