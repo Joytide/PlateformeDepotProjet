@@ -24,7 +24,7 @@ function Header({ ...props }) {
       }
       return null;
     });
-    return name;
+    return name || "";
   }
   const { classes, color } = props;
   const appBarClasses = classNames({
