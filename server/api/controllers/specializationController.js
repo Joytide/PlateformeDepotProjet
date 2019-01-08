@@ -37,27 +37,38 @@ exports.delete = (req, res) => {
             if (err) res.send(err);
             else res.send(data);
         });
-    }else {
+    } else {
         res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));
     }
 }
 
-exports.filter_by_major = function (req, res) {
-    Specialization.distinct("major_name", function (err, task) {
-        if (err)
-            res.send(err);
-        else
-            res.json(task);
-    });
-};
+exports.findById = (req, res) => {
+    let data = req.params;
+    if (data._id) {
+        Specialization.findById(data._id, (err, spe) => {
+            if (err) res.send(err);
+            else res.json(spe);
+        })
+    } else {
+        res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));
+    }
+}
 
-/*exports.filter_by_year = function (req, res) {
-    Specialization.distinct("study_year", function (err, task) {
-        if (err)
-        res.send(err);
-        res.json(task);
-    });
-};*/
+exports.update = (req,res) => {
+    const data = req.body;
+    
+    if(data._id) {
+        let update = {};
+        update.name = {};
+        if(data.abbreviation) update.abbreviation = data.abbreviation;
+        if(data.name && data.name.fr) update.name.fr = data.name.fr;
+        if(data.name && data.name.en) update.name.en = data.name.en;
 
-
-
+        Specialization.findByIdAndUpdate(data._id, update, {new:true}, (err, spe) => {
+            if(err) res.send(err);
+            else res.json(spe);
+        });
+    } else{
+        res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));
+    }
+}

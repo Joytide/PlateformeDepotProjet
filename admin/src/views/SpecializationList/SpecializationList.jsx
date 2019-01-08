@@ -1,7 +1,11 @@
 import React from "react";
+import { Link } from 'react-router-dom';
+
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputLabel from "@material-ui/core/InputLabel";
+
+import Visibility from "@material-ui/icons/Visibility"
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -63,7 +67,12 @@ class SpecializationList extends React.Component {
         fetch(api.host + ":" + api.port + "/api/specialization", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
-                let specializationsData = data.map(specialization => [specialization.abbreviation, specialization.name.fr, specialization.name.en, ""]);
+                let specializationsData = data.map(specialization => [
+                    specialization.abbreviation, 
+                    specialization.name.fr, 
+                    specialization.name.en, 
+                    (<Link to={"/specialization/" + specialization._id}><Button type="button" color="info"><Visibility /> Voir la majeure</Button></Link>)
+                ]);
 
                 this.setState({ specializations: specializationsData, loading: false });
             });
