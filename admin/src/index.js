@@ -7,6 +7,8 @@ import "assets/css/material-dashboard-react.css?v=1.5.0";
 
 import indexRoutes from "routes/index.jsx";
 
+import UserProfile from "views/UserProfile/UserProfile"
+
 const hist = createBrowserHistory();
 
 ReactDOM.render(
@@ -15,6 +17,7 @@ ReactDOM.render(
       {indexRoutes.map((prop, key) => {
         return <Route path={prop.path} component={prop.component} key={key} />;
       })}
+      <Route path="/user/:id" component={UserProfile}/>
     </Switch>
   </Router>,
   document.getElementById("root")
