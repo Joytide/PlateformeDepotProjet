@@ -1,8 +1,12 @@
 const userController = require('../controllers/userController');
 
 module.exports = (app) => {
+    app.route('/api/user/:id')
+        .get(userController.findById);
+
     app.route('/api/user')
         .get(userController.list)
         .put(userController.create)
-        .delete(userController.delete);
+        .delete(userController.delete)
+        .post(userController.update);
 }

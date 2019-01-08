@@ -82,3 +82,31 @@ exports.delete = (req, res) => {
         res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id`));
     }
 }
+
+exports.update = (req, res) => {
+    let data = req.body;
+    if (data._id && (data.admin != undefined || data.EPGE != undefined)) {
+        let update = {};
+        if (data.admin != undefined) update.admin = data.admin;
+        if (data.EPGE != undefined) update.EPGE = data.EPGE;
+
+        Administration.findByIdAndUpdate(data._id, update, { new: true }, (err, updated) => {
+            if (err) res.send(err);
+            else res.json(updated)
+        });
+    } else {
+        res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id, (Boolean) admin`));
+    }
+}
+
+exports.findById = (req, res) => {
+    let data = req.params;
+    if (data.id) {
+        Person.findById(data.id, (err, person) => {
+            if (err) res.send(err);
+            else res.json(person);
+        });
+    } else {
+        res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id`));
+    }
+}

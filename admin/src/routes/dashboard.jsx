@@ -17,7 +17,6 @@ import SpecializationList from "views/SpecializationList/SpecializationList.jsx"
 import CreateSpecialization from "views/CreateSpecialization/CreateSpecialization.jsx";
 
 // Others
-import Icons from "views/Icons/Icons.jsx";
 import NotificationsPage from "views/Notifications/Notifications.jsx";
 import Settings from "views/Settings/Settings.jsx"
 
@@ -28,20 +27,13 @@ const dashboardRoutes = [
     navbarName: "Accueil",
     icon: Dashboard,
     component: DashboardPage
-  },/*
+  },
   {
-    path: "/user",
+    path: "/user/:id",
     sidebarName: "User Profile",
     navbarName: "Profile",
-    icon: Person,
+    icon: "person",
     component: UserProfile
-  },*/
-  {
-    path: "/users",
-    sidebarName: "Liste utilisateurs",
-    navbarName: "Liste des utilisateurs",
-    icon: People,
-    component: UserList
   },
   {
     path: "/createUser",
@@ -51,11 +43,11 @@ const dashboardRoutes = [
     component: CreateUser
   },
   {
-    path: "/specializations",
-    sidebarName: "Liste majeures",
-    navbarName: "Liste des majeures",
-    icon: "list",
-    component: SpecializationList
+    path: "/users",
+    sidebarName: "Liste utilisateurs",
+    navbarName: "Liste des utilisateurs",
+    icon: People,
+    component: UserList
   },
   {
     path: "/createSpecialization",
@@ -63,6 +55,13 @@ const dashboardRoutes = [
     navbarName: "Créer une majeure",
     icon: "add",
     component: CreateSpecialization
+  },
+  {
+    path: "/specializations",
+    sidebarName: "Liste majeures",
+    navbarName: "Liste des majeures",
+    icon: "list",
+    component: SpecializationList
   },
   {
     path: "/notifications",
