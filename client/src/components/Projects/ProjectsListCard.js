@@ -114,6 +114,25 @@ class ProjectsListCard extends React.Component {
         }
     }
 
+    handleCompanyValue(company_value) {
+        if (company_value !== "") {
+            var tmp = this.state.projectToDisplay.filter(project => {
+                var id = this.state.peopleToDisplay.filter(people => {
+                    if (people.company.includes(company_value)) {
+                        return true; 
+                    }
+                })
+                if (project.partner === id) {
+                    return true;
+                }
+            })
+            this.setState({ projectSeen: tmp , loaded : true});
+        }
+        else {
+            this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
+        }
+    }
+
 
 
     render() {
@@ -153,7 +172,7 @@ class ProjectsListCard extends React.Component {
                                 <CardTitle style={{ textAlign: 'center' }} title={i18n.t('project.title', {lng})}></CardTitle>
                                 <hr />
                                 <CardText style = {{backgroundColor : "#f7f4f4"}}>
-                                    <ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
+                                    <ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} getCompanyValue={this.handleCompanyValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
 
                                     <Container fluid>
                                         <List>
