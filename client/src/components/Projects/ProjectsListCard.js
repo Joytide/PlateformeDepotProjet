@@ -66,6 +66,39 @@ class ProjectsListCard extends React.Component {
 			this.setState({ projectSeen: this.state.projectToDisplay, loaded: true });
 		}
 	}
+    handleTitleValue(title_value) {
+        if (title_value !== "") {
+            var tmp = this.state.projectToDisplay.filter(project => {
+                if (project.title.includes(title_value)) {
+                    return true;
+                }
+            })
+            this.setState({ projectSeen: tmp , loaded : true});
+        }
+        else {
+            this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
+        }
+    }
+
+    handleCompanyValue(company_value) {
+        if (company_value !== "") {
+            var tmp = this.state.projectToDisplay.filter(project => {
+                var id = this.state.peopleToDisplay.filter(people => {
+                    if (people.company.includes(company_value)) {
+                        return true; 
+                    }
+                })
+                if (project.partner === id) {
+                    return true;
+                }
+            })
+            this.setState({ projectSeen: tmp , loaded : true});
+        }
+        else {
+            this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
+        }
+    }
+
 
 	render() {
 		const lng = this.props.lng;

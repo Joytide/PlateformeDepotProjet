@@ -13,4 +13,5 @@ class ProjectValidation extends Component {
     }
 }
 
-export default withAuth(ProjectValidation);
+//export default withAuth(ProjectValidation);
+export default ProjectValidation;

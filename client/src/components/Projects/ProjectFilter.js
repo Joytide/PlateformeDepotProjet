@@ -20,15 +20,15 @@ class ProjectFilter extends React.Component {
         this.changeYearValue = this.changeYearValue.bind(this);
         this.changeMajorValue = this.changeMajorValue.bind(this);
         this.changeMotsClesValue = this.changeMotsClesValue.bind(this);
+        this.changeTitleValue = this.changeTitleValue.bind(this);
 
         this.state = {
+            title : [],
             years: [],
             majors: [],
             mots_cles_value: "",
             yearValue: this.props.filterName,
             majorValue: this.props.filterName,
-
-
         };
     }
 
@@ -51,6 +51,15 @@ class ProjectFilter extends React.Component {
             this.props.getMotsClesValue(this.state.mots_cles_value);
         });
     }
+
+    changeTitleValue(e,value){
+        
+        this.setState({title_value:value}, function(){
+            console.log(this.state.title_value);
+            this.props.getTitleValue(this.state.title_value);
+        });
+    }
+
 
     componentDidMount() {
         fetch('/api/majors/major/:major')
