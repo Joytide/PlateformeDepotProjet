@@ -57,7 +57,7 @@ class Deposit extends Component {
   componentWillMount() {
     const lng = this.props.lng;
 
-    fetch('/api/specializations')
+    fetch('/api/specialization')
       .then(res => res.json())
       .then(majors => {
         this.majors = [];
