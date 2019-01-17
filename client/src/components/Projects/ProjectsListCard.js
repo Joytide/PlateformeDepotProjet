@@ -14,7 +14,11 @@ class ProjectsListCard extends React.Component {
 
 		this.state = {
 			annee_value: "",
-			majeur_value: ""
+			majeur_value: "",
+			projectToDisplay: [],
+			projects: [],
+			projectSeen: [],
+			loaded: false,
 		};
 	}
 
@@ -56,13 +60,15 @@ class ProjectsListCard extends React.Component {
 		if (mots_cles_value !== "") {
 			let tmp = this.state.projectToDisplay.filter(project => {
 				for (var element of project.keywords) {
-					if (element.includes(mots_cles_value.toLowerCase()))
+					if (element.includes(mots_cles_value.toLowerCase())){
 						return true;
+					}
 				}
-				return false;
+				//return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true });
-		} else {
+		}
+		else {
 			this.setState({ projectSeen: this.state.projectToDisplay, loaded: true });
 		}
 	}
@@ -117,7 +123,7 @@ class ProjectsListCard extends React.Component {
 								{i18n.t('project.title', { lng })}
 							</Typography>
 
-							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
+								<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
 
 							<Grid container style={{ marginTop: 12 }} spacing={16} justify="center">
 								{ProjectList}

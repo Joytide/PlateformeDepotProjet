@@ -6,11 +6,11 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Filter from '@material-ui/icons/Filter7'
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import FilterIcone from 'material-ui/svg-icons/content/filter-list'
-import TextField from 'material-ui/TextField';
 
 import i18n from '../i18n';
 class ProjectFilter extends React.Component {
@@ -45,7 +45,6 @@ class ProjectFilter extends React.Component {
     }
 
     changeMotsClesValue(e, value) {
-
         this.setState({ mots_cles_value: value }, function () {
             console.log(this.state.mots_cles_value);
             this.props.getMotsClesValue(this.state.mots_cles_value);
@@ -53,7 +52,6 @@ class ProjectFilter extends React.Component {
     }
 
     changeTitleValue(e,value){
-        
         this.setState({title_value:value}, function(){
             console.log(this.state.title_value);
             this.props.getTitleValue(this.state.title_value);
@@ -81,6 +79,22 @@ class ProjectFilter extends React.Component {
                                     <Typography variant="h5" component="h2">
                                         {i18n.t('filter.label', { lng })}
                                     </Typography>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            label={i18n.t('title.label', {lng})}
+                                            onChange={this.changeTitleValue}
+                                            fullWidth                              
+
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            label={i18n.t('keywords.label', {lng})}
+                                            onChange={this.changeMotsClesValue}
+                                            fullWidth                              
+
+                                        />
+                                    </Grid>
                                     <Filter/>
 								</Grid>
                             </Grid>
