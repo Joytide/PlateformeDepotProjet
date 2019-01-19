@@ -200,7 +200,7 @@ class Navs extends React.Component {
               </Link>
 
               <IconButton onClick={this.props.handleLngChange} className ="EN">
-                  {lng === 'en' ? <img src="/fr_flag.png" height="24" width="32">french flag</img>:<img src="/usuk_flag.png" height="24" width="32">english flag</img>}
+                  {lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag"/>:<img src="/usuk_flag.png" height="24" width="32" alt="english flag"/>}
               </IconButton>
               
               <IconButton
