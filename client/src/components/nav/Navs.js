@@ -165,7 +165,7 @@ class Navs extends React.Component {
         </Link>
         <MenuItem  color="inherit" className={classes.menuButton}>
           <IconButton onClick={this.props.handleLngChange} className ="EN">
-            <Icon className={classes.languageButtonMobile}>translate</Icon>
+            <Icon className={classes.languageButtonMobile}></Icon>
           </IconButton>
           <IconButton onClick={this.handleProfileMenuOpen} color="inherit">
             <AccountCircle />
@@ -200,7 +200,7 @@ class Navs extends React.Component {
               </Link>
 
               <IconButton onClick={this.props.handleLngChange} className ="EN">
-              	<Icon className={classes.languageButton}>translate</Icon>
+                  {lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag"/>:<img src="/usuk_flag.png" height="24" width="32" alt="english flag"/>}
               </IconButton>
               
               <IconButton
