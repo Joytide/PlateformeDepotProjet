@@ -4,12 +4,14 @@ var mongoose = require('mongoose');
 var Specialization = mongoose.model('Specialization');
 
 exports.list = function (req, res) {
-    Specialization.find({}, function (err, specializations) {
-        if (err)
-            res.send(err);
-        else
-            res.json(specializations);
-    });
+    Specialization.find({})
+        .populate('referent')
+        .exec((err, specializations) => {
+            if (err)
+                res.send(err);
+            else
+                res.json(specializations);
+        });
 };
 
 exports.create = function (req, res) {
@@ -45,30 +47,58 @@ exports.delete = (req, res) => {
 exports.findById = (req, res) => {
     let data = req.params;
     if (data._id) {
-        Specialization.findById(data._id, (err, spe) => {
-            if (err) res.send(err);
-            else res.json(spe);
-        })
+        Specialization.findById(data._id)
+            .populate('referent')
+            .exec((err, spe) => {
+                if (err) res.send(err);
+                else res.json(spe);
+            });
     } else {
         res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));
     }
 }
 
-exports.update = (req,res) => {
+exports.update = (req, res) => {
     const data = req.body;
-    
-    if(data._id) {
+
+    if (data._id) {
         let update = {};
         update.name = {};
-        if(data.abbreviation) update.abbreviation = data.abbreviation;
-        if(data.name && data.name.fr) update.name.fr = data.name.fr;
-        if(data.name && data.name.en) update.name.en = data.name.en;
+        if (data.abbreviation) update.abbreviation = data.abbreviation;
+        if (data.name && data.name.fr) update.name.fr = data.name.fr;
+        if (data.name && data.name.en) update.name.en = data.name.en;
 
-        Specialization.findByIdAndUpdate(data._id, update, {new:true}, (err, spe) => {
-            if(err) res.send(err);
+        Specialization.findByIdAndUpdate(data._id, update, { new: true }, (err, spe) => {
+            if (err) res.send(err);
             else res.json(spe);
         });
-    } else{
+    } else {
         res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));
+    }
+}
+
+exports.addReferent = (req, res) => {
+    let data = req.body;
+    
+    if (data._id && data.referent) {
+        Specialization.findOneAndUpdate({ _id: data._id, referent: { $ne: data.referent } }, { $push: { referent: data.referent } }, { new: true }, (err, spe) => {
+            if (err) res.send(err);
+            else res.json(spe);
+        })
+    } else {
+        res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id, (ObjectID) referent"));
+    }
+}
+
+exports.removeReferent = (req, res) => {
+    let data = req.body;
+    
+    if (data._id && data.referent) {
+        Specialization.findOneAndUpdate({ _id: data._id, referent: data.referent }, { $pull: { referent: data.referent } }, { new: true }, (err, spe) => {
+            if (err) res.send(err);
+            else res.json(spe);
+        })
+    } else {
+        res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id, (ObjectID) referent"));
     }
 }
