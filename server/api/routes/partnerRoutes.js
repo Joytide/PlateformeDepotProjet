@@ -1,10 +1,13 @@
 'use strict';
 
 const partner = require('../controllers/partnerController');
+const auth = require('../controllers/authController');
+
 
 module.exports = function (app) {
 	app.route('/api/partner')
-		.get(partner.listPartners);
+		// Staff access only
+		.get(auth.passport.authenticate('jwt'), partner.listAllPartners);
 
 
 	app.route('/api/partner/:id([a-fA-F0-9]{24})')

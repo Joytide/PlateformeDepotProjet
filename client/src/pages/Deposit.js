@@ -25,7 +25,11 @@ import {ValidatorForm} from 'react-material-ui-form-validator';
 
 import {Link} from 'react-router-dom';
 import i18n from '../components/i18n';
+<<<<<<< HEAD
 
+=======
+import TextFieldHint from 'material-ui/TextField/TextFieldHint';
+>>>>>>> theophile
 /**
  * Deposit of a project
  */
@@ -49,7 +53,7 @@ const styles = theme => ({
 class Deposit extends React.Component {
   constructor(props) {
     super(props);
-    const lng = this.props.lng;
+
     this.state = {
       finished: false,
       stepIndex: 0,
@@ -70,44 +74,48 @@ class Deposit extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleKeyWords = this.handleKeyWords.bind(this);
     this.handleFiles = this.handleFiles.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    //this.handleBlur = this.handleBlur.bind(this);
 
 
-    this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
+    /*this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
     { name: i18n.t('ne.label', { lng }), key: "NE" },
     { name: i18n.t('if.label', { lng }), key: "IF" },
+<<<<<<< HEAD
     { name: i18n.t('mnm.label', { lng }), key: "MNM" }];
 
     this.years = [{ name: i18n.t('year4.label', { lng }), key: "A4" },
     { name: i18n.t('year5.label', { lng }), key: "A5" }];
+=======
+    { name: i18n.t('mnm.label', { lng }), key: "MNM" }];*/
+>>>>>>> theophile
   }
 
-  componentWillUpdate(nextProps) {
-    if (this.props.lng !== nextProps.lng) {
-      const lng = nextProps.lng;
-      this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
-      { name: i18n.t('ne.label', { lng }), key: "NE" },
-      { name: i18n.t('if.label', { lng }), key: "IF" },
-      { name: i18n.t('mnm.label', { lng }), key: "MNM" }];
-    }
+  componentWillMount() {
+    const lng = this.props.lng;
+
+    fetch('/api/specialization')
+      .then(res => res.json())
+      .then(majors => {
+        this.majors = [];
+        majors.map(major => {
+          this.majors.push(major);
+        });
+
+        console.log("majors", this.majors);
+      })
+      .catch(console.error.bind(console));
   }
 
   //STEP
   handleNext = () => {
-    console.log("Finished :" + this.state.finished);
     const { stepIndex } = this.state;
+
     if (!this.state.finished) {
       this.setState({
         stepIndex: stepIndex + 1,
         finished: stepIndex >= 2
       }, () => {
         this.handleSubmit();
-      });
-    }
-    else {
-      this.setState({
-        stepIndex: stepIndex + 1,
-        finished: stepIndex >= 2
       });
     }
   };
@@ -123,8 +131,9 @@ class Deposit extends React.Component {
     this.setState({ majors_concerned: event.target.value });
   };
 
-  handleBlur(event) {
-    console.log(this.state);
+  // Inutile pour le moment. On verra avec le token pour remplir automatiquement si le partenaire est déjà authentifié
+
+  /*handleBlur(event) {
     fetch("/api/partners/" + this.state.email)
       .then((res) => res.json())
       .then((partner) => {
@@ -135,8 +144,7 @@ class Deposit extends React.Component {
         }
       })
       .catch((err) => { console.log("Email not found") });
-    console.log("passed");
-  }
+  }*/
 
   FilesUpload() {
     return new Promise((resolve, reject) => {
@@ -290,9 +298,7 @@ class Deposit extends React.Component {
       default:
         this.setState({
           [e.target.name]: e.target.value
-        })
-        console.log(this.state.email)
-        console.log(this.state.title)
+        });
     }
   }
 
@@ -361,6 +367,7 @@ class Deposit extends React.Component {
                   //onBlur={this.handleBlur}
                   name="email"
                   value={this.state.email}
+<<<<<<< HEAD
                   fullWidth
                   inputProps={{maxLength:40, type:"email"}}
                   maxLength = {40}
@@ -411,11 +418,61 @@ class Deposit extends React.Component {
           </Grid>
           </Grid>
         </div>);
+=======
+                  fullWidth={true}
+                  maxlength={40}
+                />
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={6} offset={{ md: 3 }}>
+                <TextValidator lng={lng}
+                  validators={['required']}
+                  errorMessages={i18n.t('field.label', { lng })}
+                  floatingLabelText={i18n.t('company.label', { lng })}
+                  onChange={this.handleChange}
+                  name="company" value={this.state.company}
+                  fullWidth={true}
+                  maxlength={70}
+                />
+              </Col>
+            </Row>
+
+            <Row>
+              <Col md={6} offset={{ md: 3 }}>
+                <TextValidator lng={lng}
+                  validators={['required']}
+                  errorMessages={i18n.t('field.label', { lng })}
+                  floatingLabelText={i18n.t('firstname.label', { lng })}
+                  onChange={this.handleChange} fullWidth={true}
+                  name="first_name" value={this.state.first_name}
+                  maxlength={30}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6} offset={{ md: 3 }}>
+                <TextValidator lng={lng}
+                  validators={['required']}
+                  errorMessages={i18n.t('field.label', { lng })}
+                  floatingLabelText={i18n.t('lastname.label', { lng })}
+                  onChange={this.handleChange} fullWidth={true}
+                  name="last_name" value={this.state.last_name}
+                  maxlength={30}
+                />
+              </Col>
+            </Row>
+
+          </Container>
+        </div>
+>>>>>>> theophile
 
       /**
        * Information about the project
        */
       case 2:
+<<<<<<< HEAD
         return(
           <div lng={lng} style={{ padding: 12 }}>
             <Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
@@ -485,6 +542,68 @@ class Deposit extends React.Component {
                 <TextField
                   //placeholder={i18n.t('descriptionProj.label', { lng })}
                   label="Description *"
+=======
+        return <div lng={lng} >
+          <h2 style={{ textAlign: 'center' }}>{i18n.t('projectPres.h2', { lng })}</h2>
+          <Container>
+            <Row>
+              <Col md={6} offset={{ md: 3 }}>
+                <TextValidator
+                  floatingLabelText={i18n.t('titleproj.label', { lng })}
+                  onChange={this.handleChange} fullWidth={true}
+                  name="title" value={this.state.title}
+                  validators={['required']}
+                  errorMessages={i18n.t('field.label', { lng })}
+                  maxlength={100}
+                />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col md={3} offset={{ md: 3 }}>
+                <Checkbox
+                  label={i18n.t('year4.label', { lng })}
+                  name="year"
+                  value="A4"
+                  onCheck={this.handleChange} />
+              </Col>
+              <Col md={3}>
+                <Checkbox
+                  label={i18n.t('year5.label', { lng })}
+                  name="year"
+                  value="A5"
+                  onCheck={this.handleChange} />
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col md={6} offset={{ md: 3 }}>
+                <SelectValidator
+                  multiple={true} hintText={i18n.t('majors.label', { lng })}
+                  value={this.state.majors_concerned}
+                  onChange={this.handleSpe.bind(this)} fullWidth={true}
+                  name="majors_concerned"
+                  floatingLabelText={i18n.t('majors.label', { lng })}
+                  validators={["required"]}
+                  errorMessages={i18n.t('field.label', { lng })}>
+                  {console.log("majors", this.majors)}
+                  {this.majors.map((major) => <MenuItem
+                    key={major._id}
+                    insetChildren={true}
+                    checked={this.state.majors_concerned.indexOf(major._id) > -1}
+                    value={major._id}
+                    primaryText={lng == "fr" ? major.name.fr : major.name.en}
+                  />)}
+                </SelectValidator>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={8} offset={{ md: 2 }}>
+                <TextValidator
+                  hintText={i18n.t('descriptionProj.label', { lng })}
+                  floatingLabelText="Description *"
+                  multiLine={true}
+>>>>>>> theophile
                   value={this.state.description}
                   required
                   //errorMessages={i18n.t('field.label', { lng })}
@@ -493,12 +612,22 @@ class Deposit extends React.Component {
                   rows={10}
                   name="description"
                   onChange={this.handleChange}
+<<<<<<< HEAD
                   fullWidth
                   inputProps={{maxLength:3000}}
                 />
               </Grid>
 
               <Grid item>
+=======
+                  fullWidth={true}
+                  maxlength={3000}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col md={8} offset={{ md: 2 }}>
+>>>>>>> theophile
                 <KeyWords lng={lng} change={this.handleKeyWords} />
               </Grid>
               <Grid item>

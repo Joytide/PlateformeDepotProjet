@@ -3,15 +3,31 @@
 const mongoose = require('mongoose');
 const Partner = mongoose.model('Partner');
 const Project = mongoose.model('Project');
+const crypto = require('crypto');
 
-exports.listPartners = function (req, res) {
-	Partner.find()
-		.populate('projects')
-		.exec((err, partner) => {
-			if (err)
-				res.send(err);
-			res.json(partner);
-		});
+exports.listAllPartners = function (req, res) {
+	if (req.user.__t == "EPGE") {
+		Partner.find()
+			.populate('projects')
+			.exec((err, partner) => {
+				if (err)
+					res.send(err);
+				res.json(partner);
+			});
+	} else if (req.user.__t == "Partner") {
+		Partner.findById(req.user._id)
+			.populate({
+				path: 'projects',
+				populate: {
+					path: "majors_concerned"
+				}
+			})
+			.exec((err, partner) => {
+				console.log(partner.projects);
+				if (err) res.send(err);
+				else res.json(partner);
+			});
+	}
 };
 
 exports.addProject = (partnerId, projectId) => {
@@ -25,7 +41,7 @@ exports.addProject = (partnerId, projectId) => {
 
 // Return a promise when creating a Partner
 exports.createPartner = function (data) {
-	return new Promise((resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
 		let newPartner = new Partner({
 			"first_name": data.first_name,
 			"last_name": data.last_name,
@@ -33,7 +49,7 @@ exports.createPartner = function (data) {
 			"company": data.company
 		});
 
-		newPartner.key = generatePassword(16);
+		newPartner.key = await generatePassword(16);
 
 		if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
 			newPartner.save(err => {
@@ -119,12 +135,19 @@ exports.deletePartner = (req, res) => {
 }
 
 function generatePassword(size) {
-	let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	let pass = "";
-	for (let i = 0; i < size; i++) {
-		pass += characters[randomInt(characters.length)];
-	}
-	return pass;
+	return new Promise((resolve, reject) => {
+		crypto.randomBytes(size / 2, function (err, buffer) {
+			if (err) reject(err);
+			var key = buffer.toString('hex');
+
+			// Prevent key collision
+			Partner.count({ key: key }, (err, count) => {
+				if (err) reject(err);
+				if (count == 0) resolve(key);
+				else resolve(generatePassword(size));
+			});
+		});
+	});
 }
 
 function randomInt(max) {
