@@ -16,6 +16,22 @@ exports.list = (req, res) => {
         });
 }
 
+exports.listAdministration = (req, res) => {
+    Administration.find({})
+        .exec((err, admins) => {
+            if (err) res.send(err);
+            else res.json(admins);
+        });
+}
+
+exports.listEPGE = (req,res) => {
+    Administration.find({EPGE: true})
+        .exec((err,epge) => {
+            if(err) res.send(err);
+            else res.json(epge);
+        });
+}
+
 exports.create = (req, res) => {
     let data = req.body;
     console.log(data);
