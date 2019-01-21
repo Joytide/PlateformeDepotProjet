@@ -105,13 +105,13 @@ exports.find_by_edit_key = (req, res) => {
 }
 
 exports.filter_by_name = (req,res) => {
-  Project.find({"title": {'$regex' : '.*' + req.params.name + '.*'}}, (err, projects) => {
+  	Project.find({title: {'$regex' : '.*' + req.params.name + '.*'}}, (err, projects) => {
     // Search all the projects which have the substring "req.params.name" in their titles
-    if (err) {
-      res.send(err);
-    }
-    res.json(projects);
-  });
+    	if (err) {
+      	res.send(err);
+    	}
+    	res.json(projects);
+  	});
 }
 
 exports.update_a_project = (req, res) => {

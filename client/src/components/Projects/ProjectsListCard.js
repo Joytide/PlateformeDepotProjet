@@ -13,14 +13,15 @@ class ProjectsListCard extends React.Component {
 		super(props);
 
 		this.state = {
+			projects: [],
+			projectToDisplay: [],
+			projectSeen: [],
 			annee_value: "",
 			majeur_value: "",
-			projectToDisplay: [],
-			projects: [],
-			projectSeen: [],
 			loaded: false,
 		};
 	}
+
 
 	handledropDownValue(dropDownValue, filterName) {
 		if (filterName === "Année" && dropDownValue !== "Majeure") {
@@ -72,6 +73,7 @@ class ProjectsListCard extends React.Component {
 			this.setState({ projectSeen: this.state.projectToDisplay, loaded: true });
 		}
 	}
+
     handleTitleValue(title_value) {
         if (title_value !== "") {
             var tmp = this.state.projectToDisplay.filter(project => {
@@ -82,7 +84,7 @@ class ProjectsListCard extends React.Component {
             this.setState({ projectSeen: tmp , loaded : true});
         }
         else {
-            this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
+			this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
         }
     }
 
@@ -123,7 +125,7 @@ class ProjectsListCard extends React.Component {
 								{i18n.t('project.title', { lng })}
 							</Typography>
 
-								<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
+							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
 
 							<Grid container style={{ marginTop: 12 }} spacing={16} justify="center">
 								{ProjectList}
