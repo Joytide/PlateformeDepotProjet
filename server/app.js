@@ -39,7 +39,7 @@ app.use(auth.passport.initialize());
 app.use(auth.passport.session());
 
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "http://localhost:3002");
+	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
 	if (req.method === 'OPTIONS')
