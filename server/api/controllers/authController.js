@@ -46,7 +46,7 @@ passport.use('jwt', new JWTstrategy({
     secretOrKey: config.jwt.secret,
     //we expect the user to send the token as a query paramater with the name 'token'
     jwtFromRequest: req => {
-        return req.body.token;
+        return req.headers.authorization;
     }
 }, async (token, done) => {
     try {

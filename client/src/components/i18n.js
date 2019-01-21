@@ -39,6 +39,7 @@ i18next
           tellus:{label:'Tell us about yourself',},
           email:{label:'Your email address',},
           field:{label:'This field is required',},
+          field_length:{label:'Maximum text length exceeded'},
           notvalid:{label:'email is not valid',},
           company:{label:'Your company',},
           firstname:{label:'Your first name',},
@@ -117,6 +118,7 @@ i18next
             tellus:{label:'Parlez-nous de vous',},
             email:{label:'Votre adresse email',},
             field:{label:'Ce champ est obligatoire',},
+            field_length:{label:'Longueur maximale du texte dépassée'},
             notvalid:{label:'Email indiqué n\'est pas valide',},
             company:{label:'Votre entreprise',},
             firstname:{label:'Prénom',},
@@ -158,9 +160,6 @@ i18next
             carouselText3:{label:'Projet 2017-2018 de 5e année du cursus d’élève ingénieur de l’ESILV, promo 2018',},
             carouselTitle4:{label:'Analyse Big Data des sites Unesco via les réseaux sociaux',},
             carouselText4:{label:'Projet d’Innovation Industrielle de 5ème année, Majeure Informatique et sciences du numérique 2014-2015',}
-
-
-
         },
       },
     },
