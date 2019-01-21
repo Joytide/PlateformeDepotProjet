@@ -477,7 +477,7 @@ class Deposit extends React.Component {
               </Grid>
 
               <Grid item>
-                {/*<KeyWords lng={lng} change={this.handleKeyWords} />*/}
+                {<KeyWords lng={lng} change={this.handleKeyWords} />}
               </Grid>
               <Grid item>
                 <FilesInputs lng={lng} change={this.handleFiles} />
