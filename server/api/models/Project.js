@@ -37,7 +37,12 @@ const ProjectSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    likes: Array, //(StudentSchema)
+    likes: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Partner'
+        }
+    ],
     comments: [
         {
             type: Schema.Types.ObjectId,
