@@ -176,7 +176,7 @@ class Navs extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" color='primary'>
+        <AppBar position="fixed" color='primary'>
            <Toolbar>
             <Link to="/">
              <img style={this.styles.title} alt="logo PULV" src="/logo_pulv.png" height="50" width="50"/>
