@@ -22,6 +22,7 @@ exports.listProjects = function (req, res) {
 	Project.find({})
 		.populate({ path: 'comments', populate: { path: 'responses' } })
 		.populate('partner')
+		.populate('majors_concerned')
 		.exec(function (err, projects) {
 			if (err)
 				res.send(err);
@@ -52,33 +53,38 @@ exports.createProject = (req, res) => {
 		json.status = 'pending';
 		var new_project = new Project(json);
 
-		new_project.save(function (err, project) {
-			if (err)
-				res.send(err);
-			else {
-				partnerController.addProject(partner._id, project._id)
-					.then((partner) => {
-						name = partner.first_name;
-						mail.text = `Bonjour ${name}, \n
-				  Votre demande de soumission a bien été enregistrée. \n 
-				  Voici votre lien pour l'éditer. \n
-				  http://localhost:3000/Edit/${editKey}`
-						smtpTransporter.sendMail(mail, (err, result) => {
-							if (err) {
-								smtpTransporter.close();
-								console.log(err);
-								res.send(err);
-							} else {
-								res.send('Mail ok!');
-								smtpTransporter.close();
-							}
+		Project.count({}, (err, count) => {
+			if(err) res.send(err);
+			new_project.number = (count+1).toString().padStart(3,'0');
+
+			new_project.save(function (err, project) {
+				if (err)
+					res.send(err);
+				else {
+					partnerController.addProject(partner._id, project._id)
+						.then((partner) => {
+							name = partner.first_name;
+							mail.text = `Bonjour ${name}, \n
+					  Votre demande de soumission a bien été enregistrée. \n 
+					  Voici votre lien pour l'éditer. \n
+					  http://localhost:3000/Edit/${editKey}`
+							smtpTransporter.sendMail(mail, (err, result) => {
+								if (err) {
+									smtpTransporter.close();
+									console.log(err);
+									res.send(err);
+								} else {
+									res.send('Mail ok!');
+									smtpTransporter.close();
+								}
+							});
+						})
+						.catch(err => {
+							res.send(err);
 						});
-					})
-					.catch(err => {
-						res.send(err);
-					});
-			}
-		});
+				}
+			});
+		});		
 	});
 };
 
@@ -87,6 +93,7 @@ exports.findById = (req, res) => {
 	Project.findById(req.params.projectId)
 		.populate('comments')
 		.populate('partner')
+		.populate('majors_concerned')
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);
@@ -176,15 +183,6 @@ exports.destroy = (req, res) => {
 			res.send('ok!');
 		}
 	});
-}
-
-function generatePassword(size) {
-	let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	let pass = "";
-	for (let i = 0; i < size; i++) {
-		pass += characters[randomInt(characters.length)];
-	}
-	return pass;
 }
 
 function randomInt(max) {
