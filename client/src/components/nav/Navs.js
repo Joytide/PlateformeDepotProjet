@@ -159,7 +159,7 @@ class Navs extends React.Component {
               <div>{i18n.t('projects.label', {lng} )}</div>
           </MenuItem>
         </Link>
-        <Link to="/Deposit">
+        <Link to="/deposit">
           <MenuItem color="inherit">
               <div>{i18n.t('submit.label', {lng} )}</div>
           </MenuItem>
@@ -194,7 +194,7 @@ class Navs extends React.Component {
                   <div>{i18n.t('projects.label', {lng} )}</div>
                 </Button>
               </Link>
-              <Link to="/Deposit">
+              <Link to="/deposit">
                 <Button color="inherit" className={classes.button}>
                   <div>{i18n.t('submit.label', {lng} )}</div>
                 </Button>

@@ -64,7 +64,7 @@ class ProjectPage extends React.Component {
                                         }
                                         {
                                             project.majors_concerned.sort().map(major => {
-                                                return <Grid item><Chip label={major} color="secondary" /></Grid>
+                                                return <Grid item><Chip label={major.abbreviation} color="secondary" /></Grid>
                                             }) 
                                         }
                                         {

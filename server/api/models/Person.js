@@ -24,15 +24,6 @@ const Person = mongoose.model('Person', PersonSchema);
 
 //Student Class
 const StudentSchema = new Schema({
-	id_specialization: {
-		type: Schema.Types.ObjectId,
-		ref: 'Specialization',
-		required: true
-	},
-	study_year: {
-		type: Number,
-		required: true
-	}
 });
 const Student = Person.discriminator('Student', StudentSchema);
 
@@ -51,12 +42,11 @@ const Partner = Person.discriminator('Partner', PartnerSchema);
 
 //Administration Class
 const AdministrationSchema = new Schema({
-	id_specialization: {
-		type: Schema.Types.ObjectId,
-		ref: 'Specialization',
-		required: true
-	},
-	EPGE: Boolean
+	EPGE: Boolean,
+	admin: {
+		type: Boolean,
+		default: false
+	}
 });
 const Administration = Person.discriminator('Administration', AdministrationSchema);
 
