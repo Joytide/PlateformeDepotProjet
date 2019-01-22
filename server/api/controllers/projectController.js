@@ -30,90 +30,6 @@ exports.listProjects = function (req, res) {
 		});
 };
 
-<<<<<<< HEAD
-exports.create_a_project = function (req, res) {
-  let name;
-  let editKey = generatePassword(15);
-
-  let mail = {
-    from: 'no.reply.projets.pulv@gmail.com',
-    subject: 'Soumission d\'un projet',
-    to: req.body.email
-  };
-  let json = req.body;
-  json.edit_key = editKey;
-  Partner.findOne({ email: req.body.email }, (err, partner) => {
-    if (err) {
-      res.send(err);
-    }
-    if (partner != null) {
-      json.partner = partner;
-      json.status = 'pending';
-      var new_project = new Project(json);
-
-      new_project.save(function (err, project) {
-        if (err)
-          res.send(err);
-        else {
-          name = partner.first_name;
-          mail.text = `Bonjour ${name}, \n
-          Votre demande de soumission a bien été enregistrée. \n 
-          Voici votre lien pour l'éditer. \n
-          http://localhost:3000/Edit/${editKey}`
-          smtpTransporter.sendMail(mail, (err, result) => {
-            if (err) {
-              smtpTransporter.close();
-              console.log(err);
-              res.send(err);
-            } else {
-              res.send('Mail ok!');
-              smtpTransporter.close();
-            }
-          });
-        }
-      });
-    } else {
-      let new_partner = new Partner({
-        "first_name": req.body.first_name,
-        "last_name": req.body.last_name,
-        "email": req.body.email,
-        "company": req.body.company
-      });
-      
-      new_partner.save((err, partner) => {
-        if (err) {
-          res.send(err);
-        }
-        else {
-          json.partner = new_partner;
-          json.status = 'pending';
-          var new_project = new Project(json);
-          new_project.save(function (err, project) {
-            if (err)
-              res.send(err);
-            else {
-              name = new_partner.first_name;
-              mail.text = `Bonjour ${name}, \n
-              Votre demande de soumission a bien été enregistrée. \n 
-              Voici votre lien pour l'éditer. \n
-              http://localhost:3000/Edit/${editKey}`
-              smtpTransporter.sendMail(mail, (err, result) => {
-                if (err) {
-                  smtpTransporter.close();
-                  console.log(err);
-                  res.send(err);
-                } else {
-                  smtpTransporter.close();
-                  res.send('Mail ok!');
-                }
-              });
-            }
-          });
-        }
-      });
-    }
-  });
-=======
 exports.createProject = (req, res) => {
 	let name;
 
@@ -170,7 +86,6 @@ exports.createProject = (req, res) => {
 			});
 		});		
 	});
->>>>>>> master
 };
 
 exports.findById = (req, res) => {
