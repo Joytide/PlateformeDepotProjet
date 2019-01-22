@@ -6,15 +6,26 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import nl2br from 'react-newline-to-break';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import Tooltip from '@material-ui/core/Tooltip';
+
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = {
+  };
 
 class ProjectPage extends React.Component {
 	constructor(props) {
         super(props);
 		this.state = {
             project: this.props.project,
-            loaded : false
+            loaded : false,
+            isLiked : false
 		}
     }
+
 
     componentDidMount() {
         fetch('/api/project/'+this.props.match.params.key)
@@ -23,6 +34,11 @@ class ProjectPage extends React.Component {
                 this.setState({ project: project, loaded: true });
             });
     }
+
+    handleChange = () => {
+        this.setState({ isLiked : this.state.isLiked ? false : true });
+        console.log(this.setState);
+      };
 
     render () {
         const project = this.state.project
@@ -55,14 +71,21 @@ class ProjectPage extends React.Component {
                                             project.keywords.sort().map(keyword => {
                                                 return <Grid item><Chip label={keyword} color="grey" /></Grid>
                                             }) 
-									    }
+                                        }
                                     </Grid>
                                     <Grid>
                                         <Typography variant="subtitle1">
                                             {i18n.t('partner.label', { lng })} : {project.partner.company}, {new Date(project.edit_date).toLocaleDateString()}
-                                         </Typography> 
+                                         </Typography>
+
+                                        <Tooltip title="Like">
+                                            <IconButton color={this.state.isLiked ? 'secondary' : 'default'} aria-label="Like" onClick={this.handleChange}>
+                                                <FavoriteIcon/>
+                                            </IconButton>
+                                        </Tooltip>
+                                        
                                     </Grid>
-								</Grid>
+                                </Grid>
                                 
                                 <hr></hr>
                                 
@@ -83,4 +106,4 @@ class ProjectPage extends React.Component {
     }
 }
 
-export default ProjectPage;
+export default withStyles(styles)(ProjectPage);
