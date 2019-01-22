@@ -13,7 +13,7 @@ class ProjectsListCard extends React.Component {
 		super(props);
 
 		this.state = {
-			projects: [],
+			//projects: [],
 			projectToDisplay: [],
 			projectSeen: [],
 			annee_value: "",

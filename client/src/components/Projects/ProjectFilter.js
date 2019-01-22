@@ -90,16 +90,23 @@ class ProjectFilter extends React.Component {
                         <ExpansionPanelDetails>
                             <Typography>
                                 <Grid container justify= "space-between" xs={12}>
-                                    <Grid item xs={12}>
+                                    <Grid item xs={6}>
                                         <TextField
                                             label={i18n.t('title.label', {lng})}
                                             onChange={this.changeTitleValue}
                                             fullWidth                              
                                         />
-                                    </Grid>                              
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <TextField
+                                            label={i18n.t('firm.label', { lng })}
+                                            onChange={this.changeCompanyValue}
+                                            fullwidth
+                                        />
+                                    </Grid>                      
                                 </Grid>
                                 <Grid container justify="space-between" xs={12}>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={3}>
                                         <TextField
                                             label={i18n.t('year.label', { lng })}
                                             select
@@ -108,10 +115,10 @@ class ProjectFilter extends React.Component {
                                             fullWidth
                                         >
                                             <MenuItem value="A4">{i18n.t('year4.label', { lng })}</MenuItem>
-                                            <MenuItem value="A5" primaryText="">{i18n.t('year5.label', { lng })}</MenuItem>
+                                            <MenuItem value="A5">{i18n.t('year5.label', { lng })}</MenuItem>
                                         </TextField>
                                     </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={3}>
                                         <TextField
                                             label={i18n.t('major.label', { lng })}
                                             select
@@ -124,17 +131,10 @@ class ProjectFilter extends React.Component {
                                             {this.state.majors.map(major => <MenuItem value={major}>{major}</MenuItem>)}
                                         </TextField>
                                     </Grid>
-                                    <Grid item xs={2}>
+                                    <Grid item xs={3}>
                                         <TextField
                                             label={i18n.t('keywords.label', { lng })}
                                             onChange={this.changeMotsClesValue}
-                                            fullwidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <TextField
-                                            label={i18n.t('firm.label', { lng })}
-                                            onChange={this.changeCompanyValue}
                                             fullwidth
                                         />
                                     </Grid>
