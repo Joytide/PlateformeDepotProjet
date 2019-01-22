@@ -19,6 +19,8 @@ const Project = require('./api/models/Project');
 const Specialization = require('./api/models/Specialization');
 const Task = require('./api/models/Task');
 
+const config = require('./config.json');
+
 mongoose.Promise = global.Promise;
 //mongoose.connect('mongodb://pi2:csstv2018@ds159187.mlab.com:59187/projectdb');
 mongoose.connect(`mongodb://${config.db.hostname + ":" + config.db.port}/${config.db.name}`, (err) => {
