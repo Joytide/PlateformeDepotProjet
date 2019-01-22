@@ -10,6 +10,10 @@ import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FilterIcone from 'material-ui/svg-icons/content/filter-list'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import i18n from '../i18n';
 class ProjectFilter extends React.Component {
@@ -71,63 +75,66 @@ class ProjectFilter extends React.Component {
         return (
             <Grid container justify="center">
                 <Grid item xs={11}>
-                    <Card>
-                        <CardContent>
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography variant="h5" component="h2">
                                 {i18n.t('filter.label', { lng })}
                             </Typography>
-                            <Grid container justify= "space-between" xs={12}>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        label={i18n.t('title.label', {lng})}
-                                        onChange={this.changeTitleValue}
-                                        fullWidth                              
-                                    />
-                                </Grid>                              
-                            </Grid>
-                            <Grid container justify="space-between" xs={12}>
-                                <Grid item xs={2}>
-                                    <TextField
-                                        label={i18n.t('year.label', { lng })}
-                                        select
-                                        onChange={this.changeYearValue}
-                                        value={this.state.yearValue}
-                                        fullWidth
-                                    >
-                                        <MenuItem value="A4">{i18n.t('year4.label', { lng })}</MenuItem>
-                                        <MenuItem value="A5" primaryText="">{i18n.t('year5.label', { lng })}</MenuItem>
-                                    </TextField>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            <Typography>
+                                <Grid container justify= "space-between" xs={12}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            label={i18n.t('title.label', {lng})}
+                                            onChange={this.changeTitleValue}
+                                            fullWidth                              
+                                        />
+                                    </Grid>                              
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <TextField
-                                        label={i18n.t('major.label', { lng })}
-                                        select
-                                        onChange={this.changeMajorValue}
-                                        value={this.state.majorValue}
-                                        fullWidth
-                                    >
-                                        <MenuItem value="" primaryText=""></MenuItem>
-                                        {this.state.majors.map(major => <MenuItem value={major} primaryText={major} >{major}</MenuItem>)}
-                                    </TextField>
-
+                                <Grid container justify="space-between" xs={12}>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            label={i18n.t('year.label', { lng })}
+                                            select
+                                            onChange={this.changeYearValue}
+                                            value={this.state.yearValue}
+                                            fullWidth
+                                        >
+                                            <MenuItem value="A4">{i18n.t('year4.label', { lng })}</MenuItem>
+                                            <MenuItem value="A5" primaryText="">{i18n.t('year5.label', { lng })}</MenuItem>
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            label={i18n.t('major.label', { lng })}
+                                            select
+                                            onChange={this.changeMajorValue}
+                                            value={this.state.majorValue}
+                                            fullWidth
+                                        >
+                                            <MenuItem value="" primaryText=""></MenuItem>
+                                            {this.state.majors.map(major => <MenuItem value={major} primaryText={major} >{major}</MenuItem>)}
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            label={i18n.t('keywords.label', { lng })}
+                                            onChange={this.changeMotsClesValue}
+                                            fullwidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <TextField
+                                            label={i18n.t('firm.label', { lng })}
+                                            onChange={this.changeCompanyValue}
+                                            fullwidth
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <TextField
-                                        label={i18n.t('keywords.label', { lng })}
-                                        onChange={this.changeMotsClesValue}
-                                        //fullwidth
-                                    />
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <TextField
-                                        label={i18n.t('firm.label', { lng })}
-                                        onChange={this.changeCompanyValue}
-                                        //fullwidth
-                                    />
-                                </Grid>
-                            </Grid>
-                       </CardContent>
-                    </Card>
+                            </Typography>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
                 </Grid>
             </Grid>
         );
