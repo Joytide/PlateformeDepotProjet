@@ -114,7 +114,7 @@ class ProjectFilter extends React.Component {
                                             fullWidth
                                         >
                                             <MenuItem value="" primaryText=""></MenuItem>
-                                            {this.state.majors.map(major => <MenuItem value={major} primaryText={major} >{major}</MenuItem>)}
+                                            {this.state.majors.map(major => <MenuItem value={major}>{major}</MenuItem>)}
                                         </TextField>
                                     </Grid>
                                     <Grid item xs={2}>
