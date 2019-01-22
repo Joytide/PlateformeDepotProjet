@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { WithContext as ReactTags } from 'react-tag-input';
-import { FormGroup, Label, Row, Col } from "reactstrap";
 import ChipInput from 'material-ui-chip-input';
 import i18n from '../../i18n';
 class KeyWords extends Component {
@@ -47,15 +45,14 @@ class KeyWords extends Component {
 
     render() {
         const lng = this.props.lng;
-        const { tags, suggestions } = this.state;
         return (
-            <ChipInput lng={lng} 
+            <ChipInput
                   value={this.state.tags}
-                  onRequestAdd={(chip) => this.handleAddition(chip)}
-                  onRequestDelete={(chip, index) => this.handleDelete(index)}
+                  onAdd={(chip) => this.handleAddition(chip)}
+                  onDelete={(chip, index) => this.handleDelete(index)}
                   fullWidth
                   fullWidthInput
-                  floatingLabelText={i18n.t('keyword.label',{lng}) }
+                  label={i18n.t('keyword.label',{lng}) }
                   dataSource = {this.state.suggestions}
                 />
         )

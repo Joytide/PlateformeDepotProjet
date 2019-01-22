@@ -1,8 +1,23 @@
 'use strict';
 
+// NON UTILISE POUR LE MOMENT. LE CONTROLLER N'EST PAS CHARGÉ DANS APP.JS
+
 var mongoose = require('mongoose');
 var jwt = require('jsonwebtoken');
 var Admin = mongoose.model('Administration');
+const Person = mongoose.model('Person');
+const Specialization = mongoose.model('Specialization');
+
+
+exports.listUsers = (req, res) => {
+    Person.find({}, (err, persons) => {
+        if(err) res.send(err);
+        else res.json(persons);
+    });
+}
+
+
+
 
 /* Il est possible que l'on se passe totalement de ce controller car on passera par l'adfs pour gérer les accès */
 

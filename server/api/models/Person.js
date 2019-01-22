@@ -9,6 +9,8 @@ const PersonSchema = new Schema({
 		type: String,
 		required: true
 	},
+	username: String, // Temporaire. Ne sera pas utilisé en prod
+	password: String, // Temporaire. Ne sera pas utilisé en prod
 	last_name: {
 		type: String,
 		required: true
@@ -22,36 +24,30 @@ const Person = mongoose.model('Person', PersonSchema);
 
 //Student Class
 const StudentSchema = new Schema({
-	id_specialization: {
-		type: Schema.Types.ObjectId,
-        ref: 'Specialization',
-		required: true
-	},
-	study_year: {
-		type: Number,
-		required: true
-	}
 });
 const Student = Person.discriminator('Student', StudentSchema);
 
 //Partner Class
 const PartnerSchema = new Schema({
-	company: String
+	company: String,
+	key: String,
+	projects: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'Project'
+		}
+	]
 });
 const Partner = Person.discriminator('Partner', PartnerSchema);
 
 //Administration Class
 const AdministrationSchema = new Schema({
-	id_specialization: {
-		type: Schema.Types.ObjectId,
-        ref: 'Specialization',
-		required: true
-	},
-	password: {
-		type: String,
-		required: true
+	EPGE: Boolean,
+	admin: {
+		type: Boolean,
+		default: false
 	}
 });
 const Administration = Person.discriminator('Administration', AdministrationSchema);
 
-module.exports = { Student, Partner, Administration };
+module.exports = { Person, Student, Partner, Administration };

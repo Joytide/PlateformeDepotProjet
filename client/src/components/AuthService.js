@@ -1,7 +1,8 @@
 import decode from 'jwt-decode';
-export default class AuthService {
+
+class AuthService {
     // Initializing important variables
-    constructor(domain) {
+    constructor() {
         this.fetch = this.fetch.bind(this) // React binding stuff
         this.login = this.login.bind(this)
         this.getProfile = this.getProfile.bind(this)
@@ -9,7 +10,7 @@ export default class AuthService {
 
     login(email, password) {
         // Get a token from api server using the fetch api
-        return this.fetch(`/api/login`, {
+        return this.fetch(`/api/login/leoid`, {
             method: 'POST',
             body: JSON.stringify({
                 email,
@@ -17,19 +18,18 @@ export default class AuthService {
             })
         }).then(res => {
             console.log(res);
-            console.log('ok');
             this.setToken(res.token) // Setting the token in localStorage
             return Promise.resolve(res);
-        }).catch(err => { 
+        }).catch(err => {
             console.log(err)
             return Promise.reject(err);
         });
     }
 
-    loggedIn() {
+    isLoggedIn() {
         // Checks if there is a saved token and it's still valid
         const token = this.getToken() // GEtting token from localstorage
-        return !!token && !this.isTokenExpired(token) // handwaiving here
+        return token // handwaiving here
     }
 
     isTokenExpired(token) {
@@ -48,24 +48,29 @@ export default class AuthService {
 
     setToken(idToken) {
         // Saves user token to localStorage
-        localStorage.setItem('id_token', idToken)
+        localStorage.setItem('token', idToken)
     }
 
     getToken() {
-        // Retrieves the user token from localStorage
-        return localStorage.getItem('id_token')
+        if (!this.isTokenExpired(localStorage.getItem('token'))) {
+            // Retrieves the user token from localStorage
+            return localStorage.getItem('token')
+        }
+        else {
+            localStorage.removeItem('token');
+            return null;
+        }
     }
 
     logout() {
         // Clear user token and profile data from localStorage
-        localStorage.removeItem('id_token');
+        localStorage.removeItem('token');
     }
 
     getProfile() {
         // Using jwt-decode npm package to decode the token
         return decode(this.getToken());
     }
-
 
     fetch(url, options) {
         // performs api calls sending the required authentication headers
@@ -76,8 +81,8 @@ export default class AuthService {
 
         // Setting Authorization header
         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
-        if (this.loggedIn()) {
-            headers['Authorization'] = 'Bearer ' + this.getToken()
+        if (this.isLoggedIn()) {
+            headers['authorization'] = this.getToken()
         }
 
         return fetch(url, {
@@ -99,3 +104,5 @@ export default class AuthService {
         }
     }
 }
+
+export default AuthService;

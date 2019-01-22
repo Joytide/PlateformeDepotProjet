@@ -1,58 +1,155 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Partner = mongoose.model('Partner');
+const mongoose = require('mongoose');
+const Partner = mongoose.model('Partner');
+const Project = mongoose.model('Project');
+const crypto = require('crypto');
 
-exports.list_all_partners = function (req, res) {
-  Partner.find({}, function (err, partner) {
-    if (err)
-      res.send(err);
-    res.json(partner);
-  });
+exports.listAllPartners = function (req, res) {
+	if (req.user.__t == "EPGE") {
+		Partner.find()
+			.populate('projects')
+			.exec((err, partner) => {
+				if (err)
+					res.send(err);
+				res.json(partner);
+			});
+	} else if (req.user.__t == "Partner") {
+		Partner.findById(req.user._id)
+			.populate({
+				path: 'projects',
+				populate: {
+					path: "majors_concerned"
+				}
+			})
+			.exec((err, partner) => {
+				console.log(partner.projects);
+				if (err) res.send(err);
+				else res.json(partner);
+			});
+	}
 };
 
-exports.create_a_partner = function (req, res) {
-  var new_partner = new Partner(req.body);
-  console.log(new_partner);
-  new_partner.save(function (err, partner) {
-    if (err)
-      res.send(err);
-    res.json(partner);
-  });
+exports.addProject = (partnerId, projectId) => {
+	return new Promise((resolve, reject) => {
+		Partner.findByIdAndUpdate(partnerId, { $push: { projects: projectId } }, { new: true }, (err, partner) => {
+			if (err) reject(err);
+			else resolve(partner);
+		});
+	});
+}
+
+// Return a promise when creating a Partner
+exports.createPartner = function (data) {
+	return new Promise(async (resolve, reject) => {
+		let newPartner = new Partner({
+			"first_name": data.first_name,
+			"last_name": data.last_name,
+			"email": data.email,
+			"company": data.company
+		});
+
+		newPartner.key = await generatePassword(16);
+
+		if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
+			newPartner.save(err => {
+				if (err) reject(err);
+				resolve(newPartner);
+			});
+		} else {
+			reject(new Error("Invalid parameters : missing one of these aruguments : first name, last name, email or company"));
+		}
+	});
 };
 
-exports.find_by_mail = (req, res) => {
-  Partner.findOne({ email: req.params.email }, (err, partner) => {
-    if (err) {
-      res.send(err);
-    }
-    res.json(partner);
-  });
+exports.findByMail = (req, res) => {
+	if (req.params.email) {
+		Partner.findOne({ email: req.params.email })
+			.populate('projects')
+			.exec((err, partner) => {
+				if (err)
+					res.send(err);
+				if (!partner)
+					res.json({});
+				else
+					res.json(partner);
+			});
+	} else {
+		res.send(new Error("Missing email argument"));
+	}
 }
 
-exports.update_a_partner = (req, res) => {
-  Partner.findOneAndUpdate({ _id: req.params.partnerId }, req.body, { new: true }, (err, partner) => {
-    if (err) {
-      res.send(err);
-    }
-    res.json(partner);
-  });
+exports.findById = (req, res) => {
+	Partner.findOne({ _id: req.params.id })
+		.populate('projects')
+		.exec((err, partner) => {
+			if (err)
+				res.send(err);
+			if (!partner)
+				res.json({});
+			else
+				res.json(partner);
+		});
 }
 
-exports.delete_a_partner = (req, res) => {
-  Partner.findByIdAndRemove(req.params.partnerId, function (err, note) {
-    if (err) {
-      console.log(err);
-      if (err.kind === 'ObjectId') {
-        return res.status(404).send({ message: "Partner not found with id " + req.params.partnerId });
-      }
-      return res.status(500).send({ message: "Could not delete Partner with id " + req.params.partnerId });
-    }
+exports.findByKey = (req, res) => {
+	console.log("here");
+	console.log(req.params.key)
+	Partner.findOne({ key: req.params.key })
+		.populate('projects')
+		.exec((err, partner) => {
+			if (err)
+				res.send(err);
+			if (!partner)
+				res.json({});
+			else
+				res.json(partner);
+		})
+}
 
-    if (!note) {
-      return res.status(404).send({ message: "Partner not found with id " + req.params.partnerId });
-    }
+exports.updatePartner = (req, res) => {
+	Partner.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true }, (err, partner) => {
+		if (err) {
+			res.send(err);
+		}
+		res.json(partner);
+	});
+}
 
-    res.send({ message: "Partner deleted successfully!" })
-  });
+exports.deletePartner = (req, res) => {
+	Partner.findByIdAndRemove(req.params.id, function (err, note) {
+		if (err) {
+			console.log(err);
+			if (err.kind === 'ObjectId') {
+				return res.status(404).send({ message: "Partner not found with id " + req.params.id });
+			}
+			return res.status(500).send({ message: "Could not delete Partner with id " + req.params.id });
+		}
+
+		if (!note) {
+			return res.status(404).send({ message: "Partner not found with id " + req.params.id });
+		}
+
+		res.send({ message: "Partner deleted successfully!" })
+	});
+}
+
+function generatePassword(size) {
+	return new Promise((resolve, reject) => {
+		crypto.randomBytes(size / 2, function (err, buffer) {
+			if (err) reject(err);
+			var key = buffer.toString('hex');
+
+			// Prevent key collision
+			Partner.count({ key: key }, (err, count) => {
+				if (err) reject(err);
+				if (count == 0) resolve(key);
+				else resolve(generatePassword(size));
+			});
+		});
+	});
+}
+
+function randomInt(max) {
+	return Math.floor(Math.random() * max - 1);
 }

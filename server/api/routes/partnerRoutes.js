@@ -1,16 +1,24 @@
 'use strict';
 
 const partner = require('../controllers/partnerController');
+const auth = require('../controllers/authController');
+
 
 module.exports = function (app) {
-  app.route('/api/partners')
-    .get(partner.list_all_partners)
-    .post(partner.create_a_partner);
+	app.route('/api/partner')
+		// Staff access only
+		.get(auth.passport.authenticate('jwt'), partner.listAllPartners);
 
-  app.route('/api/partners/:partnerId')
-    .put(partner.update_a_partner)
-    .delete(partner.delete_a_partner);
 
-  app.route('/api/partners/:email')
-    .get(partner.find_by_mail);
+	app.route('/api/partner/:id([a-fA-F0-9]{24})')
+		.get(partner.findById)
+		.post(partner.updatePartner)
+		.delete(partner.deletePartner);
+
+	app.route('/api/partner/:key([a-zA-Z0-9]{16})')
+		.get(partner.findByKey);
+		
+	//Keep that route in last
+	app.route('/api/partner/:email')
+		.get(partner.findByMail);
 };

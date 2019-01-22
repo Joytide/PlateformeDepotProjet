@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Button, Input, Label } from 'reactstrap';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 class ForgetPass extends Component {
 
@@ -19,6 +18,8 @@ class ForgetPass extends Component {
         const form = {
             email: this.state.email
         };
+
+        console.log("handleSubmit button pressed");
 
         try {
             fetch('/api/retrieveEdit', {
@@ -54,12 +55,16 @@ class ForgetPass extends Component {
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <p > Si vous avez perdu votre lien pour modifier votre projet, veuillez entrer votre mail pour le récupérer. </p>
                     <TextField
-                        hintText="Entrez votre e-mail"
-                        floatingLabelText="Entrez votre e-mail"
+                        label="Entrez votre e-mail"
+                        placeholder="Entrez votre e-mail"
                         onChange={this.handleChange.bind(this)}
                         type="email"
+                        multiline
+                        margin="normal"
                     /><br/>
-                    <RaisedButton label="Envoyer" primary={true} type="submit"/>
+                    <Button variant="raised" color="primary" type="submit">
+                        <div>Envoyer</div>
+                    </Button>
                 </form>
             </div>
         )

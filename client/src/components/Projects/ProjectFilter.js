@@ -1,10 +1,16 @@
 import React from 'react';
-import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
-import { Container, Row, Col } from 'react-grid-system';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Filter from '@material-ui/icons/Filter7'
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import FilterIcone from 'material-ui/svg-icons/content/filter-list'
-import TextField from 'material-ui/TextField';
+
 import i18n from '../i18n';
 class ProjectFilter extends React.Component {
     constructor(props) {
@@ -25,32 +31,28 @@ class ProjectFilter extends React.Component {
           
 
         };
-      }
+    }
 
-    changeYearValue(e,index,value) {
-        this.setState({yearValue: value}, function(){
-          this.props.getdropDownValue(this.state.yearValue, "Année");
+    changeYearValue(e, index, value) {
+        this.setState({ yearValue: value }, function () {
+            this.props.getdropDownValue(this.state.yearValue, "Année");
         });
     }
 
-    changeMajorValue(e,index,value) {
-        this.setState({majorValue: value}, function(){
-          this.props.getdropDownValue(this.state.majorValue,"Majeure");
+    changeMajorValue(e, index, value) {
+        this.setState({ majorValue: value }, function () {
+            this.props.getdropDownValue(this.state.majorValue, "Majeure");
         });
     }
 
-    changeMotsClesValue(e,value){
-        
-        this.setState({mots_cles_value:value}, function(){
-            console.log(this.state.mots_cles_value);
+    changeMotsClesValue(e, value) {
+        this.setState({ mots_cles_value: value }, function () {
             this.props.getMotsClesValue(this.state.mots_cles_value);
         });
     }
 
     changeTitleValue(e,value){
-        
         this.setState({title_value:value}, function(){
-            console.log(this.state.title_value);
             this.props.getTitleValue(this.state.title_value);
         });
     }
@@ -59,80 +61,75 @@ class ProjectFilter extends React.Component {
     componentDidMount() {
         fetch('/api/majors/major/:major')
             .then(res => res.json())
-            .then(majors => this.setState({majors}))
-            .catch((err) =>{console.log(err);});
-        //console.log(this.state.dropDownValue);
-      }
+            .then(majors => this.setState({ majors }))
+            .catch((err) => { console.log(err); });
+    }
 
 
     render() {
         const lng = this.props.lng
         return (
-            <div>{' '}
-                <Container fluid>
+            <Grid container justify="center">
+                <Grid item xs={11}>
                     <Card>
-                        <CardHeader
-                            title={i18n.t('filter.label', {lng})}
-                            showExpandableButton={true}
-                            closeIcon={<FilterIcone />}
-                            openIcon={<FilterIcone />}
-                        />
-                        <CardText expandable={true}>
-                            <Row>
-                                <Col md={6}>
+                        <CardContent>
+                            <Typography variant="h5" component="h2">
+                                {i18n.t('filter.label', { lng })}
+                            </Typography>
+                            <Grid container justify= "space-between" xs={12}>
+                                <Grid item xs={12}>
                                     <TextField
-                                        floatingLabelText={i18n.t('title.label', {lng})}
+                                        label={i18n.t('title.label', {lng})}
                                         onChange={this.changeTitleValue}
-                                        fullwidth
-                                        />
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col md={3}>
-                                    <SelectField
-                                        floatingLabelText={i18n.t('year.label', {lng})}
+                                        fullWidth                              
+                                    />
+                                </Grid>                              
+                            </Grid>
+                            <Grid container justify="space-between" xs={12}>
+                                <Grid item xs={2}>
+                                    <TextField
+                                        label={i18n.t('year.label', { lng })}
+                                        select
                                         onChange={this.changeYearValue}
                                         value={this.state.yearValue}
+                                        fullWidth
                                     >
-                                    <MenuItem value="" primaryText="" />
-                                    <MenuItem value="A4" primaryText={i18n.t('year4.label', {lng})}/>
-                                    <MenuItem value="A5" primaryText={i18n.t('year5.label', {lng})} />
-                                    </SelectField>
-
-                                </Col>
-                                <Col md={3}>
-                                    <SelectField
-                                        floatingLabelText={i18n.t('major.label', {lng})}
+                                        <MenuItem value="A4">{i18n.t('year4.label', { lng })}</MenuItem>
+                                        <MenuItem value="A5" primaryText="">{i18n.t('year5.label', { lng })}</MenuItem>
+                                    </TextField>
+                                </Grid>
+                                <Grid item xs={2}>
+                                    <TextField
+                                        label={i18n.t('major.label', { lng })}
+                                        select
                                         onChange={this.changeMajorValue}
                                         value={this.state.majorValue}
+                                        fullWidth
                                     >
-                                    <MenuItem value="" primaryText="" />
-                                    <MenuItem value="IBO" primaryText={i18n.t('ibo.label', {lng})}/>
-                                    <MenuItem value="NE" primaryText={i18n.t('ne.label', {lng})}/>
-                                    <MenuItem value="IF" primaryText={i18n.t('if.label', {lng})}/>
-                                    <MenuItem value="MNM" primaryText={i18n.t('mnm.label', {lng})}/>
-                                    </SelectField>
+                                        <MenuItem value="" primaryText=""></MenuItem>
+                                        {this.state.majors.map(major => <MenuItem value={major} primaryText={major} >{major}</MenuItem>)}
+                                    </TextField>
 
-                                </Col>
-                                <Col md={3}>
+                                </Grid>
+                                <Grid item xs={2}>
                                     <TextField
-                                        floatingLabelText={i18n.t('keywords.label', {lng})}
+                                        label={i18n.t('keywords.label', { lng })}
                                         onChange={this.changeMotsClesValue}
-                                        fullwidth
+                                        //fullwidth
                                     />
-                                </Col>
-                                <Col md={3}>
+                                </Grid>
+                                <Grid item xs={2}>
                                     <TextField
-                                        floatingLabelText={i18n.t('firm.label', {lng})}
+                                        label={i18n.t('firm.label', { lng })}
                                         onChange={this.changeCompanyValue}
-                                        fullwidth
+                                        //fullwidth
                                     />
-                                </Col>
-                            </Row>
-                        </CardText>
+                                </Grid>
+                            </Grid>
+                       </CardContent>
                     </Card>
-                </Container>
-            </div>
+                </Grid>
+            </Grid>
         );
     }
 }

@@ -1,22 +1,30 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const SpecializationSchema = new Schema({
-    school_name: {
+const SpecializationSchema = mongoose.Schema({
+    name: {
+        fr: {
+            type: String,
+            required: true
+        },
+        en: {
+            type: String,
+            required: true
+        }
+    },
+    abbreviation: {
         type: String,
         required: true
     },
-    major_name: {
-        type: String,
-        required: true
-    },
-    referent: {
-        type: String,
-        required: true
-    }
+    referent: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Administration'
+        }
+    ]
 });
+
 const Specialization = mongoose.model('Specialization', SpecializationSchema);
 
 module.exports = Specialization;

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import Paper from 'material-ui/Paper';
 import { Container, Row, Col } from 'react-grid-system';
 import TextField from 'material-ui/TextField';
@@ -7,7 +6,6 @@ import Checkbox from 'material-ui/Checkbox';
 import i18n from '../components/i18n';
 import MenuItem from 'material-ui/MenuItem/MenuItem';
 import SelectField from 'material-ui/SelectField';
-import KeyWords from '../components/Deposit/FormComponents/KeyWords'
 import RaisedButton from 'material-ui/RaisedButton/RaisedButton';
 
 /**
@@ -29,7 +27,7 @@ class Edit extends Component {
     }
 
     componentWillUpdate(nextProps) {
-        if (this.props.lng != nextProps.lng) {
+        if (this.props.lng !== nextProps.lng) {
             const lng = nextProps.lng;
             this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
             { name: i18n.t('ne.label', { lng }), key: "NE" },
@@ -114,8 +112,8 @@ class Edit extends Component {
             }
         }
 
-        var lng = this.props.lng
-        var keywordss = this.state.keywords ? this.state.keywords : []
+        var lng = this.props.lng;
+        
         return (
             <Container fluid>
                 <Col md={10} offset={{ md: 1 }}>

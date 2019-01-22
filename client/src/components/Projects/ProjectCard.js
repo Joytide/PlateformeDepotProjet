@@ -1,36 +1,57 @@
 import React from 'react';
-import { Card, CardHeader, CardText, CardTitle, CardActions } from 'material-ui/Card';
-import { Container, Row, Col } from 'react-grid-system'
-import { ListItem } from 'material-ui/List';
-import FlatButton from 'material-ui/FlatButton'
-import Snackbar from 'material-ui/Snackbar';
-import Chip from 'material-ui/Chip';
-import Dialog from 'material-ui/Dialog';
-import ProjectComment from './ProjectComment';
 import i18n from '../i18n';
+
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+//import Collapse from '@material-ui/core/Collapse';
+//import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+//import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
+
+import { Link } from 'react-router-dom';
+
+
+/*
+ * i18n integration
+ * Card content when expanded 
+ * Keywords list
+ * User / Admin footer ?
+ */
+
+
+
 /**
  * Fast description of a project
  * use project props to set the project to display
  */
 class ProjectCard extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			project: this.props.project,
+			modal_validation: false,
+			projectCardOpen: this.props.projectCardOpen,
+			expanded: false
+		}
+		this.handleValidation = this.handleValidation.bind(this)
+		this.handleRejection = this.handleRejection.bind(this)
+		this.handleExpandClick = this.handleExpandClick.bind(this)
+	}
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            project: this.props.project,
-            modal_validation: false,
-            projectCardOpen: this.props.projectCardOpen,
-            //lng: 'en'
-        }
-        this.handleValidation = this.handleValidation.bind(this)
-        this.handleRejection = this.handleRejection.bind(this)
-    }
+	handleExpandClick = () => {
+		this.setState(state => ({ expanded: !state.expanded }));
+	};
 
     /**
      * Update the project and set the status to "validate"
      * @param {*} event 
      */
-    handleValidation(event) {
+	handleValidation(event) {
+		// Pas d'envoi de mail côté client. Faire un route pour valider le projet côté serveur
+        /*
         var myInit = {
             method: 'PUT',
             mode: 'cors',
@@ -65,12 +86,17 @@ class ProjectCard extends React.Component {
 
             })
             .catch((err) => { console.log("Error occured : " + err) })
-    }
+            */
+	}
+
     /**
          * Update the project and set the status to "refused"
          * @param {*} event 
          */
-    handleRejection(event) {
+	handleRejection(event) {
+		// Pas d'envoi de mail côté client. Faire un route pour rejeter le projet côté serveur
+
+        /*
         var myInit = {
             method: 'PUT',
             mode: 'cors',
@@ -105,122 +131,96 @@ class ProjectCard extends React.Component {
 
             })
             .catch((err) => { console.log("Error occured : " + err) })
+            */
 
-    }
+	}
 
-    handleOpen = (e) => {
-        console.log(e.target)
-        this.setState({ modal_validation: true });
-    }
+	handleOpen = (e) => {
+		console.log(e.target)
+		this.setState({ modal_validation: true });
+	}
 
-    handleClose = () => {
-        this.setState({ modal_validation: false });
-    };
+	handleClose = () => {
+		this.setState({ modal_validation: false });
+	};
 
-    render() {
+	render() {
+		const project = this.props.project;
+		const lng = this.props.lng;
 
-        const actions = [
-            <FlatButton
-                label="Oui"
-                primary={true}
-                onClick={this.handleRejection}
-            />,
-            <FlatButton
-                label="Non"
-                secondary={true}
-                keyboardFocused={true}
-                onClick={this.handleClose}
-            />,
-        ];
-        var project = this.props.project;
-        let adminFooter = null;
-        var majors = project.majors_concerned.map((major => major + " "))
+		let partner;
+		if (this.props.showPartner) {
+			partner = (<Grid item xs >
+				<Typography variant="subtitle1" component="h2">
+					{i18n.t('partner.label', { lng })} : {project.partner.company}
+				</Typography>
+			</Grid>)
+		}
 
-        const lng = this.props.lng;
+		return (
+			<div>
+				<Link to={`/Projects/${this.props.project._id}`} key={this.props.project._id}>
+					<Card style={{ borderBottom: 2, marginBottom: 8 }}>
 
-        /**
-         * ADMIN FOOTER ---------------------
-         */
-        if (this.props.admin) { //If admin display the admin menu
-            adminFooter = <CardActions>
-                <FlatButton primary={true} onClick={this.handleValidation} label="Valider le projet" />
-                <FlatButton secondary={true} onClick={this.handleOpen} label="Refuser le projet" />
-                <Dialog
-                    title="Etes vous sur de vouloir refuser ce projet ?"
-                    actions={actions}
-                    modal={false}
-                    open={this.state.modal_validation}
-                    onRequestClose={this.handleClose}
-                >
-                </Dialog>
-            </CardActions>
-            /**
-             * -----------------------------
-             * USER FOOTER
-             */
+						<CardContent>
+							<Grid container justify="space-between">
+								<Grid item xs={7}>
+									<Typography variant="h5" component="h2">
+										{project.number} - {project.title}
+									</Typography>
+								</Grid>
+								<Grid item xs={5}>
+									{partner}
+									<Typography color="textSecondary" gutterBottom>
+										{new Date(project.sub_date).toLocaleDateString()}
+									</Typography>
+								</Grid>
+							</Grid>
 
-        }
-        else {
-            var userAction = {
-                notprojectCardOpen: <ProjectComment project={this.state.project} lng={lng} />,
-                projectCardOpen: <div><p>Questions :</p><ProjectComment project={this.state.project} lng={lng} projectCardOpen /> </div>
-            }
-            var userFooter = this.state.projectCardOpen ? <CardActions> {userAction.projectCardOpen}</CardActions> : <CardActions> {userAction.notprojectCardOpen}</CardActions>
-        }
+							<hr></hr>
 
-        var files = null;
-        if (this.state.project.media_files[0] !== undefined && this.state.project.media_files[0].filename !== undefined) {
-            console.log(this.state.project.media_files[0]);
-            files = <Row>
-                <Col>
-                    <label> Files : </label>
-                    {project.media_files.map(file => {
-                        if (file.mimetype.includes('image')) {
-                            return <img src={`/static/${file.filename}`} />
-                        }
-                        else if (file.mimetype.includes('application')) {
-                            return <a href={`http://localhost:3001/static/${file.filename}`}> lien PDF </a>
-                        }
-                    })}
-                </Col>
-            </Row>
-        }
+							<Grid item xs={10} >
+								<CardContent style={{ color: "black", paddingTop: 1, paddingBottom: 1 }}>
+									{project.description.substring(1, 220) + " ..."}
+								</CardContent>
+							</Grid>
 
-        return (
-            <div>
-                <Card style={{ borderBottom: 2, marginBottom: 8 }}>
-                    <CardHeader
-                        title={project.title}
-                        subtitle={<label>{majors} - Le : {project.edit_date}</label>}
-                        actAsExpander={true}
-                        showExpandableButton={true}
-                        style={{ paddingLeft: 8, paddingTop: 8, paddingBottom: 0 }}
-                    >
-                        <label style={{ marginRight: 60 }}> {i18n.t('year.label', { lng })}: {project.study_year.map((year) => year + " ")} </label>
-                        {project.partner ? (<label> {i18n.t('partner.label', { lng })} : {project.partner.company} </label>) : ("Non spécifié")}
-                        <hr />
-                    </CardHeader>
-                    <CardText expandable={this.props.projectCardOpen ? false : true} style={{ marginBottom: 8 }}>
-                        {project.description}
-                        <hr />
-                        <Container fluid>
-                            <Row>
-                                <Col>
-                                    <label> {i18n.t('keywords.label', { lng })} : </label>
-                                    {project.keywords ? (<Row>   {project.keywords.map(keyword =>
-                                        <Chip style={{ margin: 4 }} >
-                                            {keyword}
-                                        </Chip>)}</Row>) : ("Non spécifié")}
-                                </Col>
-                            </Row>
-                            {files}
-                        </Container>
-                    </CardText>
-                    {this.props.admin ? (adminFooter) : (userFooter)}
+						</CardContent>
 
-                </Card>
-            </div>);
-    }
+						<CardActions disableActionSpacing>
+								<Grid container spacing={8}>
+									{
+										project.study_year.sort().map((year, index) => {
+											return (<Grid key={index} item>
+												<Chip label={year} color="primary" />
+											</Grid>);
+										})
+									}
+								</Grid>
+								<Grid container spacing={8}>
+									{
+										project.majors_concerned.sort().map((major, index) => {
+											return (<Grid key={index} item>
+												<Chip label={major.abbreviation} color="secondary" />
+											</Grid>);
+										})
+									}
+								</Grid>
+								<Grid container spacing={8}>
+									{
+										project.keywords.sort().map((keyword, index) => {
+											return (<Grid key={index} item>
+												<Chip label={keyword} />
+											</Grid>);
+										})
+									}
+								</Grid>
+						</CardActions>
+
+					</Card>
+				</Link>
+			</div>);
+	}
 }
 
 export default ProjectCard;
