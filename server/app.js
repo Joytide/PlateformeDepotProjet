@@ -21,7 +21,7 @@ const Task = require('./api/models/Task');
 
 mongoose.Promise = global.Promise;
 //mongoose.connect('mongodb://pi2:csstv2018@ds159187.mlab.com:59187/projectdb');
-mongoose.connect('mongodb://localhost:27017/Tododb', (err) => {
+mongoose.connect(`mongodb://${config.db.hostname + ":" + config.db.port}/${config.db.name}`, (err) => {
 	if (err) {
 		console.error(colors.red(err.message));
 		process.exit(-1);
