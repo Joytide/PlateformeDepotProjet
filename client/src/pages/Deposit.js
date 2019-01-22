@@ -21,7 +21,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { FormControl, InputLabel, Select, Input, FormGroup } from '@material-ui/core'
 
-import { ValidatorForm } from 'react-material-ui-form-validator';
+import { TextValidator, ValidatorForm} from 'react-material-ui-form-validator';
 
 import { Link } from 'react-router-dom';
 import i18n from '../components/i18n';
@@ -343,61 +343,50 @@ class Deposit extends React.Component {
               </Grid>
 
               <Grid item>
-                <TextField
-                  label={i18n.t('email.label', { lng })}
-                  //placeholder={i18n.t('email.label', { lng })}
-                  required
-                  //errorMessages={[i18n.t('field.label', { lng }), i18n.t('notvalid.label', { lng })]}
-                  error={this.state.email.is}
-                  onChange={this.handleChange}
-                  //onBlur={this.handleBlur}
-                  name="email"
-                  value={this.state.email}
-                  fullWidth
-                  inputProps={{ maxLength: 40, type: "email" }}
-                  maxLength={40}
+              <TextValidator
+                label={i18n.t('email.label', { lng })}
+                placeholder={i18n.t('email.label', { lng })}
+                validators={['required', 'isEmail','maxStringLength:40']}
+                errorMessages={[i18n.t('field.label', { lng }), i18n.t('notvalid.label', { lng }), i18n.t('field_length.label',{lng})]}
+                onChange={this.handleChange}
+                onBlur={this.handleBlur}
+                name="email"
+                value={this.state.email}
+                fullWidth={true}
                 />
               </Grid>
 
-              <Grid item>
-                <TextField
-                  required
-                  //errorMessages={i18n.t('field.label', { lng })}
-                  label={i18n.t('company.label', { lng })}
-                  //placeholder={i18n.t('company.label', { lng })}
-                  onChange={this.handleChange}
-                  name="company"
-                  value={this.state.company}
-                  fullWidth
-                  inputProps={{ maxLength: 70 }}
+            <Grid item>
+              <TextValidator
+                validators={['required','maxStringLength:70']}
+                errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label',{lng})]}
+                label={i18n.t('company.label', { lng })}
+                placeholder={i18n.t('company.label', { lng })}
+                onChange={this.handleChange}
+                name="company" value={this.state.company}
+                fullWidth={true} 
                 />
               </Grid>
 
-              <Grid item>
-                <TextField
-                  required
-                  //errorMessages={i18n.t('field.label', { lng })}
-                  label={i18n.t('firstname.label', { lng })}
-                  //placeholder={i18n.t('firstname.label', { lng })}
-                  onChange={this.handleChange}
-                  fullWidth
-                  name="first_name"
-                  value={this.state.first_name}
-                  inputProps={{ maxLength: 30 }}
+            <Grid item>
+              <TextValidator
+                validators={['required','maxStringLength:30']}
+                errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label',{lng})]}
+                label={i18n.t('firstname.label', { lng })}
+                placeholder={i18n.t('firstname.label', { lng })}
+                onChange={this.handleChange} fullWidth={true}
+                name="first_name" value={this.state.first_name} 
                 />
               </Grid>
 
-              <Grid item>
-                <TextField
-                  required
-                  //errorMessages={i18n.t('field.label', { lng })}
-                  label={i18n.t('lastname.label', { lng })}
-                  //placeholder={i18n.t('lastname.label', { lng })}
-                  onChange={this.handleChange}
-                  fullWidth
-                  name="last_name"
-                  value={this.state.last_name}
-                  inputProps={{ maxLength: 30 }}
+            <Grid item>
+              <TextValidator
+                validators={['required','maxStringLength:30']}
+                errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label',{lng})]}
+                label={i18n.t('lastname.label', { lng })}
+                placeholder={i18n.t('lastname.label', { lng })}
+                onChange={this.handleChange} fullWidth={true}
+                name="last_name" value={this.state.last_name} 
                 />
               </Grid>
             </Grid>
@@ -415,16 +404,14 @@ class Deposit extends React.Component {
                 <Typography align='center' variant='h6'>{i18n.t('projectPres.h2', { lng })}</Typography>
               </Grid>
               <Grid item>
-                <TextField
+                <TextValidator
                   label={i18n.t('titleproj.label', { lng })}
                   placeholder={i18n.t('titleproj.label', { lng })}
-                  onChange={this.handleChange}
-                  fullWidth
-                  name="title"
+                  onChange={this.handleChange} fullWidth={true}
+                  name="title" 
                   value={this.state.title}
-                  required
-                  //errorMessages={i18n.t('field.label', { lng })} 
-                  inputProps={{ maxLength: 100 }}
+                  validators={['required','maxStringLength:70']}
+                  errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label',{lng})]}
                 />
               </Grid>
               <br />
@@ -474,24 +461,23 @@ class Deposit extends React.Component {
               <br />
 
               <Grid item>
-                <TextField
-                  //placeholder={i18n.t('descriptionProj.label', { lng })}
-                  label="Description *"
+                <TextValidator
+                  placeholder={i18n.t('descriptionProj.label', { lng })}
+                  label="Description"
                   value={this.state.description}
-                  required
-                  //errorMessages={i18n.t('field.label', { lng })}
+                  validators={['required','maxStringLength:3000']}
+                  errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label',{lng})]}
                   multiline
-                  variant="outlined"
-                  rows={10}
+                  rows="10"
                   name="description"
                   onChange={this.handleChange}
-                  fullWidth
-                  inputProps={{ maxLength: 3000 }}
+                  fullWidth={true}
+                  variant="outlined"
                 />
               </Grid>
 
               <Grid item>
-                {/*<KeyWords lng={lng} change={this.handleKeyWords} />*/}
+                {<KeyWords lng={lng} change={this.handleKeyWords} />}
               </Grid>
               <Grid item>
                 <FilesInputs lng={lng} change={this.handleFiles} />
