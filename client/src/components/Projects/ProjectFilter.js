@@ -24,17 +24,17 @@ class ProjectFilter extends React.Component {
         this.changeMajorValue = this.changeMajorValue.bind(this);
         this.changeMotsClesValue = this.changeMotsClesValue.bind(this);
         this.changeTitleValue = this.changeTitleValue.bind(this);
+        this.changeCompanyValue = this.changeCompanyValue.bind(this);
 
         this.state = {
-          title : [],
+          title : "",
           years : [],
           majors : [],
           mots_cles_value : "",
+          company_value : "",
           yearValue:this.props.filterName,
           majorValue:this.props.filterName,
-          
-
-        };
+ };
     }
 
     changeYearValue(e, index, value) {
@@ -56,9 +56,15 @@ class ProjectFilter extends React.Component {
     }
 
     changeTitleValue(e,value){
-        this.setState({title_value:value}, function(){
+        this.setState({title_value: value }, function(){
             this.props.getTitleValue(this.state.title_value);
         });
+    }
+
+    changeCompanyValue(e,value){
+        this.setState({company_value: value }, function(){
+            this.props.getCompanyValue(this.state.company_value);
+        })
     }
 
 
@@ -113,6 +119,7 @@ class ProjectFilter extends React.Component {
                                             value={this.state.majorValue}
                                             fullWidth
                                         >
+
                                             <MenuItem value="" primaryText=""></MenuItem>
                                             {this.state.majors.map(major => <MenuItem value={major}>{major}</MenuItem>)}
                                         </TextField>

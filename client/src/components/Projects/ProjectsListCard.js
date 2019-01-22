@@ -76,7 +76,7 @@ class ProjectsListCard extends React.Component {
 
     handleTitleValue(title_value) {
         if (title_value !== "") {
-            var tmp = this.state.projectToDisplay.filter(project => {
+            let tmp = this.state.projectToDisplay.filter(project => {
                 if (project.title.includes(title_value)) {
                     return true;
                 }
@@ -125,7 +125,7 @@ class ProjectsListCard extends React.Component {
 								{i18n.t('project.title', { lng })}
 							</Typography>
 
-							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
+							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} getCompanyValue={this.handleCompanyValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
 
 							<Grid container style={{ marginTop: 12 }} spacing={16} justify="center">
 								{ProjectList}

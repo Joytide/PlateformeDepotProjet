@@ -5,7 +5,6 @@ const project = require('../controllers/projectController');
 module.exports = function (app) {
   app.route('/api/projects')
     .get(project.listProjects)
-    .get(project.filter_by_name)
     .post(project.createProject)
     .delete(project.destroy);
 
