@@ -13,9 +13,10 @@ class ProjectsListCard extends React.Component {
 		super(props);
 
 		this.state = {
-			//projects: [],
+			projects: [],
 			projectToDisplay: [],
 			projectSeen: [],
+			peopleToDisplay: [],
 			annee_value: "",
 			majeur_value: "",
 			loaded: false,

@@ -102,7 +102,7 @@ class ProjectFilter extends React.Component {
                             <ExpansionPanelDetails>
                                 <Grid item>
                                     <Typography>
-                                            <Grid item >
+                                            <Grid item>
                                                 <TextField
                                                     label={i18n.t('title.label', {lng})}
                                                     onChange={this.changeTitleValue}
