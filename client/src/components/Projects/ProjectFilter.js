@@ -29,14 +29,14 @@ class ProjectFilter extends React.Component {
         this.changeCompanyValue = this.changeCompanyValue.bind(this);
 
         this.state = {
-          title : "",
-          years : [],
-          majors : [],
-          mots_cles_value : "",
-          company_value : "",
-          yearValue:this.props.filterName,
-          majorValue:this.props.filterName,
- };
+            title: "",
+            years: [],
+            majors: [],
+            mots_cles_value: "",
+            company_value: "",
+            yearValue: "",
+            majorValue: "",
+        };
     }
 
     changeYearValue(e, index, value) {
@@ -57,34 +57,26 @@ class ProjectFilter extends React.Component {
         });
     }
 
-    changeTitleValue(e,value){
-        this.setState({title_value: e.target.value }, function(){
+    changeTitleValue(e, value) {
+        this.setState({ title_value: e.target.value }, function () {
             this.props.getTitleValue(this.state.title_value);
         });
     }
 
-    changeCompanyValue(e,value){
-        this.setState({company_value: e.target.value }, function(){
+    changeCompanyValue(e, value) {
+        this.setState({ company_value: e.target.value }, function () {
             this.props.getCompanyValue(this.state.company_value);
         })
     }
 
-
-    componentDidMount() {
-        fetch('/api/majors/major/:major')
-            .then(res => res.json())
-            .then(majors => this.setState({ majors }))
-            .catch((err) => { console.log(err); });
-    }
-
     componentWillMount() {
         fetch('/api/specialization')
-          .then(res => res.json())
-          .then(majors => {
-            this.setState({ majors: majors });
-          })
-          .catch(console.error.bind(console));
-      }
+            .then(res => res.json())
+            .then(majors => {
+                this.setState({ majors: majors });
+            })
+            .catch(console.error.bind(console));
+    }
 
 
     render() {
@@ -92,7 +84,7 @@ class ProjectFilter extends React.Component {
         return (
             <div lng={lng} style={{ padding: 12 }}>
                 <Grid container direction="column" justify="center" spacing={24}>
-                    <Grid item xs={24}>
+                    <Grid item xs={12}>
                         <ExpansionPanel>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                 <Typography variant="h5" component="h2">
@@ -101,58 +93,52 @@ class ProjectFilter extends React.Component {
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <Grid item>
-                                    <Typography>
-                                            <Grid item>
-                                                <TextField
-                                                    label={i18n.t('title.label', {lng})}
-                                                    onChange={this.changeTitleValue}
-                                                    fullWidth                              
-                                                />
-                                            </Grid>
-                                            <Grid item>
-                                                <TextField
-                                                    label={i18n.t('firm.label', { lng })}
-                                                    onChange={this.changeCompanyValue}
-                                                    fullwidth
-                                                />
-                                            </Grid>                      
-                                            <Grid item>
-                                                <TextField
-                                                    label={i18n.t('year.label', { lng })}
-                                                    select
-                                                    onChange={this.changeYearValue}
-                                                    value={this.state.yearValue}
-                                                    fullWidth
-                                                >
-                                                    <MenuItem value="A4">{i18n.t('year4.label', { lng })}</MenuItem>
-                                                    <MenuItem value="A5">{i18n.t('year5.label', { lng })}</MenuItem>
-                                                </TextField>
-                                            </Grid>
-                                            <Grid item>
-                                                <FormControl fullWidth>
-                                                    <InputLabel htmlFor="select-major">{i18n.t('major.label', { lng })}</InputLabel>
-                                                    <Select
-                                                        fullWidth
-                                                        value={this.state.majorValue}
-                                                        onChange={this.changeMajorValue}
-                                                        input={<Input name="major" id="select-major" />}
-                                                    >
-                                                        {this.state.majors.map(major => (
-                                                        <MenuItem value={major._id}>
-                                                            {lng === "fr" ? major.name.fr : major.name.en}
-                                                        </MenuItem>
-                                                        ))}
-                                                    </Select>
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item>
-                                                <TextField
-                                                    label={i18n.t('keywords.label', { lng })}
-                                                    onChange={this.changeMotsClesValue}
-                                                    fullwidth
-                                                />
-                                            </Grid>
-                                    </Typography>
+                                    <Grid item>
+                                        <TextField
+                                            label={i18n.t('title.label', { lng })}
+                                            onChange={this.changeTitleValue}                                            
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label={i18n.t('firm.label', { lng })}
+                                            onChange={this.changeCompanyValue}                                            
+                                        />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label={i18n.t('year.label', { lng })}
+                                            select
+                                            onChange={this.changeYearValue}
+                                            value={this.state.yearValue}                                            
+                                        >
+                                            <MenuItem value="A4">{i18n.t('year4.label', { lng })}</MenuItem>
+                                            <MenuItem value="A5">{i18n.t('year5.label', { lng })}</MenuItem>
+                                        </TextField>
+                                    </Grid>
+                                    <Grid item>
+                                        <FormControl fullWidth>
+                                            <InputLabel htmlFor="select-major">{i18n.t('major.label', { lng })}</InputLabel>
+                                            <Select
+                                                fullWidth
+                                                value={this.state.majorValue}
+                                                onChange={this.changeMajorValue}
+                                                input={<Input name="major" id="select-major" />}
+                                            >
+                                                {this.state.majors.map(major => (
+                                                    <MenuItem value={major._id} key={major._id}>
+                                                        {lng === "fr" ? major.name.fr : major.name.en}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            label={i18n.t('keywords.label', { lng })}
+                                            onChange={this.changeMotsClesValue}                                            
+                                        />
+                                    </Grid>
                                 </Grid>
                             </ExpansionPanelDetails>
                         </ExpansionPanel>
