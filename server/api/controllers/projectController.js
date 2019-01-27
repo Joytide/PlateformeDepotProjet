@@ -6,12 +6,13 @@ const Partner = mongoose.model('Partner');
 const PDFDocument = require('pdfkit');
 
 const mailer = require('nodemailer');
+const config = require('../../config');
 
 const smtpTransporter = mailer.createTransport({
-	service: 'Gmail',
+	service: 'gmail',
 	auth: {
-		user: 'no.reply.projets.pulv@gmail.com',
-		pass: 'vidududu'
+		user: config.api.email,
+		pass: config.api.emailPass
 	}
 });
 
@@ -34,7 +35,7 @@ exports.createProject = (req, res) => {
 	let name;
 
 	let mail = {
-		from: 'no.reply.projets.pulv@gmail.com',
+		from: config.api.email,
 		subject: 'Soumission d\'un projet',
 		to: req.body.email
 	};
@@ -65,9 +66,9 @@ exports.createProject = (req, res) => {
 						.then((partner) => {
 							name = partner.first_name;
 							mail.text = `Bonjour ${name}, \n
-					  Votre demande de soumission a bien été enregistrée. \n 
-					  Voici votre lien pour l'éditer. \n
-					  http://localhost:3000/Edit/${editKey}`
+								Votre demande de soumission a bien été enregistrée. \n 
+								Voici votre lien pour l'éditer. \n
+								http://localhost:3000/Edit/${editKey}`
 							smtpTransporter.sendMail(mail, (err, result) => {
 								if (err) {
 									smtpTransporter.close();
@@ -84,7 +85,7 @@ exports.createProject = (req, res) => {
 						});
 				}
 			});
-		});		
+		});
 	});
 };
 

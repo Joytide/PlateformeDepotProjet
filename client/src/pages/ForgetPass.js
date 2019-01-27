@@ -20,9 +20,9 @@ class ForgetPass extends Component {
         };
 
         console.log("handleSubmit button pressed");
-
+        console.log("this.state.email :" + this.state.email)
         try {
-            fetch('/api/retrieveEdit', {
+            fetch('/api/mail/recover', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -32,7 +32,7 @@ class ForgetPass extends Component {
             })
                 .then((res) => {
                     console.log(res)
-                    window.location.reload()
+                    //window.location.reload()
                 })
                 .catch((error) => {
                     console.log(error);
@@ -61,8 +61,9 @@ class ForgetPass extends Component {
                         type="email"
                         multiline
                         margin="normal"
+                        name="email" value={this.state.email} 
                     /><br/>
-                    <Button variant="raised" color="primary" type="submit">
+                    <Button variant="contained" color="primary" type="submit">
                         <div>Envoyer</div>
                     </Button>
                 </form>

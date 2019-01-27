@@ -1,6 +1,8 @@
 {
     "api" : {
-        "port": 3001
+        "port": 3001,
+		"email": "MAIL@gmail.com",
+		"emailPass": "PASSWORD"
     },
     "client" : {
         "hostname": "localhost",
@@ -10,4 +12,5 @@
     "jwt": {
         "secret": "TRcnD6uHYGKuR3lueV9j"
     }
+	
 }
