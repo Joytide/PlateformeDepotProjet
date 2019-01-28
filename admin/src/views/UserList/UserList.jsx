@@ -79,7 +79,7 @@ class UserList extends React.Component {
                         (<Danger>{user.last_name}</Danger>),
                         (<Danger>{user.first_name}</Danger>),
                         (<Danger>{user.email}</Danger>),
-                        (<Link to={"/user/" + user._id}><Button size="small" type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
+                        (<Link to={"/user/" + user._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
                     ];
                     else return [
                         user.EPGE ? "EPGE" : user.__t,
@@ -87,7 +87,7 @@ class UserList extends React.Component {
                         user.last_name,
                         user.first_name,
                         user.email,
-                        (<Link to={"/user/" + user._id}><Button type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
+                        (<Link to={"/user/" + user._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
                     ];
                 });
 
