@@ -185,17 +185,14 @@ exports.exports_all_projects = (req, res) => {
 		});
 }
 
-exports.destroy = (req, res) => {
-	Project.remove({}, function (err) {
-		if (err) {
-			res.send(err);
-		}
-		else {
-			res.send('ok!');
-		}
-	});
-}
-
 function randomInt(max) {
 	return Math.floor(Math.random() * max - 1);
+}
+
+exports.like = (req,res) => {
+	
+}
+
+exports.unlike=(req,res) => {
+
 }
