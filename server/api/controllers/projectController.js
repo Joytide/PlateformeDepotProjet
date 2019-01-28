@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
-const User = mongoose.model('User');
+const User = mongoose.model('Person');
 const PDFDocument = require('pdfkit');
 
 const mailer = require('nodemailer');
