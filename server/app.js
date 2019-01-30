@@ -19,9 +19,11 @@ const Project = require('./api/models/Project');
 const Specialization = require('./api/models/Specialization');
 const Task = require('./api/models/Task');
 
+const config = require('./config.json');
+
 mongoose.Promise = global.Promise;
 //mongoose.connect('mongodb://pi2:csstv2018@ds159187.mlab.com:59187/projectdb');
-mongoose.connect('mongodb://localhost:27017/Tododb', (err) => {
+mongoose.connect(`mongodb://${config.db.hostname + ":" + config.db.port}/${config.db.name}`, (err) => {
 	if (err) {
 		console.error(colors.red(err.message));
 		process.exit(-1);
@@ -39,7 +41,7 @@ app.use(auth.passport.initialize());
 app.use(auth.passport.session());
 
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "http://localhost:3002");
+	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
 	if (req.method === 'OPTIONS')

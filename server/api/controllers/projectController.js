@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
+const User = mongoose.model('Person');
 const PDFDocument = require('pdfkit');
 
 const mailer = require('nodemailer');
@@ -55,8 +56,8 @@ exports.createProject = (req, res) => {
 		var new_project = new Project(json);
 
 		Project.count({}, (err, count) => {
-			if(err) res.send(err);
-			new_project.number = (count+1).toString().padStart(3,'0');
+			if (err) res.send(err);
+			new_project.number = (count + 1).toString().padStart(3, '0');
 
 			new_project.save(function (err, project) {
 				if (err)
@@ -111,6 +112,17 @@ exports.find_by_edit_key = (req, res) => {
 		res.json(project);
 	});
 }
+
+exports.filter_by_name = (req, res) => {
+	Project.find({ title: { '$regex': '.*' + req.params.name + '.*' } }, (err, projects) => {
+		// Search all the projects which have the substring "req.params.name" in their titles
+		if (err) {
+			res.send(err);
+		}
+		res.json(projects);
+	});
+}
+
 
 exports.update_a_project = (req, res) => {
 	Project.update({ _id: req.params.projectId }, req.body, { new: true }, (err, project) => {
@@ -175,17 +187,45 @@ exports.exports_all_projects = (req, res) => {
 		});
 }
 
-exports.destroy = (req, res) => {
-	Project.remove({}, function (err) {
-		if (err) {
-			res.send(err);
-		}
-		else {
-			res.send('ok!');
-		}
-	});
+exports.like = (req, res) => {
+	let data = req.body;
+
+	if (data.user && data.project) {
+		User.findById(data.user, (err, user) => {
+			if (err) res.send(err);
+			else {
+				if (user.__t === "Student") {
+					Project.findOneAndUpdate(
+						{ _id: data.project, likes: { $ne: data.user } },
+						{ $push: { likes: data.user } },
+						{ new: true },
+						(err, updated) => {
+							if (err) res.send(err);
+							else res.json(updated);
+						});
+				} else {
+					res.status(400).send(new Error("ObjectID) user must refer to a student"));
+				}
+			}
+		});
+	} else {
+		res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) user, (ObjectID) project"));
+	}
 }
 
-function randomInt(max) {
-	return Math.floor(Math.random() * max - 1);
+exports.unlike = (req, res) => {
+	let data = req.body;
+
+	if (data.user && data.project) {
+		Project.findOneAndUpdate(
+			{ _id: data.project, likes: data.user },
+			{ $pull: { likes: data.user } },
+			{ new: true },
+			(err, updated) => {
+				if (err) res.send(err);
+				else res.json(updated);
+			});
+	} else {
+		res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) user, (ObjectID) project"));
+	}
 }

@@ -4,6 +4,11 @@
 		"email": "MAIL@gmail.com",
 		"emailPass": "PASSWORD"
     },
+    "db": {
+        "hostname": "localhost",
+        "port": 27017,
+        "name": "DVP"
+    },
     "client" : {
         "hostname": "localhost",
         "port": 3000,
