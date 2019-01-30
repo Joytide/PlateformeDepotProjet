@@ -19,15 +19,33 @@ const partnerController = require('./partnerController');
 
 
 exports.listProjects = function (req, res) {
-	Project.find({})
-		.populate({ path: 'comments', populate: { path: 'responses' } })
-		.populate('partner')
-		.populate('majors_concerned')
-		.exec(function (err, projects) {
-			if (err)
-				res.send(err);
-			res.json(projects);
-		});
+	let data = req.query;
+	console.log(data);
+	let status = [];
+	if (data.pending === "true") status.push("pending");
+	if (data.rejected === "true") status.push("rejected");
+	if (data.validated === "true") status.push("validated");
+
+	if (status.length > 0) {
+		Project.find({ status: status })
+			.populate({ path: 'comments', populate: { path: 'responses' } })
+			.populate('partner')
+			.populate('majors_concerned')
+			.exec(function (err, projects) {
+				if (err)
+					res.send(err);
+				res.json(projects);
+			});
+	} else {
+		Project.find({ status: "validated" })
+			.populate('partner')
+			.populate('majors_concerned')
+			.exec(function (err, projects) {
+				if (err)
+					res.send(err);
+				res.json(projects);
+			});
+	}
 };
 
 exports.createProject = (req, res) => {
@@ -54,8 +72,8 @@ exports.createProject = (req, res) => {
 		var new_project = new Project(json);
 
 		Project.count({}, (err, count) => {
-			if(err) res.send(err);
-			new_project.number = (count+1).toString().padStart(3,'0');
+			if (err) res.send(err);
+			new_project.number = (count + 1).toString().padStart(3, '0');
 
 			new_project.save(function (err, project) {
 				if (err)
@@ -84,7 +102,7 @@ exports.createProject = (req, res) => {
 						});
 				}
 			});
-		});		
+		});
 	});
 };
 

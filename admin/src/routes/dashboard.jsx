@@ -12,6 +12,10 @@ import UserProfile from "views/UserProfile/UserProfile.jsx";
 import UserList from "views/UserList/UserList.jsx";
 import CreateUser from "views/CreateUser/CreateUser.jsx";
 
+// Project related things
+//import ProjectProfile from "views/ProjectProfile/ProjectProfile.jsx";
+import ProjectList from "views/ProjectList/ProjectList.jsx";
+
 // Specialization related things
 import SpecializationList from "views/SpecializationList/SpecializationList.jsx";
 import CreateSpecialization from "views/CreateSpecialization/CreateSpecialization.jsx";
@@ -33,6 +37,13 @@ const dashboardRoutes = [
     path: "/user/:id",
     component: UserProfile,
     invisible: true
+  },
+  {
+    path: "/projects",
+    sidebarName: "Liste projets",
+    navbarName: "Liste des projets",
+    icon: PersonAdd,
+    component: ProjectList
   },
   {
     path: "/createUser",
