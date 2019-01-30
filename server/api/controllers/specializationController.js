@@ -16,7 +16,7 @@ exports.list = function (req, res) {
 
 exports.create = function (req, res) {
     let data = req.body;
-    console.log(data);
+
     if (data.nameEn && data.nameFr && data.abbreviation) {
         let specialization = new Specialization();
         specialization.name.en = data.nameEn;
@@ -63,14 +63,20 @@ exports.update = (req, res) => {
 
     if (data._id) {
         let update = {};
-        update.name = {};
-        if (data.abbreviation) update.abbreviation = data.abbreviation;
-        if (data.name && data.name.fr) update.name.fr = data.name.fr;
-        if (data.name && data.name.en) update.name.en = data.name.en;
 
-        Specialization.findByIdAndUpdate(data._id, update, { new: true }, (err, spe) => {
-            if (err) res.send(err);
-            else res.json(spe);
+        if (data.abbreviation) update['abbreviation'] = data.abbreviation;
+        if (data.name && data.name.fr) update['name.fr'] = data.name.fr;
+        if (data.name && data.name.en) update['name.en'] = data.name.en;
+
+        Specialization.findById(data._id, (err, spe) => {
+            if(err) res.send(err);
+            else {
+                spe.set(update);
+                spe.save((err, updatedSpe) => {
+                    if(err) res.send(err);
+                    else res.json(updatedSpe);
+                })
+            }
         });
     } else {
         res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));
@@ -79,7 +85,7 @@ exports.update = (req, res) => {
 
 exports.addReferent = (req, res) => {
     let data = req.body;
-    
+
     if (data._id && data.referent) {
         Specialization.findOneAndUpdate({ _id: data._id, referent: { $ne: data.referent } }, { $push: { referent: data.referent } }, { new: true }, (err, spe) => {
             if (err) res.send(err);
@@ -92,7 +98,7 @@ exports.addReferent = (req, res) => {
 
 exports.removeReferent = (req, res) => {
     let data = req.body;
-    
+
     if (data._id && data.referent) {
         Specialization.findOneAndUpdate({ _id: data._id, referent: data.referent }, { $pull: { referent: data.referent } }, { new: true }, (err, spe) => {
             if (err) res.send(err);
