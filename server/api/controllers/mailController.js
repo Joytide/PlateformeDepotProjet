@@ -37,13 +37,11 @@ exports.sendMails = (request, response) => {
 };
 
 exports.retrieveEdit = (req, res) => {
-    console.log("lancement fonction retrieveEdit3");
-    console.log("req.body.email1 : " + req.body.email);
-    console.log("config.api.email : " + config.api.email);
-    console.log("config.api.emailPass : " + config.api.emailPass);
+    //console.log("req.body.email : " + req.body.email);
+    //console.log("config.api.email : " + config.api.email);
+    //console.log("config.api.emailPass : " + config.api.emailPass);
 
     if (req.body.email != undefined && req.body.email != '') {
-        console.log("req.body.email2 : " + req.body.email);
         Partner.findOne({ 'email': req.body.email }, (err, partner) => {
             if (err)
                 res.send(err);

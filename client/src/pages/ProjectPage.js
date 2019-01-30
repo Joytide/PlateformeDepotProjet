@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import nl2br from 'react-newline-to-break';
-import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -67,7 +66,7 @@ class ProjectPage extends React.Component {
             .then(data => {
                 console.log("data");
                 console.log(data);
-                if (data.likes.find( (element) => { return element == this.state.userId; }) ){
+                if (data.likes.find( (element) => { return element === this.state.userId; }) ){
                     this.setState({ isLiked: true });
                     console.log("BDD.isLiked: true");
                 }
