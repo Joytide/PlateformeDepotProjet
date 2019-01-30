@@ -181,7 +181,7 @@ class ProjectCard extends React.Component {
 
 							<Grid item xs={10} >
 								<CardContent style={{ color: "black", paddingTop: 1, paddingBottom: 1 }}>
-									{project.description.substring(1, 220) + " ..."}
+									{project.description.substring(0, 220) + " ..."}
 								</CardContent>
 							</Grid>
 
