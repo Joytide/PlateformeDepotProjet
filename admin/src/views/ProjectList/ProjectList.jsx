@@ -106,7 +106,7 @@ class ProjectList extends React.Component {
                         transform(<p>{new Date(project.sub_date).toLocaleDateString()}</p>),
                         project.study_year.join(', '),
                         project.majors_concerned.map(major => major.abbreviation).join(', '),
-                        (<Link to={"/projects/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
+                        (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
                     ];
                 });
 
