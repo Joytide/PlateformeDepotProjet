@@ -65,7 +65,8 @@ class CreateYear extends React.Component {
         this.state = {
             labelWidth: 0,
             nameEn: "",
-            nameFr: ""
+            nameFr: "",
+            abbreviation: ""
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -83,7 +84,8 @@ class CreateYear extends React.Component {
     createYear() {
         let data = {
             nameFr: this.state.nameFr,
-            nameEn: this.state.nameEn
+            nameEn: this.state.nameEn,
+            abbreviation: this.state.abbreviation
         };
 
         fetch(api.host + ":" + api.port + "/api/year", {
@@ -134,6 +136,24 @@ class CreateYear extends React.Component {
                                             id="nameEn"
                                             inputProps={{
                                                 value: this.state.nameEn,
+                                                onChange: this.handleChange
+                                            }}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                        />
+                                    </FormControl>
+                                </GridItem>
+                            </GridContainer>
+
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={8}>
+                                    <FormControl className={classes.formControl} fullWidth={true}>
+                                        <CustomInput
+                                            labelText="Abbréviation"
+                                            id="abbreviation"
+                                            inputProps={{
+                                                value: this.state.abbreviation,
                                                 onChange: this.handleChange
                                             }}
                                             formControlProps={{

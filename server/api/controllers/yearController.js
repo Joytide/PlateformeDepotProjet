@@ -16,17 +16,18 @@ exports.list = function (req, res) {
 exports.create = function (req, res) {
     let data = req.body;
 
-    if (data.nameEn && data.nameFr) {
+    if (data.nameEn && data.nameFr && data.abbreviation) {
         let year = new Year();
         year.name.en = data.nameEn;
         year.name.fr = data.nameFr;
+        year.abbreviation = data.abbreviation
 
         year.save((err, ye) => {
             if (err) res.send(err);
             else res.json(ye);
         });
     } else {
-        res.status(400).send(new Error("Missing a parameter. Expected parameters : (string) nameEn, (string) nameFr"));
+        res.status(400).send(new Error("Missing a parameter. Expected parameters : (string) nameEn, (string) nameFr, (string) abbreviation"));
     }
 };
 
@@ -59,12 +60,13 @@ exports.findById = (req, res) => {
 
 exports.update = (req, res) => {
     const data = req.body;
-
+    
     if (data._id) {
         let update = {};
 
         if (data.nameFr != undefined) update['name.fr'] = data.nameFr;
         if (data.nameEn != undefined) update['name.en'] = data.nameEn;
+        if (data.abbreviation != undefined) update['abbreviation'] = data.abbreviation;
 
         if (Object.keys(update).length > 0) {
             Year.findByIdAndUpdate(data._id, { "$set": update }, { new: true }, (err, year) => {
@@ -72,7 +74,7 @@ exports.update = (req, res) => {
                 else res.json(year);
             });
         } else {
-            res.status(400).send(new Error("Missing a parameter. Expected parameters : (String) nameFr or (String) nameEn"));
+            res.status(400).send(new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation"));
         }
     } else {
         res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));

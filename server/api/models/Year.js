@@ -12,6 +12,10 @@ const YearSchema = mongoose.Schema({
             type: String,
             required: true
         }
+    },
+    abbreviation: {
+        type: String,
+        required: true
     }
 });
 

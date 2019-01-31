@@ -64,6 +64,7 @@ class YearProfile extends React.Component {
                     let year = {
                         nameFr: data.name.fr,
                         nameEn: data.name.en,
+                        abbreviation: data.abbreviation,
                         _id: data._id
                     }
 
@@ -103,8 +104,9 @@ class YearProfile extends React.Component {
         let data = {
             _id: this.state.year._id,
             nameFr: this.state.year.nameFr,
-            nameEn: this.state.year.nameEn
-        }
+            nameEn: this.state.year.nameEn,
+            abbreviation: this.state.year.abbreviation,
+        };
 
         fetch(api.host + ":" + api.port + "/api/year", {
             method: "POST",
@@ -119,6 +121,7 @@ class YearProfile extends React.Component {
                 let year = {
                     nameFr: res.name.fr,
                     nameEn: res.name.en,
+                    abbreviation: res.abbreviation,
                     _id: res._id
                 }
 
@@ -145,6 +148,22 @@ class YearProfile extends React.Component {
                                 <p className={classes.cardCategoryWhite}>Informations sur l'année</p>
                             </CardHeader>
                             <CardBody>
+                                <GridContainer>
+                                    <GridItem xs={12} sm={12} md={4}>
+                                        <CustomInput
+                                            labelText="Abbréviation"
+                                            id="abbreviation"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                onChange: this.handleChange,
+                                                value: this.state.year.abbreviation
+                                            }}
+                                        />
+                                    </GridItem>
+                                </GridContainer>
+
                                 <GridContainer>
                                     <GridItem xs={12} sm={12} md={6}>
                                         <CustomInput

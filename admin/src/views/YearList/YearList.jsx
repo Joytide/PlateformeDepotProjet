@@ -67,6 +67,7 @@ class YearList extends React.Component {
             .then(res => res.json())
             .then(data => {
                 let yearData = data.map(year => [
+                    year.abbreviation,
                     year.name.fr, 
                     year.name.en, 
                     (<Link to={"/year/" + year._id}><Button size="sm" type="button" color="info"><Visibility /> Voir l'année</Button></Link>)
@@ -95,7 +96,7 @@ class YearList extends React.Component {
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Nom (fr)", "Nom (en)", "Actions"]}
+                                    tableHead={["Abbréviation", "Nom (fr)", "Nom (en)", "Actions"]}
                                     tableData={this.state.years}
                                 />
                             </CardBody>
