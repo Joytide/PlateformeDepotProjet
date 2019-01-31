@@ -1,5 +1,6 @@
 import React from "react";
-import ReactDOM from 'react-dom';
+import { Redirect } from 'react-router'
+
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import FormControl from '@material-ui/core/FormControl';
@@ -14,6 +15,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
+import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 import { api } from "config.json"
 
@@ -66,7 +68,10 @@ class CreateYear extends React.Component {
             labelWidth: 0,
             nameEn: "",
             nameFr: "",
-            abbreviation: ""
+            abbreviation: "",
+            success: false,
+            error: false,
+            message:""
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -82,30 +87,87 @@ class CreateYear extends React.Component {
     };
 
     createYear() {
-        let data = {
-            nameFr: this.state.nameFr,
-            nameEn: this.state.nameEn,
-            abbreviation: this.state.abbreviation
-        };
-
-        fetch(api.host + ":" + api.port + "/api/year", {
-            method: "PUT",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
+        this.setState({ error: false, success: false });
+        if (this.state.nameFr === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ nom en français."
             });
+
+        else if (this.state.nameEn === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ nom en anglais."
+            });
+
+        else if (this.state.abbreviation === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ Abbréviation."
+            });
+
+        else {
+            let data = {
+                nameFr: this.state.nameFr,
+                nameEn: this.state.nameEn,
+                abbreviation: this.state.abbreviation
+            };
+
+            fetch(api.host + ":" + api.port + "/api/year", {
+                method: "PUT",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    this.setState({
+                        success: true,
+                        message: "Année créée avec succès. Vous allez être redirigé vers la liste des années."
+                    });
+
+                    setTimeout(() => {
+                        this.setState({ redirect: true });
+                    }, 500);
+                })
+                .catch(err => {
+                    this.setState({
+                        error: true,
+                        message: "Une erreur est survenue lors de la création de l'année."
+                    });
+                    console.error(err);
+                });;
+        }
     }
 
     render() {
         const { classes } = this.props;
+        let redirect;
+
+        if (this.state.redirect) {
+            redirect = <Redirect to="/years" />
+        }
         return (
             <GridContainer>
+                {redirect}
+                <Snackbar
+                    place="tc"
+                    color="success"
+                    message={this.state.message}
+                    open={this.state.success}
+                    closeNotification={() => this.setState({ success: false })}
+                    close
+                />
+                <Snackbar
+                    place="tc"
+                    color="danger"
+                    message={this.state.message}
+                    open={this.state.error}
+                    closeNotification={() => this.setState({ error: false })}
+                    close
+                />
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <CardHeader color="primary">

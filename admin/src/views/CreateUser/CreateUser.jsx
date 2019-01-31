@@ -148,7 +148,7 @@ class CreateUser extends React.Component {
                     if (data._id) {
                         this.setState({
                             success: true,
-                            message: "Utilisateur créer avec succès. Vous allez être redirigé vers la liste des utilisateurs."
+                            message: "Utilisateur crée avec succès. Vous allez être redirigé vers la liste des utilisateurs."
                         });
 
                         setTimeout(() => {
