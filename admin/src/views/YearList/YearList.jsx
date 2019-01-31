@@ -19,7 +19,6 @@ import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import Danger from "components/Typography/Danger.jsx";
 
 import { api } from "config.json"
 
@@ -53,45 +52,28 @@ const styles = {
     }
 };
 
-class UserList extends React.Component {
+class YearList extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             loading: true,
-            users: []
+            years: []
         };
     }
 
-    showProfile(id) {
-
-    }
-
     componentWillMount() {
-        console.log(api);
-        fetch(api.host + ":" + api.port + "/api/user", { crossDomain: true })
+        fetch(api.host + ":" + api.port + "/api/year", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
-                let userData = data.map(user => {
-                    if (user.admin) return [
-                        (<Danger>{user.EPGE ? "EPGE" : user.__t}</Danger>),
-                        (<Danger>{user.company || "-"}</Danger>),
-                        (<Danger>{user.last_name}</Danger>),
-                        (<Danger>{user.first_name}</Danger>),
-                        (<Danger>{user.email}</Danger>),
-                        (<Link to={"/user/" + user._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
-                    ];
-                    else return [
-                        user.EPGE ? "EPGE" : user.__t,
-                        user.company || "-",
-                        user.last_name,
-                        user.first_name,
-                        user.email,
-                        (<Link to={"/user/" + user._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
-                    ];
-                });
+                let yearData = data.map(year => [
+                    year.abbreviation,
+                    year.name.fr, 
+                    year.name.en, 
+                    (<Link to={"/year/" + year._id}><Button size="sm" type="button" color="info"><Visibility /> Voir l'année</Button></Link>)
+                ]);
 
-                this.setState({ users: userData, loading: false });
+                this.setState({ years: yearData, loading: false });
             });
     }
 
@@ -106,16 +88,16 @@ class UserList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Liste des utilisateurs</h4>
+                                <h4 className={classes.cardTitleWhite}>Liste des années</h4>
                                 <p className={classes.cardCategoryWhite}>
-                                    Liste de tous les utilisateurs existants sur la plateforme
+                                    Liste de toutes les années existantes sur la plateforme
             </p>
                             </CardHeader>
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Type", "Entreprise", "Nom", "Prénom", "Email", "Actions"]}
-                                    tableData={this.state.users}
+                                    tableHead={["Abbréviation", "Nom (fr)", "Nom (en)", "Actions"]}
+                                    tableData={this.state.years}
                                 />
                             </CardBody>
                         </Card>
@@ -126,4 +108,4 @@ class UserList extends React.Component {
     }
 }
 
-export default withStyles(styles)(UserList);
+export default withStyles(styles)(YearList);

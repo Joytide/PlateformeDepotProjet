@@ -21,15 +21,35 @@ const partnerController = require('./partnerController');
 
 
 exports.listProjects = function (req, res) {
-	Project.find({})
-		.populate({ path: 'comments', populate: { path: 'responses' } })
-		.populate('partner')
-		.populate('majors_concerned')
-		.exec(function (err, projects) {
-			if (err)
-				res.send(err);
-			res.json(projects);
-		});
+	let data = req.query;
+	console.log(data);
+	let status = [];
+	if (data.pending === "true") status.push("pending");
+	if (data.rejected === "true") status.push("rejected");
+	if (data.validated === "true") status.push("validated");
+
+	if (status.length > 0) {
+		Project.find({ status: status })
+			.populate({ path: 'comments', populate: { path: 'responses' } })
+			.populate('partner')
+			.populate('majors_concerned')
+			.populate('study_year')
+			.exec(function (err, projects) {
+				if (err)
+					res.send(err);
+				res.json(projects);
+			});
+	} else {
+		Project.find({ status: "validated" })
+			.populate('partner')
+			.populate('majors_concerned')
+			.populate('study_year')
+			.exec(function (err, projects) {
+				if (err)
+					res.send(err);
+				res.json(projects);
+			});
+	}
 };
 
 exports.createProject = (req, res) => {
@@ -96,6 +116,7 @@ exports.findById = (req, res) => {
 		.populate('comments')
 		.populate('partner')
 		.populate('majors_concerned')
+		.populate('study_year')
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);

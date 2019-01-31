@@ -197,15 +197,6 @@ class Notifications extends React.Component {
                   >
                     Top Center
                   </Button>
-                  <Snackbar
-                    place="tc"
-                    color="info"
-                    icon={AddAlert}
-                    message="Welcome to MATERIAL DASHBOARD React - a beautiful freebie for every web developer."
-                    open={this.state.tc}
-                    closeNotification={() => this.setState({ tc: false })}
-                    close
-                  />
                 </GridItem>
                 <GridItem xs={12} sm={12} md={4}>
                   <Button

@@ -17,10 +17,11 @@ const ProjectSchema = new Schema({
         ref: "Specialization",
         required: true
     }],
-    study_year: {
-        type: Array,
+    study_year: [{
+        type: Schema.Types.ObjectId,
+        ref: "Year",
         required: true
-    }, //(Number)
+    }], //(Number)
     keywords: {
         type: Array,
         required: true
