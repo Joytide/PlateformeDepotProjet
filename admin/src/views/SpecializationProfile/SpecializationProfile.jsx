@@ -239,8 +239,8 @@ class SpecializationProfile extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Profil de l'utilisateur</h4>
-                                <p className={classes.cardCategoryWhite}>Complete your profile</p>
+                                <h4 className={classes.cardTitleWhite}>Majeure</h4>
+                                <p className={classes.cardCategoryWhite}>Informations sur la majeure</p>
                             </CardHeader>
                             <CardBody>
                                 <GridContainer>
