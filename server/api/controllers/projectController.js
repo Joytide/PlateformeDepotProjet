@@ -31,6 +31,7 @@ exports.listProjects = function (req, res) {
 			.populate({ path: 'comments', populate: { path: 'responses' } })
 			.populate('partner')
 			.populate('majors_concerned')
+			.populate('study_year')
 			.exec(function (err, projects) {
 				if (err)
 					res.send(err);
@@ -40,6 +41,7 @@ exports.listProjects = function (req, res) {
 		Project.find({ status: "validated" })
 			.populate('partner')
 			.populate('majors_concerned')
+			.populate('study_year')
 			.exec(function (err, projects) {
 				if (err)
 					res.send(err);
@@ -112,6 +114,7 @@ exports.findById = (req, res) => {
 		.populate('comments')
 		.populate('partner')
 		.populate('majors_concerned')
+		.populate('study_year')
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);
