@@ -21,6 +21,11 @@ import SpecializationList from "views/SpecializationList/SpecializationList.jsx"
 import CreateSpecialization from "views/CreateSpecialization/CreateSpecialization.jsx";
 import SpecializationProfile from "views/SpecializationProfile/SpecializationProfile.jsx";
 
+// Year related things
+import YearList from "views/YearList/YearList.jsx";
+import CreateYear from "views/CreateYear/CreateYear.jsx";
+import YearProfile from "views/YearProfile/YearProfile.jsx";
+
 // Others
 import NotificationsPage from "views/Notifications/Notifications.jsx";
 import Settings from "views/Settings/Settings.jsx"
@@ -41,6 +46,16 @@ const dashboardRoutes = [
   {
     path: "/project/:id",
     component: ProjectProfile,
+    invisible: true
+  },
+  {
+    path: "/specialization/:id",
+    component: SpecializationProfile,
+    invisible: true
+  },
+  {
+    path: "/year/:id",
+    component: YearProfile,
     invisible: true
   },
   {
@@ -79,9 +94,18 @@ const dashboardRoutes = [
     component: SpecializationList
   },
   {
-    path: "/specialization/:id",
-    component: SpecializationProfile,
-    invisible: true
+    path: "/createYear",
+    sidebarName: "Créer année",
+    navbarName: "Créer une anée",
+    icon: "add",
+    component: CreateYear
+  },
+  {
+    path: "/years",
+    sidebarName: "Liste années",
+    navbarName: "Liste des années",
+    icon: "list",
+    component: YearList
   },
   {
     path: "/notifications",

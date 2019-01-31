@@ -17,6 +17,7 @@ const Comment = require('./api/models/Comment');
 const Person = require('./api/models/Person');
 const Project = require('./api/models/Project');
 const Specialization = require('./api/models/Specialization');
+const Year = require('./api/models/Year');
 const Task = require('./api/models/Task');
 
 const config = require('./config.json');
@@ -70,6 +71,9 @@ partner_routes(app);
 
 var specializationRoutes = require('./api/routes/specializationRoutes');
 specializationRoutes(app);
+
+var yearRoutes = require('./api/routes/yearRoutes');
+yearRoutes(app);
 
 var userRoutes = require('./api/routes/userRoutes');
 userRoutes(app);
