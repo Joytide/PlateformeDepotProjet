@@ -233,7 +233,7 @@ class Deposit extends React.Component {
 					console.log(form);
 					try {
 						fetch('/api/projects', {
-							method: 'POST',
+							method: 'PUT',
 							headers: {
 								'Accept': 'application/json',
 								'Content-Type': 'application/json',
