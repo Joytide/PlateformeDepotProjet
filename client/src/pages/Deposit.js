@@ -471,7 +471,7 @@ class Deposit extends React.Component {
 									placeholder={i18n.t('descriptionProj.label', { lng })}
 									label="Description"
 									value={this.state.description}
-									validators={['required', 'maxStringLength:3000']}
+									validators={['required', 'maxStringLength:10000']}
 									errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
 									multiline
 									rows="10"
