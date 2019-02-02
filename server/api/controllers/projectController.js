@@ -146,12 +146,37 @@ exports.filter_by_name = (req, res) => {
 
 
 exports.update_a_project = (req, res) => {
-	Project.update({ _id: req.params.projectId }, req.body, { new: true }, (err, project) => {
-		if (err) {
-			res.send(err);
-		}
-		res.json(project);
-	});
+	const id = req.params.projectId || req.body._id;
+	const data = req.body;
+
+	if (id) {
+		Project.findById(id)
+			.exec((err, project) => {
+				if (err) res.send(err);
+				else {
+					if (data.title) project.set({ title: data.title });
+					if (data.description) project.set({ description: data.description });
+					if (data.majors_concerned) project.set({ majors_concerned: data.majors_concerned });
+					if (data.study_year) project.set({ study_year: data.study_year });
+					if (data.keywords) project.set({ keywords: data.keywords });
+					if (data.status) project.set({ status: data.status });
+					project.set({ edit_date: Date.now() });
+
+					project.save((err, updated_project) => {
+						if (err) res.send(err);
+						else {
+							updated_project
+								.populate('comments partner majors_concerned study_year', (err, populated) => {
+									if (err) res.send(err);
+									else res.json(populated);
+								})
+						}
+					});
+				}
+			});
+	} else {
+		res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) _id"));
+	}
 }
 
 exports.delete_a_project = (req, res) => {

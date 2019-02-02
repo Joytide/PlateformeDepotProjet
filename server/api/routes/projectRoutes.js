@@ -5,14 +5,15 @@ const project = require('../controllers/projectController');
 module.exports = function (app) {
   app.route('/api/projects')
     .get(project.listProjects)
-    .put(project.createProject);
+    .put(project.createProject)
+    .post(project.update_a_project);
 
   app.route('/api/export')
     .get(project.exports_all_projects);
 
   app.route('/api/project/:projectId([a-fA-F0-9]{24})')
     .get(project.findById)
-    .put(project.update_a_project)
+    .post(project.update_a_project)
     .delete(project.delete_a_project);
 
   app.route('/api/project/like')
