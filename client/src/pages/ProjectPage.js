@@ -22,7 +22,7 @@ class ProjectPage extends React.Component {
             project: this.props.project,
             loaded : false,
             isLiked : false,
-            userId : "5c51951431a7593170f310c6" // userId à récupérer lorsque la fonctionnalité connexion sera faite
+            userId : "5c559c0ec4b656396c1957da" // userId à récupérer lorsque la fonctionnalité connexion sera faite
 		}
     }
 
@@ -31,8 +31,8 @@ class ProjectPage extends React.Component {
         fetch('/api/project/' + this.props.match.params.key)
             .then(res => res.json())
             .then(project => {
-                //console.log("this.state.userId:" + this.state.userId);
-                //console.log(project);
+                console.log("this.state.userId:" + this.state.userId);
+                console.log(project);
 
                 this.setState({ project: project, loaded: true });
                 if (project.likes.find( (element) => { return element === this.state.userId; }) ){
@@ -96,8 +96,8 @@ class ProjectPage extends React.Component {
                                 <Grid container justify="space-between">
                                     <Grid container spacing={8} xs>
                                         {
-                                            project.study_year.sort().map(major => {
-                                                return <Grid item><Chip label={major} color="primary" /></Grid>
+                                            project.study_year.sort().map(year => {
+                                                return <Grid item><Chip label={year.abbreviation} color="primary" /></Grid>
                                             })
                                         }
                                         {

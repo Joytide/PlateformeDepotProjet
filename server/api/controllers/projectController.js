@@ -53,15 +53,9 @@ exports.listProjects = function (req, res) {
 };
 
 exports.createProject = (req, res) => {
-	let name;
-
-	let mail = {
-		from: config.api.email,
-		subject: 'Soumission d\'un projet',
-		to: req.body.email
-	};
-
 	let json = req.body;
+	console.log("json");
+	console.log(json);
 
 	Partner.findOne({ email: req.body.email }, async (err, partner) => {
 		if (err)
@@ -70,7 +64,6 @@ exports.createProject = (req, res) => {
 		if (partner == null) {
 			partner = await partnerController.createPartner(req.body);
 		}
-
 		json.partner = partner._id;
 		json.status = 'pending';
 		var new_project = new Project(json);
@@ -78,24 +71,41 @@ exports.createProject = (req, res) => {
 		Project.count({}, (err, count) => {
 			if (err) res.send(err);
 			new_project.number = (count + 1).toString().padStart(3, '0');
-
 			new_project.save(function (err, project) {
-				if (err)
+				if (err){
 					res.send(err);
+				}
 				else {
 					partnerController.addProject(partner._id, project._id)
 						.then((partner) => {
-							name = partner.first_name;
-							mail.text = `Bonjour ${name}, \n
-								Votre demande de soumission a bien été enregistrée. \n 
-								Voici votre lien pour l'éditer. \n
-								http://localhost:3000/Edit/${editKey}`
+							//console.log(partner);
+							const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
+							const mail = {
+								from: config.api.email,
+								to: req.body.email,
+								subject: `Soumission du projet ${json.title}`,
+								text: `
+									Bonjour ${partner.first_name} ${partner.last_name} (${json.company}), \n
+									Votre demande de soumission de projet a bien été enregistrée. \n 
+									Voici votre lien pour l'éditer: ${link}\n\n
+									Cordialement,
+									L'équipe DVP
+									\n\n\n\n
+									Hello ${partner.first_name} ${partner.last_name} (${json.company}), \n
+									Your project submission request has been registered.\n
+									Here is your link to edit it: ${link}\n\n
+									`
+							}
+							res.send(mail);
+							//console.log("mail :");
+							//console.log(mail);
 							smtpTransporter.sendMail(mail, (err, result) => {
 								if (err) {
 									smtpTransporter.close();
 									console.log(err);
 									res.send(err);
 								} else {
+									console.log("Mail de soumission envoyé");
 									res.send('Mail ok!');
 									smtpTransporter.close();
 								}
