@@ -1,4 +1,5 @@
 import React from "react";
+import { Redirect } from 'react-router'
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -19,6 +20,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
+import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 import { api } from "config.json"
 
@@ -74,7 +76,11 @@ class CreateUser extends React.Component {
             lastName: "",
             firstName: "",
             email: "",
-            company: ""
+            company: "",
+            success: false,
+            error: false,
+            message: "",
+            redirect: false,
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -90,33 +96,81 @@ class CreateUser extends React.Component {
     };
 
     createUser() {
-        let data = {
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            admin: this.state.admin,
-            email: this.state.email,
-            company: this.state.company,
-            type: this.state.type
-        }
-
-        fetch(api.host + ":" + api.port + "/api/user", {
-            method: "PUT",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
+        this.setState({ error: false, success: false });
+        if (this.state.type === "")
+            this.setState({
+                error: true,
+                message: "Veuillez selectionner un type d'utilisateur."
             });
+        else if (this.state.firstName === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ prénom de l'utilisateur."
+            });
+        else if (this.state.lastName === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ nom de l'utilisateur."
+            });
+        else if (this.state.type === "partner" && this.state.company === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ Entreprise."
+            });
+        else if (!validateEmail(this.state.email))
+            this.setState({
+                error: true,
+                message: "Veuillez saisir une adresse mail valide."
+            });
+        else {
+            let data = {
+                firstName: this.state.firstName,
+                lastName: this.state.lastName,
+                admin: this.state.admin,
+                email: this.state.email,
+                company: this.state.company,
+                type: this.state.type
+            }
+
+            fetch(api.host + ":" + api.port + "/api/user", {
+                method: "PUT",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (!res.ok) throw res;
+                    else return res.json()
+                })
+                .then(data => {
+                    if (data._id) {
+                        this.setState({
+                            success: true,
+                            message: "Utilisateur crée avec succès. Vous allez être redirigé vers la liste des utilisateurs."
+                        });
+
+                        setTimeout(() => {
+                            this.setState({ redirect: true });
+                        }, 500);
+                    }
+                })
+                .catch(err => {
+                    this.setState({
+                        error: true,
+                        message: "Une erreur est survenue lors de la création de l'utilisateur."
+                    });
+                    console.error(err);
+                });
+        }
     }
 
     render() {
         const { classes } = this.props;
         let companyField;
         let adminCheckbox;
+        let redirect;
         if (this.state.type === "partner") {
             companyField = (
                 <GridContainer>
@@ -159,8 +213,29 @@ class CreateUser extends React.Component {
                 </GridContainer >
             );
         }
+
+        if (this.state.redirect) {
+            redirect = <Redirect to="/users" />
+        }
         return (
             <GridContainer>
+                {redirect}
+                <Snackbar
+                    place="tc"
+                    color="success"
+                    message={this.state.message}
+                    open={this.state.success}
+                    closeNotification={() => this.setState({ success: false })}
+                    close
+                />
+                <Snackbar
+                    place="tc"
+                    color="danger"
+                    message={this.state.message}
+                    open={this.state.error}
+                    closeNotification={() => this.setState({ error: false })}
+                    close
+                />
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <CardHeader color="primary">
@@ -256,3 +331,8 @@ class CreateUser extends React.Component {
 }
 
 export default withStyles(styles)(CreateUser);
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}

@@ -1,6 +1,13 @@
 {
     "api" : {
-        "port": 3001
+        "port": 3001,
+		"email": "MAIL@gmail.com",
+		"emailPass": "PASSWORD"
+    },
+    "db": {
+        "hostname": "localhost",
+        "port": 27017,
+        "name": "DVP"
     },
     "client" : {
         "hostname": "localhost",
@@ -10,4 +17,5 @@
     "jwt": {
         "secret": "TRcnD6uHYGKuR3lueV9j"
     }
+	
 }

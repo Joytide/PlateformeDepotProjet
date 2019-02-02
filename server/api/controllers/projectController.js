@@ -3,15 +3,17 @@
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
+const User = mongoose.model('Person');
 const PDFDocument = require('pdfkit');
 
 const mailer = require('nodemailer');
+const config = require('../../config');
 
 const smtpTransporter = mailer.createTransport({
-	service: 'Gmail',
+	service: 'gmail',
 	auth: {
-		user: 'no.reply.projets.pulv@gmail.com',
-		pass: 'vidududu'
+		user: config.api.email,
+		pass: config.api.emailPass
 	}
 });
 
@@ -19,22 +21,42 @@ const partnerController = require('./partnerController');
 
 
 exports.listProjects = function (req, res) {
-	Project.find({})
-		.populate({ path: 'comments', populate: { path: 'responses' } })
-		.populate('partner')
-		.populate('majors_concerned')
-		.exec(function (err, projects) {
-			if (err)
-				res.send(err);
-			res.json(projects);
-		});
+	let data = req.query;
+	console.log(data);
+	let status = [];
+	if (data.pending === "true") status.push("pending");
+	if (data.rejected === "true") status.push("rejected");
+	if (data.validated === "true") status.push("validated");
+
+	if (status.length > 0) {
+		Project.find({ status: status })
+			.populate({ path: 'comments', populate: { path: 'responses' } })
+			.populate('partner')
+			.populate('majors_concerned')
+			.populate('study_year')
+			.exec(function (err, projects) {
+				if (err)
+					res.send(err);
+				res.json(projects);
+			});
+	} else {
+		Project.find({ status: "validated" })
+			.populate('partner')
+			.populate('majors_concerned')
+			.populate('study_year')
+			.exec(function (err, projects) {
+				if (err)
+					res.send(err);
+				res.json(projects);
+			});
+	}
 };
 
 exports.createProject = (req, res) => {
 	let name;
 
 	let mail = {
-		from: 'no.reply.projets.pulv@gmail.com',
+		from: config.api.email,
 		subject: 'Soumission d\'un projet',
 		to: req.body.email
 	};
@@ -54,8 +76,8 @@ exports.createProject = (req, res) => {
 		var new_project = new Project(json);
 
 		Project.count({}, (err, count) => {
-			if(err) res.send(err);
-			new_project.number = (count+1).toString().padStart(3,'0');
+			if (err) res.send(err);
+			new_project.number = (count + 1).toString().padStart(3, '0');
 
 			new_project.save(function (err, project) {
 				if (err)
@@ -65,9 +87,9 @@ exports.createProject = (req, res) => {
 						.then((partner) => {
 							name = partner.first_name;
 							mail.text = `Bonjour ${name}, \n
-					  Votre demande de soumission a bien été enregistrée. \n 
-					  Voici votre lien pour l'éditer. \n
-					  http://localhost:3000/Edit/${editKey}`
+								Votre demande de soumission a bien été enregistrée. \n 
+								Voici votre lien pour l'éditer. \n
+								http://localhost:3000/Edit/${editKey}`
 							smtpTransporter.sendMail(mail, (err, result) => {
 								if (err) {
 									smtpTransporter.close();
@@ -84,7 +106,7 @@ exports.createProject = (req, res) => {
 						});
 				}
 			});
-		});		
+		});
 	});
 };
 
@@ -94,6 +116,7 @@ exports.findById = (req, res) => {
 		.populate('comments')
 		.populate('partner')
 		.populate('majors_concerned')
+		.populate('study_year')
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);
@@ -110,6 +133,17 @@ exports.find_by_edit_key = (req, res) => {
 		res.json(project);
 	});
 }
+
+exports.filter_by_name = (req, res) => {
+	Project.find({ title: { '$regex': '.*' + req.params.name + '.*' } }, (err, projects) => {
+		// Search all the projects which have the substring "req.params.name" in their titles
+		if (err) {
+			res.send(err);
+		}
+		res.json(projects);
+	});
+}
+
 
 exports.update_a_project = (req, res) => {
 	Project.update({ _id: req.params.projectId }, req.body, { new: true }, (err, project) => {
@@ -174,17 +208,45 @@ exports.exports_all_projects = (req, res) => {
 		});
 }
 
-exports.destroy = (req, res) => {
-	Project.remove({}, function (err) {
-		if (err) {
-			res.send(err);
-		}
-		else {
-			res.send('ok!');
-		}
-	});
+exports.like = (req, res) => {
+	let data = req.body;
+
+	if (data.user && data.project) {
+		User.findById(data.user, (err, user) => {
+			if (err) res.send(err);
+			else {
+				if (user.__t === "Student") {
+					Project.findOneAndUpdate(
+						{ _id: data.project, likes: { $ne: data.user } },
+						{ $push: { likes: data.user } },
+						{ new: true },
+						(err, updated) => {
+							if (err) res.send(err);
+							else res.json(updated);
+						});
+				} else {
+					res.status(400).send(new Error("ObjectID) user must refer to a student"));
+				}
+			}
+		});
+	} else {
+		res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) user, (ObjectID) project"));
+	}
 }
 
-function randomInt(max) {
-	return Math.floor(Math.random() * max - 1);
+exports.unlike = (req, res) => {
+	let data = req.body;
+
+	if (data.user && data.project) {
+		Project.findOneAndUpdate(
+			{ _id: data.project, likes: data.user },
+			{ $pull: { likes: data.user } },
+			{ new: true },
+			(err, updated) => {
+				if (err) res.send(err);
+				else res.json(updated);
+			});
+	} else {
+		res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) user, (ObjectID) project"));
+	}
 }

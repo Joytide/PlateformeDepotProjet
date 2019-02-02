@@ -11,7 +11,6 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import i18n from '../i18n';
 import { Link } from 'react-router-dom';
-import Icon from '@material-ui/core/Icon';
 
 const styles = theme => ({
   root: {
@@ -19,8 +18,6 @@ const styles = theme => ({
   },
   grow: {
     flexGrow: 1,
-  },
-  menuButton: {
   },
   title: {
     display: 'none',
@@ -59,12 +56,15 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     color: '#FFFFFF',
   },
+  menuButton: {
+    color: '#FFFFFF',
+  },
   languageButton: {
-    fontSize: 30,
+    fontSize: 25,
     color: '#FFFFFF',
   },
   languageButtonMobile: {
-    fontSize: 30,
+    fontSize: 25,
     color: '#000000',
     }
 });
@@ -128,13 +128,13 @@ class Navs extends React.Component {
         open={isMenuOpen}
         onClose={this.handleMenuClose}
       >
-        <MenuItem component={Link} to="/Connection" color="inherit" className={classes.menuButton}>
+        <MenuItem component={Link} to="/Connection" color="inherit">
             <div>{i18n.t('login.label', {lng} )}</div>
         </MenuItem>
-        <MenuItem component={Link} to="/Admin" color="inherit" className={classes.menuButton}>
+        <MenuItem component={Link} to="/Admin" color="inherit">
             <div>{i18n.t('admin.label', {lng} )}</div>
         </MenuItem>
-        <MenuItem component={Link} to="/forgot" color="inherit" className={classes.menuButton}>
+        <MenuItem component={Link} to="/forgot" color="inherit">
             <div>{i18n.t('linkLost.label', {lng} )}</div>
         </MenuItem>
       </Menu>
@@ -149,23 +149,23 @@ class Navs extends React.Component {
         onClose={this.handleMobileMenuClose}
       >
         <Link to="/">
-          <MenuItem color="inherit" className={classes.menuButton}>
+          <MenuItem color="inherit">
               <div>{i18n.t('home.label', {lng} )}</div>
           </MenuItem>
         </Link>
         <Link to="/Projects">
-          <MenuItem color="inherit" className={classes.menuButton}>
+          <MenuItem color="inherit">
               <div>{i18n.t('projects.label', {lng} )}</div>
           </MenuItem>
         </Link>
         <Link to="/deposit">
-          <MenuItem color="inherit" className={classes.menuButton}>
+          <MenuItem color="inherit">
               <div>{i18n.t('submit.label', {lng} )}</div>
           </MenuItem>
         </Link>
-        <MenuItem  color="inherit" className={classes.menuButton}>
-          <IconButton onClick={this.props.handleLngChange} className ="EN">
-            <Icon className={classes.languageButtonMobile}></Icon>
+        <MenuItem  color="inherit">
+          <IconButton onClick={this.props.handleLngChange}>
+              {lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag"/>:<img src="/usuk_flag.png" height="24" width="32" alt="english flag"/>}
           </IconButton>
           <IconButton onClick={this.handleProfileMenuOpen} color="inherit">
             <AccountCircle />
@@ -199,7 +199,7 @@ class Navs extends React.Component {
                 </Button>
               </Link>
 
-              <IconButton onClick={this.props.handleLngChange} className ="EN">
+              <IconButton onClick={this.props.handleLngChange}>
                   {lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag"/>:<img src="/usuk_flag.png" height="24" width="32" alt="english flag"/>}
               </IconButton>
               
@@ -207,7 +207,7 @@ class Navs extends React.Component {
                 aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                 aria-haspopup="true"
                 onClick={this.handleProfileMenuOpen}
-                color="inherit"
+                className={classes.menuButton}
               >
                 <AccountCircle />
               </IconButton>

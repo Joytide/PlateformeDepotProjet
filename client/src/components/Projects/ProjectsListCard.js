@@ -13,10 +13,16 @@ class ProjectsListCard extends React.Component {
 		super(props);
 
 		this.state = {
+			projects: [],
+			projectToDisplay: [],
+			projectSeen: [],
+			peopleToDisplay: [],
 			annee_value: "",
-			majeur_value: ""
+			majeur_value: "",
+			loaded: false,
 		};
 	}
+
 
 	handledropDownValue(dropDownValue, filterName) {
 		if (filterName === "Année" && dropDownValue !== "Majeure") {
@@ -56,16 +62,52 @@ class ProjectsListCard extends React.Component {
 		if (mots_cles_value !== "") {
 			let tmp = this.state.projectToDisplay.filter(project => {
 				for (var element of project.keywords) {
-					if (element.includes(mots_cles_value.toLowerCase()))
+					if (element.includes(mots_cles_value.toLowerCase())){
 						return true;
+					}
 				}
-				return false;
+				//return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true });
-		} else {
+		}
+		else {
 			this.setState({ projectSeen: this.state.projectToDisplay, loaded: true });
 		}
 	}
+
+    handleTitleValue(title_value) {
+        if (title_value !== "") {
+            let tmp = this.state.projectToDisplay.filter(project => {
+                if (project.title.includes(title_value)) {
+                    return true;
+                }
+            })
+            this.setState({ projectSeen: tmp , loaded : true});
+        }
+        else {
+			this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
+        }
+    }
+
+    handleCompanyValue(company_value) {
+        if (company_value !== "") {
+            var tmp = this.state.projectToDisplay.filter(project => {
+                var id = this.state.peopleToDisplay.filter(people => {
+                    if (people.company.includes(company_value)) {
+                        return true; 
+                    }
+                })
+                if (project.partner === id) {
+                    return true;
+                }
+            })
+            this.setState({ projectSeen: tmp , loaded : true});
+        }
+        else {
+            this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
+        }
+    }
+
 
 	render() {
 		const lng = this.props.lng;
@@ -84,7 +126,7 @@ class ProjectsListCard extends React.Component {
 								{i18n.t('project.title', { lng })}
 							</Typography>
 
-							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
+							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} getCompanyValue={this.handleCompanyValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
 
 							<Grid container style={{ marginTop: 12 }} spacing={16} justify="center">
 								{ProjectList}

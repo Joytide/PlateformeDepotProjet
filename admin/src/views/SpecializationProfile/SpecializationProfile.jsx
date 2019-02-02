@@ -150,13 +150,28 @@ class SpecializationProfile extends React.Component {
             body: JSON.stringify(data)
         })
             .then(res => res.json())
-            .then(data => {
+            .then(res => {
+                console.log(res);
                 let spe = {
-                    _id: data._id,
-                    nameFr: data.name.fr,
-                    nameEn: data.name.en,
-                    abbreviation: data.abbreviation
+                    _id: res._id,
+                    nameFr: res.name.fr,
+                    nameEn: res.name.en,
+                    abbreviation: res.abbreviation,
+                    referent: res.referent.map(ref =>
+                        [
+                            ref.last_name,
+                            ref.first_name,
+                            ref.email,
+                            (<div>
+                                <Link to={"/user/" + ref._id}>
+                                    <Button type="button" color="info"><Visibility /> Voir le profil</Button>
+                                </Link>
+                                <Button onClick={this.removeReferent(ref._id)} type="button" color="danger"><Delete />Supprimer</Button>
+                            </div>)
+                        ]
+                    )
                 }
+                
                 this.setState({
                     specialization: spe,
                     specialization_old: spe,
@@ -224,8 +239,8 @@ class SpecializationProfile extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Profil de l'utilisateur</h4>
-                                <p className={classes.cardCategoryWhite}>Complete your profile</p>
+                                <h4 className={classes.cardTitleWhite}>Majeure</h4>
+                                <p className={classes.cardCategoryWhite}>Informations sur la majeure</p>
                             </CardHeader>
                             <CardBody>
                                 <GridContainer>

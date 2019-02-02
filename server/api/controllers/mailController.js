@@ -8,10 +8,10 @@ const config = require('../../config');
 
 const mailer = require('nodemailer');
 const smtpTransporter = mailer.createTransport({
-    service: 'Gmail',
+    service: 'gmail',
     auth: {
-        user: 'no.reply.projets.pulv@gmail.com',
-        pass: 'vidududu'
+        user: config.api.email,
+        pass: config.api.emailPass
     }
 });
 
@@ -20,7 +20,7 @@ exports.sendMails = (request, response) => {
     const subject = request.body.subject;
     const content = request.body.content;
     let mail = {
-        from: 'no.reply.projets.pulv@gmail.com',
+        from: config.api.email,
         to: recipient,
         subject: subject,
         text: content // html content possible. ;)
@@ -37,7 +37,11 @@ exports.sendMails = (request, response) => {
 };
 
 exports.retrieveEdit = (req, res) => {
-    if (req.body.email != undefined) {
+    //console.log("req.body.email : " + req.body.email);
+    //console.log("config.api.email : " + config.api.email);
+    //console.log("config.api.emailPass : " + config.api.emailPass);
+
+    if (req.body.email != undefined && req.body.email != '') {
         Partner.findOne({ 'email': req.body.email }, (err, partner) => {
             if (err)
                 res.send(err);
@@ -47,14 +51,14 @@ exports.retrieveEdit = (req, res) => {
                 const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
                 const content = `Bonjour ${partner.first_name} ${partner.last_name}, \nVoici le lien permettant d'éditer le(s) projet(s) que vous avez soumis: \n${link}`
                 const mail = {
-                    from: 'no.reply.projets.pulv@gmail.com',
+                    from: `${config.api.email}`,
                     to: recipient,
                     subject: subject,
                     text: content // html content possible. ;)
                 }
 
                 res.send(mail);
-                /*smtpTransporter.sendMail(mail, (err, res) => {
+                smtpTransporter.sendMail(mail, (err, res) => {
                     if (err) {
                         smtpTransporter.close();
                         console.log(err);
@@ -63,7 +67,7 @@ exports.retrieveEdit = (req, res) => {
                         smtpTransporter.close();
                         response.send('Mail sent');
                     }
-                });*/
+                });
             } else {
                 res.send(new Error('Not found'));
             }
