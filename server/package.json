@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --timeout 10000",
     "server": "nodemon app.js",
     "start": "node app.js",
     "client": "cd ../client && npm start",
@@ -22,10 +22,14 @@
     "morgan": "^1.9.1",
     "multer": "^1.3.0",
     "nodemailer": "^4.6.2",
-    "nodemon": "^1.18.6",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pdfkit": "^0.8.3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "mocha": "^5.2.0"
   }
 }

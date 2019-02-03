@@ -111,77 +111,81 @@ app.use(function (err, req, res, next) {
 
 	// render the error page
 	res.status(err.status || 500);
-	res.send(err.message);
+	res.send({ message: err.message, name: err.name });
 });
 
-app.listen(port, () => {
+var server = app.listen(port, () => {
 	console.log('Server running on port 3001'.green);
 });
 
+module.exports = server;
+
 function initDB() {
-	Specialization
-		.find()
-		.estimatedDocumentCount((err, count) => {
-			if (err) throw err;
-			else if (count < 5) {
-				console.log("Creating specializations");
+	if (process.env.NODE_ENV != "test") {
+		Specialization
+			.find()
+			.estimatedDocumentCount((err, count) => {
+				if (err) throw err;
+				else if (count < 5) {
+					console.log("Creating specializations");
 
-				let IBO = new Specialization();
-				IBO.name.fr = "Informatique, Big Data et Objets connectés";
-				IBO.name.en = "Computer science, Big Data and IoT";
-				IBO.abbreviation = "IBO";
-				IBO.save();
+					let IBO = new Specialization();
+					IBO.name.fr = "Informatique, Big Data et Objets connectés";
+					IBO.name.en = "Computer science, Big Data and IoT";
+					IBO.abbreviation = "IBO";
+					IBO.save();
 
-				let NE = new Specialization();
-				NE.name.fr = "Nouvelles énergies";
-				NE.name.en = "New Energies";
-				NE.abbreviation = "NE";
-				NE.save();
+					let NE = new Specialization();
+					NE.name.fr = "Nouvelles énergies";
+					NE.name.en = "New Energies";
+					NE.abbreviation = "NE";
+					NE.save();
 
-				let IF = new Specialization();
-				IF.name.fr = "Ingénierie Financière";
-				IF.name.en = "Financial Engineering";
-				IF.abbreviation = "IF";
-				IF.save();
+					let IF = new Specialization();
+					IF.name.fr = "Ingénierie Financière";
+					IF.name.en = "Financial Engineering";
+					IF.abbreviation = "IF";
+					IF.save();
 
-				let MNM = new Specialization();
-				MNM.name.fr = "Mécanique Numérique et Modélisation";
-				MNM.name.en = "Computational Mechanics and Modelling";
-				MNM.abbreviation = "MNM";
-				MNM.save();
+					let MNM = new Specialization();
+					MNM.name.fr = "Mécanique Numérique et Modélisation";
+					MNM.name.en = "Computational Mechanics and Modelling";
+					MNM.abbreviation = "MNM";
+					MNM.save();
 
-				let Test = new Specialization();
-				Test.name.fr = "Nom de test pour la majeur";
-				Test.name.en = "Major test name";
-				Test.abbreviation = "Test";
-				Test.save();
-			}
-		});
+					let Test = new Specialization();
+					Test.name.fr = "Nom de test pour la majeur";
+					Test.name.en = "Major test name";
+					Test.abbreviation = "Test";
+					Test.save();
+				}
+			});
 
-	Year
-		.find()
-		.estimatedDocumentCount((err, count) => {
-			if (err) throw err;
-			else if (count < 3) {
-				console.log("Creating years");
+		Year
+			.find()
+			.estimatedDocumentCount((err, count) => {
+				if (err) throw err;
+				else if (count < 3) {
+					console.log("Creating years");
 
-				let A3 = new Year();
-				A3.abbreviation = "A3";
-				A3.name.fr = "Année 3";
-				A3.name.en = "3rd Year";
-				A3.save();
+					let A3 = new Year();
+					A3.abbreviation = "A3";
+					A3.name.fr = "Année 3";
+					A3.name.en = "3rd Year";
+					A3.save();
 
-				let A4 = new Year();
-				A4.abbreviation = "A4";
-				A4.name.fr = "Année 4";
-				A4.name.en = "4th Year";
-				A4.save();
+					let A4 = new Year();
+					A4.abbreviation = "A4";
+					A4.name.fr = "Année 4";
+					A4.name.en = "4th Year";
+					A4.save();
 
-				let A5 = new Year();
-				A5.abbreviation = "A5";
-				A5.name.fr = "Année 5";
-				A5.name.en = "5th Year";
-				A5.save();
-			}
-		});
+					let A5 = new Year();
+					A5.abbreviation = "A5";
+					A5.name.fr = "Année 5";
+					A5.name.en = "5th Year";
+					A5.save();
+				}
+			});
+	}
 }
