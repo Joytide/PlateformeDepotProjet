@@ -44,6 +44,37 @@ const styles = theme => ({
 	},
 });
 
+const DEFAULT_STATE = {
+	//années et majeures disponibles
+	years: [],
+	majors: [],
+	//années et majeures sélectionnées
+	study_year: [],
+	majors_concerned: [],
+	
+	stepIndex: 0,
+	title: "",
+	description: "",
+	keyWords: [],
+	files: [],
+	urls: [],
+	email: "",
+	company: "",
+	first_name: "",
+	last_name: "",
+	finished: false,
+	submited: false
+}
+const RESET_STATE = {
+	study_year: [],
+	majors_concerned: [],
+	
+	title: "",
+	description: "",
+	keyWords: [],
+	files: [],
+	urls: []
+}
 
 class Deposit extends React.Component {
 	constructor(props) {
@@ -51,24 +82,8 @@ class Deposit extends React.Component {
 
 		const lng = this.props.lng;
 
-		this.state = {
-			years: [],
-			finished: false,
-			stepIndex: 0,
-			title: "",
-			study_year: [],
-			majors_concerned: [],
-			majors: [],
-			description: "",
-			keyWords: [],
-			files: [],
-			urls: [],
-			email: "",
-			company: "",
-			first_name: "",
-			last_name: "",
-			submited: false
-		}
+		this.state = { ...DEFAULT_STATE }
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleKeyWords = this.handleKeyWords.bind(this);
@@ -103,7 +118,9 @@ class Deposit extends React.Component {
 	//STEP
 	handleNext = () => {
 		const { stepIndex } = this.state;
-
+		console.log("this.state.study_year & this.state.majors_concerned");
+		console.log(this.state.study_year);
+		console.log(this.state.majors_concerned);
 		if (!this.state.finished) {
 			this.setState({
 				stepIndex: stepIndex + 1,
@@ -243,6 +260,9 @@ class Deposit extends React.Component {
 							.then((res) => {
 								this.setState({ submited: true })
 								console.log(res)
+								console.log("RESET_STATE1");
+								this.setState(RESET_STATE);
+								console.log(this.state.study_year);
 							})
 							.catch((error) => {
 								console.log(error)
@@ -270,7 +290,7 @@ class Deposit extends React.Component {
 						temp.splice(index, 1);
 					}
 				}
-				console.log(this.state.study_year)
+				console.log(this.state.study_year);
 				this.setState({ study_year: temp });
 				break;
 
@@ -285,7 +305,7 @@ class Deposit extends React.Component {
 						temp2.splice(index, 1);
 					}
 				}
-				console.log(this.state.majors_concerned)
+				console.log(this.state.majors_concerned);
 				this.setState({ majors_concerned: temp2 });
 				break;
 
@@ -498,6 +518,7 @@ class Deposit extends React.Component {
 						</Grid>);
 				}
 				else {
+					// /!\ code jamais atteint
 					return (
 						<Grid container lng={lng}>
 							<div> {i18n.t('message.label', { lng })} </div>
@@ -544,7 +565,7 @@ class Deposit extends React.Component {
 													to={"/Deposit"}
 													onClick={(event) => {
 														event.preventDefault();
-														this.setState({ stepIndex: 0, finished: false });
+														this.setState({stepIndex: 2, finished: false, submited: false});
 													}}
 												>
 													{i18n.t('click.label', { lng })}
