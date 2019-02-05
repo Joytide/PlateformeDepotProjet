@@ -2,6 +2,8 @@ process.env.NODE_ENV = "test";
 
 let mongoose = require('mongoose');
 let Year = require('../api/models/Year');
+let Specialization = require('../api/models/Specialization');
+let { Person, Student, Partner, Administration } = require('../api/models/Person');
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -372,6 +374,66 @@ describe('Testing things related to years', () => {
                         res.body.should.have.property('name', "MissingParameter");
                         done();
                     });
+            });
+        });
+    });
+});
+
+
+describe("Things related to specializations", () => {
+    beforeEach(done => {
+        Specialization.deleteMany({}, err => {
+            done();
+        });
+    });
+
+    describe("/GET /api/specialization", () => {
+        it("it should return an empty array because there are no entry in db", done => {
+            requester
+                .get("/api/specialization")
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.eql([]);
+
+                    done();
+                });
+        });
+
+        it("it should return an array with 1 element", () => {
+            let epge = new Administration();
+            epge.first_name = "John";
+            epge.last_name = "Doe";
+            epge.email = "john.doe@epge.com";
+            epge.epge = true;
+
+            epge.save((err, epgeCreated) => {
+                let specialization = new Specialization();
+                specialization.abbreviation = "M";
+                specialization.name.fr = "Majeure";
+                specialization.name.en = "Specialization";
+
+                specialization.save((err, specializationCreated) => {
+                    requester
+                        .get('/api/specialization')
+                        .end((err, res) => {
+                            res.should.have.status(200);
+                            res.body.should.be.a('array');
+                            res.body.length.should.be.eql(1);
+                            res.body[0].should.have.property("_id", specializationCreated._id.toString());
+                            res.body[0].should.have.property("abbreviation", specializationCreated.abbreviation);
+                            res.body[0].name.should.have.property("fr", specializationCreated.name.fr);
+                            res.body[0].name.should.have.property("en", specializationCreated.name.en);
+
+                            res.body[0].should.have.property("referent");
+                            res.body[0].referent.should.have.property("_id", epgeCreated._id.toString());
+                            res.body[0].referent.should.have.property("first_name", epgeCreated.first_name);
+                            res.body[0].referent.should.have.property("last_name", epgeCreated.last_name);
+                            res.body[0].referent.should.have.property("email", epgeCreated.email);
+                            res.body[0].referent.should.have.property("epge", true);
+
+                            done();
+                        });
+                });
             });
         });
     });
