@@ -3,8 +3,8 @@
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-
 const JWTstrategy = require('passport-jwt').Strategy;
+const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 
@@ -17,23 +17,33 @@ const config = require('../../config.json');
 // Si les identifiants sont bon. Alors on lui renvoie son token jwt pour
 // s'authentifier sur les requêtes à l'API
 passport.use('login', new LocalStrategy({
-    usernameField: "username",
+    usernameField: "email",
     passwordField: "password"
 },
     (username, password, done) => {
-        Person.findOne({ username: username, password: password }, (err, user) => {
+        Person.findOne({ email: username }, (err, user) => {
             if (err) return done(err);
-            if (!user) {
-                return done(null, false, { message: "Incorrect username or password" });
-            } else {
-                let userToken = jwt.sign(
-                    { id: user._id },
-                    config.jwt.secret,
-                    {
-                        expiresIn: 60 * 60 * 24
-                    }
-                );
-                return done(null, userToken);
+            else {
+                console.log(user);
+                if (!user) {
+                    return done(null, false, { message: "Incorrect username or password" });
+                } else {
+                    bcrypt.compare(password, user.password, function (err, valid) {
+                        if (err) return done(err);
+
+                        if (valid) {
+                            let userToken = jwt.sign(
+                                { id: user._id },
+                                config.jwt.secret,
+                                {
+                                    expiresIn: 60 * 60 * 24
+                                }
+                            );
+                            return done(null, userToken);
+                        }
+                        return done(null, false, { message: "Incorrect username or password" });
+                    });
+                }
             }
         });
     }
@@ -65,7 +75,7 @@ exports.logPartner = (req, res) => {
         Partner.findOne({ key: req.body.key }, (err, partner) => {
             if (err) res.send(err);
             if (!partner)
-                res.status(401).send({type:"NotExisting"});
+                res.status(401).send({ type: "NotExisting" });
             else {
                 let userToken = jwt.sign(
                     { id: partner._id },
@@ -79,7 +89,7 @@ exports.logPartner = (req, res) => {
             }
         });
     } else {
-        res.status(400).send({message: "Missing key parameter", type:"MissingParameter"});
+        res.status(400).send({ message: "Missing key parameter", type: "MissingParameter" });
     }
 }
 

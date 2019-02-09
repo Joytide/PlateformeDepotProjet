@@ -8,7 +8,6 @@ var Admin = mongoose.model('Administration');
 const Person = mongoose.model('Person');
 const Specialization = mongoose.model('Specialization');
 
-
 exports.listUsers = (req, res) => {
     Person.find({}, (err, persons) => {
         if(err) res.send(err);

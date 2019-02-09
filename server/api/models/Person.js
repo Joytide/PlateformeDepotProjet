@@ -46,6 +46,12 @@ const AdministrationSchema = new Schema({
 	admin: {
 		type: Boolean,
 		default: false
+	},
+	password: {
+		required: true,
+		type: String,
+		minlength: 60,
+		maxlength: 60
 	}
 });
 const Administration = Person.discriminator('Administration', AdministrationSchema);

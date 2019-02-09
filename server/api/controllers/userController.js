@@ -1,5 +1,6 @@
 'use strict';
 
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const Person = mongoose.model('Person');
 const Student = mongoose.model('Student');
@@ -7,6 +8,7 @@ const Partner = mongoose.model('Partner');
 const Administration = mongoose.model('Administration');
 
 const partnerController = require('./partnerController');
+const bcryptConf = require('../../config.json').bcrypt;
 
 exports.list = (req, res) => {
     Person.find({})
@@ -24,26 +26,26 @@ exports.listAdministration = (req, res) => {
         });
 }
 
-exports.listEPGE = (req,res) => {
-    Administration.find({EPGE: true})
-        .exec((err,epge) => {
-            if(err) res.send(err);
+exports.listEPGE = (req, res) => {
+    Administration.find({ EPGE: true })
+        .exec((err, epge) => {
+            if (err) res.send(err);
             else res.json(epge);
         });
 }
 
 exports.create = (req, res) => {
     let data = req.body;
-    console.log(data);
+
     if (data.firstName && data.lastName && data.email && data.type) {
         if (data.type === "partner") {
             if (data.company) {
                 data.last_name = data.lastName;
                 data.first_name = data.firstName;
-                partnerController.createPartner(data).then(
-                    valid => res.send(valid),
-                    err => res.send(err)
-                );
+                partnerController
+                    .createPartner(data)
+                    .then(valid => res.send(valid))
+                    .catch(err => res.send(err));
             } else {
                 res.status(400).send(new Error(`Missing a parameter. Expected parameters : 
                     (string) firstName, 
@@ -54,17 +56,30 @@ exports.create = (req, res) => {
                 ));
             }
         } else if (data.type === "EPGE" || data.type === "administration") {
-            let administration = new Administration();
-            administration.last_name = data.lastName;
-            administration.first_name = data.firstName;
-            administration.email = data.email;
-            administration.EPGE = data.type === "EPGE";
-            administration.admin = data.type | false;
+            if (data.password && data.password.length === 64) {
+                let administration = new Administration();
+                administration.last_name = data.lastName;
+                administration.first_name = data.firstName;
+                administration.email = data.email;
+                administration.EPGE = data.type === "EPGE";
+                administration.admin = data.type | false;
 
-            administration.save((err, ad) => {
-                if (err) res.send(err);
-                else res.json(ad);
-            });
+                bcrypt.hash(data.password, bcryptConf.saltRounds, (err, hash) => {
+                    if (err) res.send(err);
+                    else {
+                        administration.password = hash;
+
+                        administration.save((err, ad) => {
+                            if (err) res.send(err);
+                            else res.json(ad);
+                        });
+                    }
+                });
+            } else {
+                res.status(400).send(new Error(`Invalid password parameter :
+                    (string) password. Must be hashed in sha256`
+                ));
+            }
         } else {
             let student = new Student();
             student.first_name = data.firstName;
@@ -82,7 +97,8 @@ exports.create = (req, res) => {
             (string) lastName, 
             (string) email, 
             ("student"|"partner"|"EPGE"|"administration") type
-            (string) company (for partners only)`
+            (string) company (for partners only)
+            (string) password (for admin|EPGE only). Must be hashed in sha256`
         ));
     }
 }
