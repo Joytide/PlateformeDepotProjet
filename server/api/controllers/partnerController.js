@@ -41,24 +41,35 @@ exports.addProject = (partnerId, projectId) => {
 
 // Return a promise when creating a Partner
 exports.createPartner = function (data) {
-	return new Promise(async (resolve, reject) => {
-		let newPartner = new Partner({
-			"first_name": data.first_name,
-			"last_name": data.last_name,
-			"email": data.email,
-			"company": data.company
+	return new Promise((resolve, reject) => {
+		Partner.findOne({ email: data.email }, async (err, partner) => {
+			if (err) reject(err);
+			else {
+				if (partner) {
+					let error = new Error("Email already used by a partner");
+					error.name = "EmailUsed";
+					reject(error);
+				} else {
+					let newPartner = new Partner({
+						"first_name": data.first_name,
+						"last_name": data.last_name,
+						"email": data.email,
+						"company": data.company
+					});
+
+					newPartner.key = await generatePassword(16);
+
+					if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
+						newPartner.save(err => {
+							if (err) reject(err);
+							resolve(newPartner);
+						});
+					} else {
+						reject(new Error("Invalid parameters. Missing one of these aruguments : first name, last name, email or company"));
+					}
+				}
+			}
 		});
-
-		newPartner.key = await generatePassword(16);
-
-		if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
-			newPartner.save(err => {
-				if (err) reject(err);
-				resolve(newPartner);
-			});
-		} else {
-			reject(new Error("Invalid parameters : missing one of these aruguments : first name, last name, email or company"));
-		}
 	});
 };
 

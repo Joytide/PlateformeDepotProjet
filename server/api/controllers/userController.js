@@ -13,8 +13,10 @@ const bcryptConf = require('../../config.json').bcrypt;
 exports.list = (req, res) => {
     Person.find({})
         .exec((err, persons) => {
-            if (err) res.send(err);
-            else res.json(persons);
+            Partner.find({}, (err, partners) => {
+                if (err) res.send(err);
+                else res.json(persons.concat(partners));
+            })
         });
 }
 
@@ -55,40 +57,53 @@ exports.create = (req, res) => {
                     (string) company (for partners only)`
                 ));
             }
-        } else if (data.type === "EPGE" || data.type === "administration") {
-            if (data.password && data.password.length === 64) {
-                let administration = new Administration();
-                administration.last_name = data.lastName;
-                administration.first_name = data.firstName;
-                administration.email = data.email;
-                administration.EPGE = data.type === "EPGE";
-                administration.admin = data.type | false;
-
-                bcrypt.hash(data.password, bcryptConf.saltRounds, (err, hash) => {
-                    if (err) res.send(err);
-                    else {
-                        administration.password = hash;
-
-                        administration.save((err, ad) => {
-                            if (err) res.send(err);
-                            else res.json(ad);
-                        });
-                    }
-                });
-            } else {
-                res.status(400).send(new Error(`Invalid password parameter :
-                    (string) password. Must be hashed in sha256`
-                ));
-            }
         } else {
-            let student = new Student();
-            student.first_name = data.firstName;
-            student.last_name = data.lastName;
-            student.email = data.email;
-
-            student.save((err, stu) => {
+            Person.findOne({ email: data.email }, (err, person) => {
                 if (err) res.send(err);
-                else res.json(stu);
+                else {
+                    if (person) {
+                        let error = new Error("Email already used by a partner");
+                        error.name = "EmailUsed";
+                        res.status(400).send(error);
+                    } else {
+                        if (data.type === "EPGE" || data.type === "administration") {
+                            if (data.password && data.password.length === 64) {
+                                let administration = new Administration();
+                                administration.last_name = data.lastName;
+                                administration.first_name = data.firstName;
+                                administration.email = data.email;
+                                administration.EPGE = data.type === "EPGE";
+                                administration.admin = data.type | false;
+
+                                bcrypt.hash(data.password, bcryptConf.saltRounds, (err, hash) => {
+                                    if (err) res.send(err);
+                                    else {
+                                        administration.password = hash;
+
+                                        administration.save((err, ad) => {
+                                            if (err) res.send(err);
+                                            else res.json(ad);
+                                        });
+                                    }
+                                });
+                            } else {
+                                res.status(400).send(new Error(`Invalid password parameter :
+                                (string) password. Must be hashed in sha256`
+                                ));
+                            }
+                        } else {
+                            let student = new Student();
+                            student.first_name = data.firstName;
+                            student.last_name = data.lastName;
+                            student.email = data.email;
+
+                            student.save((err, stu) => {
+                                if (err) res.send(err);
+                                else res.json(stu);
+                            });
+                        }
+                    }
+                }
             });
         }
     } else {

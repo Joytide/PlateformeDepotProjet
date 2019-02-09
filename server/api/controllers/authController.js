@@ -24,7 +24,6 @@ passport.use('login', new LocalStrategy({
         Person.findOne({ email: username }, (err, user) => {
             if (err) return done(err);
             else {
-                console.log(user);
                 if (!user) {
                     return done(null, false, { message: "Incorrect username or password" });
                 } else {

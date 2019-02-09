@@ -193,11 +193,21 @@ class CreateUser extends React.Component {
                             }
                         })
                         .catch(err => {
-                            this.setState({
-                                error: true,
-                                message: "Une erreur est survenue lors de la création de l'utilisateur."
-                            });
-                            console.error(err);
+                            err.json().then(errMsg => {
+                                console.log(errMsg.name)
+                                if (errMsg.name === "EmailUsed") {
+                                    this.setState({
+                                        error: true,
+                                        message: "Cette adresse mail est déjà associée à autre un utilisateur."
+                                    });
+                                } else {
+                                    console.error(errMsg);
+                                    this.setState({
+                                        error: true,
+                                        message: "Une erreur est survenue lors de la création de l'utilisateur."
+                                    });
+                                }
+                            })
                         });
                 }
             });
