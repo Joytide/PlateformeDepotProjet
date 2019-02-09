@@ -16,6 +16,9 @@
     },
     "jwt": {
         "secret": "TRcnD6uHYGKuR3lueV9j"
+    },
+    "bcrypt": {
+        "saltRounds": 12
     }
 	
 }
