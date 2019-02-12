@@ -27,7 +27,10 @@ const Student = Person.discriminator('Student', StudentSchema);
 
 //Administration Class
 const AdministrationSchema = new Schema({
-	EPGE: Boolean,
+	EPGE: {
+		type: Boolean,
+		default: false
+	},
 	admin: {
 		type: Boolean,
 		default: false
@@ -43,6 +46,11 @@ const Administration = Person.discriminator('Administration', AdministrationSche
 
 //Partner Class
 const PartnerSchema = new Schema({
+	__t: {
+		type: String,
+		default: "Partner",
+		required: true
+	},
 	first_name: {
 		type: String,
 		required: true

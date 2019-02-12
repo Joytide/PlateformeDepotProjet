@@ -1,5 +1,6 @@
 process.env.NODE_ENV = "test";
 
+const jwt = require('jsonwebtoken');
 let mongoose = require('mongoose');
 let Year = require('../api/models/Year');
 let Specialization = require('../api/models/Specialization');
@@ -10,11 +11,57 @@ let chaiHttp = require('chai-http');
 let server = require('../app');
 let should = chai.should();
 
+const config = require('../config.json');
 
 chai.use(chaiHttp);
 let requester = chai.request(server).keepOpen();
 
 describe('Testing things related to years', () => {
+    let tokens = {};
+
+    before(done => {
+        Helper
+            .emptyUserDb()
+            .then(() => {
+                Helper
+                    .createAdministration()
+                    .then(user => Helper.generateToken(user))
+                    .then(token => {
+                        tokens['administration'] = token;
+                        if (Object.keys(tokens).length === 4) done();
+                    })
+                    .catch(err => console.error(err));
+
+                Helper
+                    .createAdministrator()
+                    .then(user => Helper.generateToken(user))
+                    .then(token => {
+                        tokens['administrator'] = token;
+                        if (Object.keys(tokens).length === 4) done();
+                    })
+                    .catch(err => console.error(err));
+
+                Helper
+                    .createEPGE()
+                    .then(user => Helper.generateToken(user))
+                    .then(token => {
+                        tokens['EPGE'] = token;
+                        if (Object.keys(tokens).length === 4) done();
+                    })
+                    .catch(err => console.error(err));
+
+                Helper
+                    .createPartner()
+                    .then(user => Helper.generateToken(user))
+                    .then(token => {
+                        tokens['partner'] = token;
+                        if (Object.keys(tokens).length === 4) done();
+                    })
+                    .catch(err => console.error(err));
+            })
+            .catch(err => console.error(err));
+    });
+
     beforeEach(done => {
         Year.deleteMany({}, err => {
             done();
@@ -109,6 +156,7 @@ describe('Testing things related to years', () => {
             }
             requester
                 .put('/api/year')
+                .set("authorization", tokens['administrator'])
                 .send(data)
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -438,3 +486,120 @@ describe("Things related to specializations", () => {
         });
     });
 });
+
+let Helper = {};
+
+Helper.emptyUserDb = () => {
+    return new Promise((resolve, reject) => {
+        Helper
+            .emptyPartnerDb()
+            .then(() => {
+                Helper
+                    .emptyPersonDb()
+                    .then(() => resolve())
+                    .catch(err => reject(err));
+            })
+            .catch(err => reject(err));
+    });
+}
+
+Helper.emptyPersonDb = () => {
+    return new Promise((resolve, reject) => {
+        Person.deleteMany({}, (err) => {
+            if (err) reject(err);
+            else resolve();
+        })
+    });
+}
+
+Helper.emptyPartnerDb = () => {
+    return new Promise((resolve, reject) => {
+        Partner.deleteMany({}, (err) => {
+            if (err) reject(err);
+            else resolve();
+        })
+    });
+}
+
+Helper.createAdministration = () => {
+    return new Promise((resolve, reject) => {
+        let administrationMember = new Administration();
+        administrationMember.last_name = "lastName";
+        administrationMember.first_name = "firstname";
+        administrationMember.email = "administration@member.com";
+        // password won't be used. It is set because it's required
+        administrationMember.password = "a".repeat(60);
+
+        administrationMember.save((err, created) => {
+            if (err) reject(err);
+            else resolve(created);
+        });
+    });
+}
+
+Helper.createEPGE = () => {
+    return new Promise((resolve, reject) => {
+        let epgeMember = new Administration();
+        epgeMember.last_name = "lastName";
+        epgeMember.first_name = "firstname";
+        epgeMember.email = "epge@member.com";
+        epgeMember.epeg = true;
+        // password won't be used. It is set because it's required
+        epgeMember.password = "a".repeat(60);
+
+        epgeMember.save((err, created) => {
+            if (err) reject(err);
+            else resolve(created);
+        });
+    });
+}
+
+Helper.createAdministrator = () => {
+    return new Promise((resolve, reject) => {
+        let administrator = new Administration();
+        administrator.last_name = "lastName";
+        administrator.first_name = "firstname";
+        administrator.email = "administrator@member.com";
+        administrator.admin = true;
+        // password won't be used. It is set because it's required
+        administrator.password = "a".repeat(60);
+
+        administrator.save((err, created) => {
+            if (err) reject(err);
+            else resolve(created);
+        });
+    });
+}
+
+Helper.createPartner = () => {
+    return new Promise((resolve, reject) => {
+        let partner = new Partner();
+        partner.last_name = "lastName";
+        partner.first_name = "firstname";
+        partner.company = "test";
+        partner.email = "partner@member.com";
+
+        partner.save((err, created) => {
+            if (err) reject(err);
+            else resolve(created);
+        });
+    });
+}
+
+Helper.generateToken = (user) => {
+    return new Promise((resolve, reject) => {
+        if (user._id) {
+            let token = jwt.sign(
+                { id: user._id },
+                config.jwt.secret,
+                {
+                    // 1 day
+                    expiresIn: 1000 * 60 * 60 * 24
+                }
+            );
+            resolve(token);
+        } else {
+            reject(Error("User must have an object field to create a token"));
+        }
+    });
+}

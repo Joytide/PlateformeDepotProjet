@@ -144,7 +144,7 @@ class CreateUser extends React.Component {
                         err = true;
                         this.setState({
                             error: true,
-                            message: "Le mot de passe doit à minima être de 8 charactères et comporter une majuscule, une minuscule et un nombre ou un charactère spécial."
+                            message: "Le mot de passe doit à minima être de 8 caractères et comporter une majuscule, une minuscule et un chiffre ou un charactère spécial."
                         });
                     }
 
