@@ -148,7 +148,7 @@ describe('Testing things related to years', () => {
     });
 
     describe("/PUT /api/year", () => {
-        it('it should create a new year', done => {
+        it('it should create a new year with administrator token', done => {
             let data = {
                 abbreviation: "A1",
                 nameFr: "Année 1",
@@ -211,32 +211,93 @@ describe('Testing things related to years', () => {
                     done();
                 });
         });
+
+        it("it shouldn't create a new year because the user isn't administrator (partner)", done => {
+            let data = {
+                abbreviation: "A1",
+                nameFr: "Année 1",
+                nameEn: "1st Year"
+            }
+            requester
+                .put('/api/year')
+                .set("authorization", tokens['partner'])
+                .send(data)
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                });
+        });
+
+        it("it shouldn't create a new year because the user isn't administrator (EGPE)", done => {
+            let data = {
+                abbreviation: "A1",
+                nameFr: "Année 1",
+                nameEn: "1st Year"
+            }
+            requester
+                .put('/api/year')
+                .set("authorization", tokens['EPGE'])
+                .send(data)
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                });
+        });
+
+        it("it shouldn't create a new year because the user isn't administrator (administration)", done => {
+            let data = {
+                abbreviation: "A1",
+                nameFr: "Année 1",
+                nameEn: "1st Year"
+            }
+            requester
+                .put('/api/year')
+                .set("authorization", tokens['administration'])
+                .send(data)
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    done();
+                });
+        });
     });
 
     describe("/DELETE /api/year", () => {
-        it('it should delete a year and get the deleted year(s) in return', done => {
-            let year = new Year();
-            year.abbreviation = "A1";
-            year.name.en = "1st Year";
-            year.name.fr = "Année 1";
+        let year_db;
 
-            year.save((err, yearCreated) => {
-                requester
-                    .delete('/api/year')
-                    .send({ _id: yearCreated._id })
-                    .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.should.be.a('object');
-                        res.body.should.have.property('_id', yearCreated._id.toString());
-                        done();
-                    });
+        beforeEach(done => {
+            Year.deleteMany({}, err => {
+                let year = new Year();
+                year.abbreviation = "A1";
+                year.name.en = "1st Year";
+                year.name.fr = "Année 1";
+
+                year.save((err, yearCreated) => {
+                    year_db = yearCreated;
+                    done();
+                });
             });
+        });
 
+        it('it should delete a year and get the deleted year(s) in return', done => {
+            requester
+                .delete('/api/year')
+                .set("authorization", tokens['administrator'])
+                .send({ _id: year_db._id })
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('_id', year_db._id.toString());
+                    Year.findById(year_db._id, (err, res) => {
+                        if (res) done(new Error("Year not deleted correctly"));
+                        else done();
+                    });
+                });
         });
 
         it("it shouldn't delete a year cause _id field isn't an ObjectId", done => {
             requester
                 .delete('/api/year')
+                .set("authorization", tokens['administrator'])
                 .send({ _id: "test" })
                 .end((err, res) => {
                     res.should.have.status(400);
@@ -249,6 +310,7 @@ describe('Testing things related to years', () => {
         it("it shouldn't delete a year cause _id doesn't exist in db", done => {
             requester
                 .delete('/api/year')
+                .set("authorization", tokens['administrator'])
                 .send({ _id: "5c56e3bf2e73c7233048a6aa" })
                 .end((err, res) => {
                     res.should.have.status(200);
@@ -258,9 +320,10 @@ describe('Testing things related to years', () => {
                 });
         });
 
-        it("it shouldn't delete a year cause _id field isn't an ObjectId", done => {
+        it("it shouldn't delete a year cause _id field is empty", done => {
             requester
                 .delete('/api/year')
+                .set("authorization", tokens['administrator'])
                 .send()
                 .end((err, res) => {
                     res.should.have.status(400);
@@ -269,169 +332,248 @@ describe('Testing things related to years', () => {
                     done();
                 });
         });
+
+        it("it shouldn't delete a year because the user isn't administrator (partner)", done => {
+            requester
+                .delete('/api/year')
+                .set("authorization", tokens['partner'])
+                .send()
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Year.estimatedDocumentCount((err, count) => {
+                        if (count == 1) done();
+                        else done(new Error("Year shouldn't by deleted when access is refused"));
+                    });
+                });
+        });
+
+        it("it shouldn't delete a year because the user isn't administrator (EGPE)", done => {
+            requester
+                .delete('/api/year')
+                .set("authorization", tokens['EPGE'])
+                .send()
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Year.estimatedDocumentCount((err, count) => {
+                        if (count == 1) done();
+                        else done(new Error("Year shouldn't by deleted when access is refused"));
+                    });
+                });
+        });
+
+        it("it shouldn't delete a year because the user isn't administrator (administration)", done => {
+            requester
+                .delete('/api/year')
+                .set("authorization", tokens['administration'])
+                .send()
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Year.estimatedDocumentCount((err, count) => {
+                        if (count == 1) done();
+                        else done(new Error("Year shouldn't by deleted when access is refused"));
+                    });
+                });
+        });
     });
 
     describe("/POST /api/year", () => {
-        it("it should update abbreviation without breaking other fields", done => {
-            let year = new Year();
-            year.abbreviation = "A1";
-            year.name.en = "1st Year";
-            year.name.fr = "Année 1";
+        let year_db;
 
-            year.save((err, yearCreated) => {
-                let update = {
-                    _id: yearCreated._id,
-                    abbreviation: "A2"
-                }
+        beforeEach(done => {
+            Year.deleteMany({}, err => {
+                let year = new Year();
+                year.abbreviation = "A1";
+                year.name.en = "1st Year";
+                year.name.fr = "Année 1";
 
-                requester
-                    .post('/api/year')
-                    .send(update)
-                    .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.should.be.a('object');
-                        res.body.should.have.property('_id', yearCreated._id.toString());
-                        res.body.should.have.property('abbreviation', update.abbreviation);
-                        res.body.name.should.have.property('en', yearCreated.name.en);
-                        res.body.name.should.have.property('fr', yearCreated.name.fr);
-                        done();
-                    });
+                year.save((err, yearCreated) => {
+                    year_db = yearCreated;
+                    done();
+                });
             });
+        });
+
+        it("it should update abbreviation without breaking other fields", done => {
+            let update = {
+                _id: year_db._id,
+                abbreviation: "A2"
+            }
+
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['administrator'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('_id', year_db._id.toString());
+                    res.body.should.have.property('abbreviation', update.abbreviation);
+                    res.body.name.should.have.property('en', year_db.name.en);
+                    res.body.name.should.have.property('fr', year_db.name.fr);
+                    done();
+                });
         });
 
         it("it should update name fr without breaking other fields", done => {
-            let year = new Year();
-            year.abbreviation = "A1";
-            year.name.en = "1st Year";
-            year.name.fr = "Année 1";
+            let update = {
+                _id: year_db._id,
+                nameFr: "Année 2"
+            }
 
-            year.save((err, yearCreated) => {
-                let update = {
-                    _id: yearCreated._id,
-                    nameFr: "Année 2"
-                }
-
-                requester
-                    .post('/api/year')
-                    .send(update)
-                    .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.should.be.a('object');
-                        res.body.should.have.property('_id', yearCreated._id.toString());
-                        res.body.should.have.property('abbreviation', yearCreated.abbreviation);
-                        res.body.should.have.property('name');
-                        res.body.name.should.have.property('en', yearCreated.name.en);
-                        res.body.name.should.have.property('fr', update.nameFr);
-                        done();
-                    });
-            });
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['administrator'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('_id', year_db._id.toString());
+                    res.body.should.have.property('abbreviation', year_db.abbreviation);
+                    res.body.should.have.property('name');
+                    res.body.name.should.have.property('en', year_db.name.en);
+                    res.body.name.should.have.property('fr', update.nameFr);
+                    done();
+                });
         });
 
         it("it should update name en without breaking other fields", done => {
-            let year = new Year();
-            year.abbreviation = "A1";
-            year.name.en = "1st Year";
-            year.name.fr = "Année 1";
+            let update = {
+                _id: year_db._id,
+                nameEn: "2nd Year"
+            }
 
-            year.save((err, yearCreated) => {
-                let update = {
-                    _id: yearCreated._id,
-                    nameEn: "2nd Year"
-                }
-
-                requester
-                    .post('/api/year')
-                    .send(update)
-                    .end((err, res) => {
-                        res.should.have.status(200);
-                        res.body.should.be.a('object');
-                        res.body.should.have.property('_id', yearCreated._id.toString());
-                        res.body.should.have.property('abbreviation', yearCreated.abbreviation);
-                        res.body.should.have.property('name');
-                        res.body.name.should.have.property('en', update.nameEn);
-                        res.body.name.should.have.property('fr', yearCreated.name.fr);
-                        done();
-                    });
-            });
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['administrator'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('_id', year_db._id.toString());
+                    res.body.should.have.property('abbreviation', year_db.abbreviation);
+                    res.body.should.have.property('name');
+                    res.body.name.should.have.property('en', update.nameEn);
+                    res.body.name.should.have.property('fr', year_db.name.fr);
+                    done();
+                });
         });
 
         it("it should return an error because _id isn't an ObjectId", done => {
-            let year = new Year();
-            year.abbreviation = "A1";
-            year.name.en = "1st Year";
-            year.name.fr = "Année 1";
+            let update = {
+                _id: "aaa",
+                nameEn: "2nd Year"
+            }
 
-            year.save((err, yearCreated) => {
-                let update = {
-                    _id: "aaa",
-                    nameEn: "2nd Year"
-                }
-
-                requester
-                    .post('/api/year')
-                    .send(update)
-                    .end((err, res) => {
-                        res.should.have.status(400);
-                        res.body.should.be.a('object');
-                        res.body.should.have.property('name', "CastError");
-                        done();
-                    });
-            });
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['administrator'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('name', "CastError");
+                    done();
+                });
         });
 
         it("it should return an error because _id is missing", done => {
-            let year = new Year();
-            year.abbreviation = "A1";
-            year.name.en = "1st Year";
-            year.name.fr = "Année 1";
+            let update = {
+                nameEn: "2nd Year"
+            }
 
-            year.save((err, yearCreated) => {
-                let update = {
-                    nameEn: "2nd Year"
-                }
-
-                requester
-                    .post('/api/year')
-                    .send(update)
-                    .end((err, res) => {
-                        res.should.have.status(400);
-                        res.body.should.be.a('object');
-                        res.body.should.have.property('name', "MissingId");
-                        done();
-                    });
-            });
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['administrator'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('name', "MissingId");
+                    done();
+                });
         });
 
         it("it should return an error because there are no field to update", done => {
-            let year = new Year();
-            year.abbreviation = "A1";
-            year.name.en = "1st Year";
-            year.name.fr = "Année 1";
+            let update = {
+                _id: year_db._id
+            }
 
-            year.save((err, yearCreated) => {
-                let update = {
-                    _id: yearCreated._id
-                }
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['administrator'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.body.should.be.a('object');
+                    res.body.should.have.property('name', "MissingParameter");
+                    done();
+                });
+        });
 
-                requester
-                    .post('/api/year')
-                    .send(update)
-                    .end((err, res) => {
-                        res.should.have.status(400);
-                        res.body.should.be.a('object');
-                        res.body.should.have.property('name', "MissingParameter");
+        it("it shouldn't update a year because the user isn't administrator (partner)", done => {
+            let update = {
+                _id: year_db._id,
+                abbreviation: "A2"
+            }
+
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['partner'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Year.findById(year_db._id, (err, year) => {
+                        year.should.have.property('abbreviation', 'A1');
                         done();
                     });
-            });
+                });
+        });
+
+        it("it shouldn't update a year because the user isn't administrator (EGPE)", done => {
+            let update = {
+                _id: year_db._id,
+                abbreviation: "A2"
+            }
+
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['EPGE'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Year.findById(year_db._id, (err, year) => {
+                        year.should.have.property('abbreviation', 'A1');
+                        done();
+                    });
+                });
+        });
+
+        it("it shouldn't update a year because the user isn't administrator (administration)", done => {
+            let update = {
+                _id: year_db._id,
+                abbreviation: "A2"
+            }
+
+            requester
+                .post('/api/year')
+                .set("authorization", tokens['administration'])
+                .send(update)
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Year.findById(year_db._id, (err, year) => {
+                        year.should.have.property('abbreviation', 'A1');
+                        done();
+                    });
+                });
         });
     });
 });
 
 
-describe("Things related to specializations", () => {
+describe.only("Things related to specializations", () => {
     beforeEach(done => {
         Specialization.deleteMany({}, err => {
-            done();
+            done(err);
         });
     });
 
@@ -448,40 +590,25 @@ describe("Things related to specializations", () => {
         });
 
         it("it should return an array with 1 element", () => {
-            let epge = new Administration();
-            epge.first_name = "John";
-            epge.last_name = "Doe";
-            epge.email = "john.doe@epge.com";
-            epge.epge = true;
+            let specialization = new Specialization();
+            specialization.abbreviation = "M";
+            specialization.name.fr = "Majeure";
+            specialization.name.en = "Specialization";
 
-            epge.save((err, epgeCreated) => {
-                let specialization = new Specialization();
-                specialization.abbreviation = "M";
-                specialization.name.fr = "Majeure";
-                specialization.name.en = "Specialization";
+            specialization.save((err, specializationCreated) => {
+                requester
+                    .get('/api/specialization')
+                    .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.should.be.a('array');
+                        res.body.length.should.be.eql(1);
+                        res.body[0].should.have.property("_id", specializationCreated._id.toString());
+                        res.body[0].should.have.property("abbreviation", specializationCreated.abbreviation);
+                        res.body[0].name.should.have.property("fr", specializationCreated.name.fr);
+                        res.body[0].name.should.have.property("en", specializationCreated.name.en);
 
-                specialization.save((err, specializationCreated) => {
-                    requester
-                        .get('/api/specialization')
-                        .end((err, res) => {
-                            res.should.have.status(200);
-                            res.body.should.be.a('array');
-                            res.body.length.should.be.eql(1);
-                            res.body[0].should.have.property("_id", specializationCreated._id.toString());
-                            res.body[0].should.have.property("abbreviation", specializationCreated.abbreviation);
-                            res.body[0].name.should.have.property("fr", specializationCreated.name.fr);
-                            res.body[0].name.should.have.property("en", specializationCreated.name.en);
-
-                            res.body[0].should.have.property("referent");
-                            res.body[0].referent.should.have.property("_id", epgeCreated._id.toString());
-                            res.body[0].referent.should.have.property("first_name", epgeCreated.first_name);
-                            res.body[0].referent.should.have.property("last_name", epgeCreated.last_name);
-                            res.body[0].referent.should.have.property("email", epgeCreated.email);
-                            res.body[0].referent.should.have.property("epge", true);
-
-                            done();
-                        });
-                });
+                        done();
+                    });
             });
         });
     });
@@ -501,7 +628,7 @@ Helper.emptyUserDb = () => {
             })
             .catch(err => reject(err));
     });
-}
+};
 
 Helper.emptyPersonDb = () => {
     return new Promise((resolve, reject) => {
@@ -510,7 +637,7 @@ Helper.emptyPersonDb = () => {
             else resolve();
         })
     });
-}
+};
 
 Helper.emptyPartnerDb = () => {
     return new Promise((resolve, reject) => {
@@ -519,7 +646,7 @@ Helper.emptyPartnerDb = () => {
             else resolve();
         })
     });
-}
+};
 
 Helper.createAdministration = () => {
     return new Promise((resolve, reject) => {
@@ -552,7 +679,7 @@ Helper.createEPGE = () => {
             else resolve(created);
         });
     });
-}
+};
 
 Helper.createAdministrator = () => {
     return new Promise((resolve, reject) => {
@@ -569,7 +696,7 @@ Helper.createAdministrator = () => {
             else resolve(created);
         });
     });
-}
+};
 
 Helper.createPartner = () => {
     return new Promise((resolve, reject) => {
@@ -584,7 +711,7 @@ Helper.createPartner = () => {
             else resolve(created);
         });
     });
-}
+};
 
 Helper.generateToken = (user) => {
     return new Promise((resolve, reject) => {
@@ -602,4 +729,8 @@ Helper.generateToken = (user) => {
             reject(Error("User must have an object field to create a token"));
         }
     });
+};
+
+Helper.createProject = referent => {
+
 }

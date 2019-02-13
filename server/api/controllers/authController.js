@@ -102,8 +102,12 @@ exports.areAuthorized = authorized => (req, res, next) => {
             next();
         else if (authorized.constructor === String && authorized === req.user.__t)
             next();
-        else
-            next(new Error('Unauthorized access'));
+        else {
+            let error = new Error('Unautorized access');
+            error.status=401;
+            error.name="Unauthorized";
+            next(error);
+        }
 
     }
 
