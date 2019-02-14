@@ -121,6 +121,7 @@ exports.update = (req, res, next) => {
     }
 }
 
+// When function returns UserNotFound, it could mean that user is existing with that id but he isn't member of EGPE team
 exports.addReferent = (req, res, next) => {
     let data = req.body;
 
@@ -133,7 +134,7 @@ exports.addReferent = (req, res, next) => {
             }
             else if (err) next(err);
             else if (epge) {
-                Specialization.findOne({ _id: data._id, referent: { $ne: epge._id } }, (err, spe) => {
+                Specialization.findOne({ _id: data._id }, (err, spe) => {
                     if (err && err.name === "CastError") {
                         err.status = 400;
                         err.message = "referent parameter must be an ObjectId";
@@ -141,11 +142,18 @@ exports.addReferent = (req, res, next) => {
                     }
                     else if (err) next(err);
                     else if (spe) {
-                        spe.referent.push(epge._id);
-                        spe
-                            .save()
-                            .then(savedSpe => res.json(savedSpe))
-                            .catch(next);
+                        if (spe.referent.indexOf(epge._id.toString()) === -1) {
+                            spe.referent.push(epge._id);
+                            spe
+                                .save()
+                                .then(savedSpe => res.json(savedSpe))
+                                .catch(next);
+                        } else {
+                            let error = new Error("User is already listed as a referent of the specialization");
+                            error.status = 400;
+                            error.name = "AlreadyReferent"
+                            next(error);
+                        }
                     }
                     else {
                         let error = new Error("Can't find any specialization with that ObjectId");
@@ -171,14 +179,50 @@ exports.addReferent = (req, res, next) => {
     }
 }
 
+// When function returns SpecializationNotFound, it could mean that specialization exists but not with the referent passed as a parameter
+// When function returns UserNotFound, it could mean that user is existing with that id but he isn't member of EGPE team
 exports.removeReferent = (req, res, next) => {
     let data = req.body;
 
     if (data._id && data.referent) {
-        Specialization.findOneAndUpdate({ _id: data._id, referent: data.referent }, { $pull: { referent: data.referent } }, { new: true }, (err, spe) => {
-            if (err) res.send(err);
-            else res.json(spe);
-        })
+        Administration.findOne({ _id: data.referent, EPGE: true }, (err, epge) => {
+            if (err && err.name === "CastError") {
+                err.status = 400;
+                err.message = "referent parameter must be an ObjectId";
+                next(err);
+            }
+            else if (err) next(err);
+            else if (epge) {
+                Specialization.findOne({ _id: data._id, referent: epge._id }, (err, spe) => {
+                    if (err && err.name === "CastError") {
+                        err.status = 400;
+                        err.message = "referent parameter must be an ObjectId";
+                        next(err);
+                    }
+                    else if (err) next(err);
+                    else if (spe) {
+                        let referent_index = spe.referent.indexOf(epge._id);
+                        spe.referent = spe.referent.slice(referent_index, 1);
+                        spe
+                            .save()
+                            .then(savedSpe => res.json(savedSpe))
+                            .catch(next);
+                    }
+                    else {
+                        let error = new Error("Can't find any specialization with that ObjectId");
+                        error.status = 400;
+                        error.name = "SpecializationNotFound"
+                        next(error);
+                    }
+                });
+            }
+            else {
+                let error = new Error("Can't find any EGPE member with that ObjectId");
+                error.status = 400;
+                error.name = "UserNotFound"
+                next(error);
+            }
+        });
     } else {
         let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id, (ObjectID) referent");
         error.name = "MissingParameter"

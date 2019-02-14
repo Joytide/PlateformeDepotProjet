@@ -570,7 +570,7 @@ describe('Testing things related to years', () => {
 });
 
 
-describe.only("Things related to specializations", () => {
+describe("Things related to specializations", () => {
     let tokens = {};
 
     before(done => {
@@ -1219,29 +1219,60 @@ describe.only("Things related to specializations", () => {
     });
 
     describe("/PUT /api/specialization/referent", () => {
+        let testing_epge, testing_spe;
+        beforeEach(done => {
+            Helper
+                .createEPGE()
+                .then(epge => {
+                    Helper
+                        .createSpecialization()
+                        .then(spe => {
+                            testing_epge = epge;
+                            testing_spe = spe;
+                            done();
+                        })
+                        .catch(done);
+                })
+                .catch(done);
+        });
+
         describe("# with admin token", () => {
-            it("it should add an existing epge member as a referent of the specialization with admin token", done => {
+            it("it should add an existing epge member as a referent of the specialization", done => {
+                requester
+                    .put('/api/specialization/referent')
+                    .send({ _id: testing_spe._id, referent: testing_epge._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property("_id", testing_spe._id.toString());
+                        res.body.should.have.property("abbreviation", testing_spe.abbreviation);
+                        res.body.name.should.have.property("fr", testing_spe.name.fr);
+                        res.body.name.should.have.property("en", testing_spe.name.en);
+
+                        res.body.referent.should.be.a('array');
+                        res.body.referent.length.should.be.eql(1);
+                        res.body.referent[0].should.be.eql(testing_epge._id.toString());
+
+                        done();
+                    });
+            });
+
+            it("it shouldn't add twice an epge member as a specialization referent", done => {
                 Helper
                     .createEPGE()
                     .then(epge => {
                         Helper
-                            .createSpecialization()
+                            .createSpecialization(epge)
                             .then(spe => {
                                 requester
                                     .put('/api/specialization/referent')
                                     .send({ _id: spe._id, referent: epge._id })
                                     .set("authorization", tokens['administrator'])
                                     .end((err, res) => {
-                                        res.should.have.status(200);
+                                        res.should.have.status(400);
                                         res.body.should.be.a('object');
-                                        res.body.should.have.property("_id", spe._id.toString());
-                                        res.body.should.have.property("abbreviation", spe.abbreviation);
-                                        res.body.name.should.have.property("fr", spe.name.fr);
-                                        res.body.name.should.have.property("en", spe.name.en);
-
-                                        res.body.referent.should.be.a('array');
-                                        res.body.referent.length.should.be.eql(1);
-                                        res.body.referent[0].should.be.eql(epge._id.toString());
+                                        res.body.should.have.property("name", "AlreadyReferent");
 
                                         done();
                                     });
@@ -1251,30 +1282,341 @@ describe.only("Things related to specializations", () => {
                     .catch(done);
             });
 
-            it("it shouldn't add twice an epge member as a specialization referent");
+            it("it should return an error if spe _id is missing", done => {
+                requester
+                    .put('/api/specialization/referent')
+                    .send({ referent: testing_epge._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property("name", "MissingParameter");
 
-            it("it should return an error if spe _id is missing");
+                        done();
+                    });
+            });
 
-            it("it should return an error if referent _id is missing");
+            it("it should return an error if referent _id is missing", done => {
+                requester
+                    .put('/api/specialization/referent')
+                    .send({ _id: testing_spe._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property("name", "MissingParameter");
 
-            it("it should return an error if spe _id doesn't exist in db");
+                        done();
+                    });
+            });
 
-            it("it should return an error if referent _id doesn't exist in db");
+            it("it should return an error if spe _id doesn't exist in db", done => {
+                requester
+                    .put('/api/specialization/referent')
+                    .send({ _id: "5c64a2f45b1ac81fd0bac02a", referent: testing_epge._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property("name", "SpecializationNotFound");
 
-            it("it should return an error if spe _id isn't a valid ObjectID");
+                        done();
+                    });
+            });
 
-            it("it should return an error if referent _id isn't a valid ObjectID");
+            it("it should return an error if referent _id doesn't exist in db", done => {
+                requester
+                    .put('/api/specialization/referent')
+                    .send({ referent: "5c64a2f45b1ac81fd0bac02a", _id: testing_spe._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property("name", "UserNotFound");
 
-            it("it shouldn't be able to add someone who isn't member of egpe team to referent");
+                        done();
+                    });
+            });
+
+            it("it should return an error if spe _id isn't a valid ObjectID", done => {
+                requester
+                    .put('/api/specialization/referent')
+                    .send({ _id: "aaaaa", referent: testing_epge._id, })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property("name", "CastError");
+
+                        done();
+                    });
+            });
+
+            it("it should return an error if referent _id isn't a valid ObjectID", done => {
+                requester
+                    .put('/api/specialization/referent')
+                    .send({ referent: "aaaaa", _id: testing_spe._id, })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.be.a('object');
+                        res.body.should.have.property("name", "CastError");
+
+                        done();
+                    });
+            });
+
+            it("it shouldn't be able to add someone who isn't member of egpe team to referent", done => {
+                Helper
+                    .createAdministration()
+                    .then(administration => {
+                        requester
+                            .put('/api/specialization/referent')
+                            .send({ _id: testing_spe._id, referent: administration._id })
+                            .set("authorization", tokens['administrator'])
+                            .end((err, res) => {
+                                res.should.have.status(400);
+                                res.body.should.be.a('object');
+                                res.body.should.have.property("name", "UserNotFound");
+
+                                done();
+                            });
+                    })
+                    .catch(done);
+            });
         });
-        it("it shouldn't add a referent to a spe because the user isn't an admnisistrator (partner)");
-        it("it shouldn't add a referent to a spe because the user isn't an admnisistrator (EGPE)");
-        it("it shouldn't add a referent to a spe because the user isn't an admnisistrator (administration)");
+
+        it("it shouldn't add a referent to a spe because the user isn't an admnisistrator (partner)", done => {
+            requester
+                .put('/api/specialization/referent')
+                .send({ _id: testing_spe._id, referent: testing_epge._id })
+                .set("authorization", tokens['partner'])
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Specialization.findOne({ _id: testing_spe }, (err, spe) => {
+                        if (err) done(err);
+                        else {
+                            spe.referent.length.should.be.eql(0);
+                            done();
+                        }
+                    });
+                });
+        });
+
+        it("it shouldn't add a referent to a spe because the user isn't an admnisistrator (EGPE)", done => {
+            requester
+                .put('/api/specialization/referent')
+                .send({ _id: testing_spe._id, referent: testing_epge._id })
+                .set("authorization", tokens['EPGE'])
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Specialization.findOne({ _id: testing_spe }, (err, spe) => {
+                        if (err) done(err);
+                        else {
+                            spe.referent.length.should.be.eql(0);
+                            done();
+                        }
+                    });
+                });
+        });
+
+        it("it shouldn't add a referent to a spe because the user isn't an admnisistrator (administration)", done => {
+            requester
+                .put('/api/specialization/referent')
+                .send({ _id: testing_spe._id, referent: testing_epge._id })
+                .set("authorization", tokens['administration'])
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Specialization.findOne({ _id: testing_spe }, (err, spe) => {
+                        if (err) done(err);
+                        else {
+                            spe.referent.length.should.be.eql(0);
+                            done();
+                        }
+                    });
+                });
+        });
     });
 
     describe("/DELETE /api/specialization/referent", () => {
-        describe("# with admin token", () => {
+        let testing_epge, testing_spe;
 
+        beforeEach(done => {
+            Helper
+                .createEPGE()
+                .then(epge => {
+                    Helper
+                        .createSpecialization(epge)
+                        .then(spe => {
+                            testing_epge = epge;
+                            testing_spe = spe;
+                            done();
+                        })
+                        .catch(done);
+                })
+                .catch(done);
+        });
+
+        describe("# with admin token", () => {
+            it("it should remove referent from referent list of the specialization", done => {
+                requester
+                    .delete('/api/specialization/referent')
+                    .send({ _id: testing_spe._id, referent: testing_epge._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(200);
+                        res.body.referent.indexOf(testing_epge._id).should.be.eql(-1);
+
+                        done();
+                    });
+            });
+
+            it("it should return an error because referent isn't in referent list of the spe", done => {
+                Helper
+                    .createSpecialization()
+                    .then(spe => {
+                        requester
+                            .delete('/api/specialization/referent')
+                            .send({ _id: spe._id, referent: testing_epge._id })
+                            .set("authorization", tokens['administrator'])
+                            .end((err, res) => {
+                                res.should.have.status(400);
+                                res.body.should.have.property("name", "SpecializationNotFound");
+
+                                done();
+                            });
+                    })
+                    .catch(done);
+            });
+
+            it("it should return an error if spe _id is missing", done => {
+                requester
+                    .delete('/api/specialization/referent')
+                    .send({ referent: testing_epge._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.have.property("name", "MissingParameter");
+
+                        done();
+                    });
+            });
+
+            it("it should return an error if referent _id is missing", done => {
+                requester
+                    .delete('/api/specialization/referent')
+                    .send({ _id: testing_spe._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.have.property("name", "MissingParameter");
+
+                        done();
+                    });
+            });
+
+            it("it should return an error if spe _id isn't a valid ObjectID", done => {
+                requester
+                    .delete('/api/specialization/referent')
+                    .send({ _id: "aaaaa", referent: testing_epge._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.have.property("name", "CastError");
+
+                        done();
+                    });
+            });
+
+            it("it should return an error if referent _id isn't a valid ObjectID", done => {
+                requester
+                    .delete('/api/specialization/referent')
+                    .send({ _id: testing_spe._id, referent: "aaaaa" })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.have.property("name", "CastError");
+
+                        done();
+                    });
+            });
+
+            it("it should return an error if spe _id doesn't exist in db", done => {
+                requester
+                    .delete('/api/specialization/referent')
+                    .send({ _id: "5c64a2f45b1ac81fd0bac02a", referent: testing_epge._id })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.have.property("name", "SpecializationNotFound");
+
+                        done();
+                    });
+            });
+
+            it("it should return an error if referent _id doesn't exist in db", done => {
+                requester
+                    .delete('/api/specialization/referent')
+                    .send({ _id: testing_spe._id, referent: "5c64a2f45b1ac81fd0bac02a" })
+                    .set("authorization", tokens['administrator'])
+                    .end((err, res) => {
+                        res.should.have.status(400);
+                        res.body.should.have.property("name", "UserNotFound");
+
+                        done();
+                    });
+            });
+        });
+
+        it("it shouldn't remove a referent to a spe because the user isn't an admnisistrator (partner)", done => {
+            requester
+                .delete('/api/specialization/referent')
+                .send({ _id: testing_spe._id, referent: testing_epge._id })
+                .set("authorization", tokens['partner'])
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Specialization.findOne({ _id: testing_spe }, (err, spe) => {
+                        if (err) done(err);
+                        else {
+                            spe.referent.indexOf(testing_epge._id).should.not.be.eql(-1);
+                            done();
+                        }
+                    });
+                });
+        });
+
+        it("it shouldn't remove a referent to a spe because the user isn't an admnisistrator (EGPE)", done => {
+            requester
+                .delete('/api/specialization/referent')
+                .send({ _id: testing_spe._id, referent: testing_epge._id })
+                .set("authorization", tokens['EPGE'])
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Specialization.findOne({ _id: testing_spe }, (err, spe) => {
+                        if (err) done(err);
+                        else {
+                            spe.referent.indexOf(testing_epge._id).should.not.be.eql(-1);
+                            done();
+                        }
+                    });
+                });
+        });
+
+        it("it shouldn't remove a referent to a spe because the user isn't an admnisistrator (administration)", done => {
+            requester
+                .delete('/api/specialization/referent')
+                .send({ _id: testing_spe._id, referent: testing_epge._id })
+                .set("authorization", tokens['administration'])
+                .end((err, res) => {
+                    res.should.have.status(401);
+                    Specialization.findOne({ _id: testing_spe }, (err, spe) => {
+                        if (err) done(err);
+                        else {
+                            spe.referent.indexOf(testing_epge._id).should.not.be.eql(-1);
+                            done();
+                        }
+                    });
+                });
         });
     });
 });
