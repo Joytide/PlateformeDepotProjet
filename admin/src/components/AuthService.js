@@ -51,12 +51,12 @@ const AuthService = {
         // Setting Authorization header
         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
         if (AuthService.isLoggedIn()) {
-            headers['authorization'] = this.getToken()
+            headers['Authorization'] = AuthService.getToken()
         }
 
         return fetch(url, {
-            headers,
-            ...options
+            ...options,
+            headers
         });
     }
 }
