@@ -38,7 +38,7 @@ passport.use('login', new LocalStrategy({
                                     expiresIn: 60 * 60 * 24
                                 }
                             );
-                            return done(null, userToken);
+                            return done(null, { token: userToken });
                         }
                         return done(null, false, { message: "Incorrect username or password" });
                     });
@@ -104,8 +104,8 @@ exports.areAuthorized = authorized => (req, res, next) => {
             next();
         else {
             let error = new Error('Unautorized access');
-            error.status=401;
-            error.name="Unauthorized";
+            error.status = 401;
+            error.name = "Unauthorized";
             next(error);
         }
 
