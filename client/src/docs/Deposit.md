@@ -16,12 +16,13 @@ La page deposit sert aux partenaires de déposer un projet en le décrivant en p
 
 La demande de dépot de projet est gérée en 4 étapes/pages différentes par le composant Stepper et l'indice stepIndex qui suit l'avancement
 
----
-Step 0 : Affichage d'un texte de présentation de la procédure
-Step 1 : Informations sur le partenaire : mail, nom entreprise, nom, prénom
-Step 2 : Informations du projet : Titre, années concernées, majeurs concernées, description, mots clé, fichiers
-Step 3 : Upload du projet - affiche si succès
----
+
+| Step 0 | Step 1|
+|---|:----:|
+|Affichage d'un texte de présentation de la procédure | Informations sur le partenaire : mail, nom entreprise, nom, prénom|
+|Step 2 | Step 3 |
+|Informations du projet : Titre, années concernées, majeurs concernées, description, mots clé, fichiers| Upload du projet - affiche si succès|
+
 
 ## Validators
 
