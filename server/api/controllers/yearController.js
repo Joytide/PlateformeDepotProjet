@@ -5,6 +5,7 @@ var Year = mongoose.model('Year');
 
 exports.list = function (req, res) {
     Year.find({})
+        .sort({abbreviation : 1})
         .exec((err, years) => {
             if (err)
                 res.send(err);

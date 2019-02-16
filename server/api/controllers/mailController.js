@@ -51,7 +51,7 @@ exports.retrieveEdit = (req, res) => {
                 const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
                 const content = `Bonjour ${partner.first_name} ${partner.last_name}, \nVoici le lien permettant d'éditer le(s) projet(s) que vous avez soumis: \n${link}`
                 const mail = {
-                    from: `${config.api.email}`,
+                    from: config.api.email,
                     to: recipient,
                     subject: subject,
                     text: content // html content possible. ;)

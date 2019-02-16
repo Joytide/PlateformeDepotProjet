@@ -96,7 +96,7 @@ const dashboardRoutes = [
   {
     path: "/createYear",
     sidebarName: "Créer année",
-    navbarName: "Créer une anée",
+    navbarName: "Créer une année",
     icon: "add",
     component: CreateYear
   },

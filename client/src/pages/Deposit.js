@@ -52,6 +52,7 @@ class Deposit extends React.Component {
 		const lng = this.props.lng;
 
 		this.state = {
+			years: [],
 			finished: false,
 			stepIndex: 0,
 			title: "",
@@ -74,8 +75,8 @@ class Deposit extends React.Component {
 		this.handleFiles = this.handleFiles.bind(this);
 		//this.handleBlur = this.handleBlur.bind(this);
 
-		this.years = [{ name: i18n.t('year4.label', { lng }), key: "A4" },
-		{ name: i18n.t('year5.label', { lng }), key: "A5" }];
+		/*this.years = [{ name: i18n.t('year4.label', { lng }), key: "A4" },
+		{ name: i18n.t('year5.label', { lng }), key: "A5" }];*/
 
 		/*this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
 		{ name: i18n.t('ne.label', { lng }), key: "NE" },
@@ -88,6 +89,13 @@ class Deposit extends React.Component {
 			.then(res => res.json())
 			.then(majors => {
 				this.setState({ majors: majors });
+			})
+			.catch(console.error.bind(console));
+
+		fetch('/api/year')
+			.then(res => res.json())
+			.then(years => {
+				this.setState({ years: years })
 			})
 			.catch(console.error.bind(console));
 	}
@@ -225,7 +233,7 @@ class Deposit extends React.Component {
 					console.log(form);
 					try {
 						fetch('/api/projects', {
-							method: 'POST',
+							method: 'PUT',
 							headers: {
 								'Accept': 'application/json',
 								'Content-Type': 'application/json',
@@ -419,17 +427,17 @@ class Deposit extends React.Component {
 									{i18n.t('years.label', { lng })}
 								</Typography>
 								<Grid container direction="row" justify='center'>
-									{this.years.map((years) =>
-										<Grid item key={years.key}>
+									{this.state.years.map(year =>
+										<Grid item key={year._id}>
 											<FormControlLabel
 												control={
 													<Checkbox
 														onChange={this.handleChange}
-														value={years.key}
+														value={year._id}
 														name="year"
 													/>
 												}
-												label={years.name}
+												label={lng === "fr" ? year.name.fr : year.name.en}
 											/>
 										</Grid>
 									)}
@@ -463,7 +471,7 @@ class Deposit extends React.Component {
 									placeholder={i18n.t('descriptionProj.label', { lng })}
 									label="Description"
 									value={this.state.description}
-									validators={['required', 'maxStringLength:3000']}
+									validators={['required', 'maxStringLength:10000']}
 									errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
 									multiline
 									rows="10"

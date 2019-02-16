@@ -104,8 +104,8 @@ class ProjectList extends React.Component {
                         transform(<p>{project.partner.company}</p>),
                         transform(<p>{project.status === "validated" ? "Validé" : (project.status === "pending" ? "En attente" : "Refusé")}</p>),
                         transform(<p>{new Date(project.sub_date).toLocaleDateString()}</p>),
-                        project.study_year.join(', '),
-                        project.majors_concerned.map(major => major.abbreviation).join(', '),
+                        project.study_year.map(year => year.abbreviation).sort().join(', '),
+                        project.majors_concerned.map(major => major.abbreviation).sort().join(', '),
                         (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
                     ];
                 });

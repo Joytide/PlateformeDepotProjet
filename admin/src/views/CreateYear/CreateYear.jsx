@@ -227,7 +227,7 @@ class CreateYear extends React.Component {
                             </GridContainer>
                         </CardBody>
                         <CardFooter>
-                            <Button color="primary" onClick={this.createYear}>Créer la majeure</Button>
+                            <Button color="primary" onClick={this.createYear}>Créer l'année</Button>
                         </CardFooter>
                     </Card>
                 </GridItem>
