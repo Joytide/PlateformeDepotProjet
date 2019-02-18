@@ -157,3 +157,12 @@ exports.findById = (req, res) => {
         res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id`));
     }
 }
+
+exports.isAdmin = (req, res) => {
+    req.user;
+
+    res.json({
+        _id: req.user._id,
+        admin: req.user.admin
+    });
+}

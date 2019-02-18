@@ -70,7 +70,8 @@ const dashboardRoutes = [
     sidebarName: "Ajouter utilisateur",
     navbarName: "Ajouter un utilisateur",
     icon: PersonAdd,
-    component: CreateUser
+    component: CreateUser,
+    adminOnly: true
   },
   {
     path: "/users",
@@ -84,7 +85,8 @@ const dashboardRoutes = [
     sidebarName: "Créer majeure",
     navbarName: "Créer une majeure",
     icon: "add",
-    component: CreateSpecialization
+    component: CreateSpecialization,
+    adminOnly: true
   },
   {
     path: "/specializations",
@@ -98,7 +100,8 @@ const dashboardRoutes = [
     sidebarName: "Créer année",
     navbarName: "Créer une année",
     icon: "add",
-    component: CreateYear
+    component: CreateYear,
+    adminOnly: true
   },
   {
     path: "/years",
@@ -119,9 +122,9 @@ const dashboardRoutes = [
     sidebarName: "Réglages",
     navbarName: "Réglages",
     icon: "settings",
-    component: Settings
-  },
-  { redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect" }
+    component: Settings,
+    adminOnly: true
+  }
 ];
 
 export default dashboardRoutes;
