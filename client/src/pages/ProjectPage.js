@@ -22,15 +22,9 @@ class ProjectPage extends React.Component {
             project: this.props.project,
             loaded : false,
             isLiked : false,
-<<<<<<< HEAD
         }
         this.DownloadFile = this.DownloadFile.bind(this);
-=======
-            userId : "5c559c0ec4b656396c1957da" // userId à récupérer lorsque la fonctionnalité connexion sera faite
-		}
->>>>>>> 89d247d8bab56b13730c26a1503938236bed8810
     }
-
 
     componentDidMount() {
         fetch('/api/project/' + this.props.match.params.key)
