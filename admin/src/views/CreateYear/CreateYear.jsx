@@ -60,22 +60,22 @@ const styles = theme => ({
     }
 });
 
-class CreateSpecialization extends React.Component {
+class CreateYear extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             labelWidth: 0,
-            abbreviation: "",
             nameEn: "",
             nameFr: "",
-            error: false,
+            abbreviation: "",
             success: false,
-            message: ""
+            error: false,
+            message:""
         }
 
         this.handleChange = this.handleChange.bind(this);
-        this.createSpecialization = this.createSpecialization.bind(this);
+        this.createYear = this.createYear.bind(this);
     }
 
     handleChange = event => {
@@ -86,7 +86,7 @@ class CreateSpecialization extends React.Component {
         this.setState({ [name]: event.target.checked });
     };
 
-    createSpecialization() {
+    createYear() {
         this.setState({ error: false, success: false });
         if (this.state.nameFr === "")
             this.setState({
@@ -105,6 +105,7 @@ class CreateSpecialization extends React.Component {
                 error: true,
                 message: "Veuillez remplir le champ Abbréviation."
             });
+
         else {
             let data = {
                 nameFr: this.state.nameFr,
@@ -112,7 +113,7 @@ class CreateSpecialization extends React.Component {
                 abbreviation: this.state.abbreviation
             };
 
-            fetch(api.host + ":" + api.port + "/api/specialization", {
+            fetch(api.host + ":" + api.port + "/api/year", {
                 method: "PUT",
                 mode: "cors",
                 headers: {
@@ -124,7 +125,7 @@ class CreateSpecialization extends React.Component {
                 .then(data => {
                     this.setState({
                         success: true,
-                        message: "Majeure créée avec succès. Vous allez être redirigé vers la liste des majeures."
+                        message: "Année créée avec succès. Vous allez être redirigé vers la liste des années."
                     });
 
                     setTimeout(() => {
@@ -134,7 +135,7 @@ class CreateSpecialization extends React.Component {
                 .catch(err => {
                     this.setState({
                         error: true,
-                        message: "Une erreur est survenue lors de la création de la majeure."
+                        message: "Une erreur est survenue lors de la création de l'année."
                     });
                     console.error(err);
                 });;
@@ -146,7 +147,7 @@ class CreateSpecialization extends React.Component {
         let redirect;
 
         if (this.state.redirect) {
-            redirect = <Redirect to="/specializations" />
+            redirect = <Redirect to="/years" />
         }
         return (
             <GridContainer>
@@ -170,7 +171,7 @@ class CreateSpecialization extends React.Component {
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <CardHeader color="primary">
-                            <h4 className={classes.cardTitleWhite}>Créer une majeure</h4>
+                            <h4 className={classes.cardTitleWhite}>Créer une année</h4>
                             <p className={classes.cardCategoryWhite}></p>
                         </CardHeader>
                         <CardBody>
@@ -226,7 +227,7 @@ class CreateSpecialization extends React.Component {
                             </GridContainer>
                         </CardBody>
                         <CardFooter>
-                            <Button color="primary" onClick={this.createSpecialization}>Créer la majeure</Button>
+                            <Button color="primary" onClick={this.createYear}>Créer l'année</Button>
                         </CardFooter>
                     </Card>
                 </GridItem>
@@ -235,4 +236,4 @@ class CreateSpecialization extends React.Component {
     }
 }
 
-export default withStyles(styles)(CreateSpecialization);
+export default withStyles(styles)(CreateYear);

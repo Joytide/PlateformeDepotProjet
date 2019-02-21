@@ -12,10 +12,19 @@ import UserProfile from "views/UserProfile/UserProfile.jsx";
 import UserList from "views/UserList/UserList.jsx";
 import CreateUser from "views/CreateUser/CreateUser.jsx";
 
+// Project related things
+import ProjectProfile from "views/ProjectProfile/ProjectProfile.jsx";
+import ProjectList from "views/ProjectList/ProjectList.jsx";
+
 // Specialization related things
 import SpecializationList from "views/SpecializationList/SpecializationList.jsx";
 import CreateSpecialization from "views/CreateSpecialization/CreateSpecialization.jsx";
 import SpecializationProfile from "views/SpecializationProfile/SpecializationProfile.jsx";
+
+// Year related things
+import YearList from "views/YearList/YearList.jsx";
+import CreateYear from "views/CreateYear/CreateYear.jsx";
+import YearProfile from "views/YearProfile/YearProfile.jsx";
 
 // Others
 import NotificationsPage from "views/Notifications/Notifications.jsx";
@@ -33,6 +42,28 @@ const dashboardRoutes = [
     path: "/user/:id",
     component: UserProfile,
     invisible: true
+  },
+  {
+    path: "/project/:id",
+    component: ProjectProfile,
+    invisible: true
+  },
+  {
+    path: "/specialization/:id",
+    component: SpecializationProfile,
+    invisible: true
+  },
+  {
+    path: "/year/:id",
+    component: YearProfile,
+    invisible: true
+  },
+  {
+    path: "/projects",
+    sidebarName: "Liste projets",
+    navbarName: "Liste des projets",
+    icon: PersonAdd,
+    component: ProjectList
   },
   {
     path: "/createUser",
@@ -63,9 +94,18 @@ const dashboardRoutes = [
     component: SpecializationList
   },
   {
-    path: "/specialization/:id",
-    component: SpecializationProfile,
-    invisible: true
+    path: "/createYear",
+    sidebarName: "Créer année",
+    navbarName: "Créer une année",
+    icon: "add",
+    component: CreateYear
+  },
+  {
+    path: "/years",
+    sidebarName: "Liste années",
+    navbarName: "Liste des années",
+    icon: "list",
+    component: YearList
   },
   {
     path: "/notifications",

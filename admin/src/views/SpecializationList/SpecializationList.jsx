@@ -71,7 +71,7 @@ class SpecializationList extends React.Component {
                     specialization.abbreviation, 
                     specialization.name.fr, 
                     specialization.name.en, 
-                    (<Link to={"/specialization/" + specialization._id}><Button type="button" color="info"><Visibility /> Voir la majeure</Button></Link>)
+                    (<Link to={"/specialization/" + specialization._id}><Button size="sm" type="button" color="info"><Visibility /> Voir la majeure</Button></Link>)
                 ]);
 
                 this.setState({ specializations: specializationsData, loading: false });

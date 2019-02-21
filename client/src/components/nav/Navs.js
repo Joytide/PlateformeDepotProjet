@@ -11,7 +11,6 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import i18n from '../i18n';
 import { Link } from 'react-router-dom';
-import Icon from '@material-ui/core/Icon';
 
 const styles = theme => ({
   root: {

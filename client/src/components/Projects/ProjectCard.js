@@ -181,40 +181,44 @@ class ProjectCard extends React.Component {
 
 							<Grid item xs={10} >
 								<CardContent style={{ color: "black", paddingTop: 1, paddingBottom: 1 }}>
-									{project.description.substring(1, 220) + " ..."}
+									{project.description.substring(0, 220) + " ..."}
 								</CardContent>
 							</Grid>
 
 						</CardContent>
 
 						<CardActions disableActionSpacing>
-								<Grid container spacing={8}>
-									{
-										project.study_year.sort().map((year, index) => {
-											return (<Grid key={index} item>
-												<Chip label={year} color="primary" />
+							<Grid container spacing={8}>
+								{
+									project.study_year
+										.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
+										.map(year => {
+											return (<Grid key={year._id} item>
+												<Chip label={year.abbreviation} color="primary" />
 											</Grid>);
 										})
-									}
-								</Grid>
-								<Grid container spacing={8}>
-									{
-										project.majors_concerned.sort().map((major, index) => {
-											return (<Grid key={index} item>
-												<Chip label={major.abbreviation} color="secondary" />
-											</Grid>);
-										})
-									}
-								</Grid>
-								<Grid container spacing={8}>
-									{
-										project.keywords.sort().map((keyword, index) => {
-											return (<Grid key={index} item>
-												<Chip label={keyword} />
-											</Grid>);
-										})
-									}
-								</Grid>
+								}
+							</Grid>
+							<Grid container spacing={8}>
+								{
+									project.majors_concerned		
+									.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
+									.map(major => {
+										return (<Grid key={major._id} item>
+											<Chip label={major.abbreviation} color="secondary" />
+										</Grid>);
+									})
+								}
+							</Grid>
+							<Grid container spacing={8}>
+								{
+									project.keywords.sort().map((keyword, index) => {
+										return (<Grid key={index} item>
+											<Chip label={keyword} />
+										</Grid>);
+									})
+								}
+							</Grid>
 						</CardActions>
 
 					</Card>

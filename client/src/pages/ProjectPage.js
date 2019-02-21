@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import nl2br from 'react-newline-to-break';
-import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -14,7 +13,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = {
-  };
+};
 
 class ProjectPage extends React.Component {
 	constructor(props) {
@@ -23,23 +22,67 @@ class ProjectPage extends React.Component {
             project: this.props.project,
             loaded : false,
             isLiked : false,
+<<<<<<< HEAD
         }
         this.DownloadFile = this.DownloadFile.bind(this);
+=======
+            userId : "5c559c0ec4b656396c1957da" // userId à récupérer lorsque la fonctionnalité connexion sera faite
+		}
+>>>>>>> 89d247d8bab56b13730c26a1503938236bed8810
     }
 
 
     componentDidMount() {
-        fetch('/api/project/'+this.props.match.params.key)
+        fetch('/api/project/' + this.props.match.params.key)
             .then(res => res.json())
             .then(project => {
+                console.log("this.state.userId:" + this.state.userId);
+                console.log(project);
+
                 this.setState({ project: project, loaded: true });
+                if (project.likes.find( (element) => { return element === this.state.userId; }) ){
+                    this.setState({ isLiked: true });
+                    console.log("BDDStart.isLiked: true");
+                }
+                else {
+                    this.setState({ isLiked: false });
+                    console.log("BDDStart.isLiked: false");
+                }
             });
     }
 
     handleChange = () => {
-        this.setState({ isLiked : this.state.isLiked ? false : true });
-        console.log(this.setState);
-      };
+        //this.setState({ isLiked : this.state.isLiked ? false : true }); // lecture directe de la réponse api à la place
+
+        let data = {
+            user : this.state.userId,
+            project: this.props.match.params.key
+        };
+        console.log(data);
+
+        fetch('/api/project/like', {
+            method: this.state.isLiked ? "DELETE" : "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log("data");
+                console.log(data);
+                if (data.likes.find( (element) => { return element === this.state.userId; }) ){
+                    this.setState({ isLiked: true });
+                    console.log("BDD.isLiked: true");
+                }
+                else {
+                    this.setState({ isLiked: false });
+                    console.log("BDD.isLiked: false");
+                }
+            });
+
+        
+    }
 
     DownloadFile = () => {
         fetch('/files', {
@@ -58,9 +101,8 @@ class ProjectPage extends React.Component {
         return(
             <div>
                 <Grid container style={{ marginTop: 12}} justify="center">
-					<Grid xs={11}>
+                    <Grid xs={11}>
                         <Paper style={{ padding: 12}}>
-
                                 <Typography align="center" variant="h3" paragraph>
                                         {project.title}
                                 </Typography>
@@ -68,8 +110,8 @@ class ProjectPage extends React.Component {
                                 <Grid container justify="space-between">
                                     <Grid container spacing={8} xs>
                                         {
-                                            project.study_year.sort().map(major => {
-                                                return <Grid item><Chip label={major} color="primary" /></Grid>
+                                            project.study_year.sort().map(year => {
+                                                return <Grid item><Chip label={year.abbreviation} color="primary" /></Grid>
                                             })
                                         }
                                         {
