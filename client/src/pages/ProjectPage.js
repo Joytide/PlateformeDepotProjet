@@ -22,8 +22,9 @@ class ProjectPage extends React.Component {
 		this.state = {
             project: this.props.project,
             loaded : false,
-            isLiked : false
-		}
+            isLiked : false,
+        }
+        this.DownloadFile = this.DownloadFile.bind(this);
     }
 
 
@@ -39,6 +40,15 @@ class ProjectPage extends React.Component {
         this.setState({ isLiked : this.state.isLiked ? false : true });
         console.log(this.setState);
       };
+
+    DownloadFile = () => {
+        fetch('/files', {
+            method: 'GET',
+        })
+            .then((res) => {
+                res.json()
+            })
+    }
 
     render () {
         const project = this.state.project
@@ -93,6 +103,24 @@ class ProjectPage extends React.Component {
                                     <Typography  component="body1">
                                             {nl2br(project.description)}
                                     </Typography>
+                                </Grid>
+
+                                <hr></hr>
+
+                                <Grid container spacing={8} xs>
+                                    {
+                                        project.media_files.sort().map(file => {
+                                            return(
+                                                <Grid item>
+                                                    {file.filename}
+                                                    <IconButton
+                                                        onClick={this.DownloadFile}>
+                                                        {<img src="/file_download.png" height="18" width="18" alt="Download"/>}
+                                                    </IconButton>
+                                                </Grid>
+                                            )
+                                        })
+                                    }
                                 </Grid>
                         </Paper>
                     </Grid>

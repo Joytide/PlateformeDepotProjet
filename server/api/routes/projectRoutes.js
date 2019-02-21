@@ -25,9 +25,11 @@ module.exports = function (app) {
   app.route('/api/export/:projectId')
     .get(project.export_a_project);
 
-  app.route('/api/projects/:title')
+  app.route('/api/project/:title')
     .get(project.filter_by_name);
 
-
+  app.route('/api/project/download/:filename')
+    .get(project.download_file);
 };
+// Créer un fichier statique regarder sur la doc express
 
