@@ -1,10 +1,12 @@
 'use strict';
 
+var app = require('express')();
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const PDFDocument = require('pdfkit');
+var path = require('path');
 
 const mailer = require('nodemailer');
 const config = require('../../config');
@@ -284,4 +286,10 @@ exports.unlike = (req, res) => {
 	} else {
 		res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) user, (ObjectID) project"));
 	}
+}
+
+exports.download_file = (req, res) => { 
+	const filename = req.params.file;
+	const filePath = path.join('./uploads',filename);
+	res.download(filePath, filename);
 }

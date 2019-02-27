@@ -154,12 +154,42 @@ class ProjectProfile extends React.Component {
                 checkedCount++;
 
         if (checkedCount >= 2 || checked) {
-            this.setState(prevState => ({
-                checkedYears: {
-                    ...prevState.checkedYears,
-                    [id]: checked
-                }
-            }));
+            let yearList = [];
+
+            for (let yearId in this.state.checkedYears)
+                if ((this.state.checkedYears[yearId] && yearId !== id) || (!this.state.checkedYears[yearId] && yearId === id))
+                    yearList.push(yearId);
+
+            const data = {
+                _id: this.state.project._id,
+                study_year: yearList
+            }
+
+            fetch(api.host + ":" + api.port + "/api/projects", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (!res.ok) throw res;
+                    else return res.json()
+                })
+                .then(data => {
+                    this.setState({
+                        project: data
+                    });
+                    this.checkboxMapping();
+                })
+                .catch(err => {
+                    this.setState({
+                        error: true,
+                        message: "Une erreur est survenue lors de la sauvegarde des données."
+                    });
+                    console.error(err);
+                });
         } else {
             this.setState({
                 error: true,
