@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { Typography } from '@material-ui/core';
+import i18n from '../components/i18n';
 
 class ForgetPass extends Component {
 
@@ -32,7 +34,7 @@ class ForgetPass extends Component {
             })
                 .then((res) => {
                     console.log(res)
-                    //window.location.reload()
+                    window.location.reload()
                 })
                 .catch((error) => {
                     console.log(error);
@@ -50,21 +52,21 @@ class ForgetPass extends Component {
     }
 
     render() {
+        let lng = this.props.lng;
         return (
             <div style={{ fontSize: 15, marginTop:15, textAlign: 'center' }}>
                 <form onSubmit={this.handleSubmit.bind(this)}>
-                    <p > Si vous avez perdu votre lien pour modifier votre projet, veuillez entrer votre mail pour le récupérer. </p>
+                    <Typography>{i18n.t('forgetPass.desc', {lng} )}</Typography>
                     <TextField
                         label="Entrez votre e-mail"
                         placeholder="Entrez votre e-mail"
                         onChange={this.handleChange.bind(this)}
                         type="email"
-                        multiline
                         margin="normal"
                         name="email" value={this.state.email} 
                     /><br/>
                     <Button variant="contained" color="primary" type="submit">
-                        <div>Envoyer</div>
+                        <Typography>{i18n.t('forgetPass.submit', {lng} )}</Typography>
                     </Button>
                 </form>
             </div>
