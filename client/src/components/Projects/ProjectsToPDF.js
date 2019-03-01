@@ -122,6 +122,7 @@ class ProjectsToPDF extends React.Component {
                 )
                 x = 1
                 y+=0.15
+                y=this.handleNewPage(doc,y)
                 doc.text("Files : ",0.75,y)
                 project.media_files.map(file =>
                     {
