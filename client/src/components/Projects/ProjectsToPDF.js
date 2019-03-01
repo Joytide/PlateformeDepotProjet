@@ -18,15 +18,16 @@ class ProjectsToPDF extends React.Component {
         var today = new Date();
         var filename = "DeVinciDeposit_"
         console.log(this.state.type)
-        if(this.state.type=="all")
+        if(this.state.type==="all")
         {
             filename+="allProjects_"
         }
-        else if(this.state.type="one")
+        else if(this.state.type==="one")
         {
             filename+=this.props.projects[0].title.substring(0,15)+"_"
         }
         doc.save(filename+ today.toLocaleDateString() +'.pdf')
+        return 1
     }
 
     handleNewPage = (doc, y) => {
@@ -80,7 +81,7 @@ class ProjectsToPDF extends React.Component {
                         line = line.substring(0,temp)
                     }
                     //gestion des mots coupés par le retour à la ligne
-                    while(line[line.length-1]!='\n'&&line[line.length-1]!=' ' && i+taille_ligne<project.description.length && k<10) 
+                    while(line[line.length-1]!=='\n'&&line[line.length-1]!==' ' && i+taille_ligne<project.description.length && k<10) 
                     {
                         line += project.description[i+taille_ligne]
                         i+=1
@@ -132,10 +133,10 @@ class ProjectsToPDF extends React.Component {
                 )
                 y+=0.5
             }
-            
-            )
+            );
 
             this.handleSaving(doc)
+            return 1
 	};
 	render() {
 		const lng = this.props.lng;
