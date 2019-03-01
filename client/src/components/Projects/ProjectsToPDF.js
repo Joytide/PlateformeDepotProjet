@@ -96,6 +96,8 @@ class ProjectsToPDF extends React.Component {
 
                 //Ajout des années, majeures et mots-clés
                 let x = 1
+                doc.text("Tags : ",0.75,y)
+                y+=0.15
                 project.study_year.map(year =>
                     {
                         doc.text(year.abbreviation,x,y)
@@ -116,6 +118,15 @@ class ProjectsToPDF extends React.Component {
                     {
                         doc.text(keyword,x,y)
                         x+=keyword.length*0.13
+                    }
+                )
+                x = 1
+                y+=0.15
+                doc.text("Files : ",0.75,y)
+                project.media_files.map(file =>
+                    {
+                        y+=0.15
+                        doc.text(file.originalname,x,y)
                     }
                 )
                 y+=0.5
