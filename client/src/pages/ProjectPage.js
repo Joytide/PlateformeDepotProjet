@@ -24,10 +24,9 @@ class ProjectPage extends React.Component {
             project: this.props.project,
             loaded : false,
             isLiked : false,
-            userId : "5c559c0ec4b656396c1957da" // userId à récupérer lorsque la fonctionnalité connexion sera faite
-		}
+        }
+        this.DownloadFile = this.DownloadFile.bind(this);
     }
-
 
     componentDidMount() {
         fetch('/api/project/' + this.props.match.params.key)
@@ -79,6 +78,15 @@ class ProjectPage extends React.Component {
             });
 
         
+    }
+
+    DownloadFile = () => {
+        fetch('/files', {
+            method: 'GET',
+        })
+            .then((res) => {
+                res.json()
+            })
     }
 
     render () {
@@ -136,6 +144,24 @@ class ProjectPage extends React.Component {
                                     <Typography  component="body1">
                                             {nl2br(project.description)}
                                     </Typography>
+                                </Grid>
+
+                                <hr></hr>
+
+                                <Grid container spacing={8} xs>
+                                    {
+                                        project.media_files.sort().map(file => {
+                                            return(
+                                                <Grid item>
+                                                    {file.filename}
+                                                    <IconButton
+                                                        onClick={this.DownloadFile}>
+                                                        {<img src="/file_download.png" height="18" width="18" alt="Download"/>}
+                                                    </IconButton>
+                                                </Grid>
+                                            )
+                                        })
+                                    }
                                 </Grid>
                         </Paper>
                     </Grid>

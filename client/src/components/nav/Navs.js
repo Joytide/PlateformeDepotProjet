@@ -129,13 +129,13 @@ class Navs extends React.Component {
         onClose={this.handleMenuClose}
       >
         <MenuItem component={Link} to="/Connection" color="inherit">
-            <div>{i18n.t('login.label', {lng} )}</div>
+            <div>{i18n.t('navs.login', {lng} )}</div>
         </MenuItem>
         <MenuItem component={Link} to="/Admin" color="inherit">
-            <div>{i18n.t('admin.label', {lng} )}</div>
+            <div>{i18n.t('navs.admin', {lng} )}</div>
         </MenuItem>
         <MenuItem component={Link} to="/forgot" color="inherit">
-            <div>{i18n.t('linkLost.label', {lng} )}</div>
+            <div>{i18n.t('navs.linkLost', {lng} )}</div>
         </MenuItem>
       </Menu>
     );
@@ -150,17 +150,17 @@ class Navs extends React.Component {
       >
         <Link to="/">
           <MenuItem color="inherit">
-              <div>{i18n.t('home.label', {lng} )}</div>
+              <div>{i18n.t('navs.home', {lng} )}</div>
           </MenuItem>
         </Link>
         <Link to="/Projects">
           <MenuItem color="inherit">
-              <div>{i18n.t('projects.label', {lng} )}</div>
+              <div>{i18n.t('navs.projects', {lng} )}</div>
           </MenuItem>
         </Link>
         <Link to="/deposit">
           <MenuItem color="inherit">
-              <div>{i18n.t('submit.label', {lng} )}</div>
+              <div>{i18n.t('navs.submit', {lng} )}</div>
           </MenuItem>
         </Link>
         <MenuItem  color="inherit">
@@ -185,17 +185,17 @@ class Navs extends React.Component {
             <div className={classes.sectionDesktop}>
               <Link to="/">
                 <Button color="inherit" className={classes.button}>
-                  <div>{i18n.t('home.label', {lng} )}</div>
+                  <div>{i18n.t('navs.home', {lng} )}</div>
                 </Button>
               </Link>
               <Link to="/Projects">
                 <Button color="inherit" className={classes.button}>
-                  <div>{i18n.t('projects.label', {lng} )}</div>
+                  <div>{i18n.t('navs.projects', {lng} )}</div>
                 </Button>
               </Link>
               <Link to="/deposit">
                 <Button color="inherit" className={classes.button}>
-                  <div>{i18n.t('submit.label', {lng} )}</div>
+                  <div>{i18n.t('navs.submit', {lng} )}</div>
                 </Button>
               </Link>
 

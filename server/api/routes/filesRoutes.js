@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
-module.exports = (app) => {
+module.exports = function (app) {
     app.route('/api/addFile')
         .post(upload.any(), function (req, res, next) {
             if (!req.files) {

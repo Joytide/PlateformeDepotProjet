@@ -33,7 +33,7 @@ class App extends Component {
 		if (this.state.lng === 'fr') this.setState({ lng: 'en' });
 		if (this.state.lng === 'en') this.setState({ lng: 'fr' });
 
-		console.log("la langue du bouton est : " + event.target.className.toLowerCase());
+		//console.log("la langue du bouton est : " + event.target.className.toLowerCase());
 		//event.target.className.toLowerCase() =
 		//muibuttonbase-root-76 muiiconbutton-root-79 fr
 		//muibuttonbase-root-76 muiiconbutton-root-79 en
@@ -79,13 +79,13 @@ function NoMatch({ location }) {
 					<Paper elevation={1}>
 						<Typography variant="h1" align="center">
 							404 !
-                    	</Typography>
+						</Typography>
 						<Typography variant="h4" align="center">
-						<span role="img" aria-labelledby="jsx-a11y/accessible-emoji" >😢</span>
-                    	</Typography>
+							<span role="img" aria-labelledby="jsx-a11y/accessible-emoji" >😢</span>
+						</Typography>
 						<Typography variant="subtitle1" align="center">
 							La page n'existe pas 
-                    </Typography>
+						</Typography>
 					</Paper>
 				</Grid>
 			</Grid>
