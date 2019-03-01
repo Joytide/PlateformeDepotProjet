@@ -12,6 +12,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { withStyles } from '@material-ui/core/styles';
 
+import ProjectsToPDF from '../components/Projects/ProjectsToPDF';
+
 const styles = {
 };
 
@@ -90,9 +92,12 @@ class ProjectPage extends React.Component {
                     <Grid xs={11}>
                         <Paper style={{ padding: 12}}>
                                 <Typography align="center" variant="h3" paragraph>
-                                        {project.title}
+                                        {project.number + " - " + project.title}
                                 </Typography>
 
+                                <Grid container justify="flex-end">
+								    <ProjectsToPDF projects={[project]} ProjectsType="one" lng={lng}/>
+							    </Grid>
                                 <Grid container justify="space-between">
                                     <Grid container spacing={8} xs>
                                         {
