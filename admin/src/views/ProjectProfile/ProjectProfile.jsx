@@ -373,6 +373,15 @@ class ProjectProfile extends React.Component {
                         <Divider />
                         <br />
                         <Typography variant="body2">
+                            Mot(s) clé(s) :
+                        </Typography>
+                        <Typography>
+                            {this.state.project.keywords.join(', ')}
+                        </Typography>
+                        <br />
+                        <Divider />
+                        <br />
+                        <Typography variant="body2">
                             Fichier(s) joint(s) :
                         </Typography>
                     </CardBody>
