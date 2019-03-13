@@ -96,7 +96,7 @@ exports.areAuthorized = authorized => (req, res, next) => {
     if (!req.user) {
         next(new Error('Unauthorized access'));
     } else {
-        if (authorized === "Administrator" && req.user.admin)
+        if(req.user.admin) 
             next();
         else if (authorized.constructor === Array && authorized.indexOf(req.user.__t) != -1)
             next();
