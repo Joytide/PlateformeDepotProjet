@@ -8,4 +8,5 @@ client/package-lock.json
 admin/package-lock.json
 
 server/.uploads
+server/uploads
 .vscode

@@ -1,10 +1,12 @@
 'use strict';
 
+var app = require('express')();
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const PDFDocument = require('pdfkit');
+var path = require('path');
 
 const mailer = require('nodemailer');
 const config = require('../../config');
@@ -85,13 +87,13 @@ exports.createProject = (req, res) => {
 								to: req.body.email,
 								subject: `Soumission du projet ${json.title}`,
 								text: `
-									Bonjour ${partner.first_name} ${partner.last_name} (${json.company}), \n
+									Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
 									Votre demande de soumission de projet a bien été enregistrée. \n 
 									Voici votre lien pour l'éditer: ${link}\n\n
 									Cordialement,
 									L'équipe DVP
 									\n\n\n\n
-									Hello ${partner.first_name} ${partner.last_name} (${json.company}), \n
+									Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
 									Your project submission request has been registered.\n
 									Here is your link to edit it: ${link}\n\n
 									`
@@ -284,4 +286,10 @@ exports.unlike = (req, res) => {
 	} else {
 		res.status(400).send(new Error("Missing a parameter. Expected parameters : (ObjectID) user, (ObjectID) project"));
 	}
+}
+
+exports.download_file = (req, res) => { 
+	const filename = req.params.file;
+	const filePath = path.join('./uploads',filename);
+	res.download(filePath, filename);
 }

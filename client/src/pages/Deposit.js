@@ -44,6 +44,37 @@ const styles = theme => ({
 	},
 });
 
+const DEFAULT_STATE = {
+	//années et majeures disponibles
+	years: [],
+	majors: [],
+	//années et majeures sélectionnées
+	study_year: [],
+	majors_concerned: [],
+	
+	stepIndex: 0,
+	title: "",
+	description: "",
+	keyWords: [],
+	files: [],
+	urls: [],
+	email: "",
+	company: "",
+	first_name: "",
+	last_name: "",
+	finished: false,
+	submited: false
+}
+const RESET_STATE = {
+	study_year: [],
+	majors_concerned: [],
+	
+	title: "",
+	description: "",
+	keyWords: [],
+	files: [],
+	urls: []
+}
 
 class Deposit extends React.Component {
 	constructor(props) {
@@ -51,24 +82,8 @@ class Deposit extends React.Component {
 
 		const lng = this.props.lng;
 
-		this.state = {
-			years: [],
-			finished: false,
-			stepIndex: 0,
-			title: "",
-			study_year: [],
-			majors_concerned: [],
-			majors: [],
-			description: "",
-			keyWords: [],
-			files: [],
-			urls: [],
-			email: "",
-			company: "",
-			first_name: "",
-			last_name: "",
-			submited: false
-		}
+		this.state = { ...DEFAULT_STATE }
+
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.handleKeyWords = this.handleKeyWords.bind(this);
@@ -103,7 +118,9 @@ class Deposit extends React.Component {
 	//STEP
 	handleNext = () => {
 		const { stepIndex } = this.state;
-
+		console.log("this.state.study_year & this.state.majors_concerned");
+		console.log(this.state.study_year);
+		console.log(this.state.majors_concerned);
 		if (!this.state.finished) {
 			this.setState({
 				stepIndex: stepIndex + 1,
@@ -243,6 +260,9 @@ class Deposit extends React.Component {
 							.then((res) => {
 								this.setState({ submited: true })
 								console.log(res)
+								console.log("RESET_STATE1");
+								this.setState(RESET_STATE);
+								console.log(this.state.study_year);
 							})
 							.catch((error) => {
 								console.log(error)
@@ -270,7 +290,7 @@ class Deposit extends React.Component {
 						temp.splice(index, 1);
 					}
 				}
-				console.log(this.state.study_year)
+				console.log(this.state.study_year);
 				this.setState({ study_year: temp });
 				break;
 
@@ -285,7 +305,7 @@ class Deposit extends React.Component {
 						temp2.splice(index, 1);
 					}
 				}
-				console.log(this.state.majors_concerned)
+				console.log(this.state.majors_concerned);
 				this.setState({ majors_concerned: temp2 });
 				break;
 
@@ -304,39 +324,39 @@ class Deposit extends React.Component {
 			case 0:
 				return (
 					<div>
-						<Grid container direction="column" justify="center" alignItems="center">
+						<Grid container direction="column" justify="center" alignItems="flex-start">
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">Proposer un projet a nos élèves</Typography>
+								<Typography variant="h6">{i18n.t('home.p1', {lng} )}</Typography>
 								<Typography>
-									Proposer un projet vous permettra de coopérer avec une équipe d'élèves ingénieurs motivés et innovants et de contribuer à leur formation en les impliquant dans des problématiques actuelles. <br />
-									Entreprises ou laboratoires, c'est aussi un moyen de vous faire connaître auprès de ceux qui répondront dans les années futures à vos offres de stages et d'emplois. <br />
+									{i18n.t('home.p1_l1', {lng} )}<br/>
+									{i18n.t('home.p1_l2', {lng} )}<br/>
 								</Typography>
 							</Grid>
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">Comment ça marche ?</Typography>
+								<Typography variant="h6">{i18n.t('home.p2', {lng} )}</Typography>
 								<Typography>
-									Un groupe projet est constitué de 4 élèves (3 ou 5 éventuellement) qui travailleront chacun une dizaine d'heures par semaine sur votre projet. <br />
-									Chaque groupe sera suivi et encadré par un enseignant de l'école ("directeur de projet") à même de les guider scientifiquement. <br />
-									Ces projets concernent les élèves d'année 4 et d'année 5, avec un fonctionnement similaire et un calendrier un peu différent : les projets démarrent pour tous mi/fin septembre, et se terminent fin janvier pour les années 5 et fin mars pour les années 4. <br />
-									Les élèves partant en stage après, il peut être possible que votre projet soit "poursuivi" en stage par un élève de l'équipe. <br />
+									{i18n.t('home.p2_l1', {lng} )}<br/>
+									{i18n.t('home.p2_l2', {lng} )}<br/>
+									{i18n.t('home.p2_l3', {lng} )}<br/>
+									{i18n.t('home.p2_l4', {lng} )}<br/>
 								</Typography>
 							</Grid>
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">Quel va être mon rôle ?</Typography>
+								<Typography variant="h6">{i18n.t('home.p3', {lng} )}</Typography>
 								<Typography>
-									Si votre projet est choisi, vous devenez alors "partenaire du projet". <br />
-									L'équipe d'élèves prend alors contact avec vous pour démarrer le projet, puis vous tient au courant de l'évolution de ses travaux, par des échéances fixées ensemble, et enfin organise avec vous la clôture de projet la dernière semaine de janvier pour les années 5, de mars pour les années 4. <br />
-									L'équipe sera suivie régulièrement tout au long de son projet par son "directeur de projet", qui sera aussi chargé de l'évaluer. <br />
-									Plusieurs revues projets et pitchs jalonneront le projet, qui se terminera par un showroom auquel vous serez bien entendu invité. <br />
+									{i18n.t('home.p3_l4', {lng} )}<br/>
+									{i18n.t('home.p3_l5', {lng} )}<br/>
+									{i18n.t('home.p3_l6', {lng} )}<br/>
+									{i18n.t('home.p3_l7', {lng} )}<br/>
 								</Typography>
 							</Grid>
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">Comment proposer un projet ?</Typography>
+								<Typography variant="h6">{i18n.t('home.p4', {lng} )}</Typography>
 								<Typography>
-									Cliquez sur [SUIVANT] en bas de la page. Vous devrez alors donner des information sur le partenaire puis décrire le projet proposé, et cibler les compétences voulues et attendues. <br />
-									Pour plus d'informations, vous pouvez trouver une présentation succincte  de ces projets, ainsi que des exemples effectués les années précédentes en innovation industrielle <a href="http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-5/" target="_blank" rel="noopener noreferrer">pour les années 5</a> et <a href="http://www.esilv.fr/formations/projets/projet-dinnovation-industrielle-4/" rel="noopener noreferrer">pour les années 4</a>.
-                Des renseignements plus précis, ainsi qu'un calendrier seront fournis en septembre. <br />
-									Pour toute question, n'hésitez pas à nous contacter : projetesilv@devinci.fr <br />
+									{i18n.t('home.p4_l1', {lng} )}<br/>
+									{i18n.t('home.p4_l2', {lng} )}<br/>
+									{i18n.t('home.p4_l3', {lng} )}<br/>
+									{i18n.t('home.p4_l4', {lng} )}<br/>
 								</Typography>
 							</Grid>
 						</Grid>
@@ -486,7 +506,7 @@ class Deposit extends React.Component {
 								{<KeyWords lng={lng} change={this.handleKeyWords} />}
 							</Grid>
 							<Grid item>
-								<FilesInputs lng={lng} change={this.handleFiles} />
+								{<FilesInputs lng={lng} change={this.handleFiles} />}
 							</Grid>
 						</Grid>
 					</div>)
@@ -498,6 +518,7 @@ class Deposit extends React.Component {
 						</Grid>);
 				}
 				else {
+					// /!\ code jamais atteint
 					return (
 						<Grid container lng={lng}>
 							<div> {i18n.t('message.label', { lng })} </div>
@@ -544,7 +565,7 @@ class Deposit extends React.Component {
 													to={"/Deposit"}
 													onClick={(event) => {
 														event.preventDefault();
-														this.setState({ stepIndex: 0, finished: false });
+														this.setState({stepIndex: 2, finished: false, submited: false});
 													}}
 												>
 													{i18n.t('click.label', { lng })}
