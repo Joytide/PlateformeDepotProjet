@@ -56,37 +56,37 @@ exports.listProjects = function (req, res) {
 
 exports.createProject = (req, res) => {
 	let json = req.body;
-	console.log("json");
-	console.log(json);
 
 	Partner.findOne({ email: req.body.email }, async (err, partner) => {
 		if (err)
 			res.send(err);
+		else {
+			if (partner == null) {
+				partner = await partnerController.createPartner(req.body);
+			}
+			json.partner = partner._id;
+			json.status = 'pending';
+			var new_project = new Project(json);
 
-		if (partner == null) {
-			partner = await partnerController.createPartner(req.body);
-		}
-		json.partner = partner._id;
-		json.status = 'pending';
-		var new_project = new Project(json);
+			Project.count({}, (err, count) => {
+				if (err) res.send(err);
 
-		Project.count({}, (err, count) => {
-			if (err) res.send(err);
-			new_project.number = (count + 1).toString().padStart(3, '0');
-			new_project.save(function (err, project) {
-				if (err){
-					res.send(err);
-				}
 				else {
-					partnerController.addProject(partner._id, project._id)
-						.then((partner) => {
-							//console.log(partner);
-							const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
-							const mail = {
-								from: config.api.email,
-								to: req.body.email,
-								subject: `Soumission du projet ${json.title}`,
-								text: `
+					new_project.number = (count + 1).toString().padStart(3, '0');
+					new_project.save(function (err, project) {
+						if (err) {
+							res.send(err);
+						}
+						else {
+							partnerController.addProject(partner._id, project._id)
+								.then((partner) => {
+									//console.log(partner);
+									const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
+									const mail = {
+										from: config.api.email,
+										to: req.body.email,
+										subject: `Soumission du projet ${json.title}`,
+										text: `
 									Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
 									Votre demande de soumission de projet a bien été enregistrée. \n 
 									Voici votre lien pour l'éditer: ${link}\n\n
@@ -97,28 +97,28 @@ exports.createProject = (req, res) => {
 									Your project submission request has been registered.\n
 									Here is your link to edit it: ${link}\n\n
 									`
-							}
-							res.send(mail);
-							//console.log("mail :");
-							//console.log(mail);
-							smtpTransporter.sendMail(mail, (err, result) => {
-								if (err) {
-									smtpTransporter.close();
-									console.log(err);
+									}
+
+									smtpTransporter.sendMail(mail, (err, result) => {
+										if (err) {
+											smtpTransporter.close();
+											console.log(err);
+											res.send(err);
+										} else {
+											console.log("Mail de soumission envoyé");
+											res.send('Mail ok!');
+											smtpTransporter.close();
+										}
+									});
+								})
+								.catch(err => {
 									res.send(err);
-								} else {
-									console.log("Mail de soumission envoyé");
-									res.send('Mail ok!');
-									smtpTransporter.close();
-								}
-							});
-						})
-						.catch(err => {
-							res.send(err);
-						});
+								});
+						}
+					});
 				}
 			});
-		});
+		}
 	});
 };
 
@@ -288,8 +288,8 @@ exports.unlike = (req, res) => {
 	}
 }
 
-exports.download_file = (req, res) => { 
+exports.download_file = (req, res) => {
 	const filename = req.params.file;
-	const filePath = path.join('./uploads',filename);
+	const filePath = path.join('./uploads', filename);
 	res.download(filePath, filename);
 }
