@@ -1,13 +1,19 @@
 import decode from 'jwt-decode';
 
-const AuthService = {
-    isLoggedIn: () => {
-        // Checks if there is a saved token and it's still valid
-        const token = AuthService.getToken() // GEtting token from localstorage
-        return token !== null; // handwaiving here
-    },
+class AuthService {
+    // Initializing important variables
+    constructor() {
+        this.fetch = this.fetch.bind(this);
+        this.getProfile = this.getProfile.bind(this);
+    }
 
-    isTokenExpired: token => {
+    isLoggedIn() {
+        // Checks if there is a saved token and it's still valid
+        const token = this.getToken() // GEtting token from localstorage
+        return token !== null; // handwaiving here
+    }
+
+    isTokenExpired(token) {
         try {
             const decoded = decode(token);
             if (decoded.exp < Date.now() / 1000) { // Checking if token is expired. N
@@ -19,29 +25,29 @@ const AuthService = {
         catch (err) {
             return false;
         }
-    },
+    }
 
-    setToken: idToken => {
+    setToken(idToken) {
         // Saves user token to localStorage
         localStorage.setItem('token', idToken)
-    },
+    }
 
-    getToken: () => {
-        if (!AuthService.isTokenExpired(localStorage.getItem('token'))) {
+    getToken() {
+        if (!this.isTokenExpired(localStorage.getItem('token'))) {
             return localStorage.getItem('token')
         }
         else {
             localStorage.removeItem('token');
             return null;
         }
-    },
+    }
 
-    logout: () => {
+    logout() {
         // Clear user token and profile data from localStorage
         localStorage.removeItem('token');
-    },
+    }
 
-    fetch: (url, options) => {
+    fetch(url, options) {
         // performs api calls sending the required authentication headers
         const headers = {
             'Accept': 'application/json',
@@ -50,20 +56,14 @@ const AuthService = {
 
         // Setting Authorization header
         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
-        if (AuthService.isLoggedIn()) {
-            headers['Authorization'] = AuthService.getToken()
+        if (this.isLoggedIn()) {
+            headers['authorization'] = this.getToken()
         }
 
         return fetch(url, {
-            ...options,
-            headers
+            headers,
+            ...options
         });
-    },
-
-    isAdmin: () => {
-        return AuthService
-            .fetch("/api/user/isAdmin")
-            .then(res => res.json());
     }
 }
 

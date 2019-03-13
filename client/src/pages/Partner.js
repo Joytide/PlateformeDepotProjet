@@ -1,8 +1,7 @@
 import React from 'react';
 import ProjectsListCard from '../components/Projects/ProjectsListCard';
-import AuthService from '../components/AuthService';
+import authService from '../components/AuthService';
 
-const authService = new AuthService();
 
 class Partner extends React.Component {
     constructor(props) {
