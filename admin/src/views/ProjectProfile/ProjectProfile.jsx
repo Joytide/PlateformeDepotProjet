@@ -19,6 +19,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Button from "components/CustomButtons/Button.jsx";
+import Table from "components/Table/Table.jsx";
 
 import { api } from "../../config"
 
@@ -55,16 +56,19 @@ class ProjectProfile extends React.Component {
             loadingProject: true,
             loadingYear: true,
             loadingSpecialization: true,
+            loadingComments: true,
             checkedYears: {},
             years: [],
             specializations: [],
             project: {},
+            comments: [],
             specializations_concerned: [],
             color: "primary"
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.loadProjectData = this.loadProjectData.bind(this);
+        this.loadProjectComments = this.loadProjectComments.bind(this);
         this.loadStaticData = this.loadStaticData.bind(this);
         this.checkboxMapping = this.checkboxMapping.bind(this);
     }
@@ -80,6 +84,17 @@ class ProjectProfile extends React.Component {
                     specializations_concerned: data.majors_concerned.map(spe => spe._id),
                     color: color
                 }, this.checkboxMapping);
+            });
+    }
+
+    loadProjectComments() {
+        fetch(api.host + ":" + api.port + "/api/comment/" + this.props.match.params.id)
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    comments: data,
+                    loadingComments: false,
+                });
             });
     }
 
@@ -130,6 +145,7 @@ class ProjectProfile extends React.Component {
     componentDidMount() {
         this.loadProjectData();
         this.loadStaticData();
+        this.loadProjectComments();
     }
 
     handleChange = event => {
@@ -288,7 +304,7 @@ class ProjectProfile extends React.Component {
         const { classes } = this.props;
         const { specialization } = this.state;
 
-        let partnerInfo, projectInfo, classification, actions;
+        let partnerInfo, projectInfo, classification, actions, comments;
 
         if (!this.state.loadingProject) {
             partnerInfo = (
@@ -389,17 +405,13 @@ class ProjectProfile extends React.Component {
             );
 
             actions = (
-                <Card>
-                    <CardFooter>
-                        <GridContainer >
-                            <GridItem xs={12} sm={12} md={12}>
-                                <Button disabled={this.state.project.status === "validated"} color="success" name="validated" onClick={this.handleProjectStatus}>Valider le projet</Button>
-                                <Button disabled={this.state.project.status === "pending"} color="warning" name="pending" onClick={this.handleProjectStatus}>Mettre en attente</Button>
-                                <Button disabled={this.state.project.status === "rejected"} color="danger" name="rejected" onClick={this.handleProjectStatus}>Rejeter le projet</Button>
-                            </GridItem>
-                        </GridContainer>
-                    </CardFooter>
-                </Card>
+                <GridContainer >
+                    <GridItem xs={12} sm={12} md={12}>
+                        <Button disabled={this.state.project.status === "validated"} color="success" name="validated" onClick={this.handleProjectStatus}>Valider le projet</Button>
+                        <Button disabled={this.state.project.status === "pending"} color="warning" name="pending" onClick={this.handleProjectStatus}>Mettre en attente</Button>
+                        <Button disabled={this.state.project.status === "rejected"} color="danger" name="rejected" onClick={this.handleProjectStatus}>Rejeter le projet</Button>
+                    </GridItem>
+                </GridContainer>
             );
         }
         if (!this.state.loadingYear && !this.state.loadingSpecialization) {
@@ -416,7 +428,7 @@ class ProjectProfile extends React.Component {
                                     Année(s) concernée(s) par le projet :
                                 </Typography>
 
-                                <GridContainer alignItesm="center" justify="center">
+                                <GridContainer alignItems="center" justify="center">
                                     {this.state.years.map(year =>
                                         <GridItem xs={12} md={4} key={year._id}>
                                             <FormControlLabel
@@ -466,6 +478,35 @@ class ProjectProfile extends React.Component {
             );
         }
 
+        if (!this.state.loadingComments) {
+            let tableData = this.state.comments.map(comment => {
+                let date = new Date(comment.date)
+                return [
+                    date.toLocaleDateString() + " à " + date.toLocaleTimeString(),
+                    <Link to={"/user/" + comment.author._id}>{comment.author.last_name.toUpperCase() + " " + comment.author.first_name}</Link>,
+                    comment.content
+                ];
+            });
+
+            console.log(tableData)
+
+            comments = (
+                <Card>
+                    <CardHeader color={this.state.color}>
+                        <h4 className={classes.cardTitleWhite}>Commentaires sur le projet</h4>
+                        <p className={classes.cardCategoryWhite}>Ces commentaires sont strictement privés et sont uniquement adressés aux membres de l'administration</p>
+                    </CardHeader>
+                    <CardBody>
+                        <Table
+                            tableHeaderColor="primary"
+                            tableHead={['Date', 'Auteur', 'Contenu du commentaire']}
+                            tableData={tableData}
+                        />
+                    </CardBody>
+                </Card>
+            );
+        }
+
         return (
             <GridContainer>
                 <Snackbar
@@ -492,6 +533,8 @@ class ProjectProfile extends React.Component {
                     {classification}
 
                     {actions}
+
+                    {comments}
                 </GridItem>
             </GridContainer >);
 
