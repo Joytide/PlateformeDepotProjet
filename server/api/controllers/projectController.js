@@ -32,7 +32,6 @@ exports.listProjects = function (req, res) {
 
 	if (status.length > 0) {
 		Project.find({ status: status })
-			.populate({ path: 'comments', populate: { path: 'responses' } })
 			.populate('partner')
 			.populate('majors_concerned')
 			.populate('study_year')
@@ -125,7 +124,6 @@ exports.createProject = (req, res) => {
 exports.findById = (req, res) => {
 	console.log(req.params.projectId);
 	Project.findById(req.params.projectId)
-		.populate('comments')
 		.populate('partner')
 		.populate('majors_concerned')
 		.populate('study_year')
@@ -178,7 +176,7 @@ exports.update_a_project = (req, res) => {
 						if (err) res.send(err);
 						else {
 							updated_project
-								.populate('comments partner majors_concerned study_year', (err, populated) => {
+								.populate('partner majors_concerned study_year', (err, populated) => {
 									if (err) res.send(err);
 									else res.json(populated);
 								})
