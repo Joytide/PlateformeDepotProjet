@@ -24,33 +24,22 @@ const partnerController = require('./partnerController');
 
 exports.listProjects = function (req, res) {
 	let data = req.query;
-	console.log(data);
+	
 	let status = [];
 	if (data.pending === "true") status.push("pending");
 	if (data.rejected === "true") status.push("rejected");
 	if (data.validated === "true") status.push("validated");
 
-	if (status.length > 0) {
-		Project.find({ status: status })
-			.populate('partner')
-			.populate('majors_concerned')
-			.populate('study_year')
-			.exec(function (err, projects) {
-				if (err)
-					res.send(err);
-				res.json(projects);
-			});
-	} else {
-		Project.find({ status: "validated" })
-			.populate('partner')
-			.populate('majors_concerned')
-			.populate('study_year')
-			.exec(function (err, projects) {
-				if (err)
-					res.send(err);
-				res.json(projects);
-			});
-	}
+	Project.find({ status: status.length === 0 ? "validated" : status })
+		.populate('partner')
+		.populate('majors_concerned')
+		.populate('study_year')
+		.exec(function (err, projects) {
+			if (err)
+				res.send(err);
+			res.json(projects);
+		});
+
 };
 
 exports.createProject = (req, res) => {
