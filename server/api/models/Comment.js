@@ -5,26 +5,20 @@ const Schema = mongoose.Schema;
 
 //Comment Class
 const CommentSchema = new Schema({
-	id_project: {
+	projectID: {
 		type: Schema.Types.ObjectId,
         ref: 'Project',
 		required: true
 	},
 	author: {
         type: Schema.Types.ObjectId,
-        ref: 'Person',
+        ref: 'Administration',
 		required: true
 	},
 	content: {
 		type: String,
 		required: true
-	},
-	responses: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'Comment'
-		}
-	] // CommentSchema
+	}
 });
 const Comment = mongoose.model('Comment', CommentSchema);
 

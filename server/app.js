@@ -64,7 +64,6 @@ fileUpload(app);
 var mail = require('./api/routes/mailsRoutes');
 mail(app);
 
-//var routes = require('./api/routes/todoListRoutes'); //importing route
 var project_routes = require('./api/routes/projectRoutes');
 project_routes(app); //register the route
 
@@ -79,6 +78,9 @@ yearRoutes(app);
 
 var userRoutes = require('./api/routes/userRoutes');
 userRoutes(app);
+
+var commentRoutes = require('./api/routes/commentRoutes');
+commentRoutes(app);
 
 app.use('/static', express.static('./.uploads'));
 // uncomment after placing your favicon in /public
