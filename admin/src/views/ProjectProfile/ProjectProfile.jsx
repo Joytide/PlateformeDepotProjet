@@ -66,11 +66,16 @@ class ProjectProfile extends React.Component {
             color: "primary"
         }
 
-        this.handleChange = this.handleChange.bind(this);
         this.loadProjectData = this.loadProjectData.bind(this);
         this.loadProjectComments = this.loadProjectComments.bind(this);
         this.loadStaticData = this.loadStaticData.bind(this);
         this.checkboxMapping = this.checkboxMapping.bind(this);
+    }
+
+    componentDidMount() {
+        this.loadProjectData();
+        this.loadStaticData();
+        this.loadProjectComments();
     }
 
     loadProjectData() {
@@ -140,24 +145,6 @@ class ProjectProfile extends React.Component {
                 checkedYears: checkedYears
             });
         }
-    }
-
-    componentDidMount() {
-        this.loadProjectData();
-        this.loadStaticData();
-        this.loadProjectComments();
-    }
-
-    handleChange = event => {
-        const value = event.target.value;
-        const id = event.target.id;
-        this.setState(prevState => ({
-            modificated: true,
-            specialization: {
-                ...prevState.specialization,
-                [id]: value
-            }
-        }));
     }
 
     handleCheckboxChange = event => {

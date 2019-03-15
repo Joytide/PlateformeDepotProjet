@@ -6,8 +6,8 @@ const auth = require('../controllers/authController');
 
 module.exports = function (app) {
     app.route('/api/comment/:id')
-        .get(comment.findProjectComment);
+        .get(auth.passport.authenticate('jwt'), auth.areAuthorized("Administration"), comment.findProjectComment);
 
     app.route('/api/comment')
-        .post(comment.createComment);
+        .post(auth.passport.authenticate('jwt'), auth.areAuthorized("Administration"), comment.createComment);
 };

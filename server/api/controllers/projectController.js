@@ -24,7 +24,7 @@ const partnerController = require('./partnerController');
 
 exports.listProjects = function (req, res) {
 	let data = req.query;
-	
+
 	let status = [];
 	if (data.pending === "true") status.push("pending");
 	if (data.rejected === "true") status.push("rejected");
@@ -111,7 +111,6 @@ exports.createProject = (req, res) => {
 };
 
 exports.findById = (req, res) => {
-	console.log(req.params.projectId);
 	Project.findById(req.params.projectId)
 		.populate('partner')
 		.populate('majors_concerned')
@@ -153,14 +152,18 @@ exports.update_a_project = (req, res) => {
 			.exec((err, project) => {
 				if (err) res.send(err);
 				else {
-					if (data.title) project.set({ title: data.title });
-					if (data.description) project.set({ description: data.description });
-					if (data.majors_concerned) project.set({ majors_concerned: data.majors_concerned });
-					if (data.study_year) project.set({ study_year: data.study_year });
-					if (data.keywords) project.set({ keywords: data.keywords });
-					if (data.status) project.set({ status: data.status });
-					project.set({ edit_date: Date.now() });
+					let update = {};
+					if (data.title) update.title = data.title;
+					if (data.description) update.description = data.description;
+					if (data.majors_concerned) update.majors_concerned = data.majors_concerned;
+					if (data.study_year) update.study_year = data.study_year;
+					if (data.keywords) update.keywords = data.keywords;
+					if (data.status) update.status = data.status;
+					update.edit_date = Date.now();
 
+					console.log(update);
+
+					project.set(update);
 					project.save((err, updated_project) => {
 						if (err) res.send(err);
 						else {

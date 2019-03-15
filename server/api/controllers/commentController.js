@@ -13,10 +13,13 @@ exports.findProjectComment = (req, res, next) => {
         if (err)
             next(err);
         else if (project) {
-            Comment.find({ _id: project.comments }, (err, comments) => {
-                if (err) next(err);
-                else res.send(comments);
-            });
+            Comment
+                .find({ _id: project.comments })
+                .populate('author')
+                .exec((err, comments) => {
+                    if (err) next(err);
+                    else res.send(comments);
+                });
         } else {
             next(new Error("Project not found"));
         }
@@ -30,7 +33,7 @@ exports.createComment = (req, res, next) => {
 
     if (data.id && data.author && data.content) {
         let comment = new Comment();
-        comment.author = data.author;
+        comment.author = req.user._id;
         comment.content = data.content;
         comment.projectID = data.id;
 

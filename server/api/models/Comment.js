@@ -7,16 +7,21 @@ const Schema = mongoose.Schema;
 const CommentSchema = new Schema({
 	projectID: {
 		type: Schema.Types.ObjectId,
-        ref: 'Project',
+		ref: 'Project',
 		required: true
 	},
 	author: {
-        type: Schema.Types.ObjectId,
-        ref: 'Administration',
+		type: Schema.Types.ObjectId,
+		ref: 'Administration',
 		required: true
 	},
 	content: {
 		type: String,
+		required: true
+	},
+	date: {
+		type: Schema.Types.Date,
+		default: Date.now(),
 		required: true
 	}
 });
