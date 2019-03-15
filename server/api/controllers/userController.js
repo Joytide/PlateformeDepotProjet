@@ -2,6 +2,8 @@
 
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const email_validator = require('email-validator');
+
 const Person = mongoose.model('Person');
 const Student = mongoose.model('Student');
 const Partner = mongoose.model('Partner');
@@ -38,7 +40,7 @@ exports.listEPGE = (req, res) => {
 
 exports.create = (req, res, next) => {
     let data = req.body;
-    
+
     if (data.firstName && data.lastName && data.email && data.type) {
         if (data.type === "partner") {
             if (data.company) {
@@ -141,7 +143,7 @@ exports.delete = (req, res) => {
     }
 }
 
-exports.update = (req, res) => {
+/*exports.update = (req, res) => {
     let data = req.body;
     if (data._id && (data.admin != undefined || data.EPGE != undefined)) {
         let update = {};
@@ -155,6 +157,68 @@ exports.update = (req, res) => {
     } else {
         res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id, (Boolean) admin`));
     }
+}*/
+
+exports.update = (req, res, next) => {
+    const data = req.body;
+
+    if (data._id) {
+        let update = {};
+
+        if (data.admin !== undefined) update.admin = data.admin;
+        if (data.EPGE !== undefined) update.EPGE = data.EPGE;
+        if (data.firstName !== undefined) update.first_name = data.firstName;
+        if (data.lastName !== undefined) update.last_name = data.lastName;
+        if (data.email !== undefined) update.email = data.email;
+        if (data.company !== undefined && data.__t === "Partner") update.company = data.company;
+
+        if (update.email && !email_validator.validate(update.email)) {
+            let error = new Error("Invalid email");
+                error.name = "InvalidEmail"
+                error.status = 400;
+                next(error);
+        } else {
+            if (Object.keys(update).length > 0) {
+                function updateUser(err, user) {
+                    if (err && err.name === "CastError") {
+                        err.status = 400;
+                        err.message = "_id parameter must be an ObjectId";
+                        next(err);
+                    }
+                    else if (err) next(err);
+                    else if (user) {
+                        user.set(update);
+                        user.save((err, updatedUser) => {
+                            if (err) next(err);
+                            else res.json(updatedUser);
+                        });
+                    }
+                    else {
+                        let error = new Error("Can't find any user with that ObjectId");
+                        error.status = 400;
+                        error.name = "UserNotFound"
+                        next(error);
+                    }
+                }
+
+                if (data.__t === "Partner") {
+                    Partner.findOne({ _id: data._id }, updateUser);
+                } else {
+                    Person.findOne({ _id: data._id }, updateUser);
+                }
+            } else {
+                let error = new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation");
+                error.name = "MissingParameter"
+                error.status = 400;
+                next(error);
+            }
+        }
+    } else {
+        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
+        error.name = "MissingId"
+        error.status = 400;
+        next(error);
+    }
 }
 
 exports.findById = (req, res) => {
@@ -162,7 +226,14 @@ exports.findById = (req, res) => {
     if (data.id) {
         Person.findById(data.id, (err, person) => {
             if (err) res.send(err);
-            else res.json(person);
+            else if (person) res.json(person);
+            else {
+                Partner.findById(data.id, (err, partner) => {
+                    if (err) res.send(err);
+                    else if (partner) res.json(partner);
+                    else res.send(new Error("UserNotFound"));
+                });
+            }
         });
     } else {
         res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id`));
