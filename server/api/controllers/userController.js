@@ -169,49 +169,41 @@ exports.update = (req, res, next) => {
         if (data.EPGE !== undefined) update.EPGE = data.EPGE;
         if (data.firstName !== undefined) update.first_name = data.firstName;
         if (data.lastName !== undefined) update.last_name = data.lastName;
-        if (data.email !== undefined) update.email = data.email;
         if (data.company !== undefined && data.__t === "Partner") update.company = data.company;
 
-        if (update.email && !email_validator.validate(update.email)) {
-            let error = new Error("Invalid email");
-                error.name = "InvalidEmail"
-                error.status = 400;
-                next(error);
-        } else {
-            if (Object.keys(update).length > 0) {
-                function updateUser(err, user) {
-                    if (err && err.name === "CastError") {
-                        err.status = 400;
-                        err.message = "_id parameter must be an ObjectId";
-                        next(err);
-                    }
-                    else if (err) next(err);
-                    else if (user) {
-                        user.set(update);
-                        user.save((err, updatedUser) => {
-                            if (err) next(err);
-                            else res.json(updatedUser);
-                        });
-                    }
-                    else {
-                        let error = new Error("Can't find any user with that ObjectId");
-                        error.status = 400;
-                        error.name = "UserNotFound"
-                        next(error);
-                    }
+        if (Object.keys(update).length > 0) {
+            function updateUser(err, user) {
+                if (err && err.name === "CastError") {
+                    err.status = 400;
+                    err.message = "_id parameter must be an ObjectId";
+                    next(err);
                 }
-
-                if (data.__t === "Partner") {
-                    Partner.findOne({ _id: data._id }, updateUser);
-                } else {
-                    Person.findOne({ _id: data._id }, updateUser);
+                else if (err) next(err);
+                else if (user) {
+                    user.set(update);
+                    user.save((err, updatedUser) => {
+                        if (err) next(err);
+                        else res.json(updatedUser);
+                    });
                 }
-            } else {
-                let error = new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation");
-                error.name = "MissingParameter"
-                error.status = 400;
-                next(error);
+                else {
+                    let error = new Error("Can't find any user with that ObjectId");
+                    error.status = 400;
+                    error.name = "UserNotFound"
+                    next(error);
+                }
             }
+
+            if (data.__t === "Partner") {
+                Partner.findOne({ _id: data._id }, updateUser);
+            } else {
+                Person.findOne({ _id: data._id }, updateUser);
+            }
+        } else {
+            let error = new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation");
+            error.name = "MissingParameter"
+            error.status = 400;
+            next(error);
         }
     } else {
         let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");

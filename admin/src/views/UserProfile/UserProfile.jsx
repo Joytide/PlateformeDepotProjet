@@ -345,7 +345,7 @@ class UserProfile extends React.Component {
 												}}
 												inputProps={{
 													value: user.email,
-													onChange: this.handleChange
+													disabled: true
 												}}
 											/>
 										</GridItem>
