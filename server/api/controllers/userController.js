@@ -80,12 +80,9 @@ exports.create = (req, res, next) => {
                                 administration.EPGE = data.type === "EPGE";
                                 administration.admin = data.type | false;
 
-                                console.log(data.password, bcryptConf);
-
                                 bcrypt.hash(data.password, bcryptConf.saltRounds, (err, hash) => {
                                     if (err) next(err);
                                     else {
-                                        console.log("here");
                                         administration.password = hash;
 
                                         administration.save((err, ad) => {
@@ -142,22 +139,6 @@ exports.delete = (req, res) => {
         res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id`));
     }
 }
-
-/*exports.update = (req, res) => {
-    let data = req.body;
-    if (data._id && (data.admin != undefined || data.EPGE != undefined)) {
-        let update = {};
-        if (data.admin != undefined) update.admin = data.admin;
-        if (data.EPGE != undefined) update.EPGE = data.EPGE;
-
-        Administration.findByIdAndUpdate(data._id, update, { new: true }, (err, updated) => {
-            if (err) res.send(err);
-            else res.json(updated)
-        });
-    } else {
-        res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id, (Boolean) admin`));
-    }
-}*/
 
 exports.update = (req, res, next) => {
     const data = req.body;
@@ -239,4 +220,48 @@ exports.isAdmin = (req, res) => {
         _id: req.user._id,
         admin: req.user.admin
     });
+}
+
+exports.changePassword = (req, res, next) => {
+    const data = req.body;
+
+    if (data.userID === req.user._id || req.user.admin) {
+        Person.findById(data.userID, (err, person) => {
+            if (err)
+                next(err);
+            else {
+                console.log(data);
+                if (req.user.admin && data.newPassword && data.newPassword.length === 64)
+                    bcrypt.hash(data.newPassword, bcryptConf.saltRounds, (err, hash) => {
+                        person.password = hash;
+                        person.save(err => {
+                            if (err) next(err);
+                            else res.json({ name: "PasswordChanged", message: "Password has been successfuly changed" });
+                        });
+                    });
+                else if(data.oldPassword && data.oldPassword.length === 64 && data.newPassword && data.newPassword.length === 64)
+                    bcrypt.compare(data.oldPassword, person.password, function (err, valid) {
+                        if (err) next(err);
+                        else if (valid) {
+                            bcrypt.hash(data.newPassword, bcryptConf.saltRounds, (err, hash) => {
+                                person.password = hash;
+                                person.save(err => {
+                                    if (err) next(err);
+                                    else res.json({ name: "PasswordChanged", message: "Password has been successfuly changed" });
+                                });
+                            });
+                        }
+                        else
+                            next(new Error('InvalidCredentials'));
+                    });
+                else 
+                    next(new Error('InvalidCredentials'));
+            }
+        });
+    }
+}
+
+exports.myself = (req,res) => {
+    req.user.password = undefined;
+    res.json(req.user);
 }

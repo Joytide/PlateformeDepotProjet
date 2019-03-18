@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 
+
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -24,6 +25,7 @@ import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
+import ChangePassword from "components/ChangePassword/ChangePassword.jsx";
 
 import AuthService from "components/AuthService"
 
@@ -66,6 +68,8 @@ class UserProfile extends React.Component {
 
 		this.update = this.update.bind(this);
 		this.cancel = this.cancel.bind(this);
+		this.error = this.error.bind(this);
+		this.success = this.success.bind(this);
 	}
 
 	componentDidMount() {
@@ -132,32 +136,10 @@ class UserProfile extends React.Component {
 					modified: false
 				});
 
-				this.setState({
-					success: true,
-					message: "Utilisateur mis à jour avec succès"
-				});
-
-				setTimeout(() => {
-					this.setState({
-						success: false
-					});
-				}, 2500);
+				this.success("Utilisateur mis à jour avec succès");
 			})
 			.catch(err => {
-				err.json().then(error => {
-					if (error.name === "InvalidEmail")
-						this.setState({
-							error: true,
-							message: "L'adresse mail saisie est invalide"
-						});
-
-					setTimeout(() => {
-						this.setState({
-							error: false
-						});
-					}, 2500);
-					console.log(error);
-				});
+				console.error(err);
 			});
 	}
 
@@ -196,6 +178,28 @@ class UserProfile extends React.Component {
 			})
 			.catch(err => console.err(err));
 	};
+
+	error = msg => {
+		this.setState({
+			error: true,
+			message: msg
+		}, () => {
+			setTimeout(() => {
+				this.setState({ error: false });
+			}, 3000);
+		});
+	}
+
+	success = msg => {
+		this.setState({
+			success: true,
+			message: msg
+		}, () => {
+			setTimeout(() => {
+				this.setState({ success: false });
+			}, 3000);
+		});
+	}
 
 	render() {
 		const { classes } = this.props;
@@ -361,6 +365,10 @@ class UserProfile extends React.Component {
 									</GridContainer>
 								</CardFooter>
 							</Card>
+						</GridItem>
+
+						<GridItem xs={12}>
+							<ChangePassword user={this.state.user} errorHandler={this.error} successHandler={this.success}></ChangePassword>
 						</GridItem>
 					</GridContainer>
 				</div>

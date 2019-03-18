@@ -17,6 +17,12 @@ module.exports = (app) => {
         .delete(userController.delete)
         .post(userController.update);
 
+    app.route('/api/user/me')
+        .get(auth.passport.authenticate('jwt'), userController.myself);
+
     app.route('/api/user/isAdmin')
-        .get(auth.passport.authenticate('jwt'), userController.isAdmin)
+        .get(auth.passport.authenticate('jwt'), userController.isAdmin);
+
+    app.route('/api/user/password')
+        .post(auth.passport.authenticate('jwt'), auth.areAuthorized(['Administration']), userController.changePassword);
 }
