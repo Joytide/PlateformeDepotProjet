@@ -1,11 +1,7 @@
 import decode from 'jwt-decode';
 
 const AuthService = {
-    isLoggedIn: () => {
-        // Checks if there is a saved token and it's still valid
-        const token = AuthService.getToken() // GEtting token from localstorage
-        return token !== null; // handwaiving here
-    },
+    isLoggedIn: () => AuthService.getToken() !== null,
 
     isTokenExpired: token => {
         try {
