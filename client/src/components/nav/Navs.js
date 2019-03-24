@@ -91,15 +91,12 @@ class Navs extends React.Component {
 	};
 
 	componentDidMount() {
-		if (AuthService.isLoggedIn()) {
-			AuthService.fetch('/api/user/me')
-				.then(res => res.json())
-				.then(data => {
-					this.setState({
-						user: data
-					});
+		AuthService.getUser()
+			.then(user => {
+				this.setState({
+					user: user
 				});
-		}
+			});
 	}
 
 	handleProfileMenuOpen = event => {

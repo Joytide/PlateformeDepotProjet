@@ -32,6 +32,17 @@ const AuthService = {
         }
     },
 
+    getUser: () => {
+        return new Promise((resolve, reject) => {
+            if (AuthService.isLoggedIn()) {
+                AuthService.fetch('/api/user/me')
+                    .then(res => res.json())
+                    .then(resolve)
+                    .catch(reject);
+            }
+        });
+    },
+
     logout: () => {
         // Clear user token and profile data from localStorage
         localStorage.removeItem('token');
