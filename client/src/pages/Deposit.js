@@ -525,7 +525,7 @@ class Deposit extends React.Component {
 						</Grid>);
 				}
 			default:
-				return 'You\'re a long way from home sonny jim!';
+				return <div></div>;
 		}
 	}
 
