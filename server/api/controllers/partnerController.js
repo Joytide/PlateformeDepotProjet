@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const Partner = mongoose.model('Partner');
 const Project = mongoose.model('Project');
 const crypto = require('crypto');
+const sha256 = require('js-sha256')
+
+const mailController = require('./mailController');
 
 exports.listAllPartners = function (req, res) {
 	if (req.user.__t == "EPGE") {
@@ -40,15 +43,17 @@ exports.addProject = (partnerId, projectId) => {
 }
 
 // Return a promise when creating a Partner
-exports.createPartner = function (data) {
-	return new Promise((resolve, reject) => {
+exports.createPartner = (req, res, next) => {
+	const data = req.body;
+
+	if (data.first_name && data.last_name && data.email && data.company) {
 		Partner.findOne({ email: data.email }, async (err, partner) => {
-			if (err) reject(err);
+			if (err) next(err);
 			else {
 				if (partner) {
 					let error = new Error("Email already used by a partner");
 					error.name = "EmailUsed";
-					reject(error);
+					next(error);
 				} else {
 					let newPartner = new Partner({
 						"first_name": data.first_name,
@@ -57,20 +62,34 @@ exports.createPartner = function (data) {
 						"company": data.company
 					});
 
-					newPartner.key = await generatePassword(16);
+					generatePassword(16)
+						.then(keyData => {
+							newPartner.key = keyData.hash;
 
-					if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
-						newPartner.save(err => {
-							if (err) reject(err);
-							resolve(newPartner);
+							newPartner.save(err => {
+								if (err) next(err);
+								else {
+									res.json(newPartner);
+
+									mailController.sendMail({
+										recipient: newPartner.email,
+										subject: "Creation de votre compte sur la plateforme Devinci Project",
+										content: `Bonjour,
+										Nous avons le plaisir de vous annoncer que votre compte à bien été créé sur la plateforme Devinci-project.
+										Vous pouvez dès à présent vous connecter en cliquant sur le lien suivant : http://localhost:3000/login/partner/${keyData.key}`
+									});
+								}
+							});
+						})
+						.catch(err => {
+							next(new Error("Oops ! Something went wrong while creating your account. Please retry"));
 						});
-					} else {
-						reject(new Error("Invalid parameters. Missing one of these aruguments : first name, last name, email or company"));
-					}
 				}
 			}
 		});
-	});
+	} else {
+		next(new Error("Invalid parameters. Missing one of these aruguments : first_name, last_name, email or company"));
+	}
 };
 
 exports.findByMail = (req, res) => {
@@ -149,18 +168,15 @@ function generatePassword(size) {
 	return new Promise((resolve, reject) => {
 		crypto.randomBytes(size / 2, function (err, buffer) {
 			if (err) reject(err);
-			var key = buffer.toString('hex');
+			const key = buffer.toString('hex');
+			const keyHash = sha256(key);
 
 			// Prevent key collision
-			Partner.count({ key: key }, (err, count) => {
+			Partner.count({ key: keyHash }, (err, count) => {
 				if (err) reject(err);
-				if (count == 0) resolve(key);
-				else resolve(generatePassword(size));
+				if (count == 0) resolve({ key: key, hash: keyHash });
+				else reject(new Error("KeyCollision"));
 			});
 		});
 	});
-}
-
-function randomInt(max) {
-	return Math.floor(Math.random() * max - 1);
 }

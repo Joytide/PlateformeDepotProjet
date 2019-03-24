@@ -15,13 +15,12 @@ class Partner extends React.Component {
 
     componentDidMount() {
         if (authService.isLoggedIn())
-            console.log("here");
             authService.fetch('/api/partner/', {
                 method: "GET"
-            })
+            })  
+                .then(res => res.json())
                 .then(data => {
                     if (data) {
-                        console.log("data:", data);
                         this.setState({
                             partner: data,
                             loaded: true

@@ -1,5 +1,5 @@
 {
-    "api" : {
+    "mail" : {
         "port": 3001,
 		"email": "MAIL@gmail.com",
 		"emailPass": "PASSWORD"

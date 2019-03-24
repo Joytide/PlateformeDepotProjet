@@ -14,8 +14,8 @@ const config = require('../../config');
 const smtpTransporter = mailer.createTransport({
 	service: 'gmail',
 	auth: {
-		user: config.api.email,
-		pass: config.api.emailPass
+		user: config.mail.email,
+		pass: config.mail.emailPass
 	}
 });
 
@@ -71,7 +71,7 @@ exports.createProject = (req, res) => {
 									//console.log(partner);
 									const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
 									const mail = {
-										from: config.api.email,
+										from: config.mail.email,
 										to: req.body.email,
 										subject: `Soumission du projet ${json.title}`,
 										text: `

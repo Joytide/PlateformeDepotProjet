@@ -62,8 +62,14 @@ passport.use('jwt', new JWTstrategy({
         //Pass the user details to the next middleware
         Person.findOne({ _id: token.id }, (err, person) => {
             if (err) return done(err);
-            return done(null, person);
-        })
+            else if (person)
+                return done(null, person);
+            else
+                Partner.findOne({ _id: token.id }, (err, partner) => {
+                    if (err) return done(err);
+                    return done(null, partner);
+                });
+        });
     } catch (error) {
         done(error);
     }
@@ -96,7 +102,7 @@ exports.areAuthorized = authorized => (req, res, next) => {
     if (!req.user) {
         next(new Error('Unauthorized access'));
     } else {
-        if(req.user.admin) 
+        if (req.user.admin)
             next();
         else if (authorized.constructor === Array && authorized.indexOf(req.user.__t) != -1)
             next();

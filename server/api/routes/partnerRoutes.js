@@ -7,7 +7,8 @@ const auth = require('../controllers/authController');
 module.exports = function (app) {
 	app.route('/api/partner')
 		// Staff access only
-		.get(auth.passport.authenticate('jwt'), partner.listAllPartners);
+		.get(auth.passport.authenticate('jwt'), partner.listAllPartners)
+		.put(partner.createPartner);
 
 
 	app.route('/api/partner/:id([a-fA-F0-9]{24})')
