@@ -49,7 +49,11 @@ exports.retrieveEdit = (req, res) => {
                 const recipient = req.body.email;
                 const subject = "URL d'édition des projets soumis sur DeVinci Plateforme."
                 const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
-                const content = `Bonjour ${partner.first_name} ${partner.last_name}, \nVoici le lien permettant d'éditer le(s) projet(s) que vous avez soumis: \n${link}`
+                const content = `
+                Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
+                Pour modifier votre projet, veuillez contacter l'administration à l'adresse mail suivante : berengere.branchet@devinci.fr \n
+                L'équipe DVP
+                `
                 const mail = {
                     from: config.api.email,
                     to: recipient,
