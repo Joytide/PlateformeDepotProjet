@@ -69,8 +69,9 @@ i18next
 					campus:{h3:'One campus, four schools',},
 					leonard:{p:'The Leonardo da Vinci Campus is three schools in Paris-La Défense: an engineering school, a management school, a multimedia school. In addition, an Institute offers continuing education.',},
 					forgetPass:{
-						submit:'Envoyer',
-						desc:'Si vous avez perdu votre lien pour vous connecter, veuillez entrer votre mail pour le récupérer.',
+						submit:'Submit',
+						desc:'If you have lost your link to connect, please enter your email to retrieve it.',
+						textfield:'Enter your e-mail',
 					},
 					home: {
 						title:'Industrial Innovation Projects',
@@ -182,10 +183,10 @@ i18next
 					schools:{h2:'Les écoles',},
 					campus:{h3:'Un campus, quatre écoles',},
 					leonard:{p:'Le Pôle Léonard de Vinci, c’est trois écoles à Paris-La Défense : une école d’ingénieurs, une école de management, une école multimédia. En complément, un Institut propose de la formation continue.',},
-					
 					forgetPass:{
-						submit:'Submit',
-						desc:'If you have lost your link to connect, please enter your email to retrieve it.',
+						submit:'Envoyer',
+						desc:'Si vous avez perdu votre lien pour vous connecter, veuillez entrer votre mail pour le récupérer.',
+						textfield:'Entrez votre e-mail',
 					},
 					home: {
 						title:'Projets Innovation Industrielle',

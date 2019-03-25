@@ -88,14 +88,9 @@ exports.createProject = (req, res) => {
 								subject: `Soumission du projet ${json.title}`,
 								text: `
 									Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-									Votre demande de soumission de projet a bien été enregistrée. \n 
-									Voici votre lien pour l'éditer: ${link}\n\n
-									Cordialement,
+									Votre demande de soumission de projet a bien été enregistrée. \n
+									Merci de votre participation ! \n
 									L'équipe DVP
-									\n\n\n\n
-									Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-									Your project submission request has been registered.\n
-									Here is your link to edit it: ${link}\n\n
 									`
 							}
 							res.send(mail);

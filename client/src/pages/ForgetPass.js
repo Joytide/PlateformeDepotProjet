@@ -58,8 +58,8 @@ class ForgetPass extends Component {
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <Typography>{i18n.t('forgetPass.desc', {lng} )}</Typography>
                     <TextField
-                        label="Entrez votre e-mail"
-                        placeholder="Entrez votre e-mail"
+                        label={i18n.t('forgetPass.textfield', {lng} )}
+                        placeholder={i18n.t('forgetPass.textfield', {lng} )}
                         onChange={this.handleChange.bind(this)}
                         type="email"
                         margin="normal"

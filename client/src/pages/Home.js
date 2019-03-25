@@ -14,7 +14,7 @@ const styles = theme => ({
 	},
 	paper: {
 		margin: 'auto',
-		padding: theme.spacing.unit * 2,
+		padding: theme.spacing.unit * 4,
 		textAlign: 'left',
 		color: theme.palette.text.secondary,
 		maxWidth: 1150,
@@ -48,9 +48,9 @@ class HomePage extends React.Component {
 		return (
 			<div>
 				<Grid className={classes.root}>
-					<Grid container direction="column" justify="center" alignItems="center" spacing={24}>
-						<Grid item>
-							<Paper className={classes.paper}>
+					<Paper className={classes.paper}>
+						<Grid container direction="column" justify="center" alignItems="flex-start" spacing={24}>
+							<Grid item>
 								<Typography variant="h3">
 									{i18n.t('home.title', {lng} )}
 								</Typography>
@@ -64,26 +64,20 @@ class HomePage extends React.Component {
 								<Typography>
 									{i18n.t('home.title_p1', {lng} )}<br/>
 								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item>
-							<Paper className={classes.paper}>
+							</Grid>
+							<Grid item>
 								<Grid xs container direction="row" justify="center" alignItems="center">
 									<Carousel lng={lng}/>
 								</Grid>
-							</Paper>
-						</Grid>
-						<Grid item>
-							<Paper className={classes.paper}>
+							</Grid>
+							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p1', {lng} )}</Typography>
 								<Typography>
 									{i18n.t('home.p1_l1', {lng} )}<br/>
 									{i18n.t('home.p1_l2', {lng} )}
 								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item>
-							<Paper className={classes.paper}>
+							</Grid>
+							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p2', {lng} )}</Typography>
 								<Typography>
 									{i18n.t('home.p2_l1', {lng} )}<br/>
@@ -91,10 +85,8 @@ class HomePage extends React.Component {
 									{i18n.t('home.p2_l3', {lng} )}<br/>
 									{i18n.t('home.p2_l4', {lng} )}<br/>
 								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item>
-							<Paper className={classes.paper}>
+							</Grid>
+							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p3', {lng} )}</Typography>
 								<Typography>
 									{i18n.t('home.p3_l1', {lng} )}<br/>
@@ -105,10 +97,8 @@ class HomePage extends React.Component {
 									{i18n.t('home.p3_l6', {lng} )}<br/>
 									{i18n.t('home.p3_l7', {lng} )}<br/>
 								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item>
-							<Paper className={classes.paper}>
+							</Grid>
+							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p4', {lng} )}</Typography>
 								<Typography>
 									{i18n.t('home.p4_l1', {lng} )}<br/>
@@ -116,17 +106,15 @@ class HomePage extends React.Component {
 									{i18n.t('home.p4_l3', {lng} )}<br/>
 									{i18n.t('home.p4_l4', {lng} )}<br/>
 								</Typography>
-							</Paper>
-						</Grid>
-						<Grid item>
-							<Paper className={classes.paper}>
+							</Grid>
+							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p5', {lng} )}</Typography>
 								<Typography style={{textAlign: 'right'}}>
 									{i18n.t('home.p5_l1', {lng} )}
 								</Typography>
-							</Paper>
+							</Grid>
 						</Grid>
-					</Grid>
+					</Paper>
 				</Grid>
 			</div>
 		);
