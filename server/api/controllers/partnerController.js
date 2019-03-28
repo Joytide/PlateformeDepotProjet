@@ -40,7 +40,28 @@ exports.addProject = (partnerId, projectId) => {
 	return new Promise((resolve, reject) => {
 		Partner.findByIdAndUpdate(partnerId, { $push: { projects: projectId } }, { new: true }, (err, partner) => {
 			if (err) reject(err);
-			else resolve(partner);
+			else {
+				const mail = {
+					recipient: partner.email,
+					subject: `Soumission du projet sur la plateforme Devinci Project`,
+					content: `
+Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
+Votre demande de soumission de projet a bien été enregistrée. \n 
+Cordialement,
+L'équipe DVP
+\n\n\n\n
+Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
+Your project submission request has been registered.\n
+`
+				}
+
+				mailController.sendMail(mail)
+					.then(res => {
+						if (res === "MailSent")
+							resolve();
+					})
+					.catch(reject);
+			}
 		});
 	});
 }

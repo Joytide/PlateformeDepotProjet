@@ -66,42 +66,7 @@ exports.createProject = (req, res) => {
 							res.send(err);
 						}
 						else {
-							partnerController.addProject(partner._id, project._id)
-								.then((partner) => {
-									//console.log(partner);
-									const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
-									const mail = {
-										from: config.mail.email,
-										to: req.body.email,
-										subject: `Soumission du projet ${json.title}`,
-										text: `
-									Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-									Votre demande de soumission de projet a bien été enregistrée. \n 
-									Voici votre lien pour l'éditer: ${link}\n\n
-									Cordialement,
-									L'équipe DVP
-									\n\n\n\n
-									Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-									Your project submission request has been registered.\n
-									Here is your link to edit it: ${link}\n\n
-									`
-									}
-
-									smtpTransporter.sendMail(mail, (err, result) => {
-										if (err) {
-											smtpTransporter.close();
-											console.log(err);
-											res.send(err);
-										} else {
-											console.log("Mail de soumission envoyé");
-											res.send('Mail ok!');
-											smtpTransporter.close();
-										}
-									});
-								})
-								.catch(err => {
-									res.send(err);
-								});
+						partnerController.addProject(req.user._id, project._id);
 						}
 					});
 				}
