@@ -93,7 +93,7 @@ exports.sendMail = data => {
                 if (err)
                     reject(err);
                 else
-                    resolve('Mail sent');
+                    resolve('MailSent');
             });
         } else {
             reject(new Error("MissingParameters"));
