@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import FilesInputs from '../components/Deposit/FormComponents/FilesInputs';
 import KeyWords from '../components/Deposit/FormComponents/KeyWords';
+import CreatePartner from '../components/Deposit/CreatePartner';
 
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
@@ -19,7 +20,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import { FormControl, InputLabel, Select, Input, FormGroup } from '@material-ui/core'
+import { FormControl, InputLabel, Select, Input, FormGroup, MuiThemeProvider } from '@material-ui/core'
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
@@ -45,14 +46,13 @@ const styles = theme => ({
 });
 
 const DEFAULT_STATE = {
-	//années et majeures disponibles
 	years: [],
 	majors: [],
 	//années et majeures sélectionnées
 	study_year: [],
 	majors_concerned: [],
-	
-	stepIndex: 0,
+
+	stepIndex: 1,
 	title: "",
 	description: "",
 	keyWords: [],
@@ -68,7 +68,7 @@ const DEFAULT_STATE = {
 const RESET_STATE = {
 	study_year: [],
 	majors_concerned: [],
-	
+
 	title: "",
 	description: "",
 	keyWords: [],
@@ -80,23 +80,11 @@ class Deposit extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const lng = this.props.lng;
-
 		this.state = { ...DEFAULT_STATE }
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChange = this.handleChange.bind(this);
-		this.handleKeyWords = this.handleKeyWords.bind(this);
 		this.handleFiles = this.handleFiles.bind(this);
-		//this.handleBlur = this.handleBlur.bind(this);
-
-		/*this.years = [{ name: i18n.t('year4.label', { lng }), key: "A4" },
-		{ name: i18n.t('year5.label', { lng }), key: "A5" }];*/
-
-		/*this.majors = [{ name: i18n.t('ibo.label', { lng }), key: "IBO" },
-		{ name: i18n.t('ne.label', { lng }), key: "NE" },
-		{ name: i18n.t('if.label', { lng }), key: "IF" },
-		{ name: i18n.t('mnm.label', { lng }), key: "MNM" }];*/
 	}
 
 	componentWillMount() {
@@ -115,12 +103,10 @@ class Deposit extends React.Component {
 			.catch(console.error.bind(console));
 	}
 
-	//STEP
+	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
 	handleNext = () => {
 		const { stepIndex } = this.state;
-		console.log("this.state.study_year & this.state.majors_concerned");
-		console.log(this.state.study_year);
-		console.log(this.state.majors_concerned);
+
 		if (!this.state.finished) {
 			this.setState({
 				stepIndex: stepIndex + 1,
@@ -131,6 +117,7 @@ class Deposit extends React.Component {
 		}
 	};
 
+	// A voir s'il est vraiment nécessaire de pouvoir revenir en arrière
 	handlePrev = () => {
 		const { stepIndex } = this.state;
 		if (stepIndex > 0) {
@@ -138,7 +125,8 @@ class Deposit extends React.Component {
 		}
 	};
 
-	handleSpe = event => {
+
+	handleSpecializations = event => {
 		this.setState({ majors_concerned: event.target.value });
 	};
 
@@ -218,15 +206,7 @@ class Deposit extends React.Component {
 		});
 	}
 
-	handleKeyWords(key) {
-		var keys = [];
-		key.forEach(element => {
-			keys.push(element);
-		});
-		console.log(keys);
-		this.setState({ keyWords: keys });
-		console.log(this.state.keyWords);
-	}
+	handleKeyWords = key => this.setState({ keyWords: key });
 
 	handleSubmit() {
 		console.log("finished : " + this.state.finished);
@@ -326,190 +306,142 @@ class Deposit extends React.Component {
 					<div>
 						<Grid container direction="column" justify="center" alignItems="flex-start">
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">{i18n.t('home.p1', {lng} )}</Typography>
+								<Typography variant="h6">{i18n.t('home.p1', { lng })}</Typography>
 								<Typography>
-									{i18n.t('home.p1_l1', {lng} )}<br/>
-									{i18n.t('home.p1_l2', {lng} )}<br/>
+									{i18n.t('home.p1_l1', { lng })}<br />
+									{i18n.t('home.p1_l2', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">{i18n.t('home.p2', {lng} )}</Typography>
+								<Typography variant="h6">{i18n.t('home.p2', { lng })}</Typography>
 								<Typography>
-									{i18n.t('home.p2_l1', {lng} )}<br/>
-									{i18n.t('home.p2_l2', {lng} )}<br/>
-									{i18n.t('home.p2_l3', {lng} )}<br/>
-									{i18n.t('home.p2_l4', {lng} )}<br/>
+									{i18n.t('home.p2_l1', { lng })}<br />
+									{i18n.t('home.p2_l2', { lng })}<br />
+									{i18n.t('home.p2_l3', { lng })}<br />
+									{i18n.t('home.p2_l4', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">{i18n.t('home.p3', {lng} )}</Typography>
+								<Typography variant="h6">{i18n.t('home.p3', { lng })}</Typography>
 								<Typography>
-									{i18n.t('home.p3_l4', {lng} )}<br/>
-									{i18n.t('home.p3_l5', {lng} )}<br/>
-									{i18n.t('home.p3_l6', {lng} )}<br/>
-									{i18n.t('home.p3_l7', {lng} )}<br/>
+									{i18n.t('home.p3_l4', { lng })}<br />
+									{i18n.t('home.p3_l5', { lng })}<br />
+									{i18n.t('home.p3_l6', { lng })}<br />
+									{i18n.t('home.p3_l7', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item className={classes.paper}>
-								<Typography variant="h6">{i18n.t('home.p4', {lng} )}</Typography>
+								<Typography variant="h6">{i18n.t('home.p4', { lng })}</Typography>
 								<Typography>
-									{i18n.t('home.p4_l1', {lng} )}<br/>
-									{i18n.t('home.p4_l2', {lng} )}<br/>
-									{i18n.t('home.p4_l3', {lng} )}<br/>
-									{i18n.t('home.p4_l4', {lng} )}<br/>
+									{i18n.t('home.p4_l1', { lng })}<br />
+									{i18n.t('home.p4_l2', { lng })}<br />
+									{i18n.t('home.p4_l3', { lng })}<br />
+									{i18n.t('home.p4_l4', { lng })}<br />
 								</Typography>
 							</Grid>
 						</Grid>
-					</div>);
+					</div>
+				);
 
 			case 1: //Applying padding to the parent with at least half the spacing value applied to the child : Negative margin workarounds
-				return (<div style={{ padding: 12 }}>
-					<Grid container direction="column" spacing={24} className={classes.paper} >
-						<Grid item>
-							<Typography lng={lng} variant='h6' align='center'>{i18n.t('tellus.label', { lng })}</Typography>
-						</Grid>
-
-						<Grid item>
-							<TextValidator
-								label={i18n.t('email.label', { lng })}
-								placeholder={i18n.t('email.label', { lng })}
-								validators={['required', 'isEmail', 'maxStringLength:40']}
-								errorMessages={[i18n.t('field.label', { lng }), i18n.t('notvalid.label', { lng }), i18n.t('field_length.label', { lng })]}
-								onChange={this.handleChange}
-								onBlur={this.handleBlur}
-								name="email"
-								value={this.state.email}
-								fullWidth={true}
-							/>
-						</Grid>
-
-						<Grid item>
-							<TextValidator
-								validators={['required', 'maxStringLength:70']}
-								errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-								label={i18n.t('company.label', { lng })}
-								placeholder={i18n.t('company.label', { lng })}
-								onChange={this.handleChange}
-								name="company" value={this.state.company}
-								fullWidth={true}
-							/>
-						</Grid>
-
-						<Grid item>
-							<TextValidator
-								validators={['required', 'maxStringLength:30']}
-								errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-								label={i18n.t('firstname.label', { lng })}
-								placeholder={i18n.t('firstname.label', { lng })}
-								onChange={this.handleChange} fullWidth={true}
-								name="first_name" value={this.state.first_name}
-							/>
-						</Grid>
-
-						<Grid item>
-							<TextValidator
-								validators={['required', 'maxStringLength:30']}
-								errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-								label={i18n.t('lastname.label', { lng })}
-								placeholder={i18n.t('lastname.label', { lng })}
-								onChange={this.handleChange} fullWidth={true}
-								name="last_name" value={this.state.last_name}
-							/>
-						</Grid>
-					</Grid>
-				</div>);
+				return (
+					<CreatePartner lng={lng} next={this.handleNext} />
+				);
 
 			/**
 			 * Information about the project
 			 */
 			case 2:
 				return (
-					<div lng={lng} style={{ padding: 12 }}>
-						<Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
-							<Grid item>
-								<Typography align='center' variant='h6'>{i18n.t('projectPres.h2', { lng })}</Typography>
-							</Grid>
-							<Grid item>
-								<TextValidator
-									label={i18n.t('titleproj.label', { lng })}
-									placeholder={i18n.t('titleproj.label', { lng })}
-									onChange={this.handleChange} fullWidth={true}
-									name="title"
-									value={this.state.title}
-									validators={['required', 'maxStringLength:70']}
-									errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-								/>
-							</Grid>
-							<br />
+					<ValidatorForm ref="form" onSubmit={this.handleNext}>
+						<div lng={lng} style={{ padding: 12 }}>
+							<Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
+								<Grid item>
+									<Typography align='center' variant='h6'>{i18n.t('projectPres.h2', { lng })}</Typography>
+								</Grid>
+								<Grid item>
+									<TextValidator
+										label={i18n.t('titleproj.label', { lng })}
+										placeholder={i18n.t('titleproj.label', { lng })}
+										onChange={this.handleChange} fullWidth={true}
+										name="title"
+										value={this.state.title}
+										validators={['required', 'maxStringLength:70']}
+										errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+									/>
+								</Grid>
+								<br />
 
-							<Grid item>
-								<Typography variant="subtitle1" align='center'>
-									{i18n.t('years.label', { lng })}
-								</Typography>
-								<Grid container direction="row" justify='center'>
-									{this.state.years.map(year =>
-										<Grid item key={year._id}>
-											<FormControlLabel
-												control={
-													<Checkbox
-														onChange={this.handleChange}
-														value={year._id}
-														name="year"
-													/>
-												}
-												label={lng === "fr" ? year.name.fr : year.name.en}
-											/>
-										</Grid>
-									)}
+								<Grid item>
+									<Typography variant="subtitle1" align='center'>
+										{i18n.t('years.label', { lng })}
+									</Typography>
+									<Grid container direction="row" justify='center'>
+										{this.state.years.map(year =>
+											<Grid item key={year._id}>
+												<FormControlLabel
+													control={
+														<Checkbox
+															onChange={this.handleChange}
+															value={year._id}
+															name="year"
+														/>
+													}
+													label={lng === "fr" ? year.name.fr : year.name.en}
+												/>
+											</Grid>
+										)}
+									</Grid>
+								</Grid>
+								<br />
+
+								<Grid item>
+									<FormControl fullWidth>
+										<InputLabel htmlFor="select-multiple">{i18n.t('majors.label', { lng })}</InputLabel>
+										<Select
+											multiple
+											required
+											fullWidth
+											value={this.state.majors_concerned}
+											onChange={this.handleSpecializations}
+											input={<Input id="select-multiple" />}
+										>
+											{this.state.majors.map(major => (
+												<MenuItem key={major._id} value={major._id}>
+													{lng === "fr" ? major.name.fr : major.name.en}
+												</MenuItem>
+											))}
+										</Select>
+									</FormControl>
+								</Grid>
+								<br />
+
+								<Grid item>
+									<TextValidator
+										placeholder={i18n.t('descriptionProj.label', { lng })}
+										label="Description"
+										value={this.state.description}
+										validators={['required', 'maxStringLength:10000']}
+										errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+										multiline
+										rows="10"
+										name="description"
+										onChange={this.handleChange}
+										fullWidth={true}
+										variant="outlined"
+									/>
+								</Grid>
+
+								<Grid item>
+									{<KeyWords lng={lng} change={this.handleKeyWords} />}
+								</Grid>
+								<Grid item>
+									{<FilesInputs lng={lng} change={this.handleFiles} />}
 								</Grid>
 							</Grid>
-							<br />
-
-							<Grid item>
-								<FormControl fullWidth>
-									<InputLabel htmlFor="select-multiple">{i18n.t('majors.label', { lng })}</InputLabel>
-									<Select
-										multiple
-										required
-										fullWidth
-										value={this.state.majors_concerned}
-										onChange={this.handleSpe}
-										input={<Input id="select-multiple" />}
-									>
-										{this.state.majors.map(major => (
-											<MenuItem key={major._id} value={major._id}>
-												{lng === "fr" ? major.name.fr : major.name.en}
-											</MenuItem>
-										))}
-									</Select>
-								</FormControl>
-							</Grid>
-							<br />
-
-							<Grid item>
-								<TextValidator
-									placeholder={i18n.t('descriptionProj.label', { lng })}
-									label="Description"
-									value={this.state.description}
-									validators={['required', 'maxStringLength:10000']}
-									errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-									multiline
-									rows="10"
-									name="description"
-									onChange={this.handleChange}
-									fullWidth={true}
-									variant="outlined"
-								/>
-							</Grid>
-
-							<Grid item>
-								{<KeyWords lng={lng} change={this.handleKeyWords} />}
-							</Grid>
-							<Grid item>
-								{<FilesInputs lng={lng} change={this.handleFiles} />}
-							</Grid>
-						</Grid>
-					</div>)
+						</div>
+					</ValidatorForm>
+				)
 			case 3:
 				if (!this.state.submited) {
 					return (
@@ -565,7 +497,7 @@ class Deposit extends React.Component {
 													to={"/Deposit"}
 													onClick={(event) => {
 														event.preventDefault();
-														this.setState({stepIndex: 2, finished: false, submited: false});
+														this.setState({ stepIndex: 2, finished: false, submited: false });
 													}}
 												>
 													{i18n.t('click.label', { lng })}
@@ -581,21 +513,7 @@ class Deposit extends React.Component {
 									</Grid>
 								) : (
 										<div>
-											<ValidatorForm ref="form" onSubmit={this.handleNext}>
-												{this.getStepContent(stepIndex)}
-												<div style={{ marginTop: 12, paddingBottom: 30, textAlign: 'center' }}>
-													<Button lng={lng} variant='contained' color='secondary' disabled={stepIndex === 0} onClick={this.handlePrev} style={{ marginRight: 12 }}>
-														<Typography>
-															{i18n.t('back.label', { lng })}
-														</Typography>
-													</Button>
-													<Button lng={lng} variant='contained' color='secondary' type="submit">
-														<Typography>
-															{stepIndex === 2 ? i18n.t('finish.label', { lng }) : i18n.t('next.label', { lng })}
-														</Typography>
-													</Button>
-												</div>
-											</ValidatorForm>
+											{this.getStepContent(stepIndex)}
 										</div>
 									)}
 							</div>

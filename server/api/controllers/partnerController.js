@@ -5,6 +5,9 @@ const Partner = mongoose.model('Partner');
 const Project = mongoose.model('Project');
 const crypto = require('crypto');
 const sha256 = require('js-sha256')
+const jwt = require('jsonwebtoken');
+
+const config = require('../../config');
 
 const mailController = require('./mailController');
 
@@ -69,7 +72,15 @@ exports.createPartner = (req, res, next) => {
 							newPartner.save(err => {
 								if (err) next(err);
 								else {
-									res.json(newPartner);
+									let userToken = jwt.sign(
+										{ id: newPartner._id },
+										config.jwt.secret,
+										{
+											expiresIn: 60 * 60 * 24
+										}
+									);
+
+									res.json({ partner: newPartner, token: userToken });
 
 									mailController.sendMail({
 										recipient: newPartner.email,
