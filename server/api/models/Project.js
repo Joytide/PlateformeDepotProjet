@@ -29,7 +29,8 @@ const ProjectSchema = new Schema({
     media_files: Array, //(String)
     status: {
         type: String,
-        required: true
+        required: true,
+        default:"pending"
     },
     sub_date: {
         type: Date,
