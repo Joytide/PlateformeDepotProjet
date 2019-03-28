@@ -1,11 +1,12 @@
 'use strict';
 
 const project = require('../controllers/projectController');
+const auth = require('../controllers/authController');
 
 module.exports = function (app) {
   app.route('/api/projects')
     .get(project.listProjects)
-    .put(project.createProject)
+    .put(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.createProject)
     .post(project.update_a_project);
 
   app.route('/api/export')

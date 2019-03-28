@@ -42,37 +42,34 @@ exports.listProjects = function (req, res) {
 
 };
 
-exports.createProject = (req, res) => {
-	let json = req.body;
+exports.createProject = (req, res, next) => {
+	const data = req.body;
 
-	Partner.findOne({ email: req.body.email }, async (err, partner) => {
-		if (err)
-			res.send(err);
-		else {
-			if (partner == null) {
-				partner = await partnerController.createPartner(req.body);
-			}
-			json.partner = partner._id;
-			json.status = 'pending';
-			var new_project = new Project(json);
+	if (data.title && data.majors_concerned && data.study_year && data.description) {
+		var newProject = new Project();
+		newProject.title = data.title;
+		newProject.majors_concerned = data.majors_concerned;
+		newProject.study_year = data.study_year;
+		newProject.description = data.description;
+		newProject.partner = req.user._id;
+		if (data.keywords) newProject.keywords = data.keywords;
 
-			Project.count({}, (err, count) => {
-				if (err) res.send(err);
-
-				else {
-					new_project.number = (count + 1).toString().padStart(3, '0');
-					new_project.save(function (err, project) {
-						if (err) {
-							res.send(err);
-						}
-						else {
+		Project.estimatedDocumentCount({}, (err, count) => {
+			if (err) next(err);
+			else {
+				newProject.number = (count + 1).toString().padStart(3, '0');
+				newProject.save(function (err, project) {
+					if (err) next(err);
+					else {
+						res.json(project);
 						partnerController.addProject(req.user._id, project._id);
-						}
-					});
-				}
-			});
-		}
-	});
+					}
+				});
+			}
+		});
+	} else {
+		next(new Error("MissingParameters"));
+	}
 };
 
 exports.findById = (req, res) => {
