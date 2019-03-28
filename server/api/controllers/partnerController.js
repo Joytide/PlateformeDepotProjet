@@ -164,6 +164,36 @@ exports.deletePartner = (req, res) => {
 	});
 }
 
+exports.resetPassword = (req, res, next) => {
+	const data = req.body;
+
+	if (data.id) {
+		Partner.findById(data.id, (err, partner) => {
+			generatePassword(16)
+				.then(pass => {
+					partner.key = pass.hash;
+
+					partner.save(err => {
+						if (err) next(err);
+						else {
+							res.json(partner);
+
+							mailController.sendMail({
+								recipient: partner.email,
+								subject: "Lien de connexion sur la plateforme Devinci Project",
+								content: `Bonjour,
+								Voici le lien permettant de vous connecter à la plateforme Devinci Project : http://localhost:3000/login/partner/${pass.key}`
+							});
+						}
+					});
+				})
+				.catch(next);
+		});
+	} else {
+		next(new Error('MissingParameter'));
+	}
+}
+
 function generatePassword(size) {
 	return new Promise((resolve, reject) => {
 		crypto.randomBytes(size / 2, function (err, buffer) {

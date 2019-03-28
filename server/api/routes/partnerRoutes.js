@@ -22,4 +22,7 @@ module.exports = function (app) {
 	//Keep that route in last
 	app.route('/api/partner/:email')
 		.get(partner.findByMail);
+
+	app.route('/api/partner/reset')
+		.post(partner.resetPassword)
 };
