@@ -9,6 +9,7 @@ i18next
 		resources: {
 			en: {
 				translation: {
+					deposit: {label: "Deposit project"},
 					year: {label: 'Year',},
 					partner: {label: 'Proposed by',},
 					firm: {label: 'Company'},
@@ -125,6 +126,7 @@ i18next
 			},
 			fr: {
 				translation: {
+					deposit: {label: "Deposer le projet"},
 					year: {label: 'Année',},
 					partner:{label:'Proposé par',},
 					firm: {label: 'Entreprise'},
