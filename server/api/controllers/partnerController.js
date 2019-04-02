@@ -199,8 +199,8 @@ exports.deletePartner = (req, res) => {
 exports.resetPassword = (req, res, next) => {
 	const data = req.body;
 
-	if (data.id) {
-		Partner.findById(data.id, (err, partner) => {
+	if (data.email) {
+		Partner.findOne({ email: data.email }, (err, partner) => {
 			generatePassword(16)
 				.then(pass => {
 					partner.key = pass.hash;

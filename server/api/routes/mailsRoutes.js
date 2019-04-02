@@ -7,6 +7,6 @@ module.exports = (app) => {
     /*app.route('/api/mail')
         .post(mail.sendMails);*/
 
-    app.route('/api/mail/recover')
-        .post(mail.retrieveEdit);
+    /*app.route('/api/mail/recover')
+        .post(mail.retrieveEdit);*/
 };
