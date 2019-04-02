@@ -25,7 +25,7 @@ exports.listAllPartners = function (req, res) {
 			.populate({
 				path: 'projects',
 				populate: {
-					path: "majors_concerned"
+					path: "majors_concerned study_year"
 				}
 			})
 			.exec((err, partner) => {
