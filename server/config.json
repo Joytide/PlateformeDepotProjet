@@ -15,7 +15,7 @@
         "protocol": "http"
     },
     "jwt": {
-        "secret": "TRcnD6uHYGKuR3lueV9j"
+        "secret": "TOKEN_SECRET"
     },
     "bcrypt": {
         "saltRounds": 12
