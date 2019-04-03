@@ -234,7 +234,7 @@ function generatePassword(size) {
 			const keyHash = sha256(key);
 
 			// Prevent key collision
-			Partner.count({ key: keyHash }, (err, count) => {
+			Partner.estimatedDocumentCount({ key: keyHash }, (err, count) => {
 				if (err) reject(err);
 				if (count == 0) resolve({ key: key, hash: keyHash });
 				else reject(new Error("KeyCollision"));
