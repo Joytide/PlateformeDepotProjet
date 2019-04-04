@@ -7,6 +7,9 @@ module.exports = function (app) {
 	app.route('/api/project/file')
 		.post(auth.passport.authenticate('jwt'), project.upload.single("file"), project.uploadDone);
 
+	app.route('/api/project/file/:id([a-fA-F0-9]{24})')
+		.get(project.download_file)
+
 	app.route('/api/projects')
 		.get(project.listProjects)
 		.put(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.createProject)

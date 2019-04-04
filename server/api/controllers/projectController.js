@@ -61,6 +61,10 @@ exports.listProjects = function (req, res) {
 		.populate('partner')
 		.populate('majors_concerned')
 		.populate('study_year')
+		.populate({
+			path: 'files',
+			select: 'originalName'
+		})
 		.exec(function (err, projects) {
 			if (err)
 				res.send(err);
@@ -98,7 +102,7 @@ exports.createProject = (req, res, next) => {
 							});
 						else
 							res.json(project);
-							
+
 						partnerController.addProject(req.user._id, project._id);
 					}
 				});
@@ -114,6 +118,10 @@ exports.findById = (req, res) => {
 		.populate('partner')
 		.populate('majors_concerned')
 		.populate('study_year')
+		.populate({
+			path: 'files',
+			select: 'originalName'
+		})
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);
@@ -277,8 +285,15 @@ exports.unlike = (req, res) => {
 	}
 }
 
-exports.download_file = (req, res) => {
-	const filename = req.params.file;
-	const filePath = path.join('./uploads', filename);
-	res.download(filePath, filename);
+exports.download_file = (req, res, next) => {
+	const fileID = req.params.id;
+
+	File.findById(fileID, (err, file) => {
+		if (err)
+			next(err);
+		if (file)
+			res.download(file.path, file.originalName)
+		else
+			next(new Error('FileNotFound'));
+	});
 }
