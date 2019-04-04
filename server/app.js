@@ -6,6 +6,9 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const colors = require('colors');
 
+const sha256 = require('js-sha256');
+const bcrypt = require('bcrypt');
+
 var app = express();
 
 const port = 3001;
@@ -14,7 +17,7 @@ const port = 3001;
 
 const mongoose = require('mongoose');
 const Comment = require('./api/models/Comment');
-const Person = require('./api/models/Person');
+const { Person, Administration } = require('./api/models/Person');
 const Project = require('./api/models/Project');
 const Specialization = require('./api/models/Specialization');
 const Year = require('./api/models/Year');
@@ -180,5 +183,31 @@ function initDB() {
 					A5.save();
 				}
 			});
+
+		Administration
+			.find()
+			.estimatedDocumentCount((err, count) => {
+				if (err) throw err;
+				else if (count == 0) {
+					console.log("Creating new root user");
+
+					let root = new Administration();
+					root.admin = true;
+					root.email = "root@member.com";
+					root.first_name = "Root";
+					root.last_name = "User";
+
+					bcrypt.hash(sha256(root.email + "azerT1234"), config.bcrypt.saltRounds, (err, hash) => {
+						if (err) next(err);
+						else {
+							root.password =hash;
+
+							root.save((err, ad) => {
+								if (err) throw err;
+							});
+						}
+					});
+				}
+			})
 	}
 }
