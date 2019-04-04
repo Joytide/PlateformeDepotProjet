@@ -1,6 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -12,10 +10,6 @@ import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -23,7 +17,6 @@ import { FormControl, InputLabel, Select, Input, FormGroup, MuiThemeProvider } f
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
-import { Link } from 'react-router-dom';
 import i18n from '../i18n';
 
 const styles = {
@@ -41,11 +34,12 @@ class CreateProject extends React.Component {
             description: "",
             study_year: [],
             majors_concerned: [],
+            files: []
         }
 
         this.handleChange = this.handleChange.bind(this);
-        this.handleFiles = this.handleFiles.bind(this);
         this.handleSpecializations = this.handleSpecializations.bind(this);
+        this.setFiles = this.setFiles.bind(this);
     }
 
     componentWillMount() {
@@ -62,6 +56,12 @@ class CreateProject extends React.Component {
                 this.setState({ years: years })
             })
             .catch(console.error.bind(console));
+    }
+
+    setFiles = files => {
+        this.setState({
+            files
+        });
     }
 
     handleSpecializations = event => {
@@ -117,6 +117,7 @@ class CreateProject extends React.Component {
                 description: this.state.description
             };
             if (this.state.keyWords) data.keywords = this.state.keywords;
+            if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
             AuthService.fetch("/api/projects/", {
                 method: "PUT",
@@ -125,46 +126,12 @@ class CreateProject extends React.Component {
                 .then(res => res.json())
                 .then(data => {
                     if (data._id)
-                    this.props.next();
+                        this.props.next();
                 })
                 .catch(err => {
 
                 });
         }
-    }
-
-    addViewFile() {
-        const lng = this.props.lng;
-
-        var Delete = (e) => {
-            const fileIdToRemove = e.target.getAttribute('data-key')
-            this.state.files.splice(this.state.files.findIndex((file) => {
-                return file.id === fileIdToRemove;
-            }), 1);
-            this.addViewFile();
-        };
-
-        // Lisibiilité ?
-        const html = (
-            this.state.files.map((file, index) => {
-                return (
-                    <a key={index} className="justify-content-between file-add list-group-item list-group-item-action">
-                        <div>
-                            <p>{file.name}</p>
-                            <p data-key={file.id} className="text-right" onClick={Delete}>{i18n.t('delete.label', { lng })} </p>
-                        </div>
-                    </a>)
-            })
-        )
-        ReactDOM.render(html, document.getElementById("addedFiles"))
-    }
-
-    handleFiles(event) {
-        console.log(event);
-        this.setState({ files: event }, () => {
-            console.log(this.state.files);
-            this.addViewFile();
-        });
     }
 
     render() {
@@ -249,10 +216,10 @@ class CreateProject extends React.Component {
                     </Grid>
 
                     <Grid item>
-                        {<KeyWords lng={lng} change={this.handleKeyWords} />}
+                        <KeyWords lng={lng} change={this.handleKeyWords} />
                     </Grid>
                     <Grid item>
-                        {<FilesInputs lng={lng} change={this.handleFiles} />}
+                        <FilesInputs lng={lng} setFiles={this.setFiles} />
                     </Grid>
                 </Grid>
                 <Grid item>

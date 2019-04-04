@@ -19,6 +19,7 @@ const Project = require('./api/models/Project');
 const Specialization = require('./api/models/Specialization');
 const Year = require('./api/models/Year');
 const Task = require('./api/models/Task');
+const File = require('./api/models/File');
 
 const config = require('./config.json');
 
@@ -56,10 +57,6 @@ app.use((req, res, next) => {
 
 var auth_routes = require('./api/routes/authRoutes')
 auth_routes(app);
-
-// Route for handling File updates.
-var fileUpload = require('./api/routes/filesRoutes');
-fileUpload(app);
 
 var mail = require('./api/routes/mailsRoutes');
 mail(app);

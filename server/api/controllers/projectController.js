@@ -1,26 +1,53 @@
 'use strict';
 
 var app = require('express')();
+const multer = require('multer');
+const PDFDocument = require('pdfkit');
+var path = require('path');
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
-const PDFDocument = require('pdfkit');
-var path = require('path');
+const File = mongoose.model('File');
 
 const mailer = require('nodemailer');
 const config = require('../../config');
 
-const smtpTransporter = mailer.createTransport({
-	service: 'gmail',
-	auth: {
-		user: config.mail.email,
-		pass: config.mail.emailPass
+const partnerController = require('./partnerController');
+
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, './.uploads')
+	},
+	filename: function (req, file, cb) {
+		File.create({
+			owner: req.user._id,
+			originalName: file.originalname
+		}, (err, fileSaved) => {
+			if (err) cb(err);
+			req.fileDocument = fileSaved;
+			cb(null, req.user._id + '_' + fileSaved._id + path.extname(file.originalname))
+		});
 	}
 });
 
-const partnerController = require('./partnerController');
+exports.upload = multer({
+	storage: storage,
+	fileFilter: (req, file, cb) => {
+		if (file.mimetype !== "image/jpeg" && file.mimetype !== "image/png" && file.mimetype !== "application/pdf")
+			cb(null, false);
+		else
+			cb(null, true);
+	}
+});
 
+exports.uploadDone = (req, res, next) => {
+	console.log(req.file, req.fileDocument);
+	req.fileDocument.path = req.file.path;
+	req.fileDocument.save(err => {
+		res.send({ _id: req.fileDocument._id, originalName: req.fileDocument.originalName });
+	});
+}
 
 exports.listProjects = function (req, res) {
 	let data = req.query;
@@ -52,7 +79,9 @@ exports.createProject = (req, res, next) => {
 		newProject.study_year = data.study_year;
 		newProject.description = data.description;
 		newProject.partner = req.user._id;
+
 		if (data.keywords) newProject.keywords = data.keywords;
+		if (data.files) newProject.files = data.files;
 
 		Project.estimatedDocumentCount({}, (err, count) => {
 			if (err) next(err);
@@ -61,7 +90,15 @@ exports.createProject = (req, res, next) => {
 				newProject.save(function (err, project) {
 					if (err) next(err);
 					else {
-						res.json(project);
+						if (project.files)
+							File.updateMany({ _id: project.files }, { projectID: project._id }, (err, raw) => {
+								if (err) next(err);
+								if (raw.ok) res.json(project);
+								else next(raw);
+							});
+						else
+							res.json(project);
+							
 						partnerController.addProject(req.user._id, project._id);
 					}
 				});
