@@ -288,6 +288,8 @@ exports.unlike = (req, res) => {
 exports.download_file = (req, res, next) => {
 	const fileID = req.params.id;
 
+	console.log(fileID);
+
 	File.findById(fileID, (err, file) => {
 		if (err)
 			next(err);
