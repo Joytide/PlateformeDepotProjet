@@ -11,7 +11,7 @@ module.exports = function (app) {
 		.get(project.download_file)
 
 	app.route('/api/projects')
-		.get(project.listProjects)
+		.get(auth.passport.authenticate('jwt'), project.listProjects)
 		.put(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.createProject)
 		.post(project.update_a_project);
 

@@ -1,12 +1,8 @@
 import decode from 'jwt-decode';
-import { api } from "config.json";
+import { api } from "config.json"
 
 const AuthService = {
-    isLoggedIn: () => {
-        // Checks if there is a saved token and it's still valid
-        const token = AuthService.getToken() // GEtting token from localstorage
-        return token !== null; // handwaiving here
-    },
+    isLoggedIn: () => AuthService.getToken() !== null,
 
     isTokenExpired: token => {
         try {
@@ -35,6 +31,17 @@ const AuthService = {
             localStorage.removeItem('token');
             return null;
         }
+    },
+
+    getUser: () => {
+        return new Promise((resolve, reject) => {
+            if (AuthService.isLoggedIn()) {
+                AuthService.fetch('/api/user/me')
+                    .then(res => res.json())
+                    .then(resolve)
+                    .catch(reject);
+            }
+        });
     },
 
     logout: () => {

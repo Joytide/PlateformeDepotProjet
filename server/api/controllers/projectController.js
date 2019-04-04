@@ -9,6 +9,7 @@ const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const File = mongoose.model('File');
+const Specialization = mongoose.model('Specialization');
 
 const mailer = require('nodemailer');
 const config = require('../../config');
@@ -49,28 +50,44 @@ exports.uploadDone = (req, res, next) => {
 	});
 }
 
-exports.listProjects = function (req, res) {
+exports.listProjects = function (req, res, next) {
+	let findProject = (status, specializations) => {
+		let query = {};
+		query.status = status;
+		if (specializations)
+			query.majors_concerned = { "$in": specializations };
+
+		console.log(query);
+
+		Project
+			.find(query)
+			.populate('partner')
+			.populate('majors_concerned')
+			.populate('study_year')
+			.exec(function (err, projects) {
+				if (err)
+					next(err);
+				else
+					res.json(projects);
+			});
+	};
+
 	let data = req.query;
 
 	let status = [];
+
 	if (data.pending === "true") status.push("pending");
 	if (data.rejected === "true") status.push("rejected");
 	if (data.validated === "true") status.push("validated");
-
-	Project.find({ status: status.length === 0 ? "validated" : status })
-		.populate('partner')
-		.populate('majors_concerned')
-		.populate('study_year')
-		.populate({
-			path: 'files',
-			select: 'originalName'
-		})
-		.exec(function (err, projects) {
-			if (err)
-				res.send(err);
-			res.json(projects);
+	if (data.mine === "true") {
+		Specialization.find({ referent: req.user._id }, (err, specializations) => {
+			if (err) next(err);
+			else
+				findProject(status, specializations.map(spe => spe._id));
 		});
-
+	}
+	else
+		findProject(status);
 };
 
 exports.createProject = (req, res, next) => {
