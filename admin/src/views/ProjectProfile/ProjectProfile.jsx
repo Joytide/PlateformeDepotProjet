@@ -253,10 +253,10 @@ class ProjectProfile extends React.Component {
         }
     }
 
-    handleProjectStatus = event => {
+    handleProjectStatus = action => () => {
         const data = {
             _id: this.state.project._id,
-            status: event.target.name
+            status: action
         }
 
         fetch(api.host + ":" + api.port + "/api/projects", {
@@ -394,9 +394,9 @@ class ProjectProfile extends React.Component {
             actions = (
                 <GridContainer >
                     <GridItem xs={12} sm={12} md={12}>
-                        <Button disabled={this.state.project.status === "validated"} color="success" name="validated" onClick={this.handleProjectStatus}>Valider le projet</Button>
-                        <Button disabled={this.state.project.status === "pending"} color="warning" name="pending" onClick={this.handleProjectStatus}>Mettre en attente</Button>
-                        <Button disabled={this.state.project.status === "rejected"} color="danger" name="rejected" onClick={this.handleProjectStatus}>Rejeter le projet</Button>
+                        <Button disabled={this.state.project.status === "validated"} color="success" name="validated" onClick={this.handleProjectStatus("validated")}>Valider le projet</Button>
+                        <Button disabled={this.state.project.status === "pending"} color="warning" name="pending" onClick={this.handleProjectStatus("pending")}>Mettre en attente</Button>
+                        <Button disabled={this.state.project.status === "rejected"} color="danger" name="rejected" onClick={this.handleProjectStatus("rejected")}>Rejeter le projet</Button>
                     </GridItem>
                 </GridContainer>
             );
