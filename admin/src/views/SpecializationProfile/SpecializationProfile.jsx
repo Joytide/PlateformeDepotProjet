@@ -224,7 +224,6 @@ class SpecializationProfile extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { specialization } = this.state;
 
         let profile;
         let referent;

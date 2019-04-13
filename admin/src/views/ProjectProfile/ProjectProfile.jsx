@@ -10,7 +10,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Visibility from "@material-ui/icons/Visibility"
 import Add from "@material-ui/icons/Add"
-import Modal from '@material-ui/core/Modal';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -27,7 +26,6 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Table from "components/Table/Table.jsx";
-import Muted from "components/Typography/Muted.jsx";
 
 import AuthService from "components/AuthService"
 import { api } from "../../config"
@@ -156,8 +154,9 @@ class ProjectProfile extends React.Component {
             let checkedYears = {};
 
             let yearsConcerned = this.state.project.study_year.map(year => year._id);
+
             this.state.years.forEach(year => {
-                if (yearsConcerned.indexOf(year._id) != -1) checkedYears[year._id] = true;
+                if (yearsConcerned.indexOf(year._id) !== -1) checkedYears[year._id] = true;
                 else checkedYears[year._id] = false;
             });
 
@@ -321,6 +320,7 @@ class ProjectProfile extends React.Component {
                 if (data.ok) {
                     this.setState({ open: false, toDelete: "" }, () => {
                         this.loadProjectData();
+                        this.closeModal();
                     });
                 }
             });
@@ -348,7 +348,6 @@ class ProjectProfile extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { specialization } = this.state;
 
         let partnerInfo, projectInfo, classification, actions, comments, files;
 
@@ -496,7 +495,7 @@ class ProjectProfile extends React.Component {
                                     id="raised-button-file"
                                     type="file"
                                     onChange={e => this.uploadFile(e.target.files[0])}
-                                    style={{display: "none"}}
+                                    style={{ display: "none" }}
                                 />
                                 <label htmlFor="raised-button-file">
                                     <Button component="span" size="sm" color="info"><Add />Ajouter un fichier</Button>
@@ -637,7 +636,7 @@ class ProjectProfile extends React.Component {
                         <Button onClick={this.closeModal} size="sm" color="info" autoFocus>
                             Annuler
                         </Button>
-                        <Button onClick={this.closeModal} size="sm" color="danger" onClick={this.deleteFile}>
+                        <Button size="sm" color="danger" onClick={this.deleteFile}>
                             Supprimer
                         </Button>
                     </DialogActions>

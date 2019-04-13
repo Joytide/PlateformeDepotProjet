@@ -1,19 +1,12 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import { sha256 } from 'js-sha256';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from "@material-ui/core/Checkbox";
 
 
 // @material-ui/icons components
-import Visibility from "@material-ui/icons/Visibility"
-import Delete from "@material-ui/icons/Delete"
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -22,9 +15,7 @@ import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
-import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
 import AuthService from "components/AuthService"
