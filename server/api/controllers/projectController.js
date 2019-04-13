@@ -21,14 +21,34 @@ const storage = multer.diskStorage({
 		cb(null, './.uploads')
 	},
 	filename: function (req, file, cb) {
-		File.create({
-			owner: req.user._id,
-			originalName: file.originalname
-		}, (err, fileSaved) => {
-			if (err) cb(err);
-			req.fileDocument = fileSaved;
-			cb(null, req.user._id + '_' + fileSaved._id + path.extname(file.originalname))
-		});
+		let owner = "";
+		let projectID = "";
+		
+		if (req.user.__t === "Partner")
+			owner = req.user._id
+		else if (!req.body.partnerID && !req.body.projectID)
+			cb(new Error("MissingParameter"));
+		else {
+			owner = req.body.partnerID;
+			projectID = req.body.projectID;
+		}
+
+		if (owner !== "") {
+			File.create({
+				owner: owner,
+				originalName: file.originalname
+			},
+				(err, fileSaved) => {
+					if (err) cb(err);
+					if (projectID) {
+						Project.updateOne({ _id: projectID }, { $push: { files: fileSaved._id } }, err => {
+
+						});
+					}
+					req.fileDocument = fileSaved;
+					cb(null, req.user._id + '_' + fileSaved._id + path.extname(file.originalname))
+				});
+		}
 	}
 });
 
@@ -43,11 +63,29 @@ exports.upload = multer({
 });
 
 exports.uploadDone = (req, res, next) => {
-	console.log(req.file, req.fileDocument);
 	req.fileDocument.path = req.file.path;
 	req.fileDocument.save(err => {
 		res.send({ _id: req.fileDocument._id, originalName: req.fileDocument.originalName });
 	});
+}
+
+exports.deleteFile = (req, res, next) => {
+	const data = req.body;
+	console.log("test');")
+	if (data.fileID) {
+		File.deleteOne({ _id: data.fileID }, (err, raw) => {
+			if (err) next(err)
+			else {
+				Project.updateOne({ files: data.fileID }, { $pull: { files: data.fileID } }, err => {
+					if (err) next(err);
+					else
+						res.json(raw);
+				});
+			}
+		});
+	} else {
+		next(new Error('MissingParameter'));
+	}
 }
 
 exports.listProjects = function (req, res, next) {
@@ -56,8 +94,6 @@ exports.listProjects = function (req, res, next) {
 		query.status = status;
 		if (specializations)
 			query.majors_concerned = { "$in": specializations };
-
-		console.log(query);
 
 		Project
 			.find(query)
