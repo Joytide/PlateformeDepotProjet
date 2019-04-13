@@ -230,7 +230,6 @@ exports.changePassword = (req, res, next) => {
             if (err)
                 next(err);
             else {
-                console.log(data);
                 if (req.user.admin && data.newPassword && data.newPassword.length === 64)
                     bcrypt.hash(data.newPassword, bcryptConf.saltRounds, (err, hash) => {
                         person.password = hash;

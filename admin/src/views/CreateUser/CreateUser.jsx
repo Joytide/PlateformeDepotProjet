@@ -194,7 +194,6 @@ class CreateUser extends React.Component {
                         })
                         .catch(err => {
                             err.json().then(errMsg => {
-                                console.log(errMsg.name)
                                 if (errMsg.name === "EmailUsed") {
                                     this.setState({
                                         error: true,

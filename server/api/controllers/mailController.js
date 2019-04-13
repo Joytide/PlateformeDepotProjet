@@ -39,10 +39,6 @@ exports.sendMails = (request, response) => {
 };
 
 exports.retrieveEdit = (req, res) => {
-    //console.log("req.body.email : " + req.body.email);
-    //console.log("config.api.email : " + config.api.email);
-    //console.log("config.api.emailPass : " + config.api.emailPass);
-
     if (req.body.email != undefined && req.body.email != '') {
         Partner.findOne({ 'email': req.body.email }, (err, partner) => {
             if (err)
@@ -63,7 +59,6 @@ exports.retrieveEdit = (req, res) => {
                 smtpTransporter.sendMail(mail, (err, res) => {
                     if (err) {
                         smtpTransporter.close();
-                        console.log(err);
                         response.send(err);
                     } else {
                         smtpTransporter.close();

@@ -63,7 +63,6 @@ class SpecializationList extends React.Component {
     }
 
     componentWillMount() {
-        console.log(api);
         fetch(api.host + ":" + api.port + "/api/specialization", { crossDomain: true })
             .then(res => res.json())
             .then(data => {

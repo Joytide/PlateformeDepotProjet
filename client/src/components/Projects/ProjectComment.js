@@ -40,7 +40,6 @@ export default class ProjectComment extends React.Component {
             userId: userId
         }
 
-        console.log(idProject)
         fetch(`api/projects/${idProject}/comments`, {
             method: "POST",
             headers: {
@@ -48,13 +47,10 @@ export default class ProjectComment extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body)
-        })
-            .then((res) => { console.log(res) })
-            .catch((err) => { console.log(err) })
+        });
     }
 
     handleResponse = (commentId) => {
-        console.log("COMMENT ID :" + commentId)
         var userId = "5a6d011d063609d47c70fdda";
         var body = {
             content: this.state.response,
@@ -71,14 +67,12 @@ export default class ProjectComment extends React.Component {
         }).then((res)=> {window.location.reload()})
     }
     render() {
-        console.log(this.state.project)
         var comments = () => {
             var tab = []
             tab = this.state.project.comments.map(comment => {
                 var nesteds = [];
                 if(comment.responses){
                     comment.responses.forEach(answer => {
-                        console.log(answer)
                         nesteds.push(<ListItem key={answer._id} primaryText={answer.content} />)
                     });
                 }
@@ -93,7 +87,6 @@ export default class ProjectComment extends React.Component {
                     nestedItems={nesteds}
                     leftIcon={<CommunicationComment />} />
             });
-            console.log(tab)
             return tab
         }
 

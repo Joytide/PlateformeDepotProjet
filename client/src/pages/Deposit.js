@@ -107,21 +107,6 @@ class Deposit extends React.Component {
 		}
 	};
 
-	// Inutile pour le moment. On verra avec le token pour remplir automatiquement si le partenaire est déjà authentifié
-
-	/*handleBlur(event) {
-	  fetch("/api/partners/" + this.state.email)
-		.then((res) => res.json())
-		.then((partner) => {
-		  try {
-			this.setState({ first_name: partner.first_name, last_name: partner.last_name, company: partner.company });
-		  } catch (e) {
-			console.log("Email not found");
-		  }
-		})
-		.catch((err) => { console.log("Email not found") });
-	}*/
-
 	FilesUpload() {
 		return new Promise((resolve, reject) => {
 			var formData = new FormData()
@@ -140,7 +125,6 @@ class Deposit extends React.Component {
 			})
 				.then((resp) => {
 					resp.json().then((urls) => {
-						console.log(urls)
 						this.setState({ urls: urls })
 						return resolve()
 					});

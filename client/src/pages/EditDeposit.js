@@ -39,16 +39,14 @@ class Edit extends Component {
     componentDidMount() {
         fetch(`/api/edit/${this.props.match.params.editKey}`)
             .then((response) => response.json())
-            .then((json) => this.setState(json, () => { console.log(this.state) }))
-            .catch((err) => this.setState({ invalid: true }));
+            .then(json => this.setState(json))
+            .catch(err => this.setState({ invalid: true }));
     }
 
     /**
      * Put request to the server to update the component state
      */
     handleSubmit() {
-        console.log(`/api/projects/${this.state._id}`);
-        console.log(JSON.stringify(this.state));
         fetch(`/api/projects/${this.state._id}`, {
             method: 'PUT',
             body: JSON.stringify(this.state),
@@ -58,7 +56,7 @@ class Edit extends Component {
         }).then(res => {
 
             window.location.reload()
-        }).catch(err => console.log(err));
+        }).catch(err => console.error(err));
 
     }
 
@@ -67,7 +65,7 @@ class Edit extends Component {
     }
 
     handleSpe(e, index, values) {
-        this.setState({ majors_concerned: values }, () => { console.log(this.state.majors_concerned) })
+        this.setState({ majors_concerned: values });
     }
 
     handleYear(e) {
@@ -89,8 +87,7 @@ class Edit extends Component {
         key.forEach(element => {
             keys.push(element)
         });
-        console.log(keys)
-        this.setState({ keywords: keys }, () => { console.log(this.state.keywords) })
+        this.setState({ keywords: keys })
     }
 
     render() {
@@ -104,10 +101,9 @@ class Edit extends Component {
                 <div>Invalid URL</div>
             );
         }
-        console.log(this.state.keywords)
+        
         let a = (key) => {
             if (this.state.study_year) {
-                console.log(this.state.study_year)
                 return this.state.study_year.includes(key)
             }
         }

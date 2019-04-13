@@ -71,7 +71,6 @@ exports.uploadDone = (req, res, next) => {
 
 exports.deleteFile = (req, res, next) => {
 	const data = req.body;
-	console.log("test');")
 	if (data.fileID) {
 		File.deleteOne({ _id: data.fileID }, (err, raw) => {
 			if (err) next(err)
@@ -221,8 +220,6 @@ exports.update_a_project = (req, res) => {
 					if (data.status) update.status = data.status;
 					update.edit_date = Date.now();
 
-					console.log(update);
-
 					project.set(update);
 					project.save((err, updated_project) => {
 						if (err) res.send(err);
@@ -244,7 +241,6 @@ exports.update_a_project = (req, res) => {
 exports.delete_a_project = (req, res) => {
 	Project.findByIdAndRemove(req.params.projectId, function (err, note) {
 		if (err) {
-			console.log(err);
 			if (err.kind === 'ObjectId') {
 				return res.status(404).send({ message: "Project not found with id " + req.params.noteId });
 			}
@@ -340,8 +336,6 @@ exports.unlike = (req, res) => {
 
 exports.download_file = (req, res, next) => {
 	const fileID = req.params.id;
-
-	console.log(fileID);
 
 	File.findById(fileID, (err, file) => {
 		if (err)

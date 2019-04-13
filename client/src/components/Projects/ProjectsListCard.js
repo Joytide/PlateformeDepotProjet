@@ -113,7 +113,6 @@ class ProjectsListCard extends React.Component {
 
 	render() {
 		const lng = this.props.lng;
-		console.log(this.props.projects);
 		let ProjectList = this.props.projects.map(project =>
 			<Grid key={project._id} item xs={10}>
 				<ProjectCard project={project} lng={lng} admin={this.props.admin} showPartner={this.props.showPartner} />

@@ -29,7 +29,6 @@ exports.listAllPartners = function (req, res) {
 				}
 			})
 			.exec((err, partner) => {
-				console.log(partner.projects);
 				if (err) res.send(err);
 				else res.json(partner);
 			});
@@ -155,8 +154,6 @@ exports.findById = (req, res) => {
 }
 
 exports.findByKey = (req, res) => {
-	console.log("here");
-	console.log(req.params.key)
 	Partner.findOne({ key: req.params.key })
 		.populate('projects')
 		.exec((err, partner) => {
@@ -181,7 +178,6 @@ exports.updatePartner = (req, res) => {
 exports.deletePartner = (req, res) => {
 	Partner.findByIdAndRemove(req.params.id, function (err, note) {
 		if (err) {
-			console.log(err);
 			if (err.kind === 'ObjectId') {
 				return res.status(404).send({ message: "Partner not found with id " + req.params.id });
 			}

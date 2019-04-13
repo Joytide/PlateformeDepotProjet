@@ -62,8 +62,6 @@ class ChangePassword extends React.Component {
             newPassword_2: ""
         }
 
-        console.log(this.props);
-
         this.changePassword = this.changePassword.bind(this);
     }
 
@@ -104,7 +102,6 @@ class ChangePassword extends React.Component {
                 })
                 .catch(err => {
                     err.json().then(errMsg => {
-                        console.log(errMsg.name)
                         if (errMsg.name === "EmailUsed") {
                             this.setState({
                                 error: true,

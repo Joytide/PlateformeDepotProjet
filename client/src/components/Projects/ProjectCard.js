@@ -46,7 +46,6 @@ class ProjectCard extends React.Component {
 	};
 
 	handleOpen = (e) => {
-		console.log(e.target)
 		this.setState({ modal_validation: true });
 	}
 

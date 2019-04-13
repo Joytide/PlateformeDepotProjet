@@ -17,12 +17,11 @@ class FilesInputs extends React.Component {
     }
 
     OnFilesError(error, file) {
-        console.log('error code ' + error.code + ': ' + error.message)
+        console.error('error code ' + error.code + ': ' + error.message)
     }
 
     onChange(event) {
         const file = event[event.length - 1];
-        console.log(file);
 
         var formData = new FormData();
         formData.append("file", new Blob([file], { type: file.type }), file.name || 'file');

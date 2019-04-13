@@ -33,10 +33,9 @@ class ForgetPass extends Component {
             })
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res)
                 })
                 .catch(error => {
-                    console.log(error);
+                    console.error(error);
                 });
         } else {
 
@@ -51,7 +50,6 @@ class ForgetPass extends Component {
 
     render() {
         let lng = this.props.lng;
-        console.log(lng);
         return (
             <div style={{ fontSize: 15, marginTop: 15, textAlign: 'center' }}>
                 <form onSubmit={this.handleSubmit.bind(this)}>

@@ -34,17 +34,13 @@ class ProjectPage extends React.Component {
         fetch('/api/project/' + this.props.match.params.key)
             .then(res => res.json())
             .then(project => {
-                console.log("this.state.userId:" + this.state.userId);
-                console.log(project);
 
                 this.setState({ project: project, loaded: true });
                 if (project.likes.find((element) => { return element === this.state.userId; })) {
                     this.setState({ isLiked: true });
-                    console.log("BDDStart.isLiked: true");
                 }
                 else {
                     this.setState({ isLiked: false });
-                    console.log("BDDStart.isLiked: false");
                 }
             });
     }
@@ -56,7 +52,6 @@ class ProjectPage extends React.Component {
             user: this.state.userId,
             project: this.props.match.params.key
         };
-        console.log(data);
 
         fetch('/api/project/like', {
             method: this.state.isLiked ? "DELETE" : "PUT",
@@ -67,15 +62,11 @@ class ProjectPage extends React.Component {
         })
             .then(res => res.json())
             .then(data => {
-                console.log("data");
-                console.log(data);
                 if (data.likes.find((element) => { return element === this.state.userId; })) {
                     this.setState({ isLiked: true });
-                    console.log("BDD.isLiked: true");
                 }
                 else {
                     this.setState({ isLiked: false });
-                    console.log("BDD.isLiked: false");
                 }
             });
     }

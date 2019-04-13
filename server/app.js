@@ -35,7 +35,6 @@ mongoose.connect(
 			console.error(colors.red(err.message));
 			process.exit(-1);
 		} else {
-			console.log("Successfuly connected to database".green);
 			initDB();
 		}
 	});

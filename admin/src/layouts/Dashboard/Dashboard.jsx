@@ -35,8 +35,6 @@ class App extends React.Component {
 
 	loadAdmin = () => {
 		AuthService.isAdmin().then(isAdmin => {
-			console.log(isAdmin);
-
 			this.setState({ isAdmin: isAdmin.admin });
 		});
 	}

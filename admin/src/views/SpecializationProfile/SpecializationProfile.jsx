@@ -68,9 +68,7 @@ class SpecializationProfile extends React.Component {
         AuthService.fetch(api.host + ":" + api.port + "/api/specialization/" + this.props.match.params.id)
             .then(res => res.json())
             .then(data => {
-                console.log(data);
                 if (data) {
-                    console.log(data);
                     let spe = {
                         nameFr: data.name.fr,
                         nameEn: data.name.en,
@@ -152,7 +150,6 @@ class SpecializationProfile extends React.Component {
         })
             .then(res => res.json())
             .then(res => {
-                console.log(res);
                 let spe = {
                     _id: res._id,
                     nameFr: res.name.fr,
@@ -182,13 +179,11 @@ class SpecializationProfile extends React.Component {
     }
 
     addReferent() {
-        console.log(this.state.selectedItem);
         if (this.state.selectedItem) {
             const data = {
                 _id: this.props.match.params.id,
                 referent: this.state.selectedItem.value
             };
-            console.log(data);
 
             AuthService.fetch(api.host + ":" + api.port + "/api/specialization/referent", {
                 mode: "cors",

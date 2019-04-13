@@ -17,7 +17,6 @@ class ProjectsToPDF extends React.Component {
     handleSaving = (doc) => {
         var today = new Date();
         var filename = "DeVinciDeposit_"
-        console.log(this.state.type)
         if(this.state.type=="all")
         {
             filename+="allProjects_"
