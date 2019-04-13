@@ -108,6 +108,8 @@ exports.areAuthorized = authorized => (req, res, next) => {
             next();
         else if (authorized.constructor === String && authorized === req.user.__t)
             next();
+        else if (authorized.indexOf("EPGE") !== -1 && req.user.EPGE)
+            next();
         else {
             let error = new Error('Unautorized access');
             error.status = 401;
