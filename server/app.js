@@ -6,6 +6,9 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const colors = require('colors');
 
+const sha256 = require('js-sha256');
+const bcrypt = require('bcrypt');
+
 var app = express();
 
 const port = 3001;
@@ -14,11 +17,12 @@ const port = 3001;
 
 const mongoose = require('mongoose');
 const Comment = require('./api/models/Comment');
-const Person = require('./api/models/Person');
+const { Person, Administration } = require('./api/models/Person');
 const Project = require('./api/models/Project');
 const Specialization = require('./api/models/Specialization');
 const Year = require('./api/models/Year');
 const Task = require('./api/models/Task');
+const File = require('./api/models/File');
 
 const config = require('./config.json');
 
@@ -31,7 +35,6 @@ mongoose.connect(
 			console.error(colors.red(err.message));
 			process.exit(-1);
 		} else {
-			console.log("Successfuly connected to database".green);
 			initDB();
 		}
 	});
@@ -45,7 +48,7 @@ app.use(auth.passport.session());
 
 app.use((req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
 	if (req.method === 'OPTIONS')
 		res.sendStatus(200);
@@ -57,14 +60,9 @@ app.use((req, res, next) => {
 var auth_routes = require('./api/routes/authRoutes')
 auth_routes(app);
 
-// Route for handling File updates.
-var fileUpload = require('./api/routes/filesRoutes');
-fileUpload(app);
-
 var mail = require('./api/routes/mailsRoutes');
 mail(app);
 
-//var routes = require('./api/routes/todoListRoutes'); //importing route
 var project_routes = require('./api/routes/projectRoutes');
 project_routes(app); //register the route
 
@@ -80,13 +78,10 @@ yearRoutes(app);
 var userRoutes = require('./api/routes/userRoutes');
 userRoutes(app);
 
-/*var adminRoutes = require('./api/routes/adminRoutes');
-adminRoutes(app);*/
+var commentRoutes = require('./api/routes/commentRoutes');
+commentRoutes(app);
 
-var comments_routes = require('./api/routes/commentsRoute')
-comments_routes(app);
-
-app.use('/static', express.static('./uploads'));
+app.use('/static', express.static('./.uploads'));
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -111,77 +106,107 @@ app.use(function (err, req, res, next) {
 
 	// render the error page
 	res.status(err.status || 500);
-	res.send(err.message);
+	res.send({ message: err.message, name: err.name });
 });
 
-app.listen(port, () => {
+var server = app.listen(port, () => {
 	console.log('Server running on port 3001'.green);
 });
 
+module.exports = server;
+
 function initDB() {
-	Specialization
-		.find()
-		.estimatedDocumentCount((err, count) => {
-			if (err) throw err;
-			else if (count < 5) {
-				console.log("Creating specializations");
+	if (process.env.NODE_ENV != "test") {
+		Specialization
+			.find()
+			.estimatedDocumentCount((err, count) => {
+				if (err) throw err;
+				else if (count < 5) {
+					console.log("Creating specializations");
 
-				let IBO = new Specialization();
-				IBO.name.fr = "Informatique, Big Data et Objets connectés";
-				IBO.name.en = "Computer science, Big Data and IoT";
-				IBO.abbreviation = "IBO";
-				IBO.save();
+					let IBO = new Specialization();
+					IBO.name.fr = "Informatique, Big Data et Objets connectés";
+					IBO.name.en = "Computer science, Big Data and IoT";
+					IBO.abbreviation = "IBO";
+					IBO.save();
 
-				let NE = new Specialization();
-				NE.name.fr = "Nouvelles énergies";
-				NE.name.en = "New Energies";
-				NE.abbreviation = "NE";
-				NE.save();
+					let NE = new Specialization();
+					NE.name.fr = "Nouvelles énergies";
+					NE.name.en = "New Energies";
+					NE.abbreviation = "NE";
+					NE.save();
 
-				let IF = new Specialization();
-				IF.name.fr = "Ingénierie Financière";
-				IF.name.en = "Financial Engineering";
-				IF.abbreviation = "IF";
-				IF.save();
+					let IF = new Specialization();
+					IF.name.fr = "Ingénierie Financière";
+					IF.name.en = "Financial Engineering";
+					IF.abbreviation = "IF";
+					IF.save();
 
-				let MNM = new Specialization();
-				MNM.name.fr = "Mécanique Numérique et Modélisation";
-				MNM.name.en = "Computational Mechanics and Modelling";
-				MNM.abbreviation = "MNM";
-				MNM.save();
+					let MNM = new Specialization();
+					MNM.name.fr = "Mécanique Numérique et Modélisation";
+					MNM.name.en = "Computational Mechanics and Modelling";
+					MNM.abbreviation = "MNM";
+					MNM.save();
 
-				let Test = new Specialization();
-				Test.name.fr = "Nom de test pour la majeur";
-				Test.name.en = "Major test name";
-				Test.abbreviation = "Test";
-				Test.save();
-			}
-		});
+					let Test = new Specialization();
+					Test.name.fr = "Nom de test pour la majeur";
+					Test.name.en = "Major test name";
+					Test.abbreviation = "Test";
+					Test.save();
+				}
+			});
 
-	Year
-		.find()
-		.estimatedDocumentCount((err, count) => {
-			if (err) throw err;
-			else if (count < 3) {
-				console.log("Creating years");
+		Year
+			.find()
+			.estimatedDocumentCount((err, count) => {
+				if (err) throw err;
+				else if (count < 3) {
+					console.log("Creating years");
 
-				let A3 = new Year();
-				A3.abbreviation = "A3";
-				A3.name.fr = "Année 3";
-				A3.name.en = "3rd Year";
-				A3.save();
+					let A3 = new Year();
+					A3.abbreviation = "A3";
+					A3.name.fr = "Année 3";
+					A3.name.en = "3rd Year";
+					A3.save();
 
-				let A4 = new Year();
-				A4.abbreviation = "A4";
-				A4.name.fr = "Année 4";
-				A4.name.en = "4th Year";
-				A4.save();
+					let A4 = new Year();
+					A4.abbreviation = "A4";
+					A4.name.fr = "Année 4";
+					A4.name.en = "4th Year";
+					A4.save();
 
-				let A5 = new Year();
-				A5.abbreviation = "A5";
-				A5.name.fr = "Année 5";
-				A5.name.en = "5th Year";
-				A5.save();
-			}
-		});
+					let A5 = new Year();
+					A5.abbreviation = "A5";
+					A5.name.fr = "Année 5";
+					A5.name.en = "5th Year";
+					A5.save();
+				}
+			});
+
+		Administration
+			.find()
+			.estimatedDocumentCount((err, count) => {
+				if (err) throw err;
+				else if (count == 0) {
+					console.log("Creating new root user");
+
+					let root = new Administration();
+					root.admin = true;
+					root.email = "root@member.com";
+					root.first_name = "Root";
+					root.last_name = "User";
+
+					bcrypt.hash(sha256(root.email + "azerT1234"), config.bcrypt.saltRounds, (err, hash) => {
+						if (err) next(err);
+						else {
+							root.password =hash;
+
+							root.save((err, ad) => {
+								if (err) throw err;
+							});
+						}
+					});
+				}
+			})
+	}
 }

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import InputLabel from "@material-ui/core/InputLabel";
 import Checkbox from '@material-ui/core/Checkbox';
 
 import Visibility from "@material-ui/icons/Visibility"
@@ -16,15 +15,13 @@ import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
-import CardAvatar from "components/Card/CardAvatar.jsx";
-import CardFooter from "components/Card/CardFooter.jsx";
 import Danger from "components/Typography/Danger.jsx";
 import Success from "components/Typography/Success.jsx";
 import Warning from "components/Typography/Warning.jsx";
 
 import { api } from "config.json"
+import AuthService from "../../components/AuthService";
 import { FormControlLabel } from "@material-ui/core";
 
 const styles = {
@@ -67,6 +64,7 @@ class ProjectList extends React.Component {
             rejectedProjects: false,
             validatedProjects: false,
             pendingProjects: true,
+            myProject: true
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -84,9 +82,9 @@ class ProjectList extends React.Component {
     }
 
     loadProjects() {
-        let queryParams = `?validated=${this.state.validatedProjects}&rejected=${this.state.rejectedProjects}&pending=${this.state.pendingProjects}`
+        let queryParams = `?validated=${this.state.validatedProjects}&rejected=${this.state.rejectedProjects}&pending=${this.state.pendingProjects}&mine=${this.state.myProject}`
 
-        fetch(api.host + ":" + api.port + "/api/projects" + queryParams)
+        AuthService.fetch(api.host + ":" + api.port + "/api/projects" + queryParams)
             .then(res => res.json())
             .then(data => {
                 let projectsData = data.map(project => {
@@ -167,7 +165,7 @@ class ProjectList extends React.Component {
                                 />
                             </GridItem>
 
-                            <GridItem xs={12} sm={12} md={12}>
+                            <GridItem xs={12} sm={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -178,6 +176,20 @@ class ProjectList extends React.Component {
                                         />
                                     }
                                     label="Afficher les projets en attente de validation"
+                                />
+                            </GridItem>
+
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={this.state.myProject}
+                                            onChange={this.handleChange('myProject')}
+                                            value="myProject"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Afficher uniquement les projets de ma majeure"
                                 />
                             </GridItem>
                         </GridContainer>

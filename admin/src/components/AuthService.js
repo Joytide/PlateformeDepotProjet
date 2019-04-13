@@ -1,4 +1,5 @@
 import decode from 'jwt-decode';
+import { api } from "config.json"
 
 const AuthService = {
     isLoggedIn: () => AuthService.getToken() !== null,
@@ -69,7 +70,7 @@ const AuthService = {
 
     isAdmin: () => {
         return AuthService
-            .fetch("/api/user/isAdmin")
+            .fetch(api.host + ":" + api.port + "/api/user/isAdmin")
             .then(res => res.json());
     }
 }

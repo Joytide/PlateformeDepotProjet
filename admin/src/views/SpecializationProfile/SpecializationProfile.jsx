@@ -18,6 +18,8 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import AutoComplete from "components/AutoComplete/AutoComplete.jsx"
 import Button from "components/CustomButtons/Button.jsx";
 
+import AuthService from "components/AuthService"
+
 import { api } from "../../config"
 
 const styles = {
@@ -63,11 +65,10 @@ class SpecializationProfile extends React.Component {
     }
 
     loadData() {
-        fetch(api.host + ":" + api.port + "/api/specialization/" + this.props.match.params.id)
+        AuthService.fetch(api.host + ":" + api.port + "/api/specialization/" + this.props.match.params.id)
             .then(res => res.json())
             .then(data => {
                 if (data) {
-                    console.log(data);
                     let spe = {
                         nameFr: data.name.fr,
                         nameEn: data.name.en,
@@ -96,7 +97,7 @@ class SpecializationProfile extends React.Component {
                 }
             });
 
-        fetch(api.host + ":" + api.port + "/api/user/EPGE")
+        AuthService.fetch(api.host + ":" + api.port + "/api/user/EPGE")
             .then(res => res.json())
             .then(data => {
                 if (data) {
@@ -135,13 +136,11 @@ class SpecializationProfile extends React.Component {
         let data = {
             _id: this.state.specialization._id,
             abbreviation: this.state.specialization.abbreviation,
-            name: {
-                fr: this.state.specialization.nameFr,
-                en: this.state.specialization.nameEn
-            }
+            nameFr: this.state.specialization.nameFr,
+            nameEn: this.state.specialization.nameEn
         }
-
-        fetch(api.host + ":" + api.port + "/api/specialization", {
+        
+        AuthService.fetch(api.host + ":" + api.port + "/api/specialization", {
             method: "POST",
             mode: "cors",
             headers: {
@@ -151,7 +150,6 @@ class SpecializationProfile extends React.Component {
         })
             .then(res => res.json())
             .then(res => {
-                console.log(res);
                 let spe = {
                     _id: res._id,
                     nameFr: res.name.fr,
@@ -171,7 +169,7 @@ class SpecializationProfile extends React.Component {
                         ]
                     )
                 }
-                
+
                 this.setState({
                     specialization: spe,
                     specialization_old: spe,
@@ -181,15 +179,13 @@ class SpecializationProfile extends React.Component {
     }
 
     addReferent() {
-        console.log(this.state.selectedItem);
         if (this.state.selectedItem) {
             const data = {
                 _id: this.props.match.params.id,
                 referent: this.state.selectedItem.value
             };
-            console.log(data);
 
-            fetch(api.host + ":" + api.port + "/api/specialization/referent", {
+            AuthService.fetch(api.host + ":" + api.port + "/api/specialization/referent", {
                 mode: "cors",
                 method: "PUT",
                 headers: {
@@ -213,7 +209,7 @@ class SpecializationProfile extends React.Component {
             referent: id
         }
 
-        fetch(api.host + ":" + api.port + "/api/specialization/referent", {
+        AuthService.fetch(api.host + ":" + api.port + "/api/specialization/referent", {
             mode: "cors",
             method: "DELETE",
             headers: {
@@ -228,7 +224,6 @@ class SpecializationProfile extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { specialization } = this.state;
 
         let profile;
         let referent;

@@ -1,10 +1,14 @@
 import React from "react";
+
+
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from "@material-ui/core/Checkbox";
+
+
+
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
@@ -12,12 +16,12 @@ import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
-import CardAvatar from "components/Card/CardAvatar.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import Snackbar from "components/Snackbar/Snackbar.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
+import ChangePassword from "components/ChangePassword/ChangePassword.jsx";
 
-
-import avatar from "assets/img/faces/marc.jpg";
+import AuthService from "components/AuthService"
 
 import { api } from "../../config"
 
@@ -46,10 +50,20 @@ class UserProfile extends React.Component {
 
 		this.state = {
 			user: {},
+			user_old: {},
 			loading: true,
 			adminCheckboxDisabled: false,
-			EPGECheckboxDisabled: false
+			EPGECheckboxDisabled: false,
+			modified: false,
+			error: false,
+			success: false,
+			message: ""
 		}
+
+		this.update = this.update.bind(this);
+		this.cancel = this.cancel.bind(this);
+		this.error = this.error.bind(this);
+		this.success = this.success.bind(this);
 	}
 
 	componentDidMount() {
@@ -59,10 +73,67 @@ class UserProfile extends React.Component {
 				if (data) {
 					this.setState({
 						user: data,
+						user_old: data,
 						loading: false,
 						inputDisabled: true
 					});
 				}
+			});
+	}
+
+	handleChange = e => {
+		const value = e.target.value;
+		const id = e.target.id;
+		this.setState(prevState => ({
+			modified: true,
+			user: {
+				...prevState.user,
+				[id]: value
+			}
+		}));
+	}
+
+	cancel() {
+		this.setState({
+			modificated: false,
+			user: this.state.user_old
+		});
+	}
+
+	update() {
+		let data = {
+			_id: this.state.user._id,
+			company: this.state.user.company,
+			firstName: this.state.user.first_name,
+			lastName: this.state.user.last_name,
+			email: this.state.user.email,
+			__t: this.state.user.__t
+		}
+
+		AuthService.fetch(api.host + ":" + api.port + "/api/user", {
+			method: "POST",
+			mode: "cors",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data)
+		})
+			.then(res => {
+				if (!res.ok)
+					throw res;
+				return res.json();
+			})
+			.then(res => {
+				this.setState({
+					user: res,
+					user_old: res,
+					modified: false
+				});
+
+				this.success("Utilisateur mis à jour avec succès");
+			})
+			.catch(err => {
+				console.error(err);
 			});
 	}
 
@@ -102,6 +173,28 @@ class UserProfile extends React.Component {
 			.catch(err => console.err(err));
 	};
 
+	error = msg => {
+		this.setState({
+			error: true,
+			message: msg
+		}, () => {
+			setTimeout(() => {
+				this.setState({ error: false });
+			}, 3000);
+		});
+	}
+
+	success = msg => {
+		this.setState({
+			success: true,
+			message: msg
+		}, () => {
+			setTimeout(() => {
+				this.setState({ success: false });
+			}, 3000);
+		});
+	}
+
 	render() {
 		const { classes } = this.props;
 		const { user } = this.state;
@@ -124,7 +217,7 @@ class UserProfile extends React.Component {
 								}}
 								inputProps={{
 									value: user.company,
-									disabled: this.state.inputDisabled
+									onChange: this.handleChange
 								}}
 							/>
 						</GridItem>
@@ -172,6 +265,22 @@ class UserProfile extends React.Component {
 
 			return (
 				<div>
+					<Snackbar
+						place="tc"
+						color="success"
+						message={this.state.message}
+						open={this.state.success}
+						closeNotification={() => this.setState({ success: false })}
+						close
+					/>
+					<Snackbar
+						place="tc"
+						color="danger"
+						message={this.state.message}
+						open={this.state.error}
+						closeNotification={() => this.setState({ error: false })}
+						close
+					/>
 					<GridContainer>
 						<GridItem xs={12} sm={12} md={12}>
 							<Card>
@@ -200,26 +309,26 @@ class UserProfile extends React.Component {
 										<GridItem xs={12} sm={12} md={6}>
 											<CustomInput
 												labelText="Prénom"
-												id="first-name"
+												id="first_name"
 												formControlProps={{
 													fullWidth: true
 												}}
 												inputProps={{
 													value: user.first_name,
-													disabled: this.state.inputDisabled
+													onChange: this.handleChange
 												}}
 											/>
 										</GridItem>
 										<GridItem xs={12} sm={12} md={6}>
 											<CustomInput
 												labelText="Last Name"
-												id="last-name"
+												id="last_name"
 												formControlProps={{
 													fullWidth: true
 												}}
 												inputProps={{
 													value: user.last_name,
-													disabled: this.state.inputDisabled
+													onChange: this.handleChange
 												}}
 											/>
 										</GridItem>
@@ -228,20 +337,32 @@ class UserProfile extends React.Component {
 										<GridItem xs={12} sm={12} md={12}>
 											<CustomInput
 												labelText="Email"
-												id="email-address"
+												id="email"
 												formControlProps={{
 													fullWidth: true
 												}}
 												inputProps={{
 													value: user.email,
-													disabled: this.state.inputDisabled
+													disabled: true
 												}}
 											/>
 										</GridItem>
 									</GridContainer>
 									{administration}
 								</CardBody>
+								<CardFooter>
+									<GridContainer >
+										<GridItem xs={12} sm={12} md={12}>
+											<Button disabled={!this.state.modified} color="success" onClick={this.update}>Sauvegarder</Button>
+											<Button disabled={!this.state.modified} color="danger" onClick={this.cancel}>Annuler</Button>
+										</GridItem>
+									</GridContainer>
+								</CardFooter>
 							</Card>
+						</GridItem>
+
+						<GridItem xs={12}>
+							<ChangePassword user={this.state.user} errorHandler={this.error} successHandler={this.success}></ChangePassword>
 						</GridItem>
 					</GridContainer>
 				</div>

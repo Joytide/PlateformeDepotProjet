@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import InputLabel from "@material-ui/core/InputLabel";
 
 import Visibility from "@material-ui/icons/Visibility"
 
@@ -15,10 +14,7 @@ import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
-import CardAvatar from "components/Card/CardAvatar.jsx";
-import CardFooter from "components/Card/CardFooter.jsx";
 
 import { api } from "config.json"
 
@@ -63,7 +59,6 @@ class SpecializationList extends React.Component {
     }
 
     componentWillMount() {
-        console.log(api);
         fetch(api.host + ":" + api.port + "/api/specialization", { crossDomain: true })
             .then(res => res.json())
             .then(data => {

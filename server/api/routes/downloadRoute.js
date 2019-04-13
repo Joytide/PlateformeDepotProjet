@@ -11,7 +11,6 @@ module.exports = (app) => {
             if (!req.file) {
                 return next(new Error('No file to download'));
             }
-            console.log(req.file);
             res.send(req.file)
         })
 }

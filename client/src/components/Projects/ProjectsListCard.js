@@ -68,7 +68,7 @@ class ProjectsListCard extends React.Component {
 						return true;
 					}
 				}
-				//return false;
+				return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true });
 		}
@@ -82,7 +82,8 @@ class ProjectsListCard extends React.Component {
             let tmp = this.state.projectToDisplay.filter(project => {
                 if (project.title.includes(title_value)) {
                     return true;
-                }
+				}
+				return false;
             })
             this.setState({ projectSeen: tmp , loaded : true});
         }
@@ -97,11 +98,14 @@ class ProjectsListCard extends React.Component {
                 var id = this.state.peopleToDisplay.filter(people => {
                     if (people.company.includes(company_value)) {
                         return true; 
-                    }
-                })
+					}
+					return false;
+				});
+				
                 if (project.partner === id) {
                     return true;
-                }
+				}
+				return false;
             })
             this.setState({ projectSeen: tmp , loaded : true});
         }
@@ -113,7 +117,6 @@ class ProjectsListCard extends React.Component {
 
 	render() {
 		const lng = this.props.lng;
-		console.log(this.props.projects);
 		let ProjectList = this.props.projects.map(project =>
 			<Grid key={project._id} item xs={10}>
 				<ProjectCard project={project} lng={lng} admin={this.props.admin} showPartner={this.props.showPartner} />

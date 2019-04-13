@@ -29,7 +29,8 @@ const ProjectSchema = new Schema({
     media_files: Array, //(String)
     status: {
         type: String,
-        required: true
+        required: true,
+        default: "pending"
     },
     sub_date: {
         type: Date,
@@ -56,6 +57,12 @@ const ProjectSchema = new Schema({
         ref: 'Partner',
         required: true
     },
+    files: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'File',
+        }
+    ],
     number: String
 })
 const Project = mongoose.model('Project', ProjectSchema);
