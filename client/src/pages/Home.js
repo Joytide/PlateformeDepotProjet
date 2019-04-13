@@ -72,14 +72,14 @@ class HomePage extends React.Component {
 							</Grid>
 							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p1', {lng} )}</Typography>
-								<Typography>
+								<Typography align="justify">
 									{i18n.t('home.p1_l1', {lng} )}<br/>
 									{i18n.t('home.p1_l2', {lng} )}
 								</Typography>
 							</Grid>
 							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p2', {lng} )}</Typography>
-								<Typography>
+								<Typography align="justify">
 									{i18n.t('home.p2_l1', {lng} )}<br/>
 									{i18n.t('home.p2_l2', {lng} )}<br/>
 									{i18n.t('home.p2_l3', {lng} )}<br/>
@@ -88,7 +88,7 @@ class HomePage extends React.Component {
 							</Grid>
 							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p3', {lng} )}</Typography>
-								<Typography>
+								<Typography align="justify">
 									{i18n.t('home.p3_l1', {lng} )}<br/>
 									{i18n.t('home.p3_l2', {lng} )}<br/>
 									{i18n.t('home.p3_l3', {lng} )}<br/>
@@ -100,7 +100,7 @@ class HomePage extends React.Component {
 							</Grid>
 							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p4', {lng} )}</Typography>
-								<Typography>
+								<Typography align="justify">
 									{i18n.t('home.p4_l1', {lng} )}<br/>
 									{i18n.t('home.p4_l2', {lng} )}<br/>
 									{i18n.t('home.p4_l3', {lng} )}<br/>
