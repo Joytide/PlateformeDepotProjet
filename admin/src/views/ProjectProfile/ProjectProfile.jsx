@@ -9,6 +9,13 @@ import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Visibility from "@material-ui/icons/Visibility"
+import Add from "@material-ui/icons/Add"
+import Modal from '@material-ui/core/Modal';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -20,7 +27,9 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Table from "components/Table/Table.jsx";
+import Muted from "components/Typography/Muted.jsx";
 
+import AuthService from "components/AuthService"
 import { api } from "../../config"
 
 const styles = {
@@ -63,7 +72,9 @@ class ProjectProfile extends React.Component {
             project: {},
             comments: [],
             specializations_concerned: [],
-            color: "primary"
+            color: "primary",
+            open: false,
+            toDelete: ""
         }
 
         this.loadProjectData = this.loadProjectData.bind(this);
@@ -129,6 +140,15 @@ class ProjectProfile extends React.Component {
                 })
             });
     }
+
+    openModal = _id => () => {
+        this.setState({ open: true, toDelete: _id });
+    };
+
+    closeModal = () => {
+        this.setState({ open: false, toDelete: "" });
+
+    };
 
     // Check or uncheck checkbox when both project and years are loaded
     checkboxMapping() {
@@ -287,11 +307,50 @@ class ProjectProfile extends React.Component {
             });
     }
 
+    deleteFile = () => {
+        const data = {
+            fileID: this.state.toDelete
+        };
+
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/file", {
+            method: "DELETE",
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    this.setState({ open: false, toDelete: "" }, () => {
+                        this.loadProjectData();
+                    });
+                }
+            });
+    }
+
+    uploadFile = file => {
+        var formData = new FormData();
+        formData.append("partnerID", this.state.project.partner._id);
+        formData.append("projectID", this.state.project._id)
+        formData.append("file", new Blob([file], { type: file.type }), file.name || 'file');
+
+
+        fetch(api.host + ":" + api.port + '/api/project/file', {
+            method: "POST",
+            headers: {
+                "Authorization": AuthService.getToken()
+            },
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.loadProjectData();
+            });
+    }
+
     render() {
         const { classes } = this.props;
         const { specialization } = this.state;
 
-        let partnerInfo, projectInfo, classification, actions, comments;
+        let partnerInfo, projectInfo, classification, actions, comments, files;
 
         if (!this.state.loadingProject) {
             partnerInfo = (
@@ -400,6 +459,54 @@ class ProjectProfile extends React.Component {
                     </GridItem>
                 </GridContainer>
             );
+
+            files = (
+                <Card>
+                    <CardHeader color={this.state.color}>
+                        <h4 className={classes.cardTitleWhite}>Liste des fichiers</h4>
+                        <p className={classes.cardCategoryWhite}>Fichiers proposés par le partenaire</p>
+                    </CardHeader>
+                    <CardBody>
+                        <GridContainer>
+                            {
+                                this.state.project.files.map(file => {
+                                    return (
+                                        <GridItem xs={12} sm={12} md={6} key={file._id}>
+                                            <Card style={{ width: "20rem" }}>
+                                                <CardBody>
+                                                    <h4>{file.originalName}</h4>
+                                                    <a download href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
+                                                        <Button size="sm" color="info">Télécharger</Button>
+                                                    </a>
+                                                    <Button size="sm" color="danger" onClick={this.openModal(file._id)}>Supprimer</Button>
+                                                </CardBody>
+                                            </Card>
+                                        </GridItem>
+                                    );
+                                })
+                            }
+
+                        </GridContainer>
+                    </CardBody>
+                    <CardFooter>
+                        <GridContainer >
+                            <GridItem xs={12} sm={12} md={12}>
+                                <Input
+                                    className={classes.input}
+                                    id="raised-button-file"
+                                    type="file"
+                                    onChange={e => this.uploadFile(e.target.files[0])}
+                                    style={{display: "none"}}
+                                />
+                                <label htmlFor="raised-button-file">
+                                    <Button component="span" size="sm" color="info"><Add />Ajouter un fichier</Button>
+                                </label>
+                            </GridItem>
+                        </GridContainer>
+                    </CardFooter>
+                </Card>
+            )
+
         }
         if (!this.state.loadingYear && !this.state.loadingSpecialization) {
             classification = (
@@ -475,8 +582,6 @@ class ProjectProfile extends React.Component {
                 ];
             });
 
-            console.log(tableData)
-
             comments = (
                 <Card>
                     <CardHeader color={this.state.color}>
@@ -512,6 +617,32 @@ class ProjectProfile extends React.Component {
                     closeNotification={() => this.setState({ error: false })}
                     close
                 />
+
+                <Dialog
+                    open={this.state.open}
+                    onClose={this.closeModal}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Supprimer ce fichier ?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Etes vous sûr de vouloir supprimer ce fichier ?
+                            <br />
+                            Toute suppression est définitive et aucun retour en arrière n'est possible.
+                        </DialogContentText>
+                    </DialogContent>
+
+                    <DialogActions>
+                        <Button onClick={this.closeModal} size="sm" color="info" autoFocus>
+                            Annuler
+                        </Button>
+                        <Button onClick={this.closeModal} size="sm" color="danger" onClick={this.deleteFile}>
+                            Supprimer
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
                 <GridItem xs={12} sm={12} md={12}>
                     {partnerInfo}
 
@@ -519,12 +650,13 @@ class ProjectProfile extends React.Component {
 
                     {classification}
 
+                    {files}
+
                     {actions}
 
                     {comments}
                 </GridItem>
             </GridContainer >);
-
     }
 }
 
