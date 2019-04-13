@@ -36,8 +36,6 @@ class ProjectCard extends React.Component {
 			projectCardOpen: this.props.projectCardOpen,
 			expanded: false
 		}
-		this.handleValidation = this.handleValidation.bind(this)
-		this.handleRejection = this.handleRejection.bind(this)
 		this.handleExpandClick = this.handleExpandClick.bind(this)
 	}
 
