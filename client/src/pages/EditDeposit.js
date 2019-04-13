@@ -151,7 +151,6 @@ class Edit extends Component {
                                         multiple={true}
                                         hintText="Select a name"
                                         value={this.state.majors_concerned}
-                                        onChange={this.handleChange}
                                         name="majors_concerned"
                                     >
                                         {this.majors.map((major) =>

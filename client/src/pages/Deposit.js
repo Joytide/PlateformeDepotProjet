@@ -1,31 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import FilesInputs from '../components/Deposit/FormComponents/FilesInputs';
-import KeyWords from '../components/Deposit/FormComponents/KeyWords';
 import CreatePartner from '../components/Deposit/CreatePartner';
 import CreateProject from '../components/Deposit/CreateProject';
 
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import { FormControl, InputLabel, Select, Input, FormGroup, MuiThemeProvider } from '@material-ui/core'
 
-import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-
-import { Link } from 'react-router-dom';
 import i18n from '../components/i18n';
 /**
  * Deposit of a project
@@ -65,16 +51,6 @@ const DEFAULT_STATE = {
 	last_name: "",
 	finished: false,
 	submited: false
-}
-const RESET_STATE = {
-	study_year: [],
-	majors_concerned: [],
-
-	title: "",
-	description: "",
-	keyWords: [],
-	files: [],
-	urls: []
 }
 
 class Deposit extends React.Component {
@@ -204,8 +180,8 @@ class Deposit extends React.Component {
 
 	render() {
 		const lng = this.props.lng;
-		const { finished, stepIndex } = this.state;
-		//const { classes } = this.props;
+		const { stepIndex } = this.state;
+		
 		return (
 			<div id="deposit-body">
 				<Grid container style={{ marginTop: 12 }} justify="center">

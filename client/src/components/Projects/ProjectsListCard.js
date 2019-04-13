@@ -68,7 +68,7 @@ class ProjectsListCard extends React.Component {
 						return true;
 					}
 				}
-				//return false;
+				return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true });
 		}
@@ -82,7 +82,8 @@ class ProjectsListCard extends React.Component {
             let tmp = this.state.projectToDisplay.filter(project => {
                 if (project.title.includes(title_value)) {
                     return true;
-                }
+				}
+				return false;
             })
             this.setState({ projectSeen: tmp , loaded : true});
         }
@@ -97,11 +98,14 @@ class ProjectsListCard extends React.Component {
                 var id = this.state.peopleToDisplay.filter(people => {
                     if (people.company.includes(company_value)) {
                         return true; 
-                    }
-                })
+					}
+					return false;
+				});
+				
                 if (project.partner === id) {
                     return true;
-                }
+				}
+				return false;
             })
             this.setState({ projectSeen: tmp , loaded : true});
         }

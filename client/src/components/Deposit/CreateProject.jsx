@@ -5,15 +5,13 @@ import { withStyles } from '@material-ui/core/styles';
 import FilesInputs from './FormComponents/FilesInputs';
 import KeyWords from './FormComponents/KeyWords';
 
-import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import { FormControl, InputLabel, Select, Input, FormGroup, MuiThemeProvider } from '@material-ui/core'
+import { FormControl, InputLabel, Select, Input } from '@material-ui/core'
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';

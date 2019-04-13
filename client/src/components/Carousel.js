@@ -33,7 +33,7 @@ const styles = theme => ({
 		width: '100%',
 	},
 	//pour indiquer au visiteur qu'il peut cliquer sur le texte et l'image du carousel
-	link : {
+	link: {
 		cursor: 'pointer',
 	},
 });
@@ -41,10 +41,11 @@ const styles = theme => ({
 class Carousel extends React.Component {
 	constructor(props) {
 		super(props)
+
+		this.state = {
+			activeStep: 0,
+		};
 	}
-	state = {
-		activeStep: 0,
-	};
 
 
 	handleNext = () => {
@@ -72,28 +73,28 @@ class Carousel extends React.Component {
 		//propriété 'info' non affichée
 		const tutorialSteps = [
 			{
-				label: i18n.t('carousel.Title1', {lng} ),
-				info: i18n.t('carousel.Text1', {lng} ),
+				label: i18n.t('carousel.Title1', { lng }),
+				info: i18n.t('carousel.Text1', { lng }),
 				imgPath: './pictures/project1.jpg',
-				link:'https://www.esilv.fr/portfolios/bermudzer-pricing-doption-bermudeennes/'
+				link: 'https://www.esilv.fr/portfolios/bermudzer-pricing-doption-bermudeennes/'
 			},
 			{
-				label : i18n.t('carousel.Title2', {lng} ),
-				info: i18n.t('carousel.Text2', {lng} ),
+				label: i18n.t('carousel.Title2', { lng }),
+				info: i18n.t('carousel.Text2', { lng }),
 				imgPath: './pictures/project2.jpg',
-				link:'https://www.esilv.fr/portfolios/vinci-eco-drive-conception-et-pilotage-du-bloc-moteur-shell-eco-marathon-2015/'
+				link: 'https://www.esilv.fr/portfolios/vinci-eco-drive-conception-et-pilotage-du-bloc-moteur-shell-eco-marathon-2015/'
 			},
 			{
-				label : i18n.t('carousel.Title3', {lng} ),
-				info: i18n.t('carousel.Text3', {lng} ),
+				label: i18n.t('carousel.Title3', { lng }),
+				info: i18n.t('carousel.Text3', { lng }),
 				imgPath: './pictures/project3.jpg',
-				link:'https://www.esilv.fr/portfolios/id-cam-accessibilite-numerique-non-voyants-mal-voyants/'
+				link: 'https://www.esilv.fr/portfolios/id-cam-accessibilite-numerique-non-voyants-mal-voyants/'
 			},
 			{
-				label : i18n.t('carousel.Title4', {lng} ),
-				info: i18n.t('carousel.Text4', {lng} ),
+				label: i18n.t('carousel.Title4', { lng }),
+				info: i18n.t('carousel.Text4', { lng }),
 				imgPath: './pictures/project4.jpg',
-				link:'https://www.esilv.fr/portfolios/analyse-big-data-des-sites-unesco-via-les-reseaux-sociaux/'
+				link: 'https://www.esilv.fr/portfolios/analyse-big-data-des-sites-unesco-via-les-reseaux-sociaux/'
 			},
 		];
 
@@ -113,9 +114,9 @@ class Carousel extends React.Component {
 					>
 						{tutorialSteps.map((step, index) => (
 							<div key={step.label}>
-							{Math.abs(activeStep - index) <= 2 ? (
-								<img className={classes.img} src={step.imgPath} alt={step.label} />
-							) : null}
+								{Math.abs(activeStep - index) <= 2 ? (
+									<img className={classes.img} src={step.imgPath} alt={step.label} />
+								) : null}
 							</div>
 						))}
 					</AutoPlaySwipeableViews>
@@ -127,13 +128,13 @@ class Carousel extends React.Component {
 					className={classes.mobileStepper}
 					nextButton={
 						<Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
-							{i18n.t('carousel.next', {lng})}
+							{i18n.t('carousel.next', { lng })}
 							{theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
 						</Button>
 					}
 					backButton={
 						<Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
-							{i18n.t('carousel.back', {lng})}
+							{i18n.t('carousel.back', { lng })}
 							{theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
 						</Button>
 					}
