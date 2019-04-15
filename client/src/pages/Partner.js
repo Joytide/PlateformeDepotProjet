@@ -1,6 +1,6 @@
 import React from 'react';
 import ProjectsListCard from '../components/Projects/ProjectsListCard';
-import authService from '../components/AuthService';
+import AuthService from '../components/AuthService';
 
 
 class Partner extends React.Component {
@@ -14,10 +14,10 @@ class Partner extends React.Component {
     }
 
     componentDidMount() {
-        if (authService.isLoggedIn())
-            authService.fetch('/api/partner/', {
+        if (AuthService.isLoggedIn())
+            AuthService.fetch('/api/partner/', {
                 method: "GET"
-            })  
+            })
                 .then(res => res.json())
                 .then(data => {
                     if (data) {

@@ -1,4 +1,5 @@
 import decode from 'jwt-decode';
+import { api } from "../config.json";
 
 const AuthService = {
     isLoggedIn: () => AuthService.getToken() !== null,
@@ -35,7 +36,7 @@ const AuthService = {
     getUser: () => {
         return new Promise((resolve, reject) => {
             if (AuthService.isLoggedIn()) {
-                AuthService.fetch('/api/user/me')
+                AuthService.fetch(api.host + ":" + api.port + '/api/user/me')
                     .then(res => res.json())
                     .then(resolve)
                     .catch(reject);
@@ -61,7 +62,7 @@ const AuthService = {
             headers['Authorization'] = AuthService.getToken()
         }
 
-        return fetch(url, {
+        return fetch(api.host + ":" + api.port + url, {
             ...options,
             headers
         });
@@ -69,7 +70,7 @@ const AuthService = {
 
     isAdmin: () => {
         return AuthService
-            .fetch("/api/user/isAdmin")
+            .fetch(api.host + ":" + api.port + "/api/user/isAdmin")
             .then(res => res.json());
     }
 }

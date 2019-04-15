@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AuthService from '../components/AuthService';
 //import ProjectGrid from '../components/ProjectGrid';
 import ProjectsListCard from '../components/Projects/ProjectsListCard';
 class Projects extends Component {
@@ -8,7 +9,7 @@ class Projects extends Component {
         this.state = { projects: {}, loaded: false };
     }
     componentDidMount() {
-        fetch('/api/projects')
+        AuthService.fetch('/api/projects')
             .then(res => res.json())
             .then(projects => {
                 this.setState({ projects: projects, loaded: true });

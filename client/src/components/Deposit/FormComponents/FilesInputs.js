@@ -3,6 +3,8 @@ import Files from 'react-files';
 import { FormGroup, Label } from "reactstrap";
 import i18n from '../../i18n';
 import AuthService from '../../AuthService';
+import { api } from "../../../config.json";
+
 
 class FilesInputs extends React.Component {
     constructor(props) {
@@ -26,7 +28,7 @@ class FilesInputs extends React.Component {
         var formData = new FormData();
         formData.append("file", new Blob([file], { type: file.type }), file.name || 'file');
 
-        fetch('/api/project/file', {
+        fetch(api.host + ":" + api.port + '/api/project/file', {
             method: "POST",
             headers: {
                 "Authorization": AuthService.getToken()

@@ -11,6 +11,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { FormControl, InputLabel, Input } from '@material-ui/core'
 
+import AuthService from '../AuthService';
 
 import i18n from '../i18n';
 class ProjectFilter extends React.Component {
@@ -65,7 +66,7 @@ class ProjectFilter extends React.Component {
     }
 
     componentWillMount() {
-        fetch('/api/specialization')
+        AuthService.fetch('/api/specialization')
             .then(res => res.json())
             .then(majors => {
                 this.setState({ majors: majors });

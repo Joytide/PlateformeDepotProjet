@@ -138,13 +138,6 @@ class CreatePartner extends React.Component {
 
                     <Grid item>
                         <Grid container spacing={40} justify="center">
-                            <Grid item xs={1}>
-                                <Button lng={lng} variant='contained' color='primary'>
-                                    <Typography>
-                                        {i18n.t('back.label', { lng })}
-                                    </Typography>
-                                </Button>
-                            </Grid>
                             <Grid item xs={2}>
                                 <Button lng={lng} variant='contained' color='primary' type="submit">
                                     <Typography>

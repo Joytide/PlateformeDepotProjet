@@ -41,14 +41,14 @@ class CreateProject extends React.Component {
     }
 
     componentWillMount() {
-        fetch('/api/specialization')
+        AuthService.fetch('/api/specialization')
             .then(res => res.json())
             .then(specializations => {
                 this.setState({ specializations: specializations });
             })
             .catch(console.error.bind(console));
 
-        fetch('/api/year')
+        AuthService.fetch('/api/year')
             .then(res => res.json())
             .then(years => {
                 this.setState({ years: years })

@@ -16,6 +16,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 
 
 import ProjectsToPDF from '../components/Projects/ProjectsToPDF';
+import AuthService from '../components/AuthService';
 
 const styles = {
 };
@@ -31,7 +32,7 @@ class ProjectPage extends React.Component {
     }
 
     componentDidMount() {
-        fetch('/api/project/' + this.props.match.params.key)
+        AuthService.fetch('/api/project/' + this.props.match.params.key)
             .then(res => res.json())
             .then(project => {
 
@@ -53,7 +54,7 @@ class ProjectPage extends React.Component {
             project: this.props.match.params.key
         };
 
-        fetch('/api/project/like', {
+        AuthService.fetch('/api/project/like', {
             method: this.state.isLiked ? "DELETE" : "PUT",
             headers: {
                 "Content-Type": "application/json",
