@@ -262,5 +262,6 @@ exports.changePassword = (req, res, next) => {
 
 exports.myself = (req,res) => {
     req.user.password = undefined;
+    req.user.key = undefined;
     res.json(req.user);
 }
