@@ -123,9 +123,14 @@ class ProjectCard extends React.Component {
 										project.study_year
 											.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
 											.map(year => {
-												return (<Grid key={year._id} item>
-													<Chip label={year.abbreviation} color="primary" />
-												</Grid>);
+												return (
+													<Grid key={year._id} item>
+														<Chip
+															label={year.abbreviation}
+															style={{ color: "white", backgroundColor: "#03a9f4" }}
+														/>
+													</Grid>
+												);
 											})
 									}
 								</Grid>
@@ -134,9 +139,11 @@ class ProjectCard extends React.Component {
 										project.majors_concerned
 											.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
 											.map(major => {
-												return (<Grid key={major._id} item>
-													<Chip label={major.abbreviation} color="secondary" />
-												</Grid>);
+												return (
+													<Grid key={major._id} item>
+														<Chip label={major.abbreviation} color="secondary" />
+													</Grid>
+												);
 											})
 									}
 								</Grid>

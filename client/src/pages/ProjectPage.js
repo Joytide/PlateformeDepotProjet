@@ -93,7 +93,10 @@ class ProjectPage extends React.Component {
                                     <Grid container spacing={8} xs>
                                         {
                                             project.study_year.sort().map(year => {
-                                                return <Grid item><Chip label={year.abbreviation} color="primary" /></Grid>
+                                                return <Grid item><Chip
+                                                    label={year.abbreviation}
+                                                    style={{ color: "white", backgroundColor: "#03a9f4" }}
+                                                /></Grid>
                                             })
                                         }
                                         {
