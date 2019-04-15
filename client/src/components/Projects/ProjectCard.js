@@ -72,17 +72,39 @@ class ProjectCard extends React.Component {
 
 							<CardContent>
 								<Grid container justify="space-between">
-									<Grid item xs={7}>
+									<Grid item xs={5}>
 										<Typography variant="h5" component="h2">
 											{project.number} - {project.title}
 										</Typography>
 									</Grid>
-									<Grid item xs={5}>
+									<Grid item xs={4}>
 										{partner}
 										<Typography color="textSecondary" gutterBottom>
 											{new Date(project.sub_date).toLocaleDateString()}
 										</Typography>
 									</Grid>
+									{!this.props.showPartner &&
+										<Grid item xs={3}>
+											{this.props.project.status === "validated" &&
+												<Chip
+													label={i18n.t('project.accepted', { lng })}
+													style={{ backgroundColor: "#43a047", color: "white" }}
+												/>
+											}
+											{this.props.project.status === "pending" &&
+												<Chip
+													label={i18n.t('project.pending', { lng })}
+													style={{ backgroundColor: "orange", color: "white" }}
+												/>
+											}
+											{this.props.project.status === "rejected" &&
+												<Chip
+													label={i18n.t('project.rejected', { lng })}
+													style={{ backgroundColor: "red", color: "white" }}
+												/>
+											}
+										</Grid>
+									}
 								</Grid>
 
 								<hr></hr>

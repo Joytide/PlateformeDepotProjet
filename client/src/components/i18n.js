@@ -19,7 +19,12 @@ i18next
 					question: { label: 'Feel free to ask your questions ', },
 					questionH: { label: 'Ask your question ! ', },
 					button: { label: 'Send ', },
-					project: { title: 'List of projects', },
+					project: {
+						title: 'List of projects',
+						accepted: 'Project accepted !',
+						pending: "Waiting for approval",
+						rejected: "Project rejected by school"
+					},
 					major: { label: 'Major', },
 					filter: { label: 'Filters', },
 					ibo: { label: 'Computer science, Big Data and IoT', },
@@ -139,7 +144,12 @@ i18next
 					question: { label: 'Posez votre question', },
 					questionH: { label: 'Posez une question ! ', },
 					button: { label: 'Envoyer', },
-					project: { title: 'Liste des projets', },
+					project: {
+						title: 'Liste des projets',
+						accepted: 'Projet accepté !',
+						pending: "En attente de validation",
+						rejected: "Projet rejetté par l'école"
+					},
 					major: { label: 'Majeure', },
 					filter: { label: 'Filtres', },
 					ibo: { label: 'Informatique, BigData et objets connectés', },
