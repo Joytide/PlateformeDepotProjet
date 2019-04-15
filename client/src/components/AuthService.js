@@ -2,7 +2,20 @@ import decode from 'jwt-decode';
 import { api } from "../config.json";
 
 const AuthService = {
-    isLoggedIn: () => AuthService.getToken() !== null,
+    isLoggedIn: () => {
+        return new Promise((resolve, reject) => {
+            AuthService.fetch("/api/user/me")
+                .then(res => res.json())
+                .then(data => {
+                    if (data._id)
+                        resolve(data);
+                    else {
+                        AuthService.logout();
+                        reject(data);
+                    }
+                });
+        });
+    },
 
     isTokenExpired: token => {
         try {
@@ -35,12 +48,9 @@ const AuthService = {
 
     getUser: () => {
         return new Promise((resolve, reject) => {
-            if (AuthService.isLoggedIn()) {
-                AuthService.fetch(api.host + ":" + api.port + '/api/user/me')
-                    .then(res => res.json())
-                    .then(resolve)
-                    .catch(reject);
-            }
+            AuthService.isLoggedIn()
+                .then(resolve)
+                .catch(reject);
         });
     },
 
@@ -58,9 +68,7 @@ const AuthService = {
 
         // Setting Authorization header
         // Authorization: Bearer xxxxxxx.xxxxxxxx.xxxxxx
-        if (AuthService.isLoggedIn()) {
-            headers['Authorization'] = AuthService.getToken()
-        }
+        headers['Authorization'] = AuthService.getToken() || ""
 
         return fetch(api.host + ":" + api.port + url, {
             ...options,

@@ -101,6 +101,7 @@ i18next
 					navs: {
 						home: 'Home',
 						projects: 'Projects',
+						myprojects: 'My projects',
 						submit: 'Submit a project',
 						login: 'Log in',
 						admin: 'Admin',
@@ -110,6 +111,7 @@ i18next
 					forgetPass: {
 						submit: 'Submit',
 						desc: 'If you have lost your link to connect, please enter your email to retrieve it.',
+						textfield: "Your email address"
 					},
 					carousel: {
 						Title1: 'BermudZer: bermudean option pricing',
@@ -191,6 +193,7 @@ i18next
 					forgetPass: {
 						submit: 'Envoyer',
 						desc: 'Si vous avez perdu votre lien pour vous connecter, veuillez entrer votre mail pour le récupérer.',
+						textfield: "Votre adresse mail"
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',
@@ -222,6 +225,7 @@ i18next
 					navs: {
 						home: 'Accueil',
 						projects: 'Projets',
+						myprojects: 'Mes projets',
 						submit: 'Soumettre un projet',
 						login: 'Se connecter',
 						admin: 'Admin',

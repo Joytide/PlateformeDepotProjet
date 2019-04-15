@@ -14,19 +14,17 @@ class Partner extends React.Component {
     }
 
     componentDidMount() {
-        if (AuthService.isLoggedIn())
-            AuthService.fetch('/api/partner/', {
-                method: "GET"
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data) {
-                        this.setState({
-                            partner: data,
-                            loaded: true
-                        });
-                    }
-                });
+        AuthService
+            .getUser()
+            .then(data => {
+                console.log(data);
+                if (data) {
+                    this.setState({
+                        partner: data,
+                        loaded: true
+                    });
+                }
+            });
     }
 
     render() {
