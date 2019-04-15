@@ -118,6 +118,13 @@ class Navs extends React.Component {
 	}
 
 	componentDidMount() {
+		window.addEventListener("storage",
+			this.handleStorageUpdate);
+
+		this.loadUser();
+	}
+
+	loadUser() {
 		AuthService
 			.getUser()
 			.then(user => {
@@ -125,6 +132,10 @@ class Navs extends React.Component {
 					user: user
 				});
 			});
+	}
+
+	handleStorageUpdate = e => {
+		this.loadUser();
 	}
 
 	render() {
