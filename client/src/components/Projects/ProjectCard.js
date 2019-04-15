@@ -64,73 +64,76 @@ class ProjectCard extends React.Component {
 			</Grid>)
 		}
 
-		return (
-			<div>
-				<Link to={`/Projects/${this.props.project._id}`} key={this.props.project._id}>
-					<Card style={{ borderBottom: 2, marginBottom: 8 }}>
+		if (project._id) {
+			return (
+				<div>
+					<Link to={`/Projects/${this.props.project._id}`} key={this.props.project._id}>
+						<Card style={{ borderBottom: 2, marginBottom: 8 }}>
 
-						<CardContent>
-							<Grid container justify="space-between">
-								<Grid item xs={7}>
-									<Typography variant="h5" component="h2">
-										{project.number} - {project.title}
-									</Typography>
+							<CardContent>
+								<Grid container justify="space-between">
+									<Grid item xs={7}>
+										<Typography variant="h5" component="h2">
+											{project.number} - {project.title}
+										</Typography>
+									</Grid>
+									<Grid item xs={5}>
+										{partner}
+										<Typography color="textSecondary" gutterBottom>
+											{new Date(project.sub_date).toLocaleDateString()}
+										</Typography>
+									</Grid>
 								</Grid>
-								<Grid item xs={5}>
-									{partner}
-									<Typography color="textSecondary" gutterBottom>
-										{new Date(project.sub_date).toLocaleDateString()}
-									</Typography>
+
+								<hr></hr>
+
+								<Grid item xs={10} >
+									<CardContent style={{ color: "black", paddingTop: 1, paddingBottom: 1 }}>
+										{project.description.substring(0, 220) + " ..."}
+									</CardContent>
 								</Grid>
-							</Grid>
 
-							<hr></hr>
+							</CardContent>
 
-							<Grid item xs={10} >
-								<CardContent style={{ color: "black", paddingTop: 1, paddingBottom: 1 }}>
-									{project.description.substring(0, 220) + " ..."}
-								</CardContent>
-							</Grid>
-
-						</CardContent>
-
-						<CardActions disableActionSpacing>
-							<Grid container spacing={8}>
-								{
-									project.study_year
-										.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
-										.map(year => {
-											return (<Grid key={year._id} item>
-												<Chip label={year.abbreviation} color="primary" />
+							<CardActions disableActionSpacing>
+								<Grid container spacing={8}>
+									{
+										project.study_year
+											.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
+											.map(year => {
+												return (<Grid key={year._id} item>
+													<Chip label={year.abbreviation} color="primary" />
+												</Grid>);
+											})
+									}
+								</Grid>
+								<Grid container spacing={8}>
+									{
+										project.majors_concerned
+											.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
+											.map(major => {
+												return (<Grid key={major._id} item>
+													<Chip label={major.abbreviation} color="secondary" />
+												</Grid>);
+											})
+									}
+								</Grid>
+								<Grid container spacing={8}>
+									{
+										project.keywords.sort().map((keyword, index) => {
+											return (<Grid key={index} item>
+												<Chip label={keyword} />
 											</Grid>);
 										})
-								}
-							</Grid>
-							<Grid container spacing={8}>
-								{
-									project.majors_concerned		
-									.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
-									.map(major => {
-										return (<Grid key={major._id} item>
-											<Chip label={major.abbreviation} color="secondary" />
-										</Grid>);
-									})
-								}
-							</Grid>
-							<Grid container spacing={8}>
-								{
-									project.keywords.sort().map((keyword, index) => {
-										return (<Grid key={index} item>
-											<Chip label={keyword} />
-										</Grid>);
-									})
-								}
-							</Grid>
-						</CardActions>
+									}
+								</Grid>
+							</CardActions>
 
-					</Card>
-				</Link>
-			</div>);
+						</Card>
+					</Link>
+				</div>);
+		}
+		else return <div></div>
 	}
 }
 
