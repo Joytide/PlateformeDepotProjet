@@ -62,9 +62,12 @@ class CreatePartner extends React.Component {
             })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.token)
+                    if (data.token) {
                         AuthService.setToken(data.token);
-                    this.props.next();
+                        var event = new Event('logged');
+                        document.dispatchEvent(event);
+                        this.props.next();
+                    }
                 })
                 .catch(err => {
 

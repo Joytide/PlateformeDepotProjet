@@ -118,8 +118,8 @@ class Navs extends React.Component {
 	}
 
 	componentDidMount() {
-		window.addEventListener("storage",
-			this.handleStorageUpdate);
+		document.addEventListener("logged",
+			this.handleLogged);
 
 		this.loadUser();
 	}
@@ -134,7 +134,7 @@ class Navs extends React.Component {
 			});
 	}
 
-	handleStorageUpdate = e => {
+	handleLogged = e => {
 		this.loadUser();
 	}
 
