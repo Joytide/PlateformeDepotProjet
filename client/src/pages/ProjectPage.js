@@ -17,6 +17,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 
 import ProjectsToPDF from '../components/Projects/ProjectsToPDF';
 import AuthService from '../components/AuthService';
+import { api } from "../config";
 
 const styles = {
 };
@@ -140,7 +141,7 @@ class ProjectPage extends React.Component {
                                             return (
                                                 <Grid item xs={2}>
                                                     {file.originalName}
-                                                    <IconButton href={"http://localhost:3001/api/project/file/" + file._id}>
+                                                    <IconButton href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
                                                         <VerticalAlignBottom />
                                                     </IconButton>
                                                 </Grid>

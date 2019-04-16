@@ -107,7 +107,7 @@ exports.createPartner = (req, res, next) => {
 										subject: "Creation de votre compte sur la plateforme Devinci Project",
 										content: `Bonjour,
 										Nous avons le plaisir de vous annoncer que votre compte à bien été créé sur la plateforme Devinci-project.
-										Vous pouvez dès à présent vous connecter en cliquant sur le lien suivant : http://localhost:3000/login/partner/${keyData.key}`
+										Vous pouvez dès à présent vous connecter en cliquant sur le lien suivant : ${config.api.host + ':' + config.api.port}/login/partner/${keyData.key}`
 									});
 								}
 							});
@@ -210,7 +210,7 @@ exports.resetPassword = (req, res, next) => {
 								recipient: partner.email,
 								subject: "Lien de connexion sur la plateforme Devinci Project",
 								content: `Bonjour,
-								Voici le lien permettant de vous connecter à la plateforme Devinci Project : http://localhost:3000/login/partner/${pass.key}`
+								Voici le lien permettant de vous connecter à la plateforme Devinci Project : ${config.api.host + ":" + config.api.port}/login/partner/${pass.key}`
 							});
 						}
 					});
