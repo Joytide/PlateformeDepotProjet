@@ -255,7 +255,7 @@ class UserProfile extends React.Component {
 											color="primary"
 										/>
 									}
-									label="EPGE"
+									label="EGPE"
 								/>
 							</FormControl>
 						</GridItem>

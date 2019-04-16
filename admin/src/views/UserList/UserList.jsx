@@ -69,7 +69,7 @@ class UserList extends React.Component {
             .then(data => {
                 let userData = data.map(user => {
                     if (user.admin) return [
-                        (<Danger>{user.EPGE ? "EPGE" : user.__t}</Danger>),
+                        (<Danger>{user.EPGE ? "EGPE" : user.__t}</Danger>),
                         (<Danger>{user.company || "-"}</Danger>),
                         (<Danger>{user.last_name}</Danger>),
                         (<Danger>{user.first_name}</Danger>),
@@ -77,7 +77,7 @@ class UserList extends React.Component {
                         (<Link to={"/user/" + user._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
                     ];
                     else return [
-                        user.EPGE ? "EPGE" : user.__t || "Partenaire",
+                        user.EPGE ? "EGPE" : user.__t || "Partenaire",
                         user.company || "-",
                         user.last_name,
                         user.first_name,

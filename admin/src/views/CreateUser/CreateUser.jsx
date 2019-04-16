@@ -340,7 +340,7 @@ class CreateUser extends React.Component {
                                             {/*<MenuItem value="student">Elève</MenuItem>*/}
                                             <MenuItem value="partner">Partenaire</MenuItem>
                                             <MenuItem value="administration">Administration</MenuItem>
-                                            <MenuItem value="EPGE">EPGE</MenuItem>
+                                            <MenuItem value="EPGE">EGPE</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </GridItem>
