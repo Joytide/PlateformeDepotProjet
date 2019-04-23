@@ -16,6 +16,7 @@ import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
+import AuthService from "components/AuthService"
 
 import { api } from "config.json"
 
@@ -112,7 +113,7 @@ class CreateSpecialization extends React.Component {
                 abbreviation: this.state.abbreviation
             };
 
-            fetch(api.host + ":" + api.port + "/api/specialization", {
+            AuthService.fetch(api.host + ":" + api.port + "/api/specialization", {
                 method: "PUT",
                 mode: "cors",
                 headers: {
