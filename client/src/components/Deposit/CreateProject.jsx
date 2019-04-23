@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { FormControl, InputLabel, Select, Input } from '@material-ui/core'
+import {Tooltip, Zoom} from '@material-ui/core';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
@@ -188,9 +189,11 @@ class CreateProject extends React.Component {
                                 input={<Input id="select-multiple" />}
                             >
                                 {this.state.specializations.map(specialization => (
-                                    <MenuItem key={specialization._id} value={specialization._id}>
-                                        {lng === "fr" ? specialization.name.fr : specialization.name.en}
-                                    </MenuItem>
+                                    <Tooltip disableFocusListener disableTouchListener TransitionComponent={Zoom} title={lng === "fr" ? specialization.description.fr : specialization.description.en}>
+                                        <MenuItem key={specialization._id} value={specialization._id}>
+                                            {lng === "fr" ? specialization.name.fr : specialization.name.en}
+                                        </MenuItem>
+                                    </Tooltip>
                                 ))}
                             </Select>
                         </FormControl>
