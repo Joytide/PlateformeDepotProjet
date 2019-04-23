@@ -69,6 +69,8 @@ class CreateSpecialization extends React.Component {
             abbreviation: "",
             nameEn: "",
             nameFr: "",
+            descriptionEn: "",
+            descriptionFr: "",
             error: false,
             success: false,
             message: ""
@@ -100,6 +102,17 @@ class CreateSpecialization extends React.Component {
                 message: "Veuillez remplir le champ nom en anglais."
             });
 
+        else if (this.state.descriptionEn === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ description en anglais."
+            });
+        else if (this.state.descriptionFr === "")
+            this.setState({
+                error: true,
+                message: "Veuillez remplir le champ description en français."
+            });
+
         else if (this.state.abbreviation === "")
             this.setState({
                 error: true,
@@ -109,6 +122,8 @@ class CreateSpecialization extends React.Component {
             let data = {
                 nameFr: this.state.nameFr,
                 nameEn: this.state.nameEn,
+                descriptionFr: this.state.descriptionFr,
+                descriptionEn: this.state.descriptionEn,
                 abbreviation: this.state.abbreviation
             };
 
@@ -197,6 +212,39 @@ class CreateSpecialization extends React.Component {
                                             id="nameEn"
                                             inputProps={{
                                                 value: this.state.nameEn,
+                                                onChange: this.handleChange
+                                            }}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                        />
+                                    </FormControl>
+                                </GridItem>
+                            </GridContainer>
+
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={4}>
+                                    <FormControl className={classes.formControl} fullWidth={true}>
+                                        <CustomInput
+                                            labelText="Description (fr)"
+                                            id="descriptionFr"
+                                            inputProps={{
+                                                value: this.state.descriptionFr,
+                                                onChange: this.handleChange
+                                            }}
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                        />
+                                    </FormControl>
+                                </GridItem>
+                                <GridItem xs={12} sm={12} md={4}>
+                                    <FormControl className={classes.formControl} fullWidth={true}>
+                                        <CustomInput
+                                            labelText="Description (en)"
+                                            id="descriptionEn"
+                                            inputProps={{
+                                                value: this.state.descriptionEn,
                                                 onChange: this.handleChange
                                             }}
                                             formControlProps={{
