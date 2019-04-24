@@ -6,7 +6,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import { withStyles } from '@material-ui/core/styles';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+//import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Button from '@material-ui/core/Button';
 import i18n from '../i18n';
@@ -84,6 +84,7 @@ class Navs extends React.Component {
 			lng: 'en',
 			anchorEl: null,
 			mobileMoreAnchorEl: null,
+			user: {}
 		}
 	}
 
@@ -117,6 +118,13 @@ class Navs extends React.Component {
 	}
 
 	componentDidMount() {
+		document.addEventListener("logged",
+			this.handleLogged);
+
+		this.loadUser();
+	}
+
+	loadUser() {
 		AuthService
 			.getUser()
 			.then(user => {
@@ -126,22 +134,26 @@ class Navs extends React.Component {
 			});
 	}
 
+	handleLogged = e => {
+		this.loadUser();
+	}
+
 	render() {
 		const { anchorEl, mobileMoreAnchorEl } = this.state;
 		const { classes } = this.props;
-		const isMenuOpen = Boolean(anchorEl);
+		//const isMenuOpen = Boolean(anchorEl);
 		const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
 		let lng = this.props.lng;
 
 		let user;
-		if (this.state.user)
+		if (this.state.user._id)
 			user =
 				(<Button color="inherit" className={classes.button}>
 					<div>{i18n.t('navs.welcome', { lng }) + " " + this.state.user.first_name + " " + this.state.user.last_name}</div>
 				</Button>);
 
-		const renderMenu = (
+		/*const renderMenu = (
 			<Menu
 				anchorEl={anchorEl}
 				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
@@ -159,7 +171,7 @@ class Navs extends React.Component {
 					<div>{i18n.t('navs.linkLost', { lng })}</div>
 				</MenuItem>
 			</Menu>
-		);
+		);*/
 
 		const renderMobileMenu = (
 			<Menu
@@ -174,17 +186,27 @@ class Navs extends React.Component {
 						<div>{i18n.t('navs.home', { lng })}</div>
 					</MenuItem>
 				</Link>
-				<Link to="/Projects">
-					<MenuItem color="inherit">
-						<div>{i18n.t('navs.projects', { lng })}</div>
-					</MenuItem>
-				</Link>
+				{this.state.user._id &&
+					<Link to="/partner">
+						<MenuItem color="inherit">
+							<div>{i18n.t('navs.myprojects', { lng })}</div>
+						</MenuItem>
+					</Link>
+				}
 				<Link to="/deposit">
 					<MenuItem color="inherit">
 						<div>{i18n.t('navs.submit', { lng })}</div>
 					</MenuItem>
 				</Link>
-				<MenuItem color="inherit">
+				{!this.state.user._id &&
+					<Link to="/forgot">
+						<Button color="inherit" className={classes.button}>
+							<div>{i18n.t('navs.linkLost', { lng })}</div>
+						</Button>
+					</Link>
+				}
+				{
+					/* <MenuItem color="inherit">
 					<IconButton onClick={this.props.handleLngChange}>
 						{lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag" /> : <img src="/usuk_flag.png" height="24" width="32" alt="english flag" />}
 					</IconButton>
@@ -192,6 +214,9 @@ class Navs extends React.Component {
 						<AccountCircle />
 					</IconButton>
 				</MenuItem>
+				*/
+				}
+
 			</Menu>
 		);
 
@@ -211,21 +236,31 @@ class Navs extends React.Component {
 									<div>{i18n.t('navs.home', { lng })}</div>
 								</Button>
 							</Link>
-							<Link to="/Projects">
-								<Button color="inherit" className={classes.button}>
-									<div>{i18n.t('navs.projects', { lng })}</div>
-								</Button>
-							</Link>
+							{this.state.user._id &&
+								<Link to="/partner">
+									<Button color="inherit" className={classes.button}>
+										<div>{i18n.t('navs.myprojects', { lng })}</div>
+									</Button>
+								</Link>
+							}
 							<Link to="/deposit">
 								<Button color="inherit" className={classes.button}>
 									<div>{i18n.t('navs.submit', { lng })}</div>
 								</Button>
 							</Link>
+							{!this.state.user._id &&
+								<Link to="/forgot">
+									<Button color="inherit" className={classes.button}>
+										<div>{i18n.t('navs.linkLost', { lng })}</div>
+									</Button>
+								</Link>
+							}
 
 							<IconButton onClick={this.props.handleLngChange}>
 								{lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag" /> : <img src="/usuk_flag.png" height="24" width="32" alt="english flag" />}
 							</IconButton>
 
+							{ /* 
 							<IconButton
 								aria-owns={isMenuOpen ? 'material-appbar' : undefined}
 								aria-haspopup="true"
@@ -234,15 +269,19 @@ class Navs extends React.Component {
 							>
 								<AccountCircle />
 							</IconButton>
+							*/ }
 						</div>
 						<div className={classes.sectionMobile}>
+							<IconButton onClick={this.props.handleLngChange}>
+								{lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag" /> : <img src="/usuk_flag.png" height="24" width="32" alt="english flag" />}
+							</IconButton>
 							<IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
 								<MoreIcon />
 							</IconButton>
 						</div>
 					</Toolbar>
 				</AppBar>
-				{renderMenu}
+				{/*/renderMenu*/}
 				{renderMobileMenu}
 			</div>
 		);

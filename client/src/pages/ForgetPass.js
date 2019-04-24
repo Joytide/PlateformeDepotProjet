@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
 import i18n from '../components/i18n';
+import AuthService from '../components/AuthService';
 
 class ForgetPass extends Component {
 
@@ -23,12 +24,8 @@ class ForgetPass extends Component {
                 email: this.state.email
             };
 
-            fetch('/api/partner/reset', {
+            AuthService.fetch('/api/partner/reset', {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify(form)
             })
                 .then(res => res.json())

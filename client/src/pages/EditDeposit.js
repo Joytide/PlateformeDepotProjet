@@ -7,6 +7,7 @@ import i18n from '../components/i18n';
 import MenuItem from 'material-ui/MenuItem/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import RaisedButton from 'material-ui/RaisedButton/RaisedButton';
+import AuthService from '../components/AuthService';
 
 /**
  * Edit project page
@@ -37,7 +38,7 @@ class Edit extends Component {
     }
 
     componentDidMount() {
-        fetch(`/api/edit/${this.props.match.params.editKey}`)
+        AuthService.fetch(`/api/edit/${this.props.match.params.editKey}`)
             .then((response) => response.json())
             .then(json => this.setState(json))
             .catch(err => this.setState({ invalid: true }));
@@ -47,7 +48,7 @@ class Edit extends Component {
      * Put request to the server to update the component state
      */
     handleSubmit() {
-        fetch(`/api/projects/${this.state._id}`, {
+        AuthService.fetch(`/api/projects/${this.state._id}`, {
             method: 'PUT',
             body: JSON.stringify(this.state),
             headers: {

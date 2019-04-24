@@ -30,15 +30,13 @@ class CreatePartner extends React.Component {
     }
 
     componentWillMount() {
-        if (AuthService.isLoggedIn()) {
-            AuthService.getUser()
-                .then(user => {
-                    this.setState({
-                        ...user,
-                        isExisting: true
-                    });
+        AuthService.getUser()
+            .then(user => {
+                this.setState({
+                    ...user,
+                    isExisting: true
                 });
-        }
+            });
     }
 
     handleChange = e => {
@@ -52,10 +50,10 @@ class CreatePartner extends React.Component {
             this.props.next();
         else if (this.props.next) {
             let data = {
-                first_name  : this.state.first_name,
-                last_name   : this.state.last_name,
-                email       : this.state.email,
-                company     : this.state.company
+                first_name: this.state.first_name,
+                last_name: this.state.last_name,
+                email: this.state.email,
+                company: this.state.company
             };
 
             AuthService.fetch("/api/partner/", {
@@ -64,11 +62,14 @@ class CreatePartner extends React.Component {
             })
                 .then(res => res.json())
                 .then(data => {
-                    if(data.token) 
+                    if (data.token) {
                         AuthService.setToken(data.token);
-                    this.props.next();
+                        var event = new Event('logged');
+                        document.dispatchEvent(event);
+                        this.props.next();
+                    }
                 })
-                .catch(err=> {
+                .catch(err => {
 
                 });
         }
@@ -138,13 +139,6 @@ class CreatePartner extends React.Component {
 
                     <Grid item>
                         <Grid container spacing={40} justify="center">
-                            <Grid item xs={1}>
-                                <Button lng={lng} variant='contained' color='primary'>
-                                    <Typography>
-                                        {i18n.t('back.label', { lng })}
-                                    </Typography>
-                                </Button>
-                            </Grid>
                             <Grid item xs={2}>
                                 <Button lng={lng} variant='contained' color='primary' type="submit">
                                     <Typography>

@@ -52,7 +52,7 @@ class HomePage extends React.Component {
 						<Grid container direction="column" justify="center" alignItems="flex-start" spacing={24}>
 							<Grid item>
 								<Typography variant="h3">
-									{i18n.t('home.title', {lng} )}
+									{i18n.t('home.title', { lng })}
 								</Typography>
 
 								{/*<Typography>
@@ -60,57 +60,55 @@ class HomePage extends React.Component {
 								</Typography>*/}
 
 								<img className={classes.logo} alt="logo_esilv" src="./logo_esilv.png" />
-							
+
 								<Typography>
-									{i18n.t('home.title_p1', {lng} )}<br/>
+									{i18n.t('home.title_p1', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item>
-								<Grid xs container direction="row" justify="center" alignItems="center">
-									<Carousel lng={lng}/>
-								</Grid>
+								<Carousel lng={lng} />
 							</Grid>
 							<Grid item>
-								<Typography variant="h5">{i18n.t('home.p1', {lng} )}</Typography>
+								<Typography variant="h5">{i18n.t('home.p1', { lng })}</Typography>
 								<Typography align="justify">
-									{i18n.t('home.p1_l1', {lng} )}<br/>
-									{i18n.t('home.p1_l2', {lng} )}
+									{i18n.t('home.p1_l1', { lng })}<br />
+									{i18n.t('home.p1_l2', { lng })}
 								</Typography>
 							</Grid>
 							<Grid item>
-								<Typography variant="h5">{i18n.t('home.p2', {lng} )}</Typography>
+								<Typography variant="h5">{i18n.t('home.p2', { lng })}</Typography>
 								<Typography align="justify">
-									{i18n.t('home.p2_l1', {lng} )}<br/>
-									{i18n.t('home.p2_l2', {lng} )}<br/>
-									{i18n.t('home.p2_l3', {lng} )}<br/>
-									{i18n.t('home.p2_l4', {lng} )}<br/>
+									{i18n.t('home.p2_l1', { lng })}<br />
+									{i18n.t('home.p2_l2', { lng })}<br />
+									{i18n.t('home.p2_l3', { lng })}<br />
+									{i18n.t('home.p2_l4', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item>
-								<Typography variant="h5">{i18n.t('home.p3', {lng} )}</Typography>
+								<Typography variant="h5">{i18n.t('home.p3', { lng })}</Typography>
 								<Typography align="justify">
-									{i18n.t('home.p3_l1', {lng} )}<br/>
-									{i18n.t('home.p3_l2', {lng} )}<br/>
-									{i18n.t('home.p3_l3', {lng} )}<br/>
-									{i18n.t('home.p3_l4', {lng} )}<br/>
-									{i18n.t('home.p3_l5', {lng} )}<br/>
-									{i18n.t('home.p3_l6', {lng} )}<br/>
-									{i18n.t('home.p3_l7', {lng} )}<br/>
+									{i18n.t('home.p3_l1', { lng })}<br />
+									{i18n.t('home.p3_l2', { lng })}<br />
+									{i18n.t('home.p3_l3', { lng })}<br />
+									{i18n.t('home.p3_l4', { lng })}<br />
+									{i18n.t('home.p3_l5', { lng })}<br />
+									{i18n.t('home.p3_l6', { lng })}<br />
+									{i18n.t('home.p3_l7', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item>
-								<Typography variant="h5">{i18n.t('home.p4', {lng} )}</Typography>
+								<Typography variant="h5">{i18n.t('home.p4', { lng })}</Typography>
 								<Typography align="justify">
-									{i18n.t('home.p4_l1', {lng} )}<br/>
-									{i18n.t('home.p4_l2', {lng} )}<br/>
-									{i18n.t('home.p4_l3', {lng} )}<br/>
-									{i18n.t('home.p4_l4', {lng} )}<br/>
+									{i18n.t('home.p4_l1', { lng })}<br />
+									{i18n.t('home.p4_l2', { lng })}<br />
+									{i18n.t('home.p4_l3', { lng })}<br />
+									{i18n.t('home.p4_l4', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item>
-								<Typography variant="h5">{i18n.t('home.p5', {lng} )}</Typography>
-								<Typography style={{textAlign: 'right'}}>
-									{i18n.t('home.p5_l1', {lng} )}
+								<Typography variant="h5">{i18n.t('home.p5', { lng })}</Typography>
+								<Typography style={{ textAlign: 'right' }}>
+									{i18n.t('home.p5_l1', { lng })}
 								</Typography>
 							</Grid>
 						</Grid>

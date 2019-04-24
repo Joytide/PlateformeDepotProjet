@@ -19,7 +19,12 @@ i18next
 					question: { label: 'Feel free to ask your questions ', },
 					questionH: { label: 'Ask your question ! ', },
 					button: { label: 'Send ', },
-					project: { title: 'List of projects', },
+					project: {
+						title: 'List of projects',
+						accepted: 'Project accepted !',
+						pending: "Waiting for approval",
+						rejected: "Project rejected by school"
+					},
 					major: { label: 'Major', },
 					filter: { label: 'Filters', },
 					ibo: { label: 'Computer science, Big Data and IoT', },
@@ -101,6 +106,7 @@ i18next
 					navs: {
 						home: 'Home',
 						projects: 'Projects',
+						myprojects: 'My projects',
 						submit: 'Submit a project',
 						login: 'Log in',
 						admin: 'Admin',
@@ -110,6 +116,7 @@ i18next
 					forgetPass: {
 						submit: 'Submit',
 						desc: 'If you have lost your link to connect, please enter your email to retrieve it.',
+						textfield: "Your email address"
 					},
 					carousel: {
 						Title1: 'BermudZer: bermudean option pricing',
@@ -137,7 +144,12 @@ i18next
 					question: { label: 'Posez votre question', },
 					questionH: { label: 'Posez une question ! ', },
 					button: { label: 'Envoyer', },
-					project: { title: 'Liste des projets', },
+					project: {
+						title: 'Liste des projets',
+						accepted: 'Projet accepté !',
+						pending: "En attente de validation",
+						rejected: "Projet rejetté par l'école"
+					},
 					major: { label: 'Majeure', },
 					filter: { label: 'Filtres', },
 					ibo: { label: 'Informatique, BigData et objets connectés', },
@@ -191,6 +203,7 @@ i18next
 					forgetPass: {
 						submit: 'Envoyer',
 						desc: 'Si vous avez perdu votre lien pour vous connecter, veuillez entrer votre mail pour le récupérer.',
+						textfield: "Votre adresse mail"
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',
@@ -222,6 +235,7 @@ i18next
 					navs: {
 						home: 'Accueil',
 						projects: 'Projets',
+						myprojects: 'Mes projets',
 						submit: 'Soumettre un projet',
 						login: 'Se connecter',
 						admin: 'Admin',

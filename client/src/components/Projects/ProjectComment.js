@@ -7,6 +7,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import { List, ListItem } from 'material-ui/List';
 import CommunicationComment from 'material-ui/svg-icons/communication/comment';
 import TextField from 'material-ui/TextField';
+import AuthService from '../AuthService';
 import i18n from '../i18n';
 export default class ProjectComment extends React.Component {
     state = {
@@ -40,7 +41,7 @@ export default class ProjectComment extends React.Component {
             userId: userId
         }
 
-        fetch(`api/projects/${idProject}/comments`, {
+        AuthService.fetch(`api/projects/${idProject}/comments`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -57,7 +58,7 @@ export default class ProjectComment extends React.Component {
             userId: userId,
             id_project : this.state.project._id
         }
-        fetch(`/api/projects/comment/${commentId}/responses`, {
+        AuthService.fetch(`/api/projects/comment/${commentId}/responses`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',

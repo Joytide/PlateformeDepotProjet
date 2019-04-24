@@ -16,6 +16,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 
 
 import ProjectsToPDF from '../components/Projects/ProjectsToPDF';
+import AuthService from '../components/AuthService';
+import { api } from "../config";
 
 const styles = {
 };
@@ -31,7 +33,7 @@ class ProjectPage extends React.Component {
     }
 
     componentDidMount() {
-        fetch('/api/project/' + this.props.match.params.key)
+        AuthService.fetch('/api/project/' + this.props.match.params.key)
             .then(res => res.json())
             .then(project => {
 
@@ -53,7 +55,7 @@ class ProjectPage extends React.Component {
             project: this.props.match.params.key
         };
 
-        fetch('/api/project/like', {
+        AuthService.fetch('/api/project/like', {
             method: this.state.isLiked ? "DELETE" : "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -92,7 +94,10 @@ class ProjectPage extends React.Component {
                                     <Grid container spacing={8} xs>
                                         {
                                             project.study_year.sort().map(year => {
-                                                return <Grid item><Chip label={year.abbreviation} color="primary" /></Grid>
+                                                return <Grid item><Chip
+                                                    label={year.abbreviation}
+                                                    style={{ color: "white", backgroundColor: "#03a9f4" }}
+                                                /></Grid>
                                             })
                                         }
                                         {
@@ -136,7 +141,7 @@ class ProjectPage extends React.Component {
                                             return (
                                                 <Grid item xs={2}>
                                                     {file.originalName}
-                                                    <IconButton href={"http://localhost:3001/api/project/file/" + file._id}>
+                                                    <IconButton href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
                                                         <VerticalAlignBottom />
                                                     </IconButton>
                                                 </Grid>

@@ -11,7 +11,9 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
+import AuthService from '../components/AuthService';
 import i18n from '../components/i18n';
 /**
  * Deposit of a project
@@ -39,7 +41,7 @@ const DEFAULT_STATE = {
 	study_year: [],
 	majors_concerned: [],
 
-	stepIndex: 1,
+	stepIndex: 0,
 	title: "",
 	description: "",
 	keyWords: [],
@@ -95,7 +97,7 @@ class Deposit extends React.Component {
 				formData.append(file.name, new Blob([file], { type: file.type }), file.name || 'file')
 			})
 
-			fetch('/api/addFile', {
+			AuthService.fetch('/api/addFile', {
 				method: 'POST',
 				body: formData
 			})
@@ -152,6 +154,13 @@ class Deposit extends React.Component {
 									{i18n.t('home.p4_l4', { lng })}<br />
 								</Typography>
 							</Grid>
+							<Grid item xs={2} style={{paddingBottom: "20px", paddingLeft: "20px"}}>
+								<Button lng={lng} variant='contained' color='primary' onClick={this.handleNext}>
+									<Typography>
+										{i18n.t('next.label', { lng })}
+									</Typography>
+								</Button>
+							</Grid>
 						</Grid>
 					</div>
 				);
@@ -181,7 +190,7 @@ class Deposit extends React.Component {
 	render() {
 		const lng = this.props.lng;
 		const { stepIndex } = this.state;
-		
+
 		return (
 			<div id="deposit-body">
 				<Grid container style={{ marginTop: 12 }} justify="center">
