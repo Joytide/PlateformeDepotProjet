@@ -68,7 +68,7 @@ Your project submission request has been registered.\n
 // Return a promise when creating a Partner
 exports.createPartner = (req, res, next) => {
 	const data = req.body;
-
+	console.log(data);
 	if (data.first_name && data.last_name && data.email && data.company) {
 		Partner.findOne({ email: data.email }, async (err, partner) => {
 			if (err) next(err);
@@ -113,7 +113,7 @@ exports.createPartner = (req, res, next) => {
 							});
 						})
 						.catch(err => {
-							next(new Error("Oops ! Something went wrong while creating your account. Please retry"));
+							next(err);
 						});
 				}
 			}
@@ -230,8 +230,9 @@ function generatePassword(size) {
 			const keyHash = sha256(key);
 
 			// Prevent key collision
-			Partner.estimatedDocumentCount({ key: keyHash }, (err, count) => {
+			Partner.countDocuments({ key: keyHash }, (err, count) => {
 				if (err) reject(err);
+				console.log(keyHash, count)
 				if (count == 0) resolve({ key: key, hash: keyHash });
 				else reject(new Error("KeyCollision"));
 			});
