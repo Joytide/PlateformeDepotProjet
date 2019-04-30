@@ -13,7 +13,8 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
-import { api } from "../../config"
+import { api } from "../../config";
+import { UserContext } from "../../providers/UserProvider/UserProvider";
 
 const styles = {
     cardCategoryWhite: {
@@ -135,70 +136,80 @@ class YearProfile extends React.Component {
         let profile;
         if (!this.state.loading) {
             profile = (
-                <GridContainer>
-                    <GridItem xs={12} sm={12} md={12}>
-                        <Card>
-                            <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Année</h4>
-                                <p className={classes.cardCategoryWhite}>Informations sur l'année</p>
-                            </CardHeader>
-                            <CardBody>
-                                <GridContainer>
-                                    <GridItem xs={12} sm={12} md={4}>
-                                        <CustomInput
-                                            labelText="Abbréviation"
-                                            id="abbreviation"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                onChange: this.handleChange,
-                                                value: this.state.year.abbreviation
-                                            }}
-                                        />
-                                    </GridItem>
-                                </GridContainer>
+                <UserContext.Consumer>
+                    {value =>
+                        <GridContainer>
+                            <GridItem xs={12} sm={12} md={12}>
+                                <Card>
+                                    <CardHeader color="primary">
+                                        <h4 className={classes.cardTitleWhite}>Année</h4>
+                                        <p className={classes.cardCategoryWhite}>Informations sur l'année</p>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <GridContainer>
+                                            <GridItem xs={12} sm={12} md={4}>
+                                                <CustomInput
+                                                    labelText="Abbréviation"
+                                                    id="abbreviation"
+                                                    formControlProps={{
+                                                        fullWidth: true
+                                                    }}
+                                                    inputProps={{
+                                                        disabled: !value.user.admin,
+                                                        onChange: this.handleChange,
+                                                        value: this.state.year.abbreviation
+                                                    }}
+                                                />
+                                            </GridItem>
+                                        </GridContainer>
 
-                                <GridContainer>
-                                    <GridItem xs={12} sm={12} md={6}>
-                                        <CustomInput
-                                            labelText="Nom (fr)"
-                                            id="nameFr"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                onChange: this.handleChange,
-                                                value: this.state.year.nameFr
-                                            }}
-                                        />
-                                    </GridItem>
-                                    <GridItem xs={12} sm={12} md={6}>
-                                        <CustomInput
-                                            labelText="Nom (en)"
-                                            id="nameEn"
-                                            formControlProps={{
-                                                fullWidth: true
-                                            }}
-                                            inputProps={{
-                                                onChange: this.handleChange,
-                                                value: this.state.year.nameEn
-                                            }}
-                                        />
-                                    </GridItem>
-                                </GridContainer>
-                            </CardBody>
-                            <CardFooter>
-                                <GridContainer >
-                                    <GridItem xs={12} sm={12} md={12}>
-                                        <Button disabled={!this.state.modificated} color="success" onClick={this.update}>Sauvegarder</Button>
-                                        <Button disabled={!this.state.modificated} color="danger" onClick={this.cancel}>Annuler</Button>
-                                    </GridItem>
-                                </GridContainer>
-                            </CardFooter>
-                        </Card>
-                    </GridItem>
-                </GridContainer>);
+                                        <GridContainer>
+                                            <GridItem xs={12} sm={12} md={6}>
+                                                <CustomInput
+                                                    labelText="Nom (fr)"
+                                                    id="nameFr"
+                                                    formControlProps={{
+                                                        fullWidth: true
+                                                    }}
+                                                    inputProps={{
+                                                        disabled: !value.user.admin,
+                                                        onChange: this.handleChange,
+                                                        value: this.state.year.nameFr
+                                                    }}
+                                                />
+                                            </GridItem>
+                                            <GridItem xs={12} sm={12} md={6}>
+                                                <CustomInput
+                                                    labelText="Nom (en)"
+                                                    id="nameEn"
+                                                    formControlProps={{
+                                                        fullWidth: true
+                                                    }}
+                                                    inputProps={{
+                                                        disabled: !value.user.admin,
+                                                        onChange: this.handleChange,
+                                                        value: this.state.year.nameEn
+                                                    }}
+                                                />
+                                            </GridItem>
+                                        </GridContainer>
+                                    </CardBody>
+                                    {
+                                        value.user.admin &&
+                                        <CardFooter>
+                                            <GridContainer >
+                                                <GridItem xs={12} sm={12} md={12}>
+                                                    <Button disabled={!this.state.modificated} color="success" onClick={this.update}>Sauvegarder</Button>
+                                                    <Button disabled={!this.state.modificated} color="danger" onClick={this.cancel}>Annuler</Button>
+                                                </GridItem>
+                                            </GridContainer>
+                                        </CardFooter>
+                                    }
+                                </Card>
+                            </GridItem>
+                        </GridContainer>
+                    }
+                </UserContext.Consumer>);
         }
         return (
             <div>
