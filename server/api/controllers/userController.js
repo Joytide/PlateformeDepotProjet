@@ -224,8 +224,8 @@ exports.isAdmin = (req, res) => {
 
 exports.changePassword = (req, res, next) => {
     const data = req.body;
-
-    if (data.userID === req.user._id || req.user.admin) {
+    console.log(data)
+    if ((data.userID == req.user._id) || req.user.admin) {
         Person.findById(data.userID, (err, person) => {
             if (err)
                 next(err);
@@ -257,6 +257,9 @@ exports.changePassword = (req, res, next) => {
                     next(new Error('InvalidCredentials'));
             }
         });
+    }
+    else {
+        next(new Error("MissingParameter"))
     }
 }
 

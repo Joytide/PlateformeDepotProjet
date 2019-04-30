@@ -12,7 +12,8 @@ import Button from "@material-ui/core/Button";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 import { api } from "config.json";
-import AuthService from "components/AuthService"
+import AuthService from "components/AuthService";
+import { UserContext } from "../../providers/UserProvider/UserProvider";
 
 const styles = theme => ({
     root: {
@@ -47,7 +48,7 @@ class Login extends React.Component {
         })
     }
 
-    login() {
+    login = setUser => () => {
         this.setState({ success: false, error: false });
         if (this.state.email && this.state.password) {
             let data = {
@@ -72,7 +73,12 @@ class Login extends React.Component {
                         localStorage.setItem("token", data.token);
 
                         setTimeout(() => {
-                            this.setState({ redirect: true });
+                            AuthService.fetch(api.host + ':' + api.port + "/api/user/me")
+                                .then(res => res.json())
+                                .then(user => {
+                                    setUser(user);
+                                    this.setState({ redirect: true });
+                                });
                         }, 750);
 
                         this.setState({
@@ -166,16 +172,21 @@ class Login extends React.Component {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} md={10} style={{ paddingTop: "30px", paddingBottom: "30px" }}>
-                                    <Button
-                                        style={{ paddingTop: "15px", paddingBottom: "15px", backgroundColor: "green", color: "white", borderRadius: 0 }}
-                                        size="large"
-                                        fullWidth
-                                        onClick={this.login}
-                                    >
-                                        SE CONNECTER
-                                </Button>
-                                </Grid>
+                                <UserContext.Consumer>
+                                    {value =>
+                                        <Grid item xs={12} md={10} style={{ paddingTop: "30px", paddingBottom: "30px" }}>
+                                            <Button
+                                                style={{ paddingTop: "15px", paddingBottom: "15px", backgroundColor: "green", color: "white", borderRadius: 0 }}
+                                                size="large"
+                                                fullWidth
+                                                onClick={this.login(value.setUser)}
+                                            >
+                                                SE CONNECTER
+                                            </Button>
+                                        </Grid>
+                                    }
+                                </UserContext.Consumer>
+
                             </Grid>
 
                         </Paper>

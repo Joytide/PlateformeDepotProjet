@@ -50,7 +50,8 @@ class ChangePassword extends React.Component {
 
         this.state = {
             newPassword: "",
-            newPassword_2: ""
+            newPassword_2: "",
+            oldPassword: ""
         }
 
         this.changePassword = this.changePassword.bind(this);
@@ -66,7 +67,8 @@ class ChangePassword extends React.Component {
         else {
             const data = {
                 userID: this.props.user._id,
-                newPassword: sha256(this.props.user.email + this.state.newPassword)
+                newPassword: sha256(this.props.user.email + this.state.newPassword),
+                oldPassword: sha256(this.props.user.email + this.state.oldPassword)
             }
 
             AuthService.fetch(api.host + ":" + api.port + "/api/user/password", {
@@ -131,6 +133,24 @@ class ChangePassword extends React.Component {
                                 <h4 className={classes.cardTitleWhite}>Changer de mot de passe</h4>
                             </CardHeader>
                             <CardBody>
+                                {!this.props.user.admin &&
+                                    <GridContainer>
+                                        <GridItem xs={12} sm={12} md={6}>
+                                            <CustomInput
+                                                labelText="Ancien mot de passe"
+                                                id="oldPassword"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    type: "password",
+                                                    value: this.state.oldPassword,
+                                                    onChange: this.handleChange
+                                                }}
+                                            />
+                                        </GridItem>
+                                    </GridContainer>
+                                }
                                 <GridContainer>
                                     <GridItem xs={12} sm={12} md={6}>
                                         <CustomInput
