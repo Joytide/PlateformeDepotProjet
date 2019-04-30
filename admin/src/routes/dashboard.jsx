@@ -111,19 +111,12 @@ const dashboardRoutes = [
     component: YearList
   },
   {
-    path: "/notifications",
-    sidebarName: "Notifications",
-    navbarName: "Notifications",
-    icon: Notifications,
-    component: NotificationsPage
-  },
-  {
     path: "/settings",
     sidebarName: "Réglages",
     navbarName: "Réglages",
     icon: "settings",
     component: Settings,
-    adminOnly: true
+    adminOnly: false
   }
 ];
 
