@@ -107,7 +107,7 @@ class CreateProject extends React.Component {
     handleKeyWords = key => this.setState({ keyWords: key });
 
     handleNext = () => {
-        if (this.state.title && this.state.study_year && this.state.majors_concerned && this.state.description) {
+        if (this.state.title && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description) {
             let data = {
                 title: this.state.title,
                 study_year: this.state.study_year,
