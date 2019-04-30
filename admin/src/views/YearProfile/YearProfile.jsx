@@ -13,6 +13,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
+import AuthService from "components/AuthService";
 import { api } from "../../config";
 import { UserContext } from "../../providers/UserProvider/UserProvider";
 
@@ -104,7 +105,7 @@ class YearProfile extends React.Component {
             abbreviation: this.state.year.abbreviation,
         };
 
-        fetch(api.host + ":" + api.port + "/api/year", {
+        AuthService.fetch(api.host + ":" + api.port + "/api/year", {
             method: "POST",
             mode: "cors",
             headers: {
