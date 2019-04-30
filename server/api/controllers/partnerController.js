@@ -4,6 +4,12 @@ const mongoose = require('mongoose');
 const Partner = mongoose.model('Partner');
 const Project = mongoose.model('Project');
 const crypto = require('crypto');
+const sha256 = require('js-sha256')
+const jwt = require('jsonwebtoken');
+
+const config = require('../../config');
+
+const mailController = require('./mailController');
 
 exports.listAllPartners = function (req, res) {
 	if (req.user.__t == "EPGE") {
@@ -19,11 +25,10 @@ exports.listAllPartners = function (req, res) {
 			.populate({
 				path: 'projects',
 				populate: {
-					path: "majors_concerned"
+					path: "majors_concerned study_year"
 				}
 			})
 			.exec((err, partner) => {
-				console.log(partner.projects);
 				if (err) res.send(err);
 				else res.json(partner);
 			});
@@ -34,32 +39,88 @@ exports.addProject = (partnerId, projectId) => {
 	return new Promise((resolve, reject) => {
 		Partner.findByIdAndUpdate(partnerId, { $push: { projects: projectId } }, { new: true }, (err, partner) => {
 			if (err) reject(err);
-			else resolve(partner);
+			else {
+				const mail = {
+					recipient: partner.email,
+					subject: `Soumission du projet sur la plateforme Devinci Project`,
+					content: `
+Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
+Votre demande de soumission de projet a bien été enregistrée. \n 
+Cordialement,
+L'équipe DVP
+\n\n\n\n
+Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
+Your project submission request has been registered.\n
+`
+				}
+
+				mailController.sendMail(mail)
+					.then(res => {
+						if (res === "MailSent")
+							resolve();
+					})
+					.catch(reject);
+			}
 		});
 	});
 }
 
 // Return a promise when creating a Partner
-exports.createPartner = function (data) {
-	return new Promise(async (resolve, reject) => {
-		let newPartner = new Partner({
-			"first_name": data.first_name,
-			"last_name": data.last_name,
-			"email": data.email,
-			"company": data.company
+exports.createPartner = (req, res, next) => {
+	const data = req.body;
+	console.log(data);
+	if (data.first_name && data.last_name && data.email && data.company) {
+		Partner.findOne({ email: data.email }, async (err, partner) => {
+			if (err) next(err);
+			else {
+				if (partner) {
+					let error = new Error("Email already used by a partner");
+					error.name = "EmailUsed";
+					next(error);
+				} else {
+					let newPartner = new Partner({
+						"first_name": data.first_name,
+						"last_name": data.last_name,
+						"email": data.email,
+						"company": data.company
+					});
+
+					generatePassword(16)
+						.then(keyData => {
+							newPartner.key = keyData.hash;
+
+							newPartner.save(err => {
+								if (err) next(err);
+								else {
+									let userToken = jwt.sign(
+										{ id: newPartner._id },
+										config.jwt.secret,
+										{
+											expiresIn: 60 * 60 * 24
+										}
+									);
+
+									res.json({ partner: newPartner, token: userToken });
+
+									mailController.sendMail({
+										recipient: newPartner.email,
+										subject: "Creation de votre compte sur la plateforme Devinci Project",
+										content: `Bonjour,
+										Nous avons le plaisir de vous annoncer que votre compte à bien été créé sur la plateforme Devinci-project.
+										Vous pouvez dès à présent vous connecter en cliquant sur le lien suivant : ${config.api.host + ':' + config.api.port}/login/partner/${keyData.key}`
+									});
+								}
+							});
+						})
+						.catch(err => {
+							next(err);
+						});
+				}
+			}
 		});
-
-		newPartner.key = await generatePassword(16);
-
-		if (newPartner.first_name && newPartner.last_name && newPartner.email && newPartner.company) {
-			newPartner.save(err => {
-				if (err) reject(err);
-				resolve(newPartner);
-			});
-		} else {
-			reject(new Error("Invalid parameters : missing one of these aruguments : first name, last name, email or company"));
-		}
-	});
+	} else {
+		next(new Error("Invalid parameters. Missing one of these aruguments : first_name, last_name, email or company"));
+	}
 };
 
 exports.findByMail = (req, res) => {
@@ -93,8 +154,6 @@ exports.findById = (req, res) => {
 }
 
 exports.findByKey = (req, res) => {
-	console.log("here");
-	console.log(req.params.key)
 	Partner.findOne({ key: req.params.key })
 		.populate('projects')
 		.exec((err, partner) => {
@@ -119,7 +178,6 @@ exports.updatePartner = (req, res) => {
 exports.deletePartner = (req, res) => {
 	Partner.findByIdAndRemove(req.params.id, function (err, note) {
 		if (err) {
-			console.log(err);
 			if (err.kind === 'ObjectId') {
 				return res.status(404).send({ message: "Partner not found with id " + req.params.id });
 			}
@@ -134,22 +192,50 @@ exports.deletePartner = (req, res) => {
 	});
 }
 
+exports.resetPassword = (req, res, next) => {
+	const data = req.body;
+
+	if (data.email) {
+		Partner.findOne({ email: data.email }, (err, partner) => {
+			generatePassword(16)
+				.then(pass => {
+					partner.key = pass.hash;
+
+					partner.save(err => {
+						if (err) next(err);
+						else {
+							res.json(partner);
+
+							mailController.sendMail({
+								recipient: partner.email,
+								subject: "Lien de connexion sur la plateforme Devinci Project",
+								content: `Bonjour,
+								Voici le lien permettant de vous connecter à la plateforme Devinci Project : ${config.api.host + ":" + config.api.port}/login/partner/${pass.key}`
+							});
+						}
+					});
+				})
+				.catch(next);
+		});
+	} else {
+		next(new Error('MissingParameter'));
+	}
+}
+
 function generatePassword(size) {
 	return new Promise((resolve, reject) => {
 		crypto.randomBytes(size / 2, function (err, buffer) {
 			if (err) reject(err);
-			var key = buffer.toString('hex');
+			const key = buffer.toString('hex');
+			const keyHash = sha256(key);
 
 			// Prevent key collision
-			Partner.count({ key: key }, (err, count) => {
+			Partner.countDocuments({ key: keyHash }, (err, count) => {
 				if (err) reject(err);
-				if (count == 0) resolve(key);
-				else resolve(generatePassword(size));
+				console.log(keyHash, count)
+				if (count == 0) resolve({ key: key, hash: keyHash });
+				else reject(new Error("KeyCollision"));
 			});
 		});
 	});
-}
-
-function randomInt(max) {
-	return Math.floor(Math.random() * max - 1);
 }

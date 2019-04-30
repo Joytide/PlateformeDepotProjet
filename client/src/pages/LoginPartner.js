@@ -4,6 +4,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import sha256 from 'js-sha256';
+import AuthService from '../components/AuthService';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -28,27 +30,23 @@ class LoginPartner extends React.Component {
 
     componentDidMount() {
         let key = this.props.match.params.key;
-        fetch('/api/login/partner/', {
+        AuthService.fetch('/api/login/partner/', {
             method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ key: key })
+            body: JSON.stringify({ key: sha256(key) })
         })
             .then(res => res.json())
             .then(data => {
                 if (data.token) {
-                    localStorage.setItem("token", data.token);
+                    AuthService.setToken(data.token);
                     setTimeout(() => {
                         this.setState({ redirectTo: '/partner' });
-                    },3000);
+                    }, 3000);
                     this.setState({ logged: true });
                 } else {
                     console.error(data);
                     setTimeout(() => {
                         this.setState({ redirectTo: '/' });
-                    },3000);
+                    }, 3000);
                     this.setState({ error: true });
                 }
             })
@@ -56,7 +54,7 @@ class LoginPartner extends React.Component {
                 console.error(err);
                 setTimeout(() => {
                     this.setState({ redirectTo: '/' });
-                },3000);
+                }, 3000);
                 this.setState({ error: true });
             });
     }

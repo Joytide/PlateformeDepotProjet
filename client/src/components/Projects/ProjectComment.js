@@ -7,6 +7,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import { List, ListItem } from 'material-ui/List';
 import CommunicationComment from 'material-ui/svg-icons/communication/comment';
 import TextField from 'material-ui/TextField';
+import AuthService from '../AuthService';
 import i18n from '../i18n';
 export default class ProjectComment extends React.Component {
     state = {
@@ -40,28 +41,24 @@ export default class ProjectComment extends React.Component {
             userId: userId
         }
 
-        console.log(idProject)
-        fetch(`api/projects/${idProject}/comments`, {
+        AuthService.fetch(`api/projects/${idProject}/comments`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(body)
-        })
-            .then((res) => { console.log(res) })
-            .catch((err) => { console.log(err) })
+        });
     }
 
     handleResponse = (commentId) => {
-        console.log("COMMENT ID :" + commentId)
         var userId = "5a6d011d063609d47c70fdda";
         var body = {
             content: this.state.response,
             userId: userId,
             id_project : this.state.project._id
         }
-        fetch(`/api/projects/comment/${commentId}/responses`, {
+        AuthService.fetch(`/api/projects/comment/${commentId}/responses`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -71,14 +68,12 @@ export default class ProjectComment extends React.Component {
         }).then((res)=> {window.location.reload()})
     }
     render() {
-        console.log(this.state.project)
         var comments = () => {
             var tab = []
             tab = this.state.project.comments.map(comment => {
                 var nesteds = [];
                 if(comment.responses){
                     comment.responses.forEach(answer => {
-                        console.log(answer)
                         nesteds.push(<ListItem key={answer._id} primaryText={answer.content} />)
                     });
                 }
@@ -93,7 +88,6 @@ export default class ProjectComment extends React.Component {
                     nestedItems={nesteds}
                     leftIcon={<CommunicationComment />} />
             });
-            console.log(tab)
             return tab
         }
 

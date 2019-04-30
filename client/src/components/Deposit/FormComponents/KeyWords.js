@@ -13,7 +13,6 @@ class KeyWords extends Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddition = this.handleAddition.bind(this);
         this.handleDrag = this.handleDrag.bind(this);
-        console.log(this.props)
     }
 
     handleDelete(i) {
@@ -24,7 +23,6 @@ class KeyWords extends Component {
     }
 
     handleAddition(tag) {
-        console.log("Add")
         let tags = this.state.tags;
         tags.push(tag)
         this.setState({ tags: tags });

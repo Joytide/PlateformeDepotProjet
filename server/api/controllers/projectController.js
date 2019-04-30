@@ -1,134 +1,179 @@
 'use strict';
 
 var app = require('express')();
+const multer = require('multer');
+const PDFDocument = require('pdfkit');
+var path = require('path');
 var mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
-const PDFDocument = require('pdfkit');
-var path = require('path');
+const File = mongoose.model('File');
+const Specialization = mongoose.model('Specialization');
 
 const mailer = require('nodemailer');
 const config = require('../../config');
 
-const smtpTransporter = mailer.createTransport({
-	service: 'gmail',
-	auth: {
-		user: config.api.email,
-		pass: config.api.emailPass
+const partnerController = require('./partnerController');
+
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, './.uploads')
+	},
+	filename: function (req, file, cb) {
+		let owner = "";
+		let projectID = "";
+		
+		if (req.user.__t === "Partner")
+			owner = req.user._id
+		else if (!req.body.partnerID && !req.body.projectID)
+			cb(new Error("MissingParameter"));
+		else {
+			owner = req.body.partnerID;
+			projectID = req.body.projectID;
+		}
+
+		if (owner !== "") {
+			File.create({
+				owner: owner,
+				originalName: file.originalname
+			},
+				(err, fileSaved) => {
+					if (err) cb(err);
+					if (projectID) {
+						Project.updateOne({ _id: projectID }, { $push: { files: fileSaved._id } }, err => {
+
+						});
+					}
+					req.fileDocument = fileSaved;
+					cb(null, req.user._id + '_' + fileSaved._id + path.extname(file.originalname))
+				});
+		}
 	}
 });
 
-const partnerController = require('./partnerController');
+exports.upload = multer({
+	storage: storage,
+	fileFilter: (req, file, cb) => {
+		if (file.mimetype !== "image/jpeg" && file.mimetype !== "image/png" && file.mimetype !== "application/pdf")
+			cb(null, false);
+		else
+			cb(null, true);
+	}
+});
 
+exports.uploadDone = (req, res, next) => {
+	req.fileDocument.path = req.file.path;
+	req.fileDocument.save(err => {
+		res.send({ _id: req.fileDocument._id, originalName: req.fileDocument.originalName });
+	});
+}
 
-exports.listProjects = function (req, res) {
+exports.deleteFile = (req, res, next) => {
+	const data = req.body;
+	if (data.fileID) {
+		File.deleteOne({ _id: data.fileID }, (err, raw) => {
+			if (err) next(err)
+			else {
+				Project.updateOne({ files: data.fileID }, { $pull: { files: data.fileID } }, err => {
+					if (err) next(err);
+					else
+						res.json(raw);
+				});
+			}
+		});
+	} else {
+		next(new Error('MissingParameter'));
+	}
+}
+
+exports.listProjects = function (req, res, next) {
+	let findProject = (status, specializations) => {
+		let query = {};
+		query.status = status;
+		if (specializations)
+			query.majors_concerned = { "$in": specializations };
+
+		Project
+			.find(query)
+			.populate('partner')
+			.populate('majors_concerned')
+			.populate('study_year')
+			.exec(function (err, projects) {
+				if (err)
+					next(err);
+				else
+					res.json(projects);
+			});
+	};
+
 	let data = req.query;
-	console.log(data);
+
 	let status = [];
+
 	if (data.pending === "true") status.push("pending");
 	if (data.rejected === "true") status.push("rejected");
 	if (data.validated === "true") status.push("validated");
+	if (data.mine === "true") {
+		Specialization.find({ referent: req.user._id }, (err, specializations) => {
+			if (err) next(err);
+			else
+				findProject(status, specializations.map(spe => spe._id));
+		});
+	}
+	else
+		findProject(status);
+};
 
-	if (status.length > 0) {
-		Project.find({ status: status })
-			.populate({ path: 'comments', populate: { path: 'responses' } })
-			.populate('partner')
-			.populate('majors_concerned')
-			.populate('study_year')
-			.exec(function (err, projects) {
-				if (err)
-					res.send(err);
-				res.json(projects);
-			});
+exports.createProject = (req, res, next) => {
+	const data = req.body;
+
+	if (data.title && data.majors_concerned && data.study_year && data.description) {
+		var newProject = new Project();
+		newProject.title = data.title;
+		newProject.majors_concerned = data.majors_concerned;
+		newProject.study_year = data.study_year;
+		newProject.description = data.description;
+		newProject.partner = req.user._id;
+
+		if (data.keywords) newProject.keywords = data.keywords;
+		if (data.files) newProject.files = data.files;
+
+		Project.estimatedDocumentCount({}, (err, count) => {
+			if (err) next(err);
+			else {
+				newProject.number = (count + 1).toString().padStart(3, '0');
+				newProject.save(function (err, project) {
+					if (err) next(err);
+					else {
+						if (project.files)
+							File.updateMany({ _id: project.files }, { projectID: project._id }, (err, raw) => {
+								if (err) next(err);
+								if (raw.ok) res.json(project);
+								else next(raw);
+							});
+						else
+							res.json(project);
+
+						partnerController.addProject(req.user._id, project._id);
+					}
+				});
+			}
+		});
 	} else {
-		Project.find({ status: "validated" })
-			.populate('partner')
-			.populate('majors_concerned')
-			.populate('study_year')
-			.exec(function (err, projects) {
-				if (err)
-					res.send(err);
-				res.json(projects);
-			});
+		next(new Error("MissingParameters"));
 	}
 };
 
-exports.createProject = (req, res) => {
-	let json = req.body;
-	console.log("json");
-	console.log(json);
-
-	Partner.findOne({ email: req.body.email }, async (err, partner) => {
-		if (err)
-			res.send(err);
-
-		if (partner == null) {
-			partner = await partnerController.createPartner(req.body);
-		}
-		json.partner = partner._id;
-		json.status = 'pending';
-		var new_project = new Project(json);
-
-		Project.count({}, (err, count) => {
-			if (err) res.send(err);
-			new_project.number = (count + 1).toString().padStart(3, '0');
-			new_project.save(function (err, project) {
-				if (err){
-					res.send(err);
-				}
-				else {
-					partnerController.addProject(partner._id, project._id)
-						.then((partner) => {
-							//console.log(partner);
-							const link = `${config.client.protocol}://${config.client.hostname + (config.client.port != 80 && config.client.port != 443 ? ':' + config.client.port : '')}/Edit/${partner.key}`
-							const mail = {
-								from: config.api.email,
-								to: req.body.email,
-								subject: `Soumission du projet ${json.title}`,
-								text: `
-									Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-									Votre demande de soumission de projet a bien été enregistrée. \n 
-									Voici votre lien pour l'éditer: ${link}\n\n
-									Cordialement,
-									L'équipe DVP
-									\n\n\n\n
-									Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-									Your project submission request has been registered.\n
-									Here is your link to edit it: ${link}\n\n
-									`
-							}
-							res.send(mail);
-							//console.log("mail :");
-							//console.log(mail);
-							smtpTransporter.sendMail(mail, (err, result) => {
-								if (err) {
-									smtpTransporter.close();
-									console.log(err);
-									res.send(err);
-								} else {
-									console.log("Mail de soumission envoyé");
-									res.send('Mail ok!');
-									smtpTransporter.close();
-								}
-							});
-						})
-						.catch(err => {
-							res.send(err);
-						});
-				}
-			});
-		});
-	});
-};
-
 exports.findById = (req, res) => {
-	console.log(req.params.projectId);
 	Project.findById(req.params.projectId)
-		.populate('comments')
 		.populate('partner')
 		.populate('majors_concerned')
 		.populate('study_year')
+		.populate({
+			path: 'files',
+			select: 'originalName'
+		})
 		.exec((err, project) => {
 			if (err) {
 				res.send(err);
@@ -166,19 +211,21 @@ exports.update_a_project = (req, res) => {
 			.exec((err, project) => {
 				if (err) res.send(err);
 				else {
-					if (data.title) project.set({ title: data.title });
-					if (data.description) project.set({ description: data.description });
-					if (data.majors_concerned) project.set({ majors_concerned: data.majors_concerned });
-					if (data.study_year) project.set({ study_year: data.study_year });
-					if (data.keywords) project.set({ keywords: data.keywords });
-					if (data.status) project.set({ status: data.status });
-					project.set({ edit_date: Date.now() });
+					let update = {};
+					if (data.title) update.title = data.title;
+					if (data.description) update.description = data.description;
+					if (data.majors_concerned) update.majors_concerned = data.majors_concerned;
+					if (data.study_year) update.study_year = data.study_year;
+					if (data.keywords) update.keywords = data.keywords;
+					if (data.status) update.status = data.status;
+					update.edit_date = Date.now();
 
+					project.set(update);
 					project.save((err, updated_project) => {
 						if (err) res.send(err);
 						else {
 							updated_project
-								.populate('comments partner majors_concerned study_year', (err, populated) => {
+								.populate('partner majors_concerned study_year', (err, populated) => {
 									if (err) res.send(err);
 									else res.json(populated);
 								})
@@ -194,7 +241,6 @@ exports.update_a_project = (req, res) => {
 exports.delete_a_project = (req, res) => {
 	Project.findByIdAndRemove(req.params.projectId, function (err, note) {
 		if (err) {
-			console.log(err);
 			if (err.kind === 'ObjectId') {
 				return res.status(404).send({ message: "Project not found with id " + req.params.noteId });
 			}
@@ -288,8 +334,15 @@ exports.unlike = (req, res) => {
 	}
 }
 
-exports.download_file = (req, res) => { 
-	const filename = req.params.file;
-	const filePath = path.join('./uploads',filename);
-	res.download(filePath, filename);
+exports.download_file = (req, res, next) => {
+	const fileID = req.params.id;
+
+	File.findById(fileID, (err, file) => {
+		if (err)
+			next(err);
+		if (file)
+			res.download(file.path, file.originalName)
+		else
+			next(new Error('FileNotFound'));
+	});
 }

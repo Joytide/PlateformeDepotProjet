@@ -1,3 +1,5 @@
+import { sha256 } from 'js-sha256';
+
 import React from "react";
 import { Redirect } from 'react-router'
 
@@ -21,6 +23,7 @@ import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
+
 
 import { api } from "config.json"
 
@@ -71,6 +74,8 @@ class CreateUser extends React.Component {
 
         this.state = {
             type: "",
+            password: "",
+            password_2: "",
             labelWidth: 0,
             admin: false,
             lastName: "",
@@ -96,81 +101,120 @@ class CreateUser extends React.Component {
     };
 
     createUser() {
-        this.setState({ error: false, success: false });
-        if (this.state.type === "")
-            this.setState({
-                error: true,
-                message: "Veuillez selectionner un type d'utilisateur."
-            });
-        else if (this.state.firstName === "")
-            this.setState({
-                error: true,
-                message: "Veuillez remplir le champ prénom de l'utilisateur."
-            });
-        else if (this.state.lastName === "")
-            this.setState({
-                error: true,
-                message: "Veuillez remplir le champ nom de l'utilisateur."
-            });
-        else if (this.state.type === "partner" && this.state.company === "")
-            this.setState({
-                error: true,
-                message: "Veuillez remplir le champ Entreprise."
-            });
-        else if (!validateEmail(this.state.email))
-            this.setState({
-                error: true,
-                message: "Veuillez saisir une adresse mail valide."
-            });
-        else {
-            let data = {
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                admin: this.state.admin,
-                email: this.state.email,
-                company: this.state.company,
-                type: this.state.type
-            }
-
-            fetch(api.host + ":" + api.port + "/api/user", {
-                method: "PUT",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
-                .then(res => {
-                    if (!res.ok) throw res;
-                    else return res.json()
-                })
-                .then(data => {
-                    if (data._id) {
-                        this.setState({
-                            success: true,
-                            message: "Utilisateur crée avec succès. Vous allez être redirigé vers la liste des utilisateurs."
-                        });
-
-                        setTimeout(() => {
-                            this.setState({ redirect: true });
-                        }, 500);
-                    }
-                })
-                .catch(err => {
+        this.setState({ error: false, success: false },
+            () => {
+                let err = false;
+                if (this.state.type === "") {
+                    err = true;
                     this.setState({
                         error: true,
-                        message: "Une erreur est survenue lors de la création de l'utilisateur."
+                        message: "Veuillez selectionner un type d'utilisateur."
                     });
-                    console.error(err);
-                });
-        }
+                }
+                else if (this.state.firstName === "") {
+                    err = true;
+                    this.setState({
+                        error: true,
+                        message: "Veuillez remplir le champ prénom de l'utilisateur."
+                    });
+                }
+                else if (this.state.lastName === "") {
+                    err = true;
+                    this.setState({
+                        error: true,
+                        message: "Veuillez remplir le champ nom de l'utilisateur."
+                    });
+                }
+                else if (this.state.type === "partner" && this.state.company === "") {
+                    err = true;
+                    this.setState({
+                        error: true,
+                        message: "Veuillez remplir le champ Entreprise."
+                    });
+                }
+                else if (!validateEmail(this.state.email)) {
+                    err = true;
+                    this.setState({
+                        error: true,
+                        message: "Veuillez saisir une adresse mail valide."
+                    });
+                }
+                else if (this.state.type === "EPGE" || this.state.type === "administration") {
+                    if (!isValidPassword(this.state.password)) {
+                        err = true;
+                        this.setState({
+                            error: true,
+                            message: "Le mot de passe doit à minima être de 8 caractères et comporter une majuscule, une minuscule et un chiffre ou un charactère spécial."
+                        });
+                    }
+
+                    if (this.state.password !== this.state.password_2) {
+                        err = true;
+                        this.setState({
+                            error: true,
+                            message: "Les deux mots de passe doivent être identiques."
+                        });
+                    }
+                }
+
+                if (!err) {
+                    let data = {
+                        firstName: this.state.firstName,
+                        lastName: this.state.lastName,
+                        admin: this.state.admin,
+                        email: this.state.email,
+                        company: this.state.company,
+                        type: this.state.type,
+                        password: sha256(this.state.email + this.state.password)
+                    }
+
+                    fetch(api.host + ":" + api.port + "/api/user", {
+                        method: "PUT",
+                        mode: "cors",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(res => {
+                            if (!res.ok) throw res;
+                            else return res.json()
+                        })
+                        .then(data => {
+                            if (data._id) {
+                                this.setState({
+                                    success: true,
+                                    message: "Utilisateur crée avec succès. Vous allez être redirigé vers la liste des utilisateurs."
+                                });
+
+                                setTimeout(() => {
+                                    this.setState({ redirect: true });
+                                }, 500);
+                            }
+                        })
+                        .catch(err => {
+                            err.json().then(errMsg => {
+                                if (errMsg.name === "EmailUsed") {
+                                    this.setState({
+                                        error: true,
+                                        message: "Cette adresse mail est déjà associée à autre un utilisateur."
+                                    });
+                                } else {
+                                    console.error(errMsg);
+                                    this.setState({
+                                        error: true,
+                                        message: "Une erreur est survenue lors de la création de l'utilisateur."
+                                    });
+                                }
+                            })
+                        });
+                }
+            });
     }
 
     render() {
         const { classes } = this.props;
-        let companyField;
-        let adminCheckbox;
-        let redirect;
+        let companyField, adminCheckbox, redirect, passwordField;
         if (this.state.type === "partner") {
             companyField = (
                 <GridContainer>
@@ -207,6 +251,43 @@ class CreateUser extends React.Component {
                                     />
                                 }
                                 label="Administrateur"
+                            />
+                        </FormControl>
+                    </GridItem>
+                </GridContainer >
+            );
+
+            passwordField = (
+                <GridContainer>
+                    <GridItem xs={12} sm={12} md={4}>
+                        <FormControl className={classes.formControl} fullWidth={true}>
+                            <CustomInput
+                                labelText="Mot de passe"
+                                inputProps={{
+                                    value: this.state.password,
+                                    onChange: this.handleChange,
+                                    name: "password",
+                                    type: "password"
+                                }}
+                                formControlProps={{
+                                    fullWidth: true
+                                }}
+                            />
+                        </FormControl>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                        <FormControl className={classes.formControl} fullWidth={true}>
+                            <CustomInput
+                                labelText="Mot de passe (vérification)"
+                                inputProps={{
+                                    value: this.state.password_2,
+                                    onChange: this.handleChange,
+                                    name: "password_2",
+                                    type: "password"
+                                }}
+                                formControlProps={{
+                                    fullWidth: true
+                                }}
                             />
                         </FormControl>
                     </GridItem>
@@ -256,10 +337,10 @@ class CreateUser extends React.Component {
                                             }}
                                         >
                                             <MenuItem value=""><em></em></MenuItem>
-                                            <MenuItem value="student">Elève</MenuItem>
+                                            {/*<MenuItem value="student">Elève</MenuItem>*/}
                                             <MenuItem value="partner">Partenaire</MenuItem>
                                             <MenuItem value="administration">Administration</MenuItem>
-                                            <MenuItem value="EPGE">EPGE</MenuItem>
+                                            <MenuItem value="EPGE">EGPE</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </GridItem>
@@ -317,7 +398,7 @@ class CreateUser extends React.Component {
                                     </FormControl>
                                 </GridItem>
                             </GridContainer>
-
+                            {passwordField}
                             {adminCheckbox}
                         </CardBody>
                         <CardFooter>
@@ -335,4 +416,20 @@ export default withStyles(styles)(CreateUser);
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+}
+
+function isValidPassword(password) {
+    if (password.length < 8) return false;
+
+    let containsLowerCase, containsUpperCase, containsNumber, containsSpecialChar;
+    containsLowerCase = containsUpperCase = containsNumber = containsSpecialChar = false;
+
+    for (let i = 0; i < password.length; i++) {
+        if (password[i] >= 'A' && password[i] <= 'Z') containsUpperCase = true;
+        else if (password[i] >= 'a' && password[i] <= 'z') containsLowerCase = true;
+        else if (password[i] >= '0' && password[i] <= '9') containsNumber = true;
+        else containsSpecialChar = true;
+    }
+
+    return containsLowerCase && containsUpperCase && (containsNumber || containsSpecialChar);
 }

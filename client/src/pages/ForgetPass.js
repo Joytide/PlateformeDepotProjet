@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
 import i18n from '../components/i18n';
+import AuthService from '../components/AuthService';
 
 class ForgetPass extends Component {
 
@@ -17,31 +18,24 @@ class ForgetPass extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const form = {
-            email: this.state.email
-        };
 
-        console.log("handleSubmit button pressed");
-        console.log("this.state.email :" + this.state.email)
-        try {
-            fetch('/api/mail/recover', {
+        if (this.state.email) {
+            const form = {
+                email: this.state.email
+            };
+
+            AuthService.fetch('/api/partner/reset', {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
                 body: JSON.stringify(form)
             })
-                .then((res) => {
-                    console.log(res)
-                    window.location.reload()
+                .then(res => res.json())
+                .then(res => {
                 })
-                .catch((error) => {
-                    console.log(error);
-                })
-        }
-        catch (error) {
-            console.error(error);
+                .catch(error => {
+                    console.error(error);
+                });
+        } else {
+
         }
     }
 
@@ -54,19 +48,19 @@ class ForgetPass extends Component {
     render() {
         let lng = this.props.lng;
         return (
-            <div style={{ fontSize: 15, marginTop:15, textAlign: 'center' }}>
+            <div style={{ fontSize: 15, marginTop: 15, textAlign: 'center' }}>
                 <form onSubmit={this.handleSubmit.bind(this)}>
-                    <Typography>{i18n.t('forgetPass.desc', {lng} )}</Typography>
+                    <Typography>{i18n.t('forgetPass.desc', { lng })}</Typography>
                     <TextField
-                        label="Entrez votre e-mail"
-                        placeholder="Entrez votre e-mail"
+                        label={i18n.t('forgetPass.textfield', {lng} )}
+                        placeholder={i18n.t('forgetPass.textfield', {lng} )}
                         onChange={this.handleChange.bind(this)}
                         type="email"
                         margin="normal"
-                        name="email" value={this.state.email} 
-                    /><br/>
+                        name="email" value={this.state.email}
+                    /><br />
                     <Button variant="contained" color="primary" type="submit">
-                        <Typography>{i18n.t('forgetPass.submit', {lng} )}</Typography>
+                        <Typography>{i18n.t('forgetPass.submit', { lng })}</Typography>
                     </Button>
                 </form>
             </div>

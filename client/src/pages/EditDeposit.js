@@ -7,6 +7,7 @@ import i18n from '../components/i18n';
 import MenuItem from 'material-ui/MenuItem/MenuItem';
 import SelectField from 'material-ui/SelectField';
 import RaisedButton from 'material-ui/RaisedButton/RaisedButton';
+import AuthService from '../components/AuthService';
 
 /**
  * Edit project page
@@ -37,19 +38,17 @@ class Edit extends Component {
     }
 
     componentDidMount() {
-        fetch(`/api/edit/${this.props.match.params.editKey}`)
+        AuthService.fetch(`/api/edit/${this.props.match.params.editKey}`)
             .then((response) => response.json())
-            .then((json) => this.setState(json, () => { console.log(this.state) }))
-            .catch((err) => this.setState({ invalid: true }));
+            .then(json => this.setState(json))
+            .catch(err => this.setState({ invalid: true }));
     }
 
     /**
      * Put request to the server to update the component state
      */
     handleSubmit() {
-        console.log(`/api/projects/${this.state._id}`);
-        console.log(JSON.stringify(this.state));
-        fetch(`/api/projects/${this.state._id}`, {
+        AuthService.fetch(`/api/projects/${this.state._id}`, {
             method: 'PUT',
             body: JSON.stringify(this.state),
             headers: {
@@ -58,7 +57,7 @@ class Edit extends Component {
         }).then(res => {
 
             window.location.reload()
-        }).catch(err => console.log(err));
+        }).catch(err => console.error(err));
 
     }
 
@@ -67,7 +66,7 @@ class Edit extends Component {
     }
 
     handleSpe(e, index, values) {
-        this.setState({ majors_concerned: values }, () => { console.log(this.state.majors_concerned) })
+        this.setState({ majors_concerned: values });
     }
 
     handleYear(e) {
@@ -89,8 +88,7 @@ class Edit extends Component {
         key.forEach(element => {
             keys.push(element)
         });
-        console.log(keys)
-        this.setState({ keywords: keys }, () => { console.log(this.state.keywords) })
+        this.setState({ keywords: keys })
     }
 
     render() {
@@ -104,10 +102,9 @@ class Edit extends Component {
                 <div>Invalid URL</div>
             );
         }
-        console.log(this.state.keywords)
+        
         let a = (key) => {
             if (this.state.study_year) {
-                console.log(this.state.study_year)
                 return this.state.study_year.includes(key)
             }
         }
@@ -155,7 +152,6 @@ class Edit extends Component {
                                         multiple={true}
                                         hintText="Select a name"
                                         value={this.state.majors_concerned}
-                                        onChange={this.handleChange}
                                         name="majors_concerned"
                                     >
                                         {this.majors.map((major) =>

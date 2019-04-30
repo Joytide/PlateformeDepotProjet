@@ -1,21 +1,16 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import Visibility from "@material-ui/icons/Visibility"
-import Delete from "@material-ui/icons/Delete"
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
-import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import AutoComplete from "components/AutoComplete/AutoComplete.jsx"
 import Button from "components/CustomButtons/Button.jsx";
 
 import { api } from "../../config"

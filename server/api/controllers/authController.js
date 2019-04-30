@@ -3,8 +3,8 @@
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-
 const JWTstrategy = require('passport-jwt').Strategy;
+const bcrypt = require('bcrypt');
 
 const jwt = require('jsonwebtoken');
 
@@ -17,23 +17,32 @@ const config = require('../../config.json');
 // Si les identifiants sont bon. Alors on lui renvoie son token jwt pour
 // s'authentifier sur les requêtes à l'API
 passport.use('login', new LocalStrategy({
-    usernameField: "username",
+    usernameField: "email",
     passwordField: "password"
 },
     (username, password, done) => {
-        Person.findOne({ username: username, password: password }, (err, user) => {
+        Person.findOne({ email: username }, (err, user) => {
             if (err) return done(err);
-            if (!user) {
-                return done(null, false, { message: "Incorrect username or password" });
-            } else {
-                let userToken = jwt.sign(
-                    { id: user._id },
-                    config.jwt.secret,
-                    {
-                        expiresIn: 60 * 60 * 24
-                    }
-                );
-                return done(null, userToken);
+            else {
+                if (!user) {
+                    return done(null, false, { message: "Incorrect username or password" });
+                } else {
+                    bcrypt.compare(password, user.password, function (err, valid) {
+                        if (err) return done(err);
+
+                        if (valid) {
+                            let userToken = jwt.sign(
+                                { id: user._id },
+                                config.jwt.secret,
+                                {
+                                    expiresIn: 60 * 60 * 24
+                                }
+                            );
+                            return done(null, { token: userToken });
+                        }
+                        return done(null, false, { message: "Incorrect username or password" });
+                    });
+                }
             }
         });
     }
@@ -53,8 +62,14 @@ passport.use('jwt', new JWTstrategy({
         //Pass the user details to the next middleware
         Person.findOne({ _id: token.id }, (err, person) => {
             if (err) return done(err);
-            return done(null, person);
-        })
+            else if (person)
+                return done(null, person);
+            else
+                Partner.findOne({ _id: token.id }, (err, partner) => {
+                    if (err) return done(err);
+                    return done(null, partner);
+                });
+        });
     } catch (error) {
         done(error);
     }
@@ -65,7 +80,7 @@ exports.logPartner = (req, res) => {
         Partner.findOne({ key: req.body.key }, (err, partner) => {
             if (err) res.send(err);
             if (!partner)
-                res.status(401).send({type:"NotExisting"});
+                res.status(401).send({ type: "NotExisting" });
             else {
                 let userToken = jwt.sign(
                     { id: partner._id },
@@ -79,22 +94,31 @@ exports.logPartner = (req, res) => {
             }
         });
     } else {
-        res.status(400).send({message: "Missing key parameter", type:"MissingParameter"});
+        res.status(400).send({ message: "Missing key parameter", type: "MissingParameter" });
     }
 }
 
-exports.areAuthorized = authorized => {
-    return (req, res, next) => {
-        if (!req.user) {
-            next(new Error('Unauthorized access'));
-        } else {
-            if (authorized.constructor === Array && authorized.indexOf(req.user.__t) != -1) {
-                next();
-            } else {
-                next(new Error('Unauthorized access'));
-            }
+exports.areAuthorized = authorized => (req, res, next) => {
+    if (!req.user) {
+        next(new Error('Unauthorized access'));
+    } else {
+        if (req.user.admin)
+            next();
+        else if (authorized.constructor === Array && authorized.indexOf(req.user.__t) != -1)
+            next();
+        else if (authorized.constructor === String && authorized === req.user.__t)
+            next();
+        else if (authorized.indexOf("EPGE") !== -1 && req.user.EPGE)
+            next();
+        else {
+            let error = new Error('Unautorized access');
+            error.status = 401;
+            error.name = "Unauthorized";
+            next(error);
         }
+
     }
+
 }
 
 
@@ -103,7 +127,6 @@ passport.serializeUser(function (token, done) {
 });
 
 passport.deserializeUser(function (id, done) {
-    console.log("deserializeUser", id);
     User.findById({ _id: id }, function (err, user) {
         done(err, user);
     });

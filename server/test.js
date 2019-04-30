@@ -11,7 +11,6 @@ mongoose.connect('mongodb://localhost:27017/Tododb', (err) => {
     } else {
         console.log("Successfuly connected to database".green);
 
-
         person.last_name = "test";
         person.first_name = "test";
         person.email = "test@test.com";

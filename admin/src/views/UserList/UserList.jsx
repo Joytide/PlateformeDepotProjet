@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import InputLabel from "@material-ui/core/InputLabel";
 
 import Visibility from "@material-ui/icons/Visibility"
 
@@ -15,10 +14,7 @@ import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
-import CardAvatar from "components/Card/CardAvatar.jsx";
-import CardFooter from "components/Card/CardFooter.jsx";
 import Danger from "components/Typography/Danger.jsx";
 
 import { api } from "config.json"
@@ -68,13 +64,12 @@ class UserList extends React.Component {
     }
 
     componentWillMount() {
-        console.log(api);
         fetch(api.host + ":" + api.port + "/api/user", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
                 let userData = data.map(user => {
                     if (user.admin) return [
-                        (<Danger>{user.EPGE ? "EPGE" : user.__t}</Danger>),
+                        (<Danger>{user.EPGE ? "EGPE" : user.__t}</Danger>),
                         (<Danger>{user.company || "-"}</Danger>),
                         (<Danger>{user.last_name}</Danger>),
                         (<Danger>{user.first_name}</Danger>),
@@ -82,7 +77,7 @@ class UserList extends React.Component {
                         (<Link to={"/user/" + user._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le profil</Button></Link>)
                     ];
                     else return [
-                        user.EPGE ? "EPGE" : user.__t,
+                        user.EPGE ? "EGPE" : user.__t || "Partenaire",
                         user.company || "-",
                         user.last_name,
                         user.first_name,

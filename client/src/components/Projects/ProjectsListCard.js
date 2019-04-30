@@ -64,11 +64,11 @@ class ProjectsListCard extends React.Component {
 		if (mots_cles_value !== "") {
 			let tmp = this.state.projectToDisplay.filter(project => {
 				for (var element of project.keywords) {
-					if (element.includes(mots_cles_value.toLowerCase())){
+					if (element.includes(mots_cles_value.toLowerCase())) {
 						return true;
 					}
 				}
-				//return false;
+				return false;
 			})
 			this.setState({ projectSeen: tmp, loaded: true });
 		}
@@ -77,59 +77,68 @@ class ProjectsListCard extends React.Component {
 		}
 	}
 
-    handleTitleValue(title_value) {
-        if (title_value !== "") {
-            let tmp = this.state.projectToDisplay.filter(project => {
-                if (project.title.includes(title_value)) {
-                    return true;
-                }
-            })
-            this.setState({ projectSeen: tmp , loaded : true});
-        }
-        else {
-			this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
-        }
-    }
+	handleTitleValue(title_value) {
+		if (title_value !== "") {
+			let tmp = this.state.projectToDisplay.filter(project => {
+				if (project.title.includes(title_value)) {
+					return true;
+				}
+				return false;
+			})
+			this.setState({ projectSeen: tmp, loaded: true });
+		}
+		else {
+			this.setState({ projectSeen: this.state.projectToDisplay, loaded: true });
+		}
+	}
 
-    handleCompanyValue(company_value) {
-        if (company_value !== "") {
-            var tmp = this.state.projectToDisplay.filter(project => {
-                var id = this.state.peopleToDisplay.filter(people => {
-                    if (people.company.includes(company_value)) {
-                        return true; 
-                    }
-                })
-                if (project.partner === id) {
-                    return true;
-                }
-            })
-            this.setState({ projectSeen: tmp , loaded : true});
-        }
-        else {
-            this.setState({ projectSeen: this.state.projectToDisplay, loaded : true});
-        }
-    }
+	handleCompanyValue(company_value) {
+		if (company_value !== "") {
+			var tmp = this.state.projectToDisplay.filter(project => {
+				var id = this.state.peopleToDisplay.filter(people => {
+					if (people.company.includes(company_value)) {
+						return true;
+					}
+					return false;
+				});
+
+				if (project.partner === id) {
+					return true;
+				}
+				return false;
+			})
+			this.setState({ projectSeen: tmp, loaded: true });
+		}
+		else {
+			this.setState({ projectSeen: this.state.projectToDisplay, loaded: true });
+		}
+	}
 
 
 	render() {
 		const lng = this.props.lng;
+		let ProjectList;
+
+		if (this.props.projects)
+			ProjectList = this.props.projects.map(project =>
+				<Grid key={project._id} item xs={10}>
+					<ProjectCard project={project} lng={lng} admin={this.props.admin} showPartner={this.props.showPartner} />
+				</Grid>
+			);
+		
 		console.log(this.props.projects);
-		let ProjectList = this.props.projects.map(project =>
-			<Grid key={project._id} item xs={10}>
-				<ProjectCard project={project} lng={lng} admin={this.props.admin} showPartner={this.props.showPartner} />
-			</Grid>
-		)
+
 		return (
 			<div>
-				<Grid container style={{ marginTop: 12}} justify="center">
+				<Grid container style={{ marginTop: 12 }} justify="center">
 					<Grid item xs={11}>
-						<Paper  style={{ paddingTop: 12}}>
+						<Paper style={{ paddingTop: 12 }}>
 							<Typography align="center" variant="display2" paragraph>
 								{i18n.t('project.title', { lng })}
 							</Typography>
 
 							<Grid container justify="flex-end">
-								<ProjectsToPDF projects={this.props.projects} ProjectsType ="all" lng={lng}/>
+								<ProjectsToPDF projects={this.props.projects} ProjectsType="all" lng={lng} />
 							</Grid>
 
 							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} getCompanyValue={this.handleCompanyValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />

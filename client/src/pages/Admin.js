@@ -8,7 +8,6 @@ import { CardDeck, Container } from 'reactstrap';
 class Admin extends Component {
 
     render() {
-        console.log(this.props.match.path)
         return (
             <div>
                 <Container>

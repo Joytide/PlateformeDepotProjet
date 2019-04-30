@@ -7,7 +7,8 @@ const auth = require('../controllers/authController');
 module.exports = function (app) {
 	app.route('/api/partner')
 		// Staff access only
-		.get(auth.passport.authenticate('jwt'), partner.listAllPartners);
+		.get(auth.passport.authenticate('jwt'), partner.listAllPartners)
+		.put(partner.createPartner);
 
 
 	app.route('/api/partner/:id([a-fA-F0-9]{24})')
@@ -21,4 +22,7 @@ module.exports = function (app) {
 	//Keep that route in last
 	app.route('/api/partner/:email')
 		.get(partner.findByMail);
+
+	app.route('/api/partner/reset')
+		.post(partner.resetPassword)
 };

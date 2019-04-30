@@ -8,8 +8,7 @@ import Connection from './pages/Connection';
 //import Admin from './pages/Admin';
 import Partner from './pages/Partner'
 import Login from './pages/Login';
-//import LoginPartner from './pages/LoginPartner';
-import Protected from './pages/Protected';
+import LoginPartner from './pages/LoginPartner';
 import EditDeposit from './pages/EditDeposit';
 import ForgetPass from './pages/ForgetPass';
 //import ProjectValidation from './pages/ProjectValidation';
@@ -33,7 +32,6 @@ class App extends Component {
 		if (this.state.lng === 'fr') this.setState({ lng: 'en' });
 		if (this.state.lng === 'en') this.setState({ lng: 'fr' });
 
-		//console.log("la langue du bouton est : " + event.target.className.toLowerCase());
 		//event.target.className.toLowerCase() =
 		//muibuttonbase-root-76 muiiconbutton-root-79 fr
 		//muibuttonbase-root-76 muiiconbutton-root-79 en
@@ -58,8 +56,7 @@ class App extends Component {
 							<Route exact path="/Forgot" render={(routeProps) => (<ForgetPass lng={lng} {...routeProps} />)} />
 							{/*<Route exact path="/Admin/Validation" render={(routeProps) => (<ProjectValidation lng={lng} {...routeProps} />)} />*/}
 							<Route exact path="/login" render={(routeProps) => (<Login lng={lng} {...routeProps} />)} />
-							{/*<Route exact path="/login/partner/:key([a-zA-Z0-9]{16})" render={(routeProps) => (<LoginPartner lng={lng} {...routeProps} />)} />*/}
-							<Route exact path="/protected" render={(routeProps) => (<Protected lng={lng} {...routeProps} />)} />
+							{<Route exact path="/login/partner/:key([a-zA-Z0-9]{16})" render={(routeProps) => (<LoginPartner lng={lng} {...routeProps} />)} />}
 							<Route component={NoMatch} />
 						</Switch>
 					</Grid>
