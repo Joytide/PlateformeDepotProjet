@@ -18,10 +18,12 @@ exports.list = function (req, res, next) {
 exports.create = function (req, res, next) {
     let data = req.body;
 
-    if (data.nameEn && data.nameFr && data.abbreviation) {
+    if (data.nameEn && data.nameFr && data.descriptionEn && data.descriptionFr && data.abbreviation) {
         let specialization = new Specialization();
         specialization.name.en = data.nameEn;
         specialization.name.fr = data.nameFr;
+        specialization.description.en = data.descriptionEn;
+        specialization.description.fr = data.descriptionFr;
         specialization.abbreviation = data.abbreviation;
 
         specialization.save((err, spe) => {
@@ -84,6 +86,8 @@ exports.update = (req, res, next) => {
         if (data.abbreviation != undefined) update['abbreviation'] = data.abbreviation;
         if (data.nameFr != undefined) update['name.fr'] = data.nameFr;
         if (data.nameEn != undefined) update['name.en'] = data.nameEn;
+        if (data.descriptionFr != undefined) update['description.fr'] = data.descriptionFr;
+        if (data.descriptionEn != undefined) update['description.en'] = data.descriptionEn;
 
         if (Object.keys(update).length > 0) {
             Specialization.findOne({ _id: data._id }, (err, spe) => {

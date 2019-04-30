@@ -13,6 +13,16 @@ const SpecializationSchema = mongoose.Schema({
             required: true
         }
     },
+    description: {
+        fr: {
+            type: String,
+            required: true
+        },
+        en: {
+            type: String,
+            required: true
+        }
+    },
     abbreviation: {
         type: String,
         required: true
