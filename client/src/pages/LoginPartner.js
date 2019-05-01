@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import sha256 from 'js-sha256';
 import AuthService from '../components/AuthService';
-
+import {UserContext} from "../providers/UserProvider/UserProvider";
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -37,7 +37,7 @@ class LoginPartner extends React.Component {
             .then(res => res.json())
             .then(data => {
                 if (data.token) {
-                    AuthService.setToken(data.token);
+                    this.context.setToken(data.token);
                     setTimeout(() => {
                         this.setState({ redirectTo: '/partner' });
                     }, 3000);
@@ -109,5 +109,7 @@ class LoginPartner extends React.Component {
         )
     }
 }
+
+LoginPartner.contextType = UserContext;
 
 export default withStyles(styles)(LoginPartner);

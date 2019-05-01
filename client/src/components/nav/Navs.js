@@ -13,6 +13,7 @@ import i18n from '../i18n';
 import { Link } from 'react-router-dom';
 
 import AuthService from '../AuthService';
+import { UserContext } from "../../providers/UserProvider/UserProvider"
 
 const styles = theme => ({
 	root: {
@@ -81,10 +82,8 @@ class Navs extends React.Component {
 		};
 
 		this.state = {
-			lng: 'en',
 			anchorEl: null,
-			mobileMoreAnchorEl: null,
-			user: {}
+			mobileMoreAnchorEl: null
 		}
 	}
 
@@ -117,23 +116,6 @@ class Navs extends React.Component {
 		});
 	}
 
-	componentDidMount() {
-		document.addEventListener("logged",
-			this.handleLogged);
-
-		this.loadUser();
-	}
-
-	loadUser() {
-		AuthService
-			.getUser()
-			.then(user => {
-				this.setState({
-					user: user
-				});
-			});
-	}
-
 	handleLogged = e => {
 		this.loadUser();
 	}
@@ -147,31 +129,11 @@ class Navs extends React.Component {
 		let lng = this.props.lng;
 
 		let user;
-		if (this.state.user._id)
+		if (this.context.user._id)
 			user =
 				(<Button color="inherit" className={classes.button}>
-					<div>{i18n.t('navs.welcome', { lng }) + " " + this.state.user.first_name + " " + this.state.user.last_name}</div>
+					<div>{i18n.t('navs.welcome', { lng }) + " " + this.context.user.first_name + " " + this.context.user.last_name}</div>
 				</Button>);
-
-		/*const renderMenu = (
-			<Menu
-				anchorEl={anchorEl}
-				anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-				transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-				open={isMenuOpen}
-				onClose={this.handleMenuClose}
-			>
-				<MenuItem component={Link} to="/Connection" color="inherit">
-					<div>{i18n.t('navs.login', { lng })}</div>
-				</MenuItem>
-				<MenuItem component={Link} to="/Admin" color="inherit">
-					<div>{i18n.t('navs.admin', { lng })}</div>
-				</MenuItem>
-				<MenuItem component={Link} to="/forgot" color="inherit">
-					<div>{i18n.t('navs.linkLost', { lng })}</div>
-				</MenuItem>
-			</Menu>
-		);*/
 
 		const renderMobileMenu = (
 			<Menu
@@ -186,7 +148,7 @@ class Navs extends React.Component {
 						<div>{i18n.t('navs.home', { lng })}</div>
 					</MenuItem>
 				</Link>
-				{this.state.user._id &&
+				{this.context.user._id &&
 					<Link to="/partner">
 						<MenuItem color="inherit">
 							<div>{i18n.t('navs.myprojects', { lng })}</div>
@@ -198,11 +160,11 @@ class Navs extends React.Component {
 						<div>{i18n.t('navs.submit', { lng })}</div>
 					</MenuItem>
 				</Link>
-				{!this.state.user._id &&
+				{!this.context.user._id &&
 					<Link to="/forgot">
-						<Button color="inherit" className={classes.button}>
+						<MenuItem color="inherit">
 							<div>{i18n.t('navs.linkLost', { lng })}</div>
-						</Button>
+						</MenuItem>
 					</Link>
 				}
 				{
@@ -228,7 +190,7 @@ class Navs extends React.Component {
 							<img style={this.styles.title} alt="logo PULV" src="/logo_pulv.png" height="50" width="50" />
 						</Link>
 
-						{user}
+						{this.context.user._id && user}
 						<div className={classes.grow} />
 						<div className={classes.sectionDesktop}>
 							<Link to="/">
@@ -236,7 +198,7 @@ class Navs extends React.Component {
 									<div>{i18n.t('navs.home', { lng })}</div>
 								</Button>
 							</Link>
-							{this.state.user._id &&
+							{this.context.user._id &&
 								<Link to="/partner">
 									<Button color="inherit" className={classes.button}>
 										<div>{i18n.t('navs.myprojects', { lng })}</div>
@@ -248,7 +210,7 @@ class Navs extends React.Component {
 									<div>{i18n.t('navs.submit', { lng })}</div>
 								</Button>
 							</Link>
-							{!this.state.user._id &&
+							{!this.context.user._id &&
 								<Link to="/forgot">
 									<Button color="inherit" className={classes.button}>
 										<div>{i18n.t('navs.linkLost', { lng })}</div>
@@ -259,17 +221,6 @@ class Navs extends React.Component {
 							<IconButton onClick={this.props.handleLngChange}>
 								{lng === 'en' ? <img src="/fr_flag.png" height="24" width="32" alt="french flag" /> : <img src="/usuk_flag.png" height="24" width="32" alt="english flag" />}
 							</IconButton>
-
-							{ /* 
-							<IconButton
-								aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-								aria-haspopup="true"
-								onClick={this.handleProfileMenuOpen}
-								className={classes.menuButton}
-							>
-								<AccountCircle />
-							</IconButton>
-							*/ }
 						</div>
 						<div className={classes.sectionMobile}>
 							<IconButton onClick={this.props.handleLngChange}>
@@ -287,6 +238,8 @@ class Navs extends React.Component {
 		);
 	}
 }
+
+Navs.contextType = UserContext;
 
 Navs.propTypes = {
 	classes: PropTypes.object.isRequired,
