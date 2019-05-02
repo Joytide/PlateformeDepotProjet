@@ -20,29 +20,13 @@ import PowerSettings from "@material-ui/icons/PowerSettingsNew"
 //import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
-import {UserContext} from "../../providers/UserProvider/UserProvider";
+import { UserContext } from "../../providers/UserProvider/UserProvider";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
 class HeaderLinks extends React.Component {
-	state = {
-		open: false
-	};
-	handleToggle = () => {
-		this.setState(state => ({ open: !state.open }));
-	};
-
-	handleClose = event => {
-		if (this.anchorEl.contains(event.target)) {
-			return;
-		}
-
-		this.setState({ open: false });
-	};
-
 	render() {
 		const { classes } = this.props;
-		const { open } = this.state;
 		return (
 			<div>
 				{/*
@@ -63,9 +47,9 @@ class HeaderLinks extends React.Component {
 					</Button>
 				</div>
 					*/}
-					<Button color="transparent" href="#" className={classes.title}>
-						Bonjour {this.context.user.first_name + " " + this.context.user.last_name}
-					</Button>
+				<Button color="transparent" href="#" className={classes.title}>
+					Bonjour {this.context.user.first_name + " " + this.context.user.last_name}
+				</Button>
 				<Link to="/" onClick={this.context.disconnect}>
 					<Button
 						color={window.innerWidth > 959 ? "transparent" : "white"}

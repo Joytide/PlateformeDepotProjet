@@ -35,13 +35,6 @@ const styles = {
 };
 
 class Settings extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentWillMount() {
-    }
-
     render() {
         return (
             <UserContext.Consumer>

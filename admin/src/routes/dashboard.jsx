@@ -2,7 +2,6 @@
 import Dashboard from "@material-ui/icons/Dashboard";
 import People from "@material-ui/icons/People";
 import PersonAdd from "@material-ui/icons/PersonAdd";
-import Notifications from "@material-ui/icons/Notifications";
 // core components/views
 
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
@@ -27,7 +26,6 @@ import CreateYear from "views/CreateYear/CreateYear.jsx";
 import YearProfile from "views/YearProfile/YearProfile.jsx";
 
 // Others
-import NotificationsPage from "views/Notifications/Notifications.jsx";
 import Settings from "views/Settings/Settings.jsx"
 
 const dashboardRoutes = [
