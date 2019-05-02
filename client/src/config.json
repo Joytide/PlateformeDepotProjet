@@ -1,6 +1,6 @@
 {
     "api": {
-        "host": "http://localhost",
-        "port": 3001
+        "host": "https://api.devinci-project.fr",
+        "port": 443
     }
 }
