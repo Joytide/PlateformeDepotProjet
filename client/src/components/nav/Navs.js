@@ -12,7 +12,6 @@ import Button from '@material-ui/core/Button';
 import i18n from '../i18n';
 import { Link } from 'react-router-dom';
 
-import AuthService from '../AuthService';
 import { UserContext } from "../../providers/UserProvider/UserProvider"
 
 const styles = theme => ({
@@ -121,7 +120,7 @@ class Navs extends React.Component {
 	}
 
 	render() {
-		const { anchorEl, mobileMoreAnchorEl } = this.state;
+		const { mobileMoreAnchorEl } = this.state;
 		const { classes } = this.props;
 		//const isMenuOpen = Boolean(anchorEl);
 		const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
