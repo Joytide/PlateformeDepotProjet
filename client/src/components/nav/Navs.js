@@ -160,6 +160,13 @@ class Navs extends React.Component {
 						<div>{i18n.t('navs.submit', { lng })}</div>
 					</MenuItem>
 				</Link>
+				{this.context.user._id &&
+					<Link to="/" onClick={this.context.disconnect}>
+						<MenuItem color="inherit">
+							<div>{i18n.t('navs.disconnect', { lng })}</div>
+						</MenuItem>
+					</Link>
+				}
 				{!this.context.user._id &&
 					<Link to="/forgot">
 						<MenuItem color="inherit">
@@ -210,6 +217,13 @@ class Navs extends React.Component {
 									<div>{i18n.t('navs.submit', { lng })}</div>
 								</Button>
 							</Link>
+							{this.context.user._id &&
+								<Link to="/" onClick={this.context.disconnect}>
+									<Button color="inherit" className={classes.button}>
+										<div>{i18n.t('navs.disconnect', { lng })}</div>
+									</Button>
+								</Link>
+							}
 							{!this.context.user._id &&
 								<Link to="/forgot">
 									<Button color="inherit" className={classes.button}>

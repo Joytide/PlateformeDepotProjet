@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { FormControl, InputLabel, Select, Input } from '@material-ui/core'
-import {Tooltip, Zoom} from '@material-ui/core';
+import { Tooltip, Zoom } from '@material-ui/core';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
@@ -39,6 +39,7 @@ class CreateProject extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSpecializations = this.handleSpecializations.bind(this);
         this.setFiles = this.setFiles.bind(this);
+        this.renderSelect = this.renderSelect.bind(this);
     }
 
     componentWillMount() {
@@ -64,6 +65,7 @@ class CreateProject extends React.Component {
     }
 
     handleSpecializations = event => {
+        console.log(event)
         this.setState({ majors_concerned: event.target.value });
     };
 
@@ -133,6 +135,22 @@ class CreateProject extends React.Component {
         }
     }
 
+    renderSelect(e) {
+        return this.state.specializations
+            // Filtre les majeures qui n'ont pas été selectionnée 
+            .filter(spe => {
+                if (e.indexOf(spe._id) !== -1)
+                    return true;
+                return false;
+            })
+            // Association des majeures selectionnées à leur nom
+            .map(spe => {
+                return this.props.lng === "fr" ? spe.name.fr : spe.name.en
+            })
+            // Jointure
+            .join(", ");
+    }
+
     render() {
         const { lng, classes } = this.props;
         return (
@@ -186,14 +204,22 @@ class CreateProject extends React.Component {
                                 fullWidth
                                 value={this.state.majors_concerned}
                                 onChange={this.handleSpecializations}
+                                renderValue={this.renderSelect}
                                 input={<Input id="select-multiple" />}
                             >
                                 {this.state.specializations.map(specialization => (
-                                    <Tooltip disableFocusListener disableTouchListener TransitionComponent={Zoom} title={lng === "fr" ? specialization.description.fr : specialization.description.en}>
-                                        <MenuItem key={specialization._id} value={specialization._id}>
-                                            {lng === "fr" ? specialization.name.fr : specialization.name.en}
-                                        </MenuItem>
-                                    </Tooltip>
+                                    <MenuItem key={specialization._id} value={specialization._id}>
+                                        <Tooltip primary="Drafts"
+                                            disableFocusListener
+                                            disableTouchListener
+                                            TransitionComponent={Zoom}
+                                            title={lng === "fr" ? specialization.description.fr : specialization.description.en}
+                                        >
+                                            <div>
+                                                {lng === "fr" ? specialization.name.fr : specialization.name.en}
+                                            </div>
+                                        </Tooltip>
+                                    </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -225,13 +251,6 @@ class CreateProject extends React.Component {
                 </Grid>
                 <Grid item>
                     <Grid container spacing={40} justify="center">
-                        <Grid item xs={1}>
-                            <Button lng={lng} variant='contained' color='primary'>
-                                <Typography>
-                                    {i18n.t('back.label', { lng })}
-                                </Typography>
-                            </Button>
-                        </Grid>
                         <Grid item xs={2}>
                             <Button lng={lng} variant='contained' color='primary' type="submit">
                                 <Typography>

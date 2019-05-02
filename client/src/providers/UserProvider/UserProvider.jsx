@@ -1,6 +1,5 @@
 import React, { createContext } from "react"; // on importe createContext qui servira à la création d'un ou plusieurs contextes
 import AuthService from "../../components/AuthService";
-import { api } from "../../config"
 
 /**
  * `createContext` contient 2 propriétés :
@@ -29,6 +28,10 @@ class UserProvider extends React.Component {
 			setToken: token => {
 				localStorage.setItem("token", token);
 				this.refreshUser();
+			},
+			disconnect: () => {
+				localStorage.removeItem("token");
+				this.setState({ user: {} });
 			}
 		};
 	}
@@ -40,7 +43,7 @@ class UserProvider extends React.Component {
 	refreshUser() {
 		AuthService.fetch("/api/user/me")
 			.then(res => {
-				if(!res.ok) throw res;
+				if (!res.ok) throw res;
 				return res.json()
 			})
 			.then(data => {
@@ -49,7 +52,7 @@ class UserProvider extends React.Component {
 				});
 			})
 			.catch(err => {
-				if(err.status == 401)
+				if (err.status === 401)
 					localStorage.removeItem("token");
 			});
 	}
