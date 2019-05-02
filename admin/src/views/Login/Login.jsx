@@ -48,7 +48,7 @@ class Login extends React.Component {
         })
     }
 
-    login = setUser => () => {
+    login = () => {
         this.setState({ success: false, error: false });
         if (this.state.email && this.state.password) {
             let data = {
@@ -70,15 +70,9 @@ class Login extends React.Component {
                 })
                 .then(data => {
                     if (data.token) {
-                        localStorage.setItem("token", data.token);
-
+                        this.context.setToken(data.token);
                         setTimeout(() => {
-                            AuthService.fetch(api.host + ':' + api.port + "/api/user/me")
-                                .then(res => res.json())
-                                .then(user => {
-                                    setUser(user);
-                                    this.setState({ redirect: true });
-                                });
+                            this.setState({ redirect: true });
                         }, 750);
 
                         this.setState({
@@ -172,20 +166,16 @@ class Login extends React.Component {
                                     />
                                 </Grid>
 
-                                <UserContext.Consumer>
-                                    {value =>
-                                        <Grid item xs={12} md={10} style={{ paddingTop: "30px", paddingBottom: "30px" }}>
-                                            <Button
-                                                style={{ paddingTop: "15px", paddingBottom: "15px", backgroundColor: "green", color: "white", borderRadius: 0 }}
-                                                size="large"
-                                                fullWidth
-                                                onClick={this.login(value.setUser)}
-                                            >
-                                                SE CONNECTER
+                                <Grid item xs={12} md={10} style={{ paddingTop: "30px", paddingBottom: "30px" }}>
+                                    <Button
+                                        style={{ paddingTop: "15px", paddingBottom: "15px", backgroundColor: "green", color: "white", borderRadius: 0 }}
+                                        size="large"
+                                        fullWidth
+                                        onClick={this.login}
+                                    >
+                                        SE CONNECTER
                                             </Button>
-                                        </Grid>
-                                    }
-                                </UserContext.Consumer>
+                                </Grid>
 
                             </Grid>
 
@@ -197,5 +187,7 @@ class Login extends React.Component {
     }
 
 }
+
+Login.contextType = UserContext;
 
 export default withStyles(styles)(Login);

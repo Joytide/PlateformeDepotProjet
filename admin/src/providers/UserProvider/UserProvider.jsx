@@ -1,6 +1,6 @@
 import React, { createContext } from "react"; // on importe createContext qui servira à la création d'un ou plusieurs contextes
 import AuthService from "../../components/AuthService";
-import { api } from "../../config"
+import {api} from "../../config"
 
 /**
  * `createContext` contient 2 propriétés :
@@ -11,7 +11,7 @@ import { api } from "../../config"
  * d'autres composants par la suite via le `Consumer`
  */
 export const UserContext = createContext({
-	user: {},
+	user: {}
 });
 
 /**
@@ -21,25 +21,41 @@ export const UserContext = createContext({
  * seront accessibles de manière globale via le `Consumer`
  */
 class UserProvider extends React.Component {
-	state = {
-		user: {}, // une valeur de départ
-		setUser: user => {
-			this.setState({ user });
-		}
-	};
+	constructor(props) {
+		super(props);
 
-	componentWillMount() {
-		AuthService.fetch(api.host + ":" + api.port + "/api/user/me", {
-			mode: "cors",
-			method: "GET"
-		})
-			.then(res => res.json())
+		this.state = {
+			user: {}, // une valeur de départ
+			setToken: token => {
+				localStorage.setItem("token", token);
+				this.refreshUser();
+			},
+			disconnect: () => {
+				localStorage.removeItem("token");
+				this.setState({ user: {} });
+			}
+		};
+	}
+
+	componentDidMount() {
+		this.refreshUser();
+	}
+
+	refreshUser() {
+		AuthService.fetch(api.host + ":" + api.port + "/api/user/me")
+			.then(res => {
+				if (!res.ok) throw res;
+				return res.json()
+			})
 			.then(data => {
 				this.setState({
 					user: data
 				});
 			})
-
+			.catch(err => {
+				if (err.status === 401)
+					localStorage.removeItem("token");
+			});
 	}
 
 	render() {
@@ -54,5 +70,6 @@ class UserProvider extends React.Component {
 		);
 	}
 }
+UserProvider.contextType = UserContext;
 
 export default UserProvider;

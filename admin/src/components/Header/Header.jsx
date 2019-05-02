@@ -40,7 +40,6 @@ function Header({ ...props }) {
 						{makeBrand()}
 					</Button>
 				</div>
-				{/*
 				<Hidden smDown implementation="css">
 					<HeaderLinks />
 				</Hidden>
@@ -53,7 +52,6 @@ function Header({ ...props }) {
 						<Menu />
 					</IconButton>
 				</Hidden>
-				*/}
 			</Toolbar>
 		</AppBar>
 	);
