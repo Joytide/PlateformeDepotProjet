@@ -40,6 +40,7 @@ class Login extends React.Component {
             this.state.redirect = true;
 
         this.login = this.login.bind(this);
+        this.handlekeyDown = this.handlekeyDown .bind(this);
     }
 
     handleChange = id => event => {
@@ -106,6 +107,11 @@ class Login extends React.Component {
         }
     }
 
+    handlekeyDown = e => {
+        if(e.key === "Enter")
+            this.login();
+    }
+
     render() {
         let redirect;
         if (this.state.redirect) {
@@ -163,6 +169,7 @@ class Login extends React.Component {
                                         margin="normal"
                                         variant="outlined"
                                         type="password"
+                                        onKeyDown={this.handlekeyDown}
                                     />
                                 </Grid>
 
