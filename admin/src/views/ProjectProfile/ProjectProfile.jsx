@@ -483,6 +483,7 @@ class ProjectProfile extends React.Component {
                                                 </Card>
                                             </GridItem>
                                         );
+                                    else return <div></div>;
                                 })
                             }
 
