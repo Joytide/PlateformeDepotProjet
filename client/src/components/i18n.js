@@ -111,7 +111,8 @@ i18next
 						login: 'Log in',
 						admin: 'Admin',
 						linkLost: 'Project link lost',
-						welcome: 'Welcome'
+						welcome: 'Welcome',
+						disconnect:"Disconnect"
 					},
 					forgetPass: {
 						submit: 'Submit',
@@ -240,7 +241,8 @@ i18next
 						login: 'Se connecter',
 						admin: 'Admin',
 						linkLost: 'Lien oublié',
-						welcome: "Bienvenue "
+						welcome: "Bienvenue ",
+						disconnect:"Se déconnecter"
 					},
 					carousel: {
 						Title1: 'BermudZer : pricing d’options bermudéennes',

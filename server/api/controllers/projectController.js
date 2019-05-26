@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
 	filename: function (req, file, cb) {
 		let owner = "";
 		let projectID = "";
-		
+
 		if (req.user.__t === "Partner")
 			owner = req.user._id
 		else if (!req.body.partnerID && !req.body.projectID)
@@ -128,8 +128,11 @@ exports.listProjects = function (req, res, next) {
 exports.createProject = (req, res, next) => {
 	const data = req.body;
 
-	if (data.title && data.majors_concerned && data.study_year && data.description) {
-		var newProject = new Project();
+	if (data.title && data.description
+		&& data.majors_concerned && data.majors_concerned.length > 0
+		&& data.study_year && data.study_year.length > 0) {
+
+		let newProject = new Project();
 		newProject.title = data.title;
 		newProject.majors_concerned = data.majors_concerned;
 		newProject.study_year = data.study_year;

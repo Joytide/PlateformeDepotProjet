@@ -18,7 +18,8 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import AutoComplete from "components/AutoComplete/AutoComplete.jsx"
 import Button from "components/CustomButtons/Button.jsx";
 
-import AuthService from "components/AuthService"
+import AuthService from "components/AuthService";
+import { UserContext } from "../../providers/UserProvider/UserProvider";
 
 import { api } from "../../config"
 
@@ -72,6 +73,8 @@ class SpecializationProfile extends React.Component {
                     let spe = {
                         nameFr: data.name.fr,
                         nameEn: data.name.en,
+                        descriptionFr: data.description.fr,
+                        descriptionEn: data.description.en,
                         abbreviation: data.abbreviation,
                         _id: data._id
                     }
@@ -137,9 +140,11 @@ class SpecializationProfile extends React.Component {
             _id: this.state.specialization._id,
             abbreviation: this.state.specialization.abbreviation,
             nameFr: this.state.specialization.nameFr,
-            nameEn: this.state.specialization.nameEn
+            nameEn: this.state.specialization.nameEn,
+            descriptionFr: this.state.specialization.descriptionFr,
+            descriptionEn: this.state.specialization.descriptionEn
         }
-        
+
         AuthService.fetch(api.host + ":" + api.port + "/api/specialization", {
             method: "POST",
             mode: "cors",
@@ -154,6 +159,8 @@ class SpecializationProfile extends React.Component {
                     _id: res._id,
                     nameFr: res.name.fr,
                     nameEn: res.name.en,
+                    descriptionFr: res.description.fr,
+                    descriptionEn: res.description.en,
                     abbreviation: res.abbreviation,
                     referent: res.referent.map(ref =>
                         [
@@ -225,11 +232,11 @@ class SpecializationProfile extends React.Component {
     render() {
         const { classes } = this.props;
 
-        let profile;
+        let profile = () => { };
         let referent;
         let suggestions;
         if (!this.state.loadingProfile) {
-            profile = (
+            profile = user => (
                 <GridContainer>
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
@@ -247,6 +254,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
+                                                disabled: !user.admin,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.abbreviation
                                             }}
@@ -262,6 +270,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
+                                                disabled: !user.admin,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.nameFr
                                             }}
@@ -275,21 +284,54 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
+                                                disabled: !user.admin,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.nameEn
                                             }}
                                         />
                                     </GridItem>
                                 </GridContainer>
-                            </CardBody>
-                            <CardFooter>
-                                <GridContainer >
-                                    <GridItem xs={12} sm={12} md={12}>
-                                        <Button disabled={!this.state.modificated} color="success" onClick={this.update}>Sauvegarder</Button>
-                                        <Button disabled={!this.state.modificated} color="danger" onClick={this.cancel}>Annuler</Button>
+                                
+                                <GridContainer>
+                                    <GridItem xs={12} sm={12} md={6}>
+                                        <CustomInput
+                                            labelText="Description (fr)"
+                                            id="descriptionFr"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                onChange: this.handleChange,
+                                                value: this.state.specialization.descriptionFr
+                                            }}
+                                        />
+                                    </GridItem>
+                                    <GridItem xs={12} sm={12} md={6}>
+                                        <CustomInput
+                                            labelText="Description (en)"
+                                            id="descriptionEn"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                onChange: this.handleChange,
+                                                value: this.state.specialization.descriptionEn
+                                            }}
+                                        />
                                     </GridItem>
                                 </GridContainer>
-                            </CardFooter>
+                            </CardBody>
+                            {
+                                user.admin &&
+                                <CardFooter>
+                                    <GridContainer >
+                                        <GridItem xs={12} sm={12} md={12}>
+                                            <Button disabled={!this.state.modificated} color="success" onClick={this.update}>Sauvegarder</Button>
+                                            <Button disabled={!this.state.modificated} color="danger" onClick={this.cancel}>Annuler</Button>
+                                        </GridItem>
+                                    </GridContainer>
+                                </CardFooter>
+                            }
                         </Card>
                     </GridItem>
                 </GridContainer>);
@@ -354,10 +396,14 @@ class SpecializationProfile extends React.Component {
             );
         }
         return (
-            <div>
-                {profile}
-                {referent}
-            </div>
+            <UserContext.Consumer>
+                {value =>
+                    <div>
+                        {profile(value.user)}
+                        {value.user.admin && referent}
+                    </div>
+                }
+            </UserContext.Consumer>
         );
     }
 }

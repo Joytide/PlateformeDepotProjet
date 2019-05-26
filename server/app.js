@@ -127,30 +127,40 @@ function initDB() {
 					let IBO = new Specialization();
 					IBO.name.fr = "Informatique, Big Data et Objets connectés";
 					IBO.name.en = "Computer science, Big Data and IoT";
+					IBO.description.fr = "Informatique, Développement logiciel, Data Science, Objets Connectés & internet des objets, Cybersécurité, E-santé";
+					IBO.description.en = "IT, Software Development, Data Science, Connected Objects & Internet of Things, Cybersecurity, E-Health";
 					IBO.abbreviation = "IBO";
 					IBO.save();
 
 					let NE = new Specialization();
 					NE.name.fr = "Nouvelles énergies";
 					NE.name.en = "New Energies";
+					NE.description.fr = "Transition énergétique, Objets Connectés & Internet des Objets, Mobilité Durable et Intelligente, E-santé, Smart Buildings and Cities, Smart Grid, Systèmes embarqués";
+					NE.description.en = "Energy transition, Connected Objects & Internet of Things, Sustainable and Intelligent Mobility, E-Health, Smart Buildings and Cities, Smart Grid, Embedded Systems";
 					NE.abbreviation = "NE";
 					NE.save();
 
 					let IF = new Specialization();
 					IF.name.fr = "Ingénierie Financière";
 					IF.name.en = "Financial Engineering";
+					IF.description.fr = "Finance, Data Science, Actuariat, Fintech, Finance de Marché";
+					IF.description.en = "Finance, Data Science, Actuarial, Fintech, Market Finance";
 					IF.abbreviation = "IF";
 					IF.save();
 
 					let MNM = new Specialization();
 					MNM.name.fr = "Mécanique Numérique et Modélisation";
 					MNM.name.en = "Computational Mechanics and Modelling";
+					MNM.description.fr = "Mécanique, CAO, Modélisation, Aéronautique, Smart Building and cities, Automobile et transports terrestres, Process Engineering";
+					MNM.description.en = "Mechanics, CAD, Modelling, Aeronautics, Smart Building and cities, Automotive and land transport, Process Engineering";
 					MNM.abbreviation = "MNM";
 					MNM.save();
 
 					let Test = new Specialization();
 					Test.name.fr = "Nom de test pour la majeur";
 					Test.name.en = "Major test name";
+					Test.description.fr = "Description de test pour la majeur";
+					Test.description.en = "Major test description";
 					Test.abbreviation = "Test";
 					Test.save();
 				}

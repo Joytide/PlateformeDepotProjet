@@ -1,6 +1,8 @@
 import React from "react";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
+import ChangePassword from "../../components/ChangePassword/ChangePassword"
+import { UserContext } from "../../providers/UserProvider/UserProvider"
 
 const styles = {
     cardCategoryWhite: {
@@ -33,15 +35,13 @@ const styles = {
 };
 
 class Settings extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    componentWillMount() {
-    }
-
     render() {
-        return (<div></div>);
+        return (
+            <UserContext.Consumer>
+                {value => <ChangePassword user={value.user}></ChangePassword>}
+            </UserContext.Consumer>
+
+        );
     }
 }
 

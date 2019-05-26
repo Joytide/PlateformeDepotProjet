@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
 import i18n from '../i18n';
+import { UserContext } from "../../providers/UserProvider/UserProvider";
 
 const styles = {
 
@@ -29,13 +30,11 @@ class CreatePartner extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
-        AuthService.getUser()
-            .then(user => {
-                this.setState({
-                    ...user,
-                    isExisting: true
-                });
+    componentDidMount() {
+        if (this.context.user._id)
+            this.setState({
+                ...this.context.user,
+                isExisting: true
             });
     }
 
@@ -63,7 +62,7 @@ class CreatePartner extends React.Component {
                 .then(res => res.json())
                 .then(data => {
                     if (data.token) {
-                        AuthService.setToken(data.token);
+                        this.context.setToken(data.token);
                         var event = new Event('logged');
                         document.dispatchEvent(event);
                         this.props.next();
@@ -153,5 +152,7 @@ class CreatePartner extends React.Component {
         );
     }
 }
+
+CreatePartner.contextType = UserContext;
 
 export default withStyles(styles, { withTheme: true })(CreatePartner);

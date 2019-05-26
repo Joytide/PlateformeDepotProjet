@@ -12,7 +12,8 @@ import Button from "@material-ui/core/Button";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 import { api } from "config.json";
-import AuthService from "components/AuthService"
+import AuthService from "components/AuthService";
+import { UserContext } from "../../providers/UserProvider/UserProvider";
 
 const styles = theme => ({
     root: {
@@ -47,7 +48,7 @@ class Login extends React.Component {
         })
     }
 
-    login() {
+    login = () => {
         this.setState({ success: false, error: false });
         if (this.state.email && this.state.password) {
             let data = {
@@ -69,8 +70,7 @@ class Login extends React.Component {
                 })
                 .then(data => {
                     if (data.token) {
-                        localStorage.setItem("token", data.token);
-
+                        this.context.setToken(data.token);
                         setTimeout(() => {
                             this.setState({ redirect: true });
                         }, 750);
@@ -174,8 +174,9 @@ class Login extends React.Component {
                                         onClick={this.login}
                                     >
                                         SE CONNECTER
-                                </Button>
+                                            </Button>
                                 </Grid>
+
                             </Grid>
 
                         </Paper>
@@ -186,5 +187,7 @@ class Login extends React.Component {
     }
 
 }
+
+Login.contextType = UserContext;
 
 export default withStyles(styles)(Login);
