@@ -469,19 +469,20 @@ class ProjectProfile extends React.Component {
                         <GridContainer>
                             {
                                 this.state.project.files.map(file => {
-                                    return (
-                                        <GridItem xs={12} sm={12} md={6} key={file._id}>
-                                            <Card style={{ width: "20rem" }}>
-                                                <CardBody>
-                                                    <h4>{file.originalName}</h4>
-                                                    <a download href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
-                                                        <Button size="sm" color="info">Télécharger</Button>
-                                                    </a>
-                                                    <Button size="sm" color="danger" onClick={this.openModal(file._id)}>Supprimer</Button>
-                                                </CardBody>
-                                            </Card>
-                                        </GridItem>
-                                    );
+                                    if (file != null)
+                                        return (
+                                            <GridItem xs={12} sm={12} md={6} key={file._id}>
+                                                <Card style={{ width: "20rem" }}>
+                                                    <CardBody>
+                                                        <h4>{file.originalName}</h4>
+                                                        <a download href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
+                                                            <Button size="sm" color="info">Télécharger</Button>
+                                                        </a>
+                                                        <Button size="sm" color="danger" onClick={this.openModal(file._id)}>Supprimer</Button>
+                                                    </CardBody>
+                                                </Card>
+                                            </GridItem>
+                                        );
                                 })
                             }
 
