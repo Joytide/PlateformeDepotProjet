@@ -101,8 +101,10 @@ class ProjectPage extends React.Component {
                                             })
                                         }
                                         {
-                                            project.majors_concerned.sort().map(major => {
-                                                return <Grid item><Chip label={major.abbreviation} color="secondary" /></Grid>
+                                            project.specializations.map(spe => {
+                                                if (spe.status != "rejected")
+                                                    return <Grid item><Chip label={spe.specialization.abbreviation} color="secondary" /></Grid>
+                                                return;
                                             })
                                         }
                                         {

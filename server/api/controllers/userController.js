@@ -224,7 +224,6 @@ exports.isAdmin = (req, res) => {
 
 exports.changePassword = (req, res, next) => {
     const data = req.body;
-    console.log(data)
     if ((data.userID == req.user._id) || req.user.admin) {
         Person.findById(data.userID, (err, person) => {
             if (err)

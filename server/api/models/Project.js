@@ -3,6 +3,28 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const SpecializationSchema = new Schema({
+    specialization: {
+        type: Schema.Types.ObjectId,
+        ref: "Specialization",
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ["validated", "rejected", "pending"],
+        required: true,
+        default: "pending"
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "Administration"
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const ProjectSchema = new Schema({
     title: {
         type: String,
@@ -12,11 +34,7 @@ const ProjectSchema = new Schema({
         type: String,
         required: true
     },
-    majors_concerned: [{
-        type: Schema.Types.ObjectId,
-        ref: "Specialization",
-        required: true
-    }],
+    specializations: [SpecializationSchema],
     study_year: [{
         type: Schema.Types.ObjectId,
         ref: "Year",
@@ -29,6 +47,7 @@ const ProjectSchema = new Schema({
     media_files: Array, //(String)
     status: {
         type: String,
+        enum: ["validated", "rejected", "pending"],
         required: true,
         default: "pending"
     },

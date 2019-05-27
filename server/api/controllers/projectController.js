@@ -92,12 +92,12 @@ exports.listProjects = function (req, res, next) {
 		let query = {};
 		query.status = status;
 		if (specializations)
-			query.majors_concerned = { "$in": specializations };
+			query["specializations.specialization"] = { "$in": specializations };
 
 		Project
 			.find(query)
 			.populate('partner')
-			.populate('majors_concerned')
+			.populate('specializations.specialization')
 			.populate('study_year')
 			.exec(function (err, projects) {
 				if (err)
@@ -132,12 +132,13 @@ exports.createProject = (req, res, next) => {
 		&& data.majors_concerned && data.majors_concerned.length > 0
 		&& data.study_year && data.study_year.length > 0) {
 
-		let newProject = new Project();
-		newProject.title = data.title;
-		newProject.majors_concerned = data.majors_concerned;
-		newProject.study_year = data.study_year;
-		newProject.description = data.description;
-		newProject.partner = req.user._id;
+		let newProject = new Project({
+			title: data.title,
+			specializations: data.majors_concerned.map(spe => ({ specialization: spe })),
+			study_year: data.study_year,
+			description: data.description,
+			partner: req.user._id
+		});
 
 		if (data.keywords) newProject.keywords = data.keywords;
 		if (data.files) newProject.files = data.files;
@@ -171,7 +172,7 @@ exports.createProject = (req, res, next) => {
 exports.findById = (req, res) => {
 	Project.findById(req.params.projectId)
 		.populate('partner')
-		.populate('majors_concerned')
+		.populate('specializations.specialization')
 		.populate('study_year')
 		.populate({
 			path: 'files',
@@ -217,7 +218,7 @@ exports.update_a_project = (req, res) => {
 					let update = {};
 					if (data.title) update.title = data.title;
 					if (data.description) update.description = data.description;
-					if (data.majors_concerned) update.majors_concerned = data.majors_concerned;
+					if (data.majors_concerned) update.specializations = data.majors_concerned.map(spe => ({ specialization: spe }));
 					if (data.study_year) update.study_year = data.study_year;
 					if (data.keywords) update.keywords = data.keywords;
 					if (data.status) update.status = data.status;
@@ -228,7 +229,7 @@ exports.update_a_project = (req, res) => {
 						if (err) res.send(err);
 						else {
 							updated_project
-								.populate('partner majors_concerned study_year', (err, populated) => {
+								.populate('partner specializations.specialization study_year', (err, populated) => {
 									if (err) res.send(err);
 									else res.json(populated);
 								})
@@ -348,4 +349,69 @@ exports.download_file = (req, res, next) => {
 		else
 			next(new Error('FileNotFound'));
 	});
+}
+
+exports.projectValidation = (req, res, next) => {
+	const data = req.body;
+
+	if (data.projectId && data.speId && ["validated", "pending", "rejected"].indexOf(data.status) != -1) {
+		Project.findOne(
+			{ _id: data.projectId, "specializations.specialization": data.speId, status: "pending" },
+			(err, project) => {
+				if (err)
+					next(err);
+				else if (project) {
+					let rejected = true;
+					let count = 0;
+					for (let i = 0; i < project.specializations.length; i++) {
+						if (project.specializations[i].specialization == data.speId)
+							project.specializations[i].status = data.status;
+
+						if (project.specializations[i].status != "pending") {
+							count++;
+							if (project.specializations[i].status == "validated")
+								rejected = false;
+						}
+					}
+
+					if (count == project.specializations.length) {
+						project.status = rejected ? "rejected" : "validated";
+
+					}
+					
+					project.save((err, savedProject) => {
+						if (err)
+							next(err)
+						else
+							res.json(savedProject)
+					});
+				} else {
+					res.json();
+				}
+			})
+	} else {
+		next(new Error("MissingParameter"));
+	}
+}
+
+exports.addSpecialization = (req, res, next) => {
+	const data = req.body;
+
+	if (data.projectId && data.speId) {
+		Project.findOne({ _id: data.projectId, "specializations.specialization": { "$ne": data.speId }, status: "pending" }, (err, project) => {
+			if (err)
+				next(err);
+			else if (project) {
+				project.specializations.push({ specialization: data.speId });
+				project.save((err, savedDocument) => {
+					if (err) next(err);
+					else res.json(savedDocument);
+				})
+			} else {
+				res.json();
+			}
+		})
+	} else {
+		next(new Error("MissingParameter"));
+	}
 }

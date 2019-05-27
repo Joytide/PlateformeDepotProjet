@@ -9,7 +9,11 @@ module.exports = function (app) {
 		.delete(auth.passport.authenticate('jwt'), auth.areAuthorized("EPGE"), project.deleteFile);
 
 	app.route('/api/project/file/:id([a-fA-F0-9]{24})')
-		.get(project.download_file)
+		.get(project.download_file);
+
+	app.route('/api/project/validation')
+		.post(auth.passport.authenticate('jwt'),project.projectValidation)
+		.put(auth.passport.authenticate('jwt'),project.addSpecialization);
 
 	app.route('/api/projects')
 		.get(auth.passport.authenticate('jwt'), project.listProjects)

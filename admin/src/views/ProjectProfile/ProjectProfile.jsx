@@ -15,6 +15,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Tooltip from '@material-ui/core/Tooltip';
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -78,6 +79,7 @@ class ProjectProfile extends React.Component {
         this.loadProjectData = this.loadProjectData.bind(this);
         this.loadProjectComments = this.loadProjectComments.bind(this);
         this.loadStaticData = this.loadStaticData.bind(this);
+        this.addSpecialization = this.addSpecialization.bind(this);
         this.checkboxMapping = this.checkboxMapping.bind(this);
     }
 
@@ -95,7 +97,7 @@ class ProjectProfile extends React.Component {
                 this.setState({
                     project: data,
                     loadingProject: false,
-                    specializations_concerned: data.majors_concerned.map(spe => spe._id),
+                    specializations_concerned: data.specializations.map(spe => spe.specialization),
                     color: color
                 }, this.checkboxMapping);
             });
@@ -226,52 +228,6 @@ class ProjectProfile extends React.Component {
         }
     }
 
-    handleSelect = event => {
-        if (event.target.value.length > 0) {
-            let data = {
-                _id: this.state.project._id,
-                majors_concerned: event.target.value
-            }
-
-            fetch(api.host + ":" + api.port + "/api/projects", {
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
-                .then(res => {
-                    if (!res.ok) throw res;
-                    else return res.json()
-                })
-                .then(data => {
-                    this.setState({
-                        project: data,
-                        specializations_concerned: data.majors_concerned.map(spe => spe._id)
-                    });
-                })
-                .catch(err => {
-                    this.setState({
-                        error: true,
-                        message: "Une erreur est survenue lors de la sauvegarde des données."
-                    });
-                    console.error(err);
-                });
-        } else {
-            this.setState({
-                error: true,
-                message: "Le projet doit à minima concerner à une majeure."
-            }, () => {
-                setTimeout(() => {
-                    this.setState({
-                        error: false
-                    });
-                }, 2500);
-            });
-        }
-    }
-
     handleProjectStatus = action => () => {
         const data = {
             _id: this.state.project._id,
@@ -346,10 +302,43 @@ class ProjectProfile extends React.Component {
             });
     }
 
+    addSpecialization = id => () => {
+        let data = {
+            speId: id,
+            projectId: this.state.project._id
+        };
+
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/validation", {
+            method: "PUT",
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.loadProjectData();
+            });
+    }
+
+    specializationValidation = (status, speId) => () => {
+        let data = {
+            speId,
+            status,
+            projectId: this.state.project._id
+        };
+
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/validation", {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.loadProjectData();
+            });
+    }
+
     render() {
         const { classes } = this.props;
 
-        let partnerInfo, projectInfo, classification, actions, comments, files;
+        let partnerInfo, projectInfo, years, actions, comments, files, specializations;
 
         if (!this.state.loadingProject) {
             partnerInfo = (
@@ -503,23 +492,19 @@ class ProjectProfile extends React.Component {
             )
 
         }
-        if (!this.state.loadingYear && !this.state.loadingSpecialization) {
-            classification = (
+        if (!this.state.loadingYear) {
+            years = (
                 <Card>
                     <CardHeader color={this.state.color}>
-                        <h4 className={classes.cardTitleWhite}>Classification</h4>
-                        <p className={classes.cardCategoryWhite}>Informations sur les éléments permettant la classification du projet</p>
+                        <h4 className={classes.cardTitleWhite}>Années</h4>
+                        <p className={classes.cardCategoryWhite}>Années concernées par le projet</p>
                     </CardHeader>
                     <CardBody>
                         <GridContainer>
-                            <GridItem xs={12} md={6}>
-                                <Typography variant="body2" align="center">
-                                    Année(s) concernée(s) par le projet :
-                                </Typography>
-
+                            <GridItem xs={12} md={12}>
                                 <GridContainer alignItems="center" justify="center">
                                     {this.state.years.map(year =>
-                                        <GridItem xs={12} md={4} key={year._id}>
+                                        <GridItem xs={12} md={3} key={year._id}>
                                             <FormControlLabel
                                                 control={
                                                     <Checkbox
@@ -535,36 +520,93 @@ class ProjectProfile extends React.Component {
                                     )}
                                 </GridContainer>
                             </GridItem>
-
-                            <GridItem xs={12} md={6}>
-                                <Typography variant="body2" align="center">
-                                    Majeure(s) concernée(s) par le projet :
-                                </Typography>
-
-                                <FormControl fullWidth>
-                                    <InputLabel htmlFor="select-multiple">Majeure(s) ciblé(s)</InputLabel>
-                                    <Select
-                                        multiple
-                                        required
-                                        fullWidth
-                                        value={this.state.specializations_concerned}
-                                        onChange={this.handleSelect}
-                                        input={<Input id="select-multiple" />}
-                                    >
-                                        {this.state.specializations.map(specialization => (
-                                            <MenuItem key={specialization._id} value={specialization._id}>
-                                                {specialization.name.fr}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </GridItem>
                         </GridContainer>
                     </CardBody>
                     <CardFooter>
                     </CardFooter>
                 </Card >
             );
+        }
+        if (!this.state.loadingSpecialization && !this.state.loadingProject) {
+            let speData = this.state.specializations.map(spe => {
+                let arr = [spe.name.fr, "", "", ""];
+                let i = 0;
+
+                do {
+                    if (this.state.project.specializations.length > 0 && this.state.project.specializations[i].specialization._id == spe._id) {
+                        if (this.state.project.specializations[i].status === "validated")
+                            arr[1] = <span style={{ color: "green" }}>Validé</span>;
+                        else if (this.state.project.specializations[i].status === "rejected")
+                            arr[1] = <span style={{ color: "red" }}>Refusé</span>;
+                        else
+                            arr[1] = <span style={{ color: "orange" }}>En attente de validation</span>;
+                        arr[2] = "";
+                        if (this.state.project.status == "pending") {
+                            arr[3] = (
+                                <div>
+                                    <Button
+                                        size="sm"
+                                        disabled={this.state.project.specializations[i].status === "validated"}
+                                        color="success"
+                                        name="validated"
+                                        onClick={this.specializationValidation("validated", spe._id)}>
+                                        Valider le projet
+                                </Button>
+                                    <Button
+                                        size="sm"
+                                        disabled={this.state.project.specializations[i].status === "pending"}
+                                        color="warning"
+                                        name="pending"
+                                        onClick={this.specializationValidation("pending", spe._id)}>
+                                        Mettre en attente
+                                </Button>
+                                    <Button
+                                        size="sm"
+                                        disabled={this.state.project.specializations[i].status === "rejected"}
+                                        color="danger"
+                                        name="rejected"
+                                        onClick={this.specializationValidation("rejected", spe._id)}>
+                                        Refuser le projet
+                                </Button>
+                                </div>
+                            );
+                        }
+                        break;
+                    } else {
+                        arr[1] = "Non concerné";
+                        if (this.state.project.status == "pending")
+                            arr[2] = (
+                                <Tooltip title="Ajouter la majeure comme concernée par le projet" placement="top">
+                                    <Button component="span" size="sm" color="info" onClick={this.addSpecialization(spe._id)}><Add />Ajouter</Button>
+                                </Tooltip>);
+                    }
+                    i++
+                } while (i < this.state.project.specializations.length);
+
+                return arr;
+            });
+
+            specializations = (
+                <Card>
+                    <CardHeader color={this.state.color}>
+                        <h4 className={classes.cardTitleWhite}>Majeures</h4>
+                        <p className={classes.cardCategoryWhite}>Majeures concernées par le projet</p>
+                    </CardHeader>
+                    <CardBody>
+                        <GridContainer>
+                            <GridItem xs={12}>
+                                <Table
+                                    tableHeaderColor="primary"
+                                    tableHead={["Majeure", "Status", "", "Validation"]}
+                                    tableData={speData}
+                                />
+                            </GridItem>
+                        </GridContainer>
+                    </CardBody>
+                    <CardFooter>
+                    </CardFooter>
+                </Card >
+            )
         }
 
         if (!this.state.loadingComments) {
@@ -643,11 +685,11 @@ class ProjectProfile extends React.Component {
 
                     {projectInfo}
 
-                    {classification}
-
                     {files}
 
-                    {actions}
+                    {years}
+
+                    {specializations}
 
                     {comments}
                 </GridItem>
