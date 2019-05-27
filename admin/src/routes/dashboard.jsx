@@ -37,31 +37,68 @@ const dashboardRoutes = [
     component: DashboardPage
   },
   {
-    path: "/user/:id",
+    path: "/user/:id([a-zA-Z0-9]{24})",
     component: UserProfile,
-    invisible: true
+    invisible: true,
+    exact: true
   },
   {
     path: "/project/:id",
     component: ProjectProfile,
-    invisible: true
+    invisible: true,
+    exact: true
   },
   {
-    path: "/specialization/:id",
+    path: "/specialization/:id([a-zA-Z0-9]{24})",
     component: SpecializationProfile,
-    invisible: true
+    invisible: true,
+    exact: true
   },
   {
-    path: "/year/:id",
+    path: "/year/:id([a-zA-Z0-9]{24})",
     component: YearProfile,
-    invisible: true
+    invisible: true,
+    exact: true
   },
   {
-    path: "/projects",
+    path: "/project/",
     sidebarName: "Liste projets",
     navbarName: "Liste des projets",
     icon: PersonAdd,
-    component: ProjectList
+    component: ProjectList,
+    exact: true
+  },
+  {
+    path: "/user",
+    sidebarName: "Liste utilisateurs",
+    navbarName: "Liste des utilisateurs",
+    icon: People,
+    component: UserList,
+    exact: true
+  },
+  {
+    path: "/year",
+    sidebarName: "Liste années",
+    navbarName: "Liste des années",
+    icon: "list",
+    component: YearList,
+    exact: true
+  },
+  {
+    path: "/specialization",
+    sidebarName: "Liste majeures",
+    navbarName: "Liste des majeures",
+    icon: "list",
+    component: SpecializationList,
+    exact: true
+  },
+  {
+    path: "/settings",
+    sidebarName: "Réglages",
+    navbarName: "Réglages",
+    icon: "settings",
+    component: Settings,
+    adminOnly: false
   },
   {
     path: "/createUser",
@@ -72,26 +109,12 @@ const dashboardRoutes = [
     adminOnly: true
   },
   {
-    path: "/users",
-    sidebarName: "Liste utilisateurs",
-    navbarName: "Liste des utilisateurs",
-    icon: People,
-    component: UserList
-  },
-  {
     path: "/createSpecialization",
     sidebarName: "Créer majeure",
     navbarName: "Créer une majeure",
     icon: "add",
     component: CreateSpecialization,
     adminOnly: true
-  },
-  {
-    path: "/specializations",
-    sidebarName: "Liste majeures",
-    navbarName: "Liste des majeures",
-    icon: "list",
-    component: SpecializationList
   },
   {
     path: "/createYear",
@@ -101,21 +124,6 @@ const dashboardRoutes = [
     component: CreateYear,
     adminOnly: true
   },
-  {
-    path: "/years",
-    sidebarName: "Liste années",
-    navbarName: "Liste des années",
-    icon: "list",
-    component: YearList
-  },
-  {
-    path: "/settings",
-    sidebarName: "Réglages",
-    navbarName: "Réglages",
-    icon: "settings",
-    component: Settings,
-    adminOnly: false
-  }
 ];
 
 export default dashboardRoutes;

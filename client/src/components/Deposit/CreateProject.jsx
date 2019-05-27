@@ -65,7 +65,6 @@ class CreateProject extends React.Component {
     }
 
     handleSpecializations = event => {
-        console.log(event)
         this.setState({ majors_concerned: event.target.value });
     };
 

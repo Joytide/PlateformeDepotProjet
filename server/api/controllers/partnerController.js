@@ -25,7 +25,7 @@ exports.listAllPartners = function (req, res) {
 			.populate({
 				path: 'projects',
 				populate: {
-					path: "majors_concerned study_year"
+					path: "specializations.specialization study_year"
 				}
 			})
 			.exec((err, partner) => {
@@ -68,7 +68,6 @@ Your project submission request has been registered.\n
 // Return a promise when creating a Partner
 exports.createPartner = (req, res, next) => {
 	const data = req.body;
-	console.log(data);
 	if (data.first_name && data.last_name && data.email && data.company) {
 		Partner.findOne({ email: data.email }, async (err, partner) => {
 			if (err) next(err);
@@ -232,7 +231,6 @@ function generatePassword(size) {
 			// Prevent key collision
 			Partner.countDocuments({ key: keyHash }, (err, count) => {
 				if (err) reject(err);
-				console.log(keyHash, count)
 				if (count == 0) resolve({ key: key, hash: keyHash });
 				else reject(new Error("KeyCollision"));
 			});

@@ -136,14 +136,16 @@ class ProjectCard extends React.Component {
 								</Grid>
 								<Grid container spacing={8}>
 									{
-										project.majors_concerned
-											.sort((a, b) => (a.abbreviation > b.abbreviation) ? 1 : ((b.abbreviation > a.abbreviation) ? -1 : 0))
-											.map(major => {
-												return (
-													<Grid key={major._id} item>
-														<Chip label={major.abbreviation} color="secondary" />
-													</Grid>
-												);
+										project.specializations
+											.sort((a, b) => (a.specialization.abbreviation > b.specialization.abbreviation) ? 1 : ((b.specialization.abbreviation > a.specialization.abbreviation) ? -1 : 0))
+											.map(spe => {
+												if (spe.status != "rejected")
+													return (
+														<Grid key={spe.specialization._id} item>
+															<Chip label={spe.specialization.abbreviation} color="secondary" />
+														</Grid>
+													);
+												return;
 											})
 									}
 								</Grid>
@@ -157,7 +159,6 @@ class ProjectCard extends React.Component {
 									}
 								</Grid>
 							</CardActions>
-
 						</Card>
 					</Link>
 				</div>);

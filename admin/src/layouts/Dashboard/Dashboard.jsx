@@ -81,10 +81,10 @@ class App extends React.Component {
 				return <Redirect from={prop.path} to={prop.to} key={key} />;
 			if (prop.adminOnly) {
 				if (this.state.isAdmin)
-					return <Route path={prop.path} component={prop.component} key={key} />;
+					return <Route path={prop.path} exact={prop.exact} component={prop.component} key={key} />;
 			}
 			else
-				return <Route path={prop.path} component={prop.component} key={key} />;
+				return <Route path={prop.path} exact={prop.exact} component={prop.component} key={key} />;
 		});
 
 		return (
@@ -108,7 +108,10 @@ class App extends React.Component {
 					/>
 
 					<div className={classes.content}>
-						<div className={classes.container}>{switchRoutes}</div>
+						<Switch>
+							{switchRoutes}
+							<Redirect to="/dashboard" />
+						</Switch>
 					</div>
 					<Footer />
 				</div>
