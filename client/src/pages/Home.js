@@ -53,12 +53,11 @@ class HomePage extends React.Component {
 					<Paper className={classes.paper}>
 						<Grid container direction="column" justify="center" alignItems="flex-start" spacing={24}>
 							<Grid item>
-								<Grid container alignItems="center" justify="center" spacing={10}>
+								<Grid container alignItems="center" justify="center" spacing={32}>
 									<Grid item xs={1}>
 										<img className={classes.logo} alt="logo_esilv" src="./logo_esilv_2.png" />
 									</Grid>
-									<Grid item xs={1}></Grid>
-									<Grid item xs={10}>
+									<Grid item xs={11}>
 										<Typography variant="h3">
 											{i18n.t('home.title', { lng })}
 										</Typography>
