@@ -7,13 +7,10 @@ import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import nl2br from 'react-newline-to-break';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import VerticalAlignBottom from '@material-ui/icons/VerticalAlignBottom';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-
 
 import ProjectsToPDF from '../components/Projects/ProjectsToPDF';
 import AuthService from '../components/AuthService';
@@ -105,15 +102,13 @@ class ProjectPage extends React.Component {
                                             })
                                         }
                                         {
-                                            project.specializations.map(spe => {
-                                                if (spe.status != "rejected")
-                                                    return <Chip
-                                                        key={spe._id}
-                                                        label={spe.specialization.abbreviation}
-                                                        color="secondary"
-                                                    />
-                                                return;
-                                            })
+                                            project.specializations
+                                                .filter(spe => spe.status !== "rejected")
+                                                .map(spe => < Chip
+                                                    key={spe._id}
+                                                    label={spe.specialization.abbreviation}
+                                                    color="secondary"
+                                                />)
                                         }
                                         {
                                             project.keywords.sort().map(keyword => {

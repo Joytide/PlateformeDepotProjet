@@ -7,7 +7,6 @@ import i18n from '../components/i18n';
 import Carousel from '../components/Carousel.js';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import { Divider } from '@material-ui/core';
 
 const styles = theme => ({
 	root: {

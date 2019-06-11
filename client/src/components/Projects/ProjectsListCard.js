@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
-import ProjectFilter from './ProjectFilter';
+//import ProjectFilter from './ProjectFilter';
 import ProjectCard from './ProjectCard';
 import ProjectsToPDF from './ProjectsToPDF';
 
@@ -51,7 +51,7 @@ class ProjectsListCard extends React.Component {
 		}
 		if (this.state.majeur_value !== "" && this.state.majeur_value !== null) {
 			let tmp = this.state.projectToDisplay.filter(project => {
-				if (project.specializations.filter(spe => spe.specialization == this.state.majeur_value).length > 0) {
+				if (project.specializations.filter(spe => spe.specialization === this.state.majeur_value).length > 0) {
 					return true;
 				}
 				return false;
