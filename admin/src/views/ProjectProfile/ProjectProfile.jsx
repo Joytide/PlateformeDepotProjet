@@ -350,26 +350,26 @@ class ProjectProfile extends React.Component {
                     <CardBody>
                         <GridContainer>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2" gutterBottom>
+                                <Typography variant="" gutterBottom>
                                     Entreprise :
                                 </Typography>
-                                <Typography variant="body1" gutterBottom>
+                                <Typography variant="" gutterBottom>
                                     {this.state.project.partner.company}
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2" gutterBottom>
+                                <Typography variant="" gutterBottom>
                                     Mail :
                                 </Typography>
-                                <Typography variant="body1" gutterBottom>
+                                <Typography variant="" gutterBottom>
                                     <a href={"mailto:" + this.state.project.partner.email}>{this.state.project.partner.email}</a>
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2" gutterBottom>
+                                <Typography variant="" gutterBottom>
                                     Nom :
                                 </Typography>
-                                <Typography variant="body1" gutterBottom>
+                                <Typography variant="" gutterBottom>
                                     {this.state.project.partner.last_name}
                                 </Typography>
                             </GridItem>
@@ -377,7 +377,7 @@ class ProjectProfile extends React.Component {
                                 <Typography variant="body2" gutterBottom>
                                     Prénom :
                         </Typography>
-                                <Typography variant="body1" gutterBottom>
+                                <Typography variant="" gutterBottom>
                                     {this.state.project.partner.first_name}
                                 </Typography>
                             </GridItem>
@@ -406,23 +406,23 @@ class ProjectProfile extends React.Component {
                             {this.state.project.title}
                         </Typography>
                         <br />
-                        <Typography variant="body2">
+                        <Typography variant="">
                             Pitch du projet :
                                 </Typography>
-                        <Typography variant="body1">
+                        <Typography variant="">
                             ...
                         </Typography>
                         <br />
-                        <Typography variant="body2">
+                        <Typography variant="">
                             Description :
                         </Typography>
-                        <Typography variant="body1" className={classes.displayLineBreak}>
+                        <Typography variant="" className={classes.displayLineBreak}>
                             {this.state.project.description}
                         </Typography>
                         <br />
                         <Divider />
                         <br />
-                        <Typography variant="body2">
+                        <Typography variant="">
                             Mot(s) clé(s) :
                         </Typography>
                         <Typography>
