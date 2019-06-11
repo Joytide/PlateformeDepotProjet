@@ -207,18 +207,18 @@ class CreateProject extends React.Component {
                                 input={<Input id="select-multiple" />}
                             >
                                 {this.state.specializations.map(specialization => (
-                                    <Tooltip primary="Drafts"
-                                        disableFocusListener
-                                        disableTouchListener
-                                        TransitionComponent={Zoom}
-                                        title={lng === "fr" ? specialization.description.fr : specialization.description.en}
-                                    >
-                                        <MenuItem key={specialization._id} value={specialization._id}>
+                                    <MenuItem key={specialization._id} value={specialization._id}>
+                                        <Tooltip primary="Drafts"
+                                            disableFocusListener
+                                            disableTouchListener
+                                            TransitionComponent={Zoom}
+                                            title={lng === "fr" ? specialization.description.fr : specialization.description.en}
+                                        >
                                             <div>
                                                 {lng === "fr" ? specialization.name.fr : specialization.name.en}
                                             </div>
-                                        </MenuItem>
-                                    </Tooltip>
+                                        </Tooltip>
+                                    </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
