@@ -2,6 +2,8 @@
 import Dashboard from "@material-ui/icons/Dashboard";
 import People from "@material-ui/icons/People";
 import PersonAdd from "@material-ui/icons/PersonAdd";
+import Assignment from "@material-ui/icons/Assignment";
+import DateRange from "@material-ui/icons/DateRange";
 // core components/views
 
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
@@ -64,7 +66,7 @@ const dashboardRoutes = [
     path: "/project/",
     sidebarName: "Liste projets",
     navbarName: "Liste des projets",
-    icon: PersonAdd,
+    icon: Assignment,
     component: ProjectList,
     exact: true
   },
@@ -77,12 +79,12 @@ const dashboardRoutes = [
     exact: true
   },
   {
-    path: "/year",
-    sidebarName: "Liste années",
-    navbarName: "Liste des années",
-    icon: "list",
-    component: YearList,
-    exact: true
+    path: "/createUser",
+    sidebarName: "Ajouter utilisateur",
+    navbarName: "Ajouter un utilisateur",
+    icon: PersonAdd,
+    component: CreateUser,
+    adminOnly: true
   },
   {
     path: "/specialization",
@@ -93,22 +95,6 @@ const dashboardRoutes = [
     exact: true
   },
   {
-    path: "/settings",
-    sidebarName: "Réglages",
-    navbarName: "Réglages",
-    icon: "settings",
-    component: Settings,
-    adminOnly: false
-  },
-  {
-    path: "/createUser",
-    sidebarName: "Ajouter utilisateur",
-    navbarName: "Ajouter un utilisateur",
-    icon: PersonAdd,
-    component: CreateUser,
-    adminOnly: true
-  },
-  {
     path: "/createSpecialization",
     sidebarName: "Créer majeure",
     navbarName: "Créer une majeure",
@@ -117,12 +103,28 @@ const dashboardRoutes = [
     adminOnly: true
   },
   {
+    path: "/year",
+    sidebarName: "Liste années",
+    navbarName: "Liste des années",
+    icon: DateRange,
+    component: YearList,
+    exact: true
+  },
+  {
     path: "/createYear",
     sidebarName: "Créer année",
     navbarName: "Créer une année",
     icon: "add",
     component: CreateYear,
     adminOnly: true
+  },
+  {
+    path: "/settings",
+    sidebarName: "Réglages",
+    navbarName: "Réglages",
+    icon: "settings",
+    component: Settings,
+    adminOnly: false
   },
 ];
 
