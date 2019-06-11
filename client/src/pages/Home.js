@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid';
 import i18n from '../components/i18n';
 import Carousel from '../components/Carousel.js';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import { Divider } from '@material-ui/core';
 
 const styles = theme => ({
 	root: {
@@ -51,15 +53,19 @@ class HomePage extends React.Component {
 					<Paper className={classes.paper}>
 						<Grid container direction="column" justify="center" alignItems="flex-start" spacing={24}>
 							<Grid item>
-								<Typography variant="h3">
-									{i18n.t('home.title', { lng })}
-								</Typography>
+								<Grid container alignItems="center" justify="center" spacing={10}>
+									<Grid item xs={1}>
+										<img className={classes.logo} alt="logo_esilv" src="./logo_esilv_2.png" />
+									</Grid>
+									<Grid item xs={1}></Grid>
+									<Grid item xs={10}>
+										<Typography variant="h3">
+											{i18n.t('home.title', { lng })}
+										</Typography>
+									</Grid>
+								</Grid>
 
-								{/*<Typography>
-									Please find here this call for Projects in English : <a href ="http://projets.labs.esilv.fr/CallForProjects.pdf">http://projets.labs.esilv.fr/CallForProjects.pdf</a> including information on process and usual topics for each specialty.
-								</Typography>*/}
-
-								<img className={classes.logo} alt="logo_esilv" src="./logo_esilv.png" />
+								<br /><br />
 
 								<Typography>
 									{i18n.t('home.title_p1', { lng })}<br />
@@ -99,7 +105,7 @@ class HomePage extends React.Component {
 							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p4', { lng })}</Typography>
 								<Typography align="justify">
-									{i18n.t('home.p4_l1', { lng })}<br />
+									<Link to="/deposit">{i18n.t('home.p4_l1', { lng })}</Link><br />
 									{i18n.t('home.p4_l2', { lng })}<br />
 									{i18n.t('home.p4_l3', { lng })}<br />
 									{i18n.t('home.p4_l4', { lng })}<br />
