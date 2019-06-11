@@ -81,58 +81,69 @@ class ProjectPage extends React.Component {
             return (
                 <div>
                     <Grid container style={{ marginTop: 12 }} justify="center">
-                        <Grid xs={11}>
+                        <Grid item xs={11}>
                             <Paper style={{ padding: 12 }}>
                                 <Typography align="center" variant="h3" paragraph>
                                     {project.number + " - " + project.title}
                                 </Typography>
 
                                 <Grid container justify="flex-end">
-                                    <ProjectsToPDF projects={[project]} ProjectsType="one" lng={lng} />
+                                    <Grid item>
+                                        <ProjectsToPDF projects={[project]} ProjectsType="one" lng={lng} />
+                                    </Grid>
                                 </Grid>
+
                                 <Grid container justify="space-between">
-                                    <Grid container spacing={8} xs>
+                                    <Grid item xs={12}>
                                         {
                                             project.study_year.sort().map(year => {
-                                                return <Grid item><Chip
+                                                return <Chip
+                                                    key={year._id}
                                                     label={year.abbreviation}
                                                     style={{ color: "white", backgroundColor: "#03a9f4" }}
-                                                /></Grid>
+                                                />
                                             })
                                         }
                                         {
                                             project.specializations.map(spe => {
                                                 if (spe.status != "rejected")
-                                                    return <Grid item><Chip label={spe.specialization.abbreviation} color="secondary" /></Grid>
+                                                    return <Chip
+                                                        key={spe._id}
+                                                        label={spe.specialization.abbreviation}
+                                                        color="secondary"
+                                                    />
                                                 return;
                                             })
                                         }
                                         {
                                             project.keywords.sort().map(keyword => {
-                                                return <Grid item><Chip label={keyword} color="grey" /></Grid>
+                                                return <Chip
+                                                    key={keyword}
+                                                    label={keyword}
+                                                    color="grey"
+                                                />
                                             })
                                         }
                                     </Grid>
-                                    <Grid>
+                                    <Grid item xs={12}>
                                         <Typography variant="subtitle1">
                                             {i18n.t('partner.label', { lng })} : {project.partner.company}, {new Date(project.edit_date).toLocaleDateString()}
                                         </Typography>
 
-                                        <Tooltip title="Like">
+                                        {/*<Tooltip title="Like">
                                             <IconButton color={this.state.isLiked ? 'secondary' : 'default'} aria-label="Like" onClick={this.handleChange}>
                                                 <FavoriteIcon />
                                             </IconButton>
-                                        </Tooltip>
+                                    </Tooltip>*/}
 
                                     </Grid>
-                                </Grid>
 
-                                <hr></hr>
-
-                                <Grid xs={8}>
-                                    <Typography component="body1">
-                                        {nl2br(project.description)}
-                                    </Typography>
+                                    <Grid item xs={8}>
+                                        <hr></hr>
+                                        <Typography component="">
+                                            {nl2br(project.description)}
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
 
                                 <hr></hr>
