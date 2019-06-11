@@ -96,12 +96,12 @@ i18next
 						p3_l6: 'The team will be regularly monitored throughout its project by its "project manager", who will also be responsible for evaluating it.',
 						p3_l7: 'At the end of the project, there will be a feedback meeting with the partner (project closure), followed by a showroom of presentations of all projects (31 January for the A5s; 28 March for the A4s) to which you will of course be invited and welcome.',
 						p4: 'How to propose a project?',
-						p4_l1: 'Click on [Submit a project] at the top right of the page.',
+						p4_l1: 'Click here to start the process of submitting a project.',
 						p4_l2: 'You will then be asked to provide information on the partner and then describe the proposed project, and identify the desired and expected competencies.',
 						p4_l3: 'Deadline for the submission of project proposals: 5 September 2018',
 						p4_l4: 'If you have any questions, please do not hesitate to contact us: projetesilv@devinci.fr',
 						p5: 'Thank you for your participation, and see you soon.',
-						p5_l1: 'The EGPE (ESILV Project Management Team)',
+						p5_l1: 'The EGPE (ESILV Project Management Team)', 
 					},
 					navs: {
 						home: 'Home',
@@ -115,8 +115,9 @@ i18next
 						disconnect:"Disconnect"
 					},
 					forgetPass: {
+						title:"Lost link",
 						submit: 'Submit',
-						desc: 'If you have lost your link to connect, please enter your email to retrieve it.',
+						desc: 'The first time you submitted a project, you should have received an email with a link to connect.\nIf it isn\'t in your spam inbox, we can send it again. You just have to fill the below textbox with your email address.',
 						textfield: "Your email address"
 					},
 					carousel: {
@@ -202,8 +203,9 @@ i18next
 					campus: { h3: 'Un campus, quatre écoles', },
 					leonard: { p: 'Le Pôle Léonard de Vinci, c’est trois écoles à Paris-La Défense : une école d’ingénieurs, une école de management, une école multimédia. En complément, un Institut propose de la formation continue.', },
 					forgetPass: {
+						title: "Lien de connexion perdu",
 						submit: 'Envoyer',
-						desc: 'Si vous avez perdu votre lien pour vous connecter, veuillez entrer votre mail pour le récupérer.',
+						desc: 'Lors de la soumission de votre premier projet, un mail vous a été envoyé avec le lien de connexion.\nS\'il n\'est pas dans votre boite de spam, nous pouvons vous le renvoyer. Il suffit de remplir votre adresse mail ci-dessous.',
 						textfield: "Votre adresse mail"
 					},
 					home: {
@@ -226,7 +228,7 @@ i18next
 						p3_l6: 'L\'équipe sera suivie régulièrement tout au long de son projet par son "directeur de projet", qui sera aussi chargé de l\'évaluer.',
 						p3_l7: 'La fin du projet verra une réunion de restitution avec le partenaire (clôture de projet), suivie d\'un showroom de présentations de tous les projets (le 31 janvier pour les A5 ; le 28 mars pour les A4) auquel vous serez bien entendu invité et bienvenu.',
 						p4: 'Comment proposer un projet ?',
-						p4_l1: 'Cliquez sur [Soumettre un projet] en haut à droite de la page.',
+						p4_l1: 'Cliquez ici pour commencer le dépôt d\'un projet.',
 						p4_l2: 'Vous devrez alors donner des information sur le partenaire puis décrire le projet proposé, et cibler les compétences voulues et attendues.',
 						p4_l3: 'Deadline pour le dépôt des proposition de projets : 5 Septembre 2018',
 						p4_l4: 'Pour toute question, n\'hésitez pas à nous contacter : projetesilv@devinci.fr',

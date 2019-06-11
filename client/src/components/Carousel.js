@@ -102,7 +102,7 @@ class Carousel extends React.Component {
 
 		return (
 			<div className={classes.root}>
-				<div className={classes.link} onClick={() => window.location.href = tutorialSteps[activeStep].link}>
+				<div className={classes.link} onClick={() => window.open(tutorialSteps[activeStep].link, "_blank")}>
 					<Paper square elevation={0} className={classes.header}>
 						<Typography>{tutorialSteps[activeStep].label}</Typography>
 					</Paper>
