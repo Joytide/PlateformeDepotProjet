@@ -1,8 +1,10 @@
 import React from 'react';
 import i18n from '../components/i18n';
+import { Link } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import nl2br from 'react-newline-to-break';
@@ -86,7 +88,13 @@ class ProjectPage extends React.Component {
 
                                 <Grid container justify="flex-end">
                                     <Grid item>
-                                        <ProjectsToPDF projects={[project]} ProjectsType="one" lng={lng} />
+                                        <a href={api.host + ":" + api.port + "/api/project/file/" + project.pdf}>
+                                            <Button lng={lng} variant="outlined" color='secondary' style={{ marginRight: 12 }}>
+                                                <Typography variant="button" >
+                                                    {i18n.t('pdf.label', { lng })}
+                                                </Typography>
+                                            </Button>
+                                        </a>
                                     </Grid>
                                 </Grid>
 
@@ -148,7 +156,9 @@ class ProjectPage extends React.Component {
                                         project.files.map(file => {
                                             return (
                                                 <Grid item xs={2}>
-                                                    {file.originalName}
+                                                    <Typography style={{ wordBreak: "break-word" }}>
+                                                        {file.originalName}
+                                                    </Typography>
                                                     <IconButton href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
                                                         <VerticalAlignBottom />
                                                     </IconButton>
