@@ -14,7 +14,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import VerticalAlignBottom from '@material-ui/icons/VerticalAlignBottom';
 
-import ProjectsToPDF from '../components/Projects/ProjectsToPDF';
 import AuthService from '../components/AuthService';
 import { api } from "../config";
 
