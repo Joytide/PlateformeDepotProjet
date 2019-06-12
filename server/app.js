@@ -42,6 +42,7 @@ mongoose.connect(
 
 const auth = require('./api/controllers/authController');
 
+	if (!exists)
 });
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
