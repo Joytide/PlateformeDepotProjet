@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <style>
+        .header {
+            width: 100%;
+            margin: 0 auto;
+            margin-bottom: 20px;
+            vertical-align: middle;
+        }
+
+        .header div {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .header .img {
+            width: 35%;
+            padding-right: 5%;
+        }
+
+        .header .img img {
+            width: 100%;
+        }
+
+        .header div p {
+            font-size: 27px;
+            text-align: right;
+        }
+
+        .body {
+            border: 1px solid black;
+            width: 90%;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+
+        .body .projectNumber p {
+            color: red;
+            font-size: 20px;
+            text-align: right;
+            font-weight: bold;
+            padding-right: 35px;
+        }
+
+        .body .description p {
+            font-size: 16px;
+            margin-left: 30px;
+            margin-right: 30px;
+            margin-top: 30px;
+            text-align: justify;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+    </style>
+
+    <div class="header">
+        <!--fs.workingDirectory pour le file-->
+        <div class="img">
+            <img src="<%= "file:///" + imagePath %>" />
+        </div>
+        <div>
+            <p><span style="font-weight: bold">P</span>rojet D'<span style="font-weight: bold">I</span>nnovation <span
+                    style="font-weight:bold">I</span>ndustrielle 4 & 5</p>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="projectNumber">
+            <p>Projet n°<%= project.number %></p>
+        </div>
+    </div>
+    <div class="body">
+        <div class="description">
+            <p><span style="font-weight:bold">Titre : </span>
+                <%= project.title %>
+            </p>
+            <p><span style="font-weight:bold">Description : </span>
+                <%- project.description.replace(/\n/gi, '<br />') %>
+            </p>
+        </div>
+    </div>
+    <div class="body">
+        <div class="description">
+            <p><span class="bold">Majeure(s) concernée(s) :
+                </span><%= project.specializations.filter(spe => spe.status === "validated").map(spe => spe.specialization.abbreviation).join(',') %>
+            </p>
+            <p><span class="bold">Année(s) concernée(s) :
+                </span><%= project.study_year.map(year => year.abbreviation).join(',') %></p>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="description">
+            <p><span class="bold">Informations sur le partenaire</span></p>
+            <p><span class="bold">Entreprise / Association / &Eacute;cole : </span><%= project.partner.company %></p>
+            <p><span class="bold">Nom : </span><%= project.partner.last_name %></p>
+            <p><span class="bold">Prénom : </span><%= project.partner.first_name %></p>
+        </div>
+    </div>
+
+</body>
+
+</html>

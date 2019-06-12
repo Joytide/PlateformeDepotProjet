@@ -5,6 +5,8 @@ const multer = require('multer');
 const PDFDocument = require('pdfkit');
 var path = require('path');
 var mongoose = require('mongoose');
+const { emitter } = require('../../eventsCommon');
+
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
@@ -375,10 +377,17 @@ exports.projectValidation = (req, res, next) => {
 					}
 
 					if (count == project.specializations.length) {
-						project.status = rejected ? "rejected" : "validated";
+						if (rejected) {
+							project.status = "rejected";
+							emitter.emit("projectRefused", project._id);
+						} 
+						else {
+							project.status = "validated";
+							emitter.emit("projectValidated", project._id);
+						}
 
 					}
-					
+
 					project.save((err, savedProject) => {
 						if (err)
 							next(err)
