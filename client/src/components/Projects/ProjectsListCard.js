@@ -7,7 +7,6 @@ import Paper from '@material-ui/core/Paper';
 
 //import ProjectFilter from './ProjectFilter';
 import ProjectCard from './ProjectCard';
-import ProjectsToPDF from './ProjectsToPDF';
 
 
 class ProjectsListCard extends React.Component {
@@ -134,10 +133,6 @@ class ProjectsListCard extends React.Component {
 							<Typography align="center" variant="display2" paragraph>
 								{i18n.t('project.title', { lng })}
 							</Typography>
-
-							<Grid container justify="flex-end">
-								<ProjectsToPDF projects={this.props.projects} ProjectsType="all" lng={lng} />
-							</Grid>
 
 							{/*<ProjectFilter 
 								getdropDownValue={this.handledropDownValue.bind(this)} 
