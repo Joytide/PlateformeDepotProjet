@@ -380,10 +380,9 @@ exports.projectValidation = (req, res, next) => {
 						if (rejected) {
 							project.status = "rejected";
 							emitter.emit("projectRefused", project._id);
-						} 
+						}
 						else {
 							project.status = "validated";
-							emitter.emit("projectValidated", project._id);
 						}
 
 					}
@@ -391,8 +390,12 @@ exports.projectValidation = (req, res, next) => {
 					project.save((err, savedProject) => {
 						if (err)
 							next(err)
-						else
+						else {
+							if (project.status === "validated")
+								emitter.emit("projectValidated", project._id);
+
 							res.json(savedProject)
+						}
 					});
 				} else {
 					res.json();
