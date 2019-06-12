@@ -5,6 +5,7 @@ const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const colors = require('colors');
+const fs = require('fs');
 
 const sha256 = require('js-sha256');
 const bcrypt = require('bcrypt');
@@ -41,6 +42,7 @@ mongoose.connect(
 
 const auth = require('./api/controllers/authController');
 
+});
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(auth.passport.initialize());
