@@ -41,7 +41,7 @@ const DEFAULT_STATE = {
 	study_year: [],
 	majors_concerned: [],
 
-	stepIndex:2,
+	stepIndex: 0,
 	title: "",
 	description: "",
 	keyWords: [],
@@ -156,7 +156,7 @@ class Deposit extends React.Component {
 							</Grid>
 							<Grid item xs={2} style={{ paddingBottom: "20px", paddingLeft: "20px" }}>
 								<Button lng={lng} variant='contained' color='primary' onClick={this.handleNext}>
-									<Typography>
+									<Typography color="inherit">
 										{i18n.t('next.label', { lng })}
 									</Typography>
 								</Button>

@@ -278,7 +278,7 @@ class CreateProject extends React.Component {
                     <Grid container spacing={40} justify="center">
                         <Grid item xs={2}>
                             <Button lng={lng} variant='contained' color='primary' type="submit">
-                                <Typography>
+                                <Typography color="inherit">
                                     {i18n.t('deposit.label', { lng })}
                                 </Typography>
                             </Button>

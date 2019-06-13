@@ -216,7 +216,7 @@ class CreatePartner extends React.Component {
                         <Grid container spacing={40} justify="center">
                             <Grid item xs={2}>
                                 <Button lng={lng} variant='contained' color='primary' type="submit">
-                                    <Typography>
+                                    <Typography color="inherit">
                                         {this.state.isExisting ? i18n.t('next.label', { lng }) : i18n.t('createAccount.label', { lng })}
                                     </Typography>
                                 </Button>
