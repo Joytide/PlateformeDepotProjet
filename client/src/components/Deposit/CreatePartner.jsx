@@ -45,6 +45,7 @@ class CreatePartner extends React.Component {
         if (this.context.user._id)
             this.setState({
                 ...this.context.user,
+                alreadyPartner: this.context.user.alreadyPartner.toString(),
                 isExisting: true
             });
     }
