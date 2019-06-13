@@ -65,10 +65,10 @@ Your project submission request has been registered.\n
 	});
 }
 
-// Return a promise when creating a Partner
 exports.createPartner = (req, res, next) => {
 	const data = req.body;
-	if (data.first_name && data.last_name && data.email && data.company) {
+	console.log(data);
+	if (data.first_name && data.last_name && data.email && data.company && data.kind && data.alreadyPartner !== undefined) {
 		Partner.findOne({ email: data.email }, async (err, partner) => {
 			if (err) next(err);
 			else {
@@ -78,11 +78,16 @@ exports.createPartner = (req, res, next) => {
 					next(error);
 				} else {
 					let newPartner = new Partner({
-						"first_name": data.first_name,
-						"last_name": data.last_name,
-						"email": data.email,
-						"company": data.company
+						first_name: data.first_name,
+						last_name: data.last_name,
+						email: data.email,
+						alreadyPartner: data.alreadyPartner,
+						kind: data.kind,
+						company: data.company
 					});
+
+					if (data.address) newPartner.company = data.address;
+					if (data.phone) newPartner.phone = data.phone;
 
 					generatePassword(16)
 						.then(keyData => {

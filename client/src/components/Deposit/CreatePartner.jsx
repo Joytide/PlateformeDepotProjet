@@ -5,6 +5,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
@@ -24,10 +30,15 @@ class CreatePartner extends React.Component {
             email: "",
             first_name: "",
             last_name: "",
+            kind: "company",
+            phone: "",
+            address: "",
+            alreadyPartner: "false",
             isExisting: false
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleRadioChange = this.handleRadioChange.bind(this);
     }
 
     componentDidMount() {
@@ -44,6 +55,12 @@ class CreatePartner extends React.Component {
         });
     }
 
+    handleRadioChange = prop => e => {
+        this.setState({
+            [prop]: e.target.value
+        });
+    }
+
     handleNext = () => {
         if (this.state.isExisting && this.props.next)
             this.props.next();
@@ -52,7 +69,10 @@ class CreatePartner extends React.Component {
                 first_name: this.state.first_name,
                 last_name: this.state.last_name,
                 email: this.state.email,
-                company: this.state.company
+                company: this.state.company,
+                phone: this.state.phone,
+                kind: this.state.kind,
+                alreadyPartner: this.state.alreadyPartner === "true",
             };
 
             AuthService.fetch("/api/partner/", {
@@ -84,8 +104,25 @@ class CreatePartner extends React.Component {
                     </Grid>
 
                     <Grid item>
+                        <FormControl disabled={this.state.isExisting} component="fieldset" className={classes.formControl}>
+                            <FormLabel component="legend">{i18n.t('createPartner.kind', { lng }) + " *"}</FormLabel>
+                            <RadioGroup
+                                className={classes.group}
+                                value={this.state.kind}
+                                onChange={this.handleRadioChange("kind")}
+                                row
+                            >
+                                <FormControlLabel value="company" control={<Radio />} label={i18n.t('createPartner.company', { lng })} />
+                                <FormControlLabel value="association" control={<Radio />} label={i18n.t('createPartner.association', { lng })} />
+                                <FormControlLabel value="school" control={<Radio />} label={i18n.t('createPartner.school', { lng })} />
+                                <FormControlLabel value="other" control={<Radio />} label={i18n.t('createPartner.other', { lng })} />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
+
+                    <Grid item>
                         <TextValidator
-                            label={i18n.t('email.label', { lng })}
+                            label={i18n.t('email.label', { lng })+" *"}
                             placeholder={i18n.t('email.label', { lng })}
                             validators={['required', 'isEmail', 'maxStringLength:40']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('notvalid.label', { lng }), i18n.t('field_length.label', { lng })]}
@@ -99,9 +136,9 @@ class CreatePartner extends React.Component {
 
                     <Grid item>
                         <TextValidator
-                            validators={['required', 'maxStringLength:70']}
+                            validators={['required','maxStringLength:70']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-                            label={i18n.t('company.label', { lng })}
+                            label={i18n.t('company.label', { lng }) + " *"}
                             placeholder={i18n.t('company.label', { lng })}
                             onChange={this.handleChange}
                             name="company" value={this.state.company}
@@ -115,7 +152,7 @@ class CreatePartner extends React.Component {
                         <TextValidator
                             validators={['required', 'maxStringLength:30']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-                            label={i18n.t('firstname.label', { lng })}
+                            label={i18n.t('firstname.label', { lng })+ " *"}
                             placeholder={i18n.t('firstname.label', { lng })}
                             onChange={this.handleChange}
                             fullWidth={true}
@@ -128,12 +165,51 @@ class CreatePartner extends React.Component {
                         <TextValidator
                             validators={['required', 'maxStringLength:30']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-                            label={i18n.t('lastname.label', { lng })}
+                            label={i18n.t('lastname.label', { lng })+" *"}
                             placeholder={i18n.t('lastname.label', { lng })}
                             onChange={this.handleChange} fullWidth={true}
                             name="last_name" value={this.state.last_name}
                             disabled={this.state.isExisting}
                         />
+                    </Grid>
+
+                    <Grid item>
+                        <TextValidator
+                            validators={['maxStringLength:30']}
+                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            label={i18n.t('createPartner.phone', { lng })}
+                            placeholder={i18n.t('createPartner.phone', { lng })}
+                            onChange={this.handleChange} fullWidth={true}
+                            name="phone" value={this.state.phone}
+                            disabled={this.state.isExisting}
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <TextValidator
+                            validators={['maxStringLength:100']}
+                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            label={i18n.t('createPartner.address', { lng })}
+                            placeholder={i18n.t('createPartner.address', { lng })}
+                            onChange={this.handleChange} fullWidth={true}
+                            name="address" value={this.state.address}
+                            disabled={this.state.isExisting}
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <FormControl disabled={this.state.isExisting} component="fieldset" className={classes.formControl}>
+                            <FormLabel component="legend">{i18n.t('createPartner.alreadyPartner', { lng }) + " *"}</FormLabel>
+                            <RadioGroup
+                                className={classes.group}
+                                value={this.state.alreadyPartner}
+                                onChange={this.handleRadioChange("alreadyPartner")}
+                                row
+                            >
+                                <FormControlLabel value="true" control={<Radio />} label={i18n.t('createPartner.yes', { lng })} />
+                                <FormControlLabel value="false" control={<Radio />} label={i18n.t('createPartner.no', { lng })} />
+                            </RadioGroup>
+                        </FormControl>
                     </Grid>
 
                     <Grid item>
