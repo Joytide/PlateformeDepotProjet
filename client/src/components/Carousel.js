@@ -96,7 +96,7 @@ class Carousel extends React.Component {
 				imgPath: './pictures/project4.jpg',
 				link: 'https://www.esilv.fr/portfolios/analyse-big-data-des-sites-unesco-via-les-reseaux-sociaux/'
 			},
-		];
+		].sort(() => Math.random() - 0.5);
 
 		const maxSteps = tutorialSteps.length;
 
