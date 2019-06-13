@@ -124,7 +124,6 @@ class ProjectPage extends React.Component {
                                                 return <Chip
                                                     key={keyword}
                                                     label={keyword}
-                                                    color="grey"
                                                 />
                                             })
                                         }

@@ -86,6 +86,10 @@ i18next
 						alreadyPartner: "Have you already been an ESILV partner ?",
 						yes: "Yes",
 						no: "No"
+					},
+					createProject: {
+						skills: "Skills developped",
+						infos: "Further informations"
 					},					
 					home: {
 						title: 'Industrial Innovation Projects',
@@ -230,7 +234,11 @@ i18next
 						alreadyPartner: "Avez-vous déjà encadré un projet à l'ESILV ?",
 						yes: "Oui",
 						no: "Non"
-					},		
+					},	
+					createProject: {
+						skills: "Compétences développées",
+						infos: "Informations complémentaires"
+					},	
 					home: {
 						title: 'Projets Innovation Industrielle',
 						title_p1: 'Vous êtes une entreprise, un laboratoire, un étudiant ? Vous souhaitez tester une idée, créer un prototype, déchiffrer et/ou explorer un terrain d\'innovation, ... ?',

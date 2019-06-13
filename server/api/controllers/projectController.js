@@ -128,7 +128,7 @@ exports.listProjects = function (req, res, next) {
 
 exports.createProject = (req, res, next) => {
 	const data = req.body;
-
+	console.log(data);
 	if (data.title && data.description
 		&& data.majors_concerned && data.majors_concerned.length > 0
 		&& data.study_year && data.study_year.length > 0) {
@@ -143,6 +143,8 @@ exports.createProject = (req, res, next) => {
 
 		if (data.keywords) newProject.keywords = data.keywords;
 		if (data.files) newProject.files = data.files;
+		if (data.skills) newProject.skills = data.skills;
+		if (data.infos) newProject.infos = data.infos;
 
 		Project.estimatedDocumentCount({}, (err, count) => {
 			if (err) next(err);

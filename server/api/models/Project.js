@@ -58,6 +58,8 @@ const ProjectSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    skills: String,
+    infos: String,
     likes: [
         {
             type: Schema.Types.ObjectId,

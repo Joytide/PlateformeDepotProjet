@@ -33,7 +33,10 @@ class CreateProject extends React.Component {
             description: "",
             study_year: [],
             majors_concerned: [],
-            files: []
+            files: [],
+            infos: "",
+            skills: "",
+            keywords: []
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -84,18 +87,18 @@ class CreateProject extends React.Component {
                 this.setState({ study_year: temp });
                 break;
 
-            case "major":
-                var temp2 = this.state.majors_concerned;
+            case "spe":
+                var temp = this.state.majors_concerned;
                 if (e.target.checked) {
-                    temp2.push(e.target.value);
+                    temp.push(e.target.value);
                 }
                 else {
-                    let index = temp2.indexOf(e.target.value)
+                    let index = temp.indexOf(e.target.value)
                     if (index > -1) {
-                        temp2.splice(index, 1);
+                        temp.splice(index, 1);
                     }
                 }
-                this.setState({ majors_concerned: temp2 });
+                this.setState({ majors_concerned: temp });
                 break;
 
             default:
@@ -106,7 +109,7 @@ class CreateProject extends React.Component {
         }
     }
 
-    handleKeyWords = key => this.setState({ keyWords: key });
+    handleKeyWords = key => this.setState({ keywords: key })
 
     handleNext = () => {
         if (this.state.title && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description) {
@@ -114,9 +117,11 @@ class CreateProject extends React.Component {
                 title: this.state.title,
                 study_year: this.state.study_year,
                 majors_concerned: this.state.majors_concerned,
-                description: this.state.description
+                description: this.state.description,
+                skills: this.state.skills,
+                infos: this.state.infos
             };
-            if (this.state.keyWords) data.keywords = this.state.keywords;
+            if (this.state.keywords) data.keywords = this.state.keywords;
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
             AuthService.fetch("/api/projects/", {
@@ -161,12 +166,13 @@ class CreateProject extends React.Component {
                     <Grid item>
                         <TextValidator
                             label={i18n.t('titleproj.label', { lng })}
-                            placeholder={i18n.t('titleproj.label', { lng })}
-                            onChange={this.handleChange} fullWidth={true}
+                            onChange={this.handleChange} 
+                            fullWidth={true}
                             name="title"
                             value={this.state.title}
                             validators={['required', 'maxStringLength:70']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            variant="outlined"
                         />
                     </Grid>
                     <br />
@@ -195,51 +201,71 @@ class CreateProject extends React.Component {
                     <br />
 
                     <Grid item>
-                        <FormControl fullWidth>
-                            <InputLabel htmlFor="select-multiple">{i18n.t('majors.label', { lng })}</InputLabel>
-                            <Select
-                                multiple
-                                required
-                                fullWidth
-                                value={this.state.majors_concerned}
-                                onChange={this.handleSpecializations}
-                                renderValue={this.renderSelect}
-                                input={<Input id="select-multiple" />}
-                            >
-                                {this.state.specializations.map(specialization => (
-                                    <MenuItem key={specialization._id} value={specialization._id}>
-                                        <Tooltip primary="Drafts"
-                                            disableFocusListener
-                                            disableTouchListener
-                                            TransitionComponent={Zoom}
-                                            title={lng === "fr" ? specialization.description.fr : specialization.description.en}
-                                        >
-                                            <div>
-                                                {lng === "fr" ? specialization.name.fr : specialization.name.en}
-                                            </div>
-                                        </Tooltip>
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <Typography variant="subtitle1" align='center'>
+                            {i18n.t('majors.label', { lng })}
+                        </Typography>
+                        <Grid container direction="row" justify='center'>
+                            {this.state.specializations.map(spe =>
+                                <Grid item key={spe._id}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                onChange={this.handleChange}
+                                                value={spe._id}
+                                                name="spe"
+                                            />
+                                        }
+                                        label={lng === "fr" ? spe.name.fr : spe.name.en}
+                                    />
+                                </Grid>
+                            )}
+                        </Grid>
                     </Grid>
                     <br />
+                    <br />
 
-                    <Grid item>
-                        <TextValidator
-                            placeholder={i18n.t('descriptionProj.label', { lng })}
-                            label="Description"
-                            value={this.state.description}
-                            validators={['required', 'maxStringLength:10000']}
-                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-                            multiline
-                            rows="10"
-                            name="description"
-                            onChange={this.handleChange}
-                            fullWidth={true}
-                            variant="outlined"
-                        />
-                    </Grid>
+<Grid item>
+    <TextValidator
+        label={i18n.t('descriptionProj.label', { lng })}
+        value={this.state.description}
+        validators={['required', 'maxStringLength:10000']}
+        errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+        multiline
+        rows="10"
+        name="description"
+        onChange={this.handleChange}
+        fullWidth={true}
+        variant="outlined"
+    />
+</Grid>
+
+<Grid item>
+    <TextValidator
+        label={i18n.t('createProject.skills', { lng })}
+        value={this.state.skills}
+        validators={['maxStringLength:250']}
+        errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+        name="skills"
+        onChange={this.handleChange}
+        fullWidth={true}
+        variant="outlined"
+    />
+</Grid>
+
+<Grid item>
+    <TextValidator
+        label={i18n.t('createProject.infos', { lng })}
+        value={this.state.infos}
+        validators={['maxStringLength:250']}
+        errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+        name="infos"
+        multiline
+        rows="2"
+        onChange={this.handleChange}
+        fullWidth={true}
+        variant="outlined"
+    />
+</Grid>
 
                     <Grid item>
                         <KeyWords lng={lng} change={this.handleKeyWords} />
