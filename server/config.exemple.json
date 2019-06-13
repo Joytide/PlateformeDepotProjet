@@ -1,0 +1,24 @@
+{                                               
+    "mail" : {                                  
+        "port": 3001,                           
+                "email": "",  
+                "emailPass": "" 
+    },                                          
+    "db": {                                     
+        "hostname": "",                
+        "port": 27017,                          
+        "name": ""                           
+    },                                          
+    "client" : {                                
+        "hostname": "",   
+        "port": 443,                            
+        "protocol": "https"                     
+    },                                          
+    "jwt": {                                    
+        "secret": ""             
+    },                                          
+    "bcrypt": {                                 
+        "saltRounds": 12                        
+    }                                           
+                                                
+}                                               

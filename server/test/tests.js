@@ -744,7 +744,9 @@ describe("Things related to specializations", () => {
                 let data = {
                     abbreviation: "T",
                     nameFr: "testFr",
-                    nameEn: "testEn"
+                    nameEn: "testEn",
+                    descriptionEn: "test",
+                    descriptionFr: "test",
                 };
 
                 requester
@@ -1744,6 +1746,8 @@ Helper.createSpecialization = referent => {
         spe.abbreviation = "T";
         spe.name.fr = "Test fr";
         spe.name.en = "Test en";
+        spe.description.fr = "Test";
+        spe.description.en = "Test";
 
         if (referent) {
             if (referent instanceof Object) {

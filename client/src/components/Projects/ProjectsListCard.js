@@ -5,9 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
-import ProjectFilter from './ProjectFilter';
+//import ProjectFilter from './ProjectFilter';
 import ProjectCard from './ProjectCard';
-import ProjectsToPDF from './ProjectsToPDF';
 
 
 class ProjectsListCard extends React.Component {
@@ -51,7 +50,7 @@ class ProjectsListCard extends React.Component {
 		}
 		if (this.state.majeur_value !== "" && this.state.majeur_value !== null) {
 			let tmp = this.state.projectToDisplay.filter(project => {
-				if (project.specializations.filter(spe => spe.specialization == this.state.majeur_value).length > 0) {
+				if (project.specializations.filter(spe => spe.specialization === this.state.majeur_value).length > 0) {
 					return true;
 				}
 				return false;
@@ -135,11 +134,14 @@ class ProjectsListCard extends React.Component {
 								{i18n.t('project.title', { lng })}
 							</Typography>
 
-							<Grid container justify="flex-end">
-								<ProjectsToPDF projects={this.props.projects} ProjectsType="all" lng={lng} />
-							</Grid>
-
-							<ProjectFilter getdropDownValue={this.handledropDownValue.bind(this)} getMotsClesValue={this.handleMotsClesValue.bind(this)} getTitleValue={this.handleTitleValue.bind(this)} getCompanyValue={this.handleCompanyValue.bind(this)} style={{ fontSize: 15 }} lng={this.props.lng} />
+							{/*<ProjectFilter 
+								getdropDownValue={this.handledropDownValue.bind(this)} 
+								getMotsClesValue={this.handleMotsClesValue.bind(this)} 
+								getTitleValue={this.handleTitleValue.bind(this)} 
+								getCompanyValue={this.handleCompanyValue.bind(this)} 
+								style={{ fontSize: 15 }} 
+								lng={this.props.lng} 
+							/>*/}
 
 							<Grid container style={{ marginTop: 12 }} spacing={16} justify="center">
 								{ProjectList}

@@ -1,21 +1,19 @@
 import React from 'react';
 import i18n from '../components/i18n';
+import { Link } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import nl2br from 'react-newline-to-break';
 import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import { withStyles } from '@material-ui/core/styles';
 
 import VerticalAlignBottom from '@material-ui/icons/VerticalAlignBottom';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 
-
-import ProjectsToPDF from '../components/Projects/ProjectsToPDF';
 import AuthService from '../components/AuthService';
 import { api } from "../config";
 
@@ -81,58 +79,75 @@ class ProjectPage extends React.Component {
             return (
                 <div>
                     <Grid container style={{ marginTop: 12 }} justify="center">
-                        <Grid xs={11}>
+                        <Grid item xs={11}>
                             <Paper style={{ padding: 12 }}>
                                 <Typography align="center" variant="h3" paragraph>
                                     {project.number + " - " + project.title}
                                 </Typography>
 
                                 <Grid container justify="flex-end">
-                                    <ProjectsToPDF projects={[project]} ProjectsType="one" lng={lng} />
+                                    <Grid item>
+                                    { project.status === "validated" &&
+                                        <a href={api.host + ":" + api.port + "/api/project/file/" + project.pdf}>
+                                            <Button lng={lng} variant="outlined" color='secondary' style={{ marginRight: 12 }}>
+                                                <Typography variant="button" >
+                                                    {i18n.t('pdf.label', { lng })}
+                                                </Typography>
+                                            </Button>
+                                        </a>
+                                    }
+                                    </Grid>
                                 </Grid>
+
                                 <Grid container justify="space-between">
-                                    <Grid container spacing={8} xs>
+                                    <Grid item xs={12}>
                                         {
                                             project.study_year.sort().map(year => {
-                                                return <Grid item><Chip
+                                                return <Chip
+                                                    key={year._id}
                                                     label={year.abbreviation}
                                                     style={{ color: "white", backgroundColor: "#03a9f4" }}
-                                                /></Grid>
+                                                />
                                             })
                                         }
                                         {
-                                            project.specializations.map(spe => {
-                                                if (spe.status != "rejected")
-                                                    return <Grid item><Chip label={spe.specialization.abbreviation} color="secondary" /></Grid>
-                                                return;
-                                            })
+                                            project.specializations
+                                                .filter(spe => spe.status !== "rejected")
+                                                .map(spe => < Chip
+                                                    key={spe._id}
+                                                    label={spe.specialization.abbreviation}
+                                                    color="secondary"
+                                                />)
                                         }
                                         {
                                             project.keywords.sort().map(keyword => {
-                                                return <Grid item><Chip label={keyword} color="grey" /></Grid>
+                                                return <Chip
+                                                    key={keyword}
+                                                    label={keyword}
+                                                    color="grey"
+                                                />
                                             })
                                         }
                                     </Grid>
-                                    <Grid>
+                                    <Grid item xs={12}>
                                         <Typography variant="subtitle1">
                                             {i18n.t('partner.label', { lng })} : {project.partner.company}, {new Date(project.edit_date).toLocaleDateString()}
                                         </Typography>
 
-                                        <Tooltip title="Like">
+                                        {/*<Tooltip title="Like">
                                             <IconButton color={this.state.isLiked ? 'secondary' : 'default'} aria-label="Like" onClick={this.handleChange}>
                                                 <FavoriteIcon />
                                             </IconButton>
-                                        </Tooltip>
+                                    </Tooltip>*/}
 
                                     </Grid>
-                                </Grid>
 
-                                <hr></hr>
-
-                                <Grid xs={8}>
-                                    <Typography component="body1">
-                                        {nl2br(project.description)}
-                                    </Typography>
+                                    <Grid item xs={8}>
+                                        <hr></hr>
+                                        <Typography component="">
+                                            {nl2br(project.description)}
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
 
                                 <hr></hr>
@@ -142,7 +157,9 @@ class ProjectPage extends React.Component {
                                         project.files.map(file => {
                                             return (
                                                 <Grid item xs={2}>
-                                                    {file.originalName}
+                                                    <Typography style={{ wordBreak: "break-word" }}>
+                                                        {file.originalName}
+                                                    </Typography>
                                                     <IconButton href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
                                                         <VerticalAlignBottom />
                                                     </IconButton>

@@ -54,7 +54,7 @@ class ForgetPass extends Component {
                     <Typography variant="h4">{i18n.t("forgetPass.title", {lng})}</Typography>
                     <br />
                     <form onSubmit={this.handleSubmit.bind(this)}>
-                        {i18n.t('forgetPass.desc', { lng }).split('\n').map(line => <Typography>{line}</Typography>)}
+                        {i18n.t('forgetPass.desc', { lng }).split('\n').map((line, index) => <Typography key={index}>{line}</Typography>)}
                         <TextField
                             label={i18n.t('forgetPass.textfield', { lng })}
                             placeholder={i18n.t('forgetPass.textfield', { lng })}

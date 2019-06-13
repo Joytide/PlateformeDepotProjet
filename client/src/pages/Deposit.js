@@ -154,7 +154,7 @@ class Deposit extends React.Component {
 									{i18n.t('home.p4_l4', { lng })}<br />
 								</Typography>
 							</Grid>
-							<Grid item xs={2} style={{paddingBottom: "20px", paddingLeft: "20px"}}>
+							<Grid item xs={2} style={{ paddingBottom: "20px", paddingLeft: "20px" }}>
 								<Button lng={lng} variant='contained' color='primary' onClick={this.handleNext}>
 									<Typography>
 										{i18n.t('next.label', { lng })}
@@ -180,7 +180,11 @@ class Deposit extends React.Component {
 			case 3:
 				return (
 					<Grid container lng={lng}>
-						<div> {i18n.t('message.label', { lng })} </div>
+						<Grid item>
+							<br />
+							<div> {i18n.t('message.label', { lng })} </div>
+							<br /><br />
+						</Grid>
 					</Grid>);
 			default:
 				return <div></div>;

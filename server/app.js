@@ -5,6 +5,7 @@ const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const colors = require('colors');
+const fs = require('fs');
 
 const sha256 = require('js-sha256');
 const bcrypt = require('bcrypt');
@@ -41,6 +42,11 @@ mongoose.connect(
 
 const auth = require('./api/controllers/authController');
 
+fs.exists("./.uploads", exists => {
+	if (!exists)
+		fs.mkdirSync("./.uploads");
+});
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(auth.passport.initialize());
@@ -62,6 +68,9 @@ auth_routes(app);
 
 var mail = require('./api/routes/mailsRoutes');
 mail(app);
+
+var pdf = require('./api/routes/pdfRoutes');
+pdf(app);
 
 var project_routes = require('./api/routes/projectRoutes');
 project_routes(app); //register the route
@@ -209,7 +218,7 @@ function initDB() {
 					bcrypt.hash(sha256(root.email + "azerT1234"), config.bcrypt.saltRounds, (err, hash) => {
 						if (err) next(err);
 						else {
-							root.password =hash;
+							root.password = hash;
 
 							root.save((err, ad) => {
 								if (err) throw err;

@@ -8,7 +8,8 @@ client/package-lock.json
 admin/package-lock.json
 
 server/.uploads
-server/uploads
+server/PDF/*.html
+server/PDF/*.pdf
 .vscode
 
 server/config.json

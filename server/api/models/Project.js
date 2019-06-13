@@ -44,7 +44,6 @@ const ProjectSchema = new Schema({
         type: Array,
         required: true
     },  //(String)
-    media_files: Array, //(String)
     status: {
         type: String,
         enum: ["validated", "rejected", "pending"],
@@ -82,8 +81,13 @@ const ProjectSchema = new Schema({
             ref: 'File',
         }
     ],
+    pdf: {
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+    },
     number: String
-})
+});
+
 const Project = mongoose.model('Project', ProjectSchema);
 
 module.exports = Project;
