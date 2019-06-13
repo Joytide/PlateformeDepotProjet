@@ -16,6 +16,7 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
 import i18n from '../i18n';
 import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { SnackbarContext, withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 
 const styles = {
 
@@ -123,7 +124,7 @@ class CreatePartner extends React.Component {
 
                     <Grid item>
                         <TextValidator
-                            label={i18n.t('email.label', { lng })+" *"}
+                            label={i18n.t('email.label', { lng }) + " *"}
                             placeholder={i18n.t('email.label', { lng })}
                             validators={['required', 'isEmail', 'maxStringLength:40']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('notvalid.label', { lng }), i18n.t('field_length.label', { lng })]}
@@ -137,7 +138,7 @@ class CreatePartner extends React.Component {
 
                     <Grid item>
                         <TextValidator
-                            validators={['required','maxStringLength:70']}
+                            validators={['required', 'maxStringLength:70']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
                             label={i18n.t('company.label', { lng }) + " *"}
                             placeholder={i18n.t('company.label', { lng })}
@@ -153,7 +154,7 @@ class CreatePartner extends React.Component {
                         <TextValidator
                             validators={['required', 'maxStringLength:30']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-                            label={i18n.t('firstname.label', { lng })+ " *"}
+                            label={i18n.t('firstname.label', { lng }) + " *"}
                             placeholder={i18n.t('firstname.label', { lng })}
                             onChange={this.handleChange}
                             fullWidth={true}
@@ -166,7 +167,7 @@ class CreatePartner extends React.Component {
                         <TextValidator
                             validators={['required', 'maxStringLength:30']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-                            label={i18n.t('lastname.label', { lng })+" *"}
+                            label={i18n.t('lastname.label', { lng }) + " *"}
                             placeholder={i18n.t('lastname.label', { lng })}
                             onChange={this.handleChange} fullWidth={true}
                             name="last_name" value={this.state.last_name}
@@ -232,4 +233,4 @@ class CreatePartner extends React.Component {
 
 CreatePartner.contextType = UserContext;
 
-export default withStyles(styles, { withTheme: true })(CreatePartner);
+export default withSnackbar(withStyles(styles, { withTheme: true })(CreatePartner));
