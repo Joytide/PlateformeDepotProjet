@@ -2,7 +2,6 @@
 
 var app = require('express')();
 const multer = require('multer');
-const PDFDocument = require('pdfkit');
 var path = require('path');
 var mongoose = require('mongoose');
 const { emitter } = require('../../eventsCommon');
@@ -259,42 +258,6 @@ exports.delete_a_project = (req, res) => {
 
 		res.send({ message: "Project deleted successfully!" });
 	});
-}
-
-exports.export_a_project = (req, res) => {
-	let doc = new PDFDocument;
-	Project.findById(req.params.projectId)
-		.exec((err, project) => {
-			if (err) {
-				res.send(err);
-			}
-			doc.pipe(res);
-			doc.fontSize(15).text(project.title, 50, 50);
-			doc.fontSize(11).text(`proposé par: ${project.partner.first_name} ${project.partner.last_name} - ${project.partner.company}`);
-			doc.fontSize(11).text(`pour les étudiants: ${project.study_year.toString()}`);
-			doc.fontSize(10).text(project.description, 50, 100);
-			doc.end();
-		});
-}
-
-exports.exports_all_projects = (req, res) => {
-	let doc = new PDFDocument;
-	Project.find({})
-		.exec((err, projects) => {
-			if (err) {
-				res.send(err);
-			}
-			doc.pipe(res);
-			projects.forEach((project, index) => {
-				doc.fontSize(20).text(`Projet n°${index}`);
-				doc.fontSize(15).text(project.title);
-				doc.fontSize(11).text(`proposé par: ${project.partner.first_name} ${project.partner.last_name} - ${project.partner.company}`);
-				doc.fontSize(11).text(`pour les étudiants: ${project.study_year.toString()}`);
-				doc.fontSize(10).text(project.description);
-				doc.addPage();
-			});
-			doc.end();
-		});
 }
 
 exports.like = (req, res) => {

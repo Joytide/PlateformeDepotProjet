@@ -20,9 +20,6 @@ module.exports = function (app) {
 		.put(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.createProject)
 		.post(project.update_a_project);
 
-	app.route('/api/export')
-		.get(project.exports_all_projects);
-
 	app.route('/api/project/:projectId([a-fA-F0-9]{24})')
 		.get(project.findById)
 		.post(project.update_a_project)
@@ -34,9 +31,6 @@ module.exports = function (app) {
 
 	/*app.route('/api/edit/:editKey')
 	  .get(project.find_by_edit_key);*/
-
-	app.route('/api/export/:projectId')
-		.get(project.export_a_project);
 
 	app.route('/api/project/:title')
 		.get(project.filter_by_name);
