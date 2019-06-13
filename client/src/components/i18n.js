@@ -23,7 +23,7 @@ i18next
 						title: 'List of projects',
 						accepted: 'Project accepted !',
 						pending: "Waiting for approval",
-						rejected: "Project rejected by school"
+						rejected: "Project not acepted by school"
 					},
 					major: { label: 'Major', },
 					filter: { label: 'Filters', },
@@ -165,7 +165,7 @@ i18next
 						title: 'Liste des projets',
 						accepted: 'Projet accepté !',
 						pending: "En attente de validation",
-						rejected: "Projet rejetté par l'école"
+						rejected: "Projet non accepté par l'école"
 					},
 					major: { label: 'Majeure', },
 					filter: { label: 'Filtres', },
