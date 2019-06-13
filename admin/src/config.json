@@ -1,6 +1,6 @@
 {
     "api": {
-        "host": "http://192.168.0.42",
+        "host": "http://localhost",
         "port": 3001
     }
 }
