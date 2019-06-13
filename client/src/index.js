@@ -7,11 +7,13 @@ import App from './App';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import pink from '@material-ui/core/colors/pink';
-import lightBlue from '@material-ui/core/colors/lightBlue';
+import grey from '@material-ui/core/colors/grey';
 
 const theme = createMuiTheme({
     palette: {
-        primary: lightBlue,
+        primary: {
+            main: "#cd013c"
+        },
         secondary: pink,
     },
 });
