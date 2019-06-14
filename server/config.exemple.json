@@ -1,24 +1,25 @@
-{                                               
-    "mail" : {                                  
-        "port": 3001,                           
-                "email": "",  
-                "emailPass": "" 
-    },                                          
-    "db": {                                     
-        "hostname": "",                
-        "port": 27017,                          
-        "name": ""                           
-    },                                          
-    "client" : {                                
-        "hostname": "",   
-        "port": 443,                            
-        "protocol": "https"                     
-    },                                          
-    "jwt": {                                    
-        "secret": ""             
-    },                                          
-    "bcrypt": {                                 
-        "saltRounds": 12                        
-    }                                           
-                                                
-}                                               
+{
+    "mail": {
+        "from": "",
+        "port": 587,
+        "host": "",
+        "user": "",
+        "pass": ""
+    },
+    "db": {
+        "hostname": "localhost",
+        "port": 27017,
+        "name": "DVP"
+    },
+    "client": {
+        "host": "localhost",
+        "port": 3001,
+        "protocol": "http"
+    },
+    "jwt": {
+        "secret": ""
+    },
+    "bcrypt": {
+        "saltRounds": 12
+    }
+}

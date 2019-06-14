@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const sha256 = require('js-sha256')
 const jwt = require('jsonwebtoken');
 
+const { emitter } = require('../../eventsCommon');
 const config = require('../../config');
 
 const mailController = require('./mailController');
@@ -67,7 +68,7 @@ Your project submission request has been registered.\n
 
 exports.createPartner = (req, res, next) => {
 	const data = req.body;
-	
+
 	if (data.first_name && data.last_name && data.email && data.company && data.kind && data.alreadyPartner !== undefined) {
 		Partner.findOne({ email: data.email }, async (err, partner) => {
 			if (err) next(err);
@@ -105,14 +106,8 @@ exports.createPartner = (req, res, next) => {
 									);
 
 									res.json({ partner: newPartner, token: userToken });
-
-									mailController.sendMail({
-										recipient: newPartner.email,
-										subject: "Creation de votre compte sur la plateforme Devinci Project",
-										content: `Bonjour,
-										Nous avons le plaisir de vous annoncer que votre compte à bien été créé sur la plateforme Devinci-project.
-										Vous pouvez dès à présent vous connecter en cliquant sur le lien suivant : ${config.client.host + ':' + config.client.port}/login/partner/${keyData.key}`
-									});
+									
+									emitter.emit("partnerCreated", { partner: newPartner, key: keyData.key });
 								}
 							});
 						})
