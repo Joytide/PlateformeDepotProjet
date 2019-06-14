@@ -67,7 +67,7 @@ Your project submission request has been registered.\n
 
 exports.createPartner = (req, res, next) => {
 	const data = req.body;
-	console.log(data);
+	
 	if (data.first_name && data.last_name && data.email && data.company && data.kind && data.alreadyPartner !== undefined) {
 		Partner.findOne({ email: data.email }, async (err, partner) => {
 			if (err) next(err);

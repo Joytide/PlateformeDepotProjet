@@ -128,7 +128,7 @@ exports.listProjects = function (req, res, next) {
 
 exports.createProject = (req, res, next) => {
 	const data = req.body;
-	console.log(data);
+	
 	if (data.title && data.description
 		&& data.majors_concerned && data.majors_concerned.length > 0
 		&& data.study_year && data.study_year.length > 0) {
