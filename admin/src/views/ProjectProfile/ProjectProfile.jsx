@@ -8,14 +8,18 @@ import { FormControl, InputLabel, Select, Input, MenuItem } from '@material-ui/c
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Visibility from "@material-ui/icons/Visibility"
-import Add from "@material-ui/icons/Add"
+import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Tooltip from '@material-ui/core/Tooltip';
+
+import Visibility from "@material-ui/icons/Visibility"
+import Add from "@material-ui/icons/Add"
+import Cached from "@material-ui/icons/Cached"
+
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -335,10 +339,39 @@ class ProjectProfile extends React.Component {
             });
     }
 
+    regeneratePDF = () => {
+        let data = {
+            _id: this.state.project._id
+        };
+
+        AuthService.fetch(api.host + ":" + api.port + "/api/pdf", {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                if (!res.ok) throw res;
+                else return res.json();
+            })
+            .then(data => {
+                this.setState({
+                    success: true,
+                    message: "Votre demande a bien été traité."
+                })
+            })
+            .catch(err => {
+                console.error(err)
+                this.setState({
+                    error: true,
+                    message: "Une erreur est survenue lors de la regénération du PDF. Merci de réessayer."
+                })
+            });
+
+    }
+
     render() {
         const { classes } = this.props;
 
-        let partnerInfo, projectInfo, years, actions, comments, files, specializations;
+        let partnerInfo, projectInfo, years, actions, comments, files, specializations, other;
 
         if (!this.state.loadingProject) {
             partnerInfo = (
@@ -350,26 +383,26 @@ class ProjectProfile extends React.Component {
                     <CardBody>
                         <GridContainer>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="" gutterBottom>
+                                <Typography gutterBottom>
                                     Entreprise :
                                 </Typography>
-                                <Typography variant="" gutterBottom>
+                                <Typography gutterBottom>
                                     {this.state.project.partner.company}
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="" gutterBottom>
+                                <Typography gutterBottom>
                                     Mail :
                                 </Typography>
-                                <Typography variant="" gutterBottom>
+                                <Typography gutterBottom>
                                     <a href={"mailto:" + this.state.project.partner.email}>{this.state.project.partner.email}</a>
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="" gutterBottom>
+                                <Typography gutterBottom>
                                     Nom :
                                 </Typography>
-                                <Typography variant="" gutterBottom>
+                                <Typography gutterBottom>
                                     {this.state.project.partner.last_name}
                                 </Typography>
                             </GridItem>
@@ -377,7 +410,7 @@ class ProjectProfile extends React.Component {
                                 <Typography variant="body2" gutterBottom>
                                     Prénom :
                         </Typography>
-                                <Typography variant="" gutterBottom>
+                                <Typography gutterBottom>
                                     {this.state.project.partner.first_name}
                                 </Typography>
                             </GridItem>
@@ -406,23 +439,23 @@ class ProjectProfile extends React.Component {
                             {this.state.project.title}
                         </Typography>
                         <br />
-                        <Typography variant="">
+                        <Typography >
                             Pitch du projet :
                                 </Typography>
-                        <Typography variant="">
+                        <Typography >
                             ...
                         </Typography>
                         <br />
-                        <Typography variant="">
+                        <Typography>
                             Description :
                         </Typography>
-                        <Typography variant="" className={classes.displayLineBreak}>
+                        <Typography className={classes.displayLineBreak}>
                             {this.state.project.description}
                         </Typography>
                         <br />
                         <Divider />
                         <br />
-                        <Typography variant="">
+                        <Typography >
                             Mot(s) clé(s) :
                         </Typography>
                         <Typography>
@@ -511,6 +544,7 @@ class ProjectProfile extends React.Component {
                                                         onChange={this.handleCheckboxChange}
                                                         checked={this.state.checkedYears[year._id]}
                                                         id={year._id}
+                                                        disabled={this.state.project.status !== "pending"}
                                                         color="primary"
                                                     />
                                                 }
@@ -535,11 +569,23 @@ class ProjectProfile extends React.Component {
                 do {
                     if (this.state.project.specializations.length > 0 && this.state.project.specializations[i].specialization._id == spe._id) {
                         if (this.state.project.specializations[i].status === "validated")
-                            arr[1] = <span style={{ color: "green" }}>Validé</span>;
+                            arr[1] = <Chip
+                                label="Validé"
+                                className={classes.chip}
+                                style={{ backgroundColor: "#4caf50", color: "white" }}
+                            />;
                         else if (this.state.project.specializations[i].status === "rejected")
-                            arr[1] = <span style={{ color: "red" }}>Refusé</span>;
+                            arr[1] = <Chip
+                                label="Refusé"
+                                className={classes.chip}
+                                style={{ backgroundColor: "rgb(244, 67, 54)", color: "white" }}
+                            />;
                         else
-                            arr[1] = <span style={{ color: "orange" }}>En attente de validation</span>;
+                            arr[1] = <Chip
+                                label="En attente de validation"
+                                className={classes.chip}
+                                style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
+                            />;
                         arr[2] = "";
                         if (this.state.project.status == "pending") {
                             arr[3] = (
@@ -636,6 +682,25 @@ class ProjectProfile extends React.Component {
             );
         }
 
+        other = <Card>
+            <CardHeader color={this.state.color}>
+                <h4 className={classes.cardTitleWhite}>Autre options</h4>
+                <p className={classes.cardCategoryWhite}></p>
+            </CardHeader>
+            <CardBody>
+                {this.state.project.pdf &&
+                    <a href={api.host + ":" + api.port + "/api/project/file/" + this.state.project.pdf}>
+                        <Button size="sm" color="info">
+                            <Add />Exporter au format PDF
+                        </Button>
+                    </a>
+                }
+                <Button size="sm" color="info" onClick={this.regeneratePDF}>
+                    <Cached />(re)Générer le PDF
+                        </Button>
+            </CardBody>
+        </Card>
+
         return (
             <GridContainer>
                 <Snackbar
@@ -691,7 +756,7 @@ class ProjectProfile extends React.Component {
 
                     {specializations}
 
-                    {comments}
+                    {this.state.project.status === "validated" && other}
                 </GridItem>
             </GridContainer >);
     }
