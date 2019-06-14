@@ -111,7 +111,7 @@ class CreateProject extends React.Component {
 
     handleKeyWords = key => this.setState({ keywords: key })
 
-    handleNext = () => {
+    handleNext = e => {
         if (this.state.title && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description) {
             let data = {
                 title: this.state.title,
@@ -134,7 +134,7 @@ class CreateProject extends React.Component {
                         this.props.next();
                 })
                 .catch(err => {
-
+                    this.props.snackbar.notification("error", i18n.t("errors.createProject", { lng: this.props.lng }));
                 });
         }
     }
@@ -166,7 +166,7 @@ class CreateProject extends React.Component {
                     <Grid item>
                         <TextValidator
                             label={i18n.t('titleproj.label', { lng })}
-                            onChange={this.handleChange} 
+                            onChange={this.handleChange}
                             fullWidth={true}
                             name="title"
                             value={this.state.title}
@@ -224,48 +224,49 @@ class CreateProject extends React.Component {
                     <br />
                     <br />
 
-<Grid item>
-    <TextValidator
-        label={i18n.t('descriptionProj.label', { lng })}
-        value={this.state.description}
-        validators={['required', 'maxStringLength:10000']}
-        errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-        multiline
-        rows="10"
-        name="description"
-        onChange={this.handleChange}
-        fullWidth={true}
-        variant="outlined"
-    />
-</Grid>
+                    <Grid item>
+                        <TextValidator
+                            label={i18n.t('descriptionProj.label', { lng })}
+                            value={this.state.description}
+                            validators={['required', 'maxStringLength:10000']}
+                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            multiline
+                            rows="10"
+                            name="description"
+                            onChange={this.handleChange}
+                            fullWidth={true}
+                            variant="outlined"
+                        />
+                    </Grid>
 
-<Grid item>
-    <TextValidator
-        label={i18n.t('createProject.skills', { lng })}
-        value={this.state.skills}
-        validators={['maxStringLength:250']}
-        errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-        name="skills"
-        onChange={this.handleChange}
-        fullWidth={true}
-        variant="outlined"
-    />
-</Grid>
+                    <Grid item>
+                        <TextValidator
+                            label={i18n.t('createProject.skills', { lng })}
+                            value={this.state.skills}
+                            validators={['maxStringLength:250']}
+                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            name="skills"
+                            onChange={this.handleChange}
+                            multiline
+                            fullWidth={true}
+                            variant="outlined"
+                        />
+                    </Grid>
 
-<Grid item>
-    <TextValidator
-        label={i18n.t('createProject.infos', { lng })}
-        value={this.state.infos}
-        validators={['maxStringLength:250']}
-        errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
-        name="infos"
-        multiline
-        rows="2"
-        onChange={this.handleChange}
-        fullWidth={true}
-        variant="outlined"
-    />
-</Grid>
+                    <Grid item>
+                        <TextValidator
+                            label={i18n.t('createProject.infos', { lng })}
+                            value={this.state.infos}
+                            validators={['maxStringLength:250']}
+                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            name="infos"
+                            multiline
+                            rows="2"
+                            onChange={this.handleChange}
+                            fullWidth={true}
+                            variant="outlined"
+                        />
+                    </Grid>
 
                     <Grid item>
                         <KeyWords lng={lng} change={this.handleKeyWords} />

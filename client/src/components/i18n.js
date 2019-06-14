@@ -89,7 +89,8 @@ i18next
 					},
 					errors: {
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
-						createPartner: "An error happened while trying to create your account. Please retry."
+						createPartner: "An error happened while trying to create your account. Please retry.",
+						createProject: "An error happened while trying to create your project. Please retry.",
 					},
 					createProject: {
 						skills: "Skills developped",
@@ -245,7 +246,8 @@ i18next
 					},
 					errors: {
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
-						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer."
+						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer.",
+						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',
