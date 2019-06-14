@@ -75,7 +75,7 @@ i18next
 					schools: { h2: 'Our Schools', },
 					campus: { h3: 'One campus, four schools', },
 					leonard: { p: 'The Leonardo da Vinci Campus is three schools in Paris-La Défense: an engineering school, a management school, a multimedia school. In addition, an Institute offers continuing education.', },
-					createPartner : {
+					createPartner: {
 						phone: 'Phone number',
 						address: "Address",
 						company: "A company",
@@ -85,12 +85,16 @@ i18next
 						kind: "You are ?",
 						alreadyPartner: "Have you already been an ESILV partner ?",
 						yes: "Yes",
-						no: "No"
+						no: "No",
+					},
+					errors: {
+						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
+						createPartner: "An error happened while trying to create your account. Please retry."
 					},
 					createProject: {
 						skills: "Skills developped",
 						infos: "Further informations"
-					},					
+					},
 					home: {
 						title: 'Industrial Innovation Projects',
 						title_p1: 'You are a company, a laboratory, a student? You want to test an idea, create a prototype, decipher and / or explore a field of innovation, ...?',
@@ -116,7 +120,7 @@ i18next
 						p4_l3: 'Deadline for the submission of project proposals: 5 September 2018',
 						p4_l4: 'If you have any questions, please do not hesitate to contact us: projetesilv@devinci.fr',
 						p5: 'Thank you for your participation, and see you soon.',
-						p5_l1: 'The EGPE (ESILV Project Management Team)', 
+						p5_l1: 'The EGPE (ESILV Project Management Team)',
 					},
 					navs: {
 						home: 'Home',
@@ -127,10 +131,10 @@ i18next
 						admin: 'Admin',
 						linkLost: 'Project link lost',
 						welcome: 'Welcome',
-						disconnect:"Disconnect"
+						disconnect: "Disconnect"
 					},
 					forgetPass: {
-						title:"Lost link",
+						title: "Lost link",
 						submit: 'Submit',
 						desc: 'The first time you submitted a project, you should have received an email with a link to connect.\nIf it isn\'t in your spam inbox, we can send it again. You just have to fill the below textbox with your email address.',
 						textfield: "Your email address"
@@ -223,7 +227,7 @@ i18next
 						desc: 'Lors de la soumission de votre premier projet, un mail vous a été envoyé avec le lien de connexion.\nS\'il n\'est pas dans votre boite de spam, nous pouvons vous le renvoyer. Il suffit de remplir votre adresse mail ci-dessous.',
 						textfield: "Votre adresse mail"
 					},
-					createPartner : {
+					createPartner: {
 						phone: 'Numéro de téléphone',
 						address: "Adresse",
 						kind: "Vous êtes ?",
@@ -233,12 +237,16 @@ i18next
 						other: "Autre",
 						alreadyPartner: "Avez-vous déjà encadré un projet à l'ESILV ?",
 						yes: "Oui",
-						no: "Non"
-					},	
+						no: "Non",
+					},
 					createProject: {
 						skills: "Compétences développées",
 						infos: "Informations complémentaires"
-					},	
+					},
+					errors: {
+						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
+						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer."
+					},
 					home: {
 						title: 'Projets Innovation Industrielle',
 						title_p1: 'Vous êtes une entreprise, un laboratoire, un étudiant ? Vous souhaitez tester une idée, créer un prototype, déchiffrer et/ou explorer un terrain d\'innovation, ... ?',
@@ -275,7 +283,7 @@ i18next
 						admin: 'Admin',
 						linkLost: 'Lien oublié',
 						welcome: "Bienvenue ",
-						disconnect:"Se déconnecter"
+						disconnect: "Se déconnecter"
 					},
 					carousel: {
 						Title1: 'BermudZer : pricing d’options bermudéennes',

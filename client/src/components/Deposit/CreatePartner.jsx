@@ -16,7 +16,7 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
 import i18n from '../i18n';
 import { UserContext } from "../../providers/UserProvider/UserProvider";
-import { SnackbarContext, withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 
 const styles = {
 
@@ -70,7 +70,7 @@ class CreatePartner extends React.Component {
             let data = {
                 first_name: this.state.first_name,
                 last_name: this.state.last_name,
-                email: this.state.email,
+                email: this.state.email.toLowerCase(),
                 company: this.state.company,
                 phone: this.state.phone,
                 kind: this.state.kind,
@@ -81,7 +81,12 @@ class CreatePartner extends React.Component {
                 method: "PUT",
                 body: JSON.stringify(data)
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok)
+                        throw res;
+                    else
+                        return res.json();
+                })
                 .then(data => {
                     if (data.token) {
                         this.context.setToken(data.token);
@@ -91,7 +96,20 @@ class CreatePartner extends React.Component {
                     }
                 })
                 .catch(err => {
-
+                    if (err.json)
+                        err.json().then(errData => {
+                            const { lng } = this.props;
+                            if (errData.name === "EmailUsed") {
+                                this.props.snackbar.notification("error", i18n.t('errors.emailUsed', { lng }), 10000);
+                            } else {
+                                this.props.snackbar.notification("error", i18n.t('errors.createPartner', { lng }), 10000);
+                            }
+                            console.error(errData);
+                        });
+                    else {
+                        const { lng } = this.props;
+                        this.props.snackbar.notification("error", i18n.t('errors.createPartner', { lng }), 10000);
+                    }
                 });
         }
     }
