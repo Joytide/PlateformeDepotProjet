@@ -92,6 +92,7 @@ i18next
 						createPartner: "An error happened while trying to create your account. Please retry.",
 						createProject: "An error happened while trying to create your project. Please retry.",
 						NaN: "Please input a number",
+						fillAll: "Please fill all required fields"
 					},
 					createProject: {
 						skills: "Skills developped",
@@ -239,14 +240,14 @@ i18next
 						association: "Une association",
 						school: "Une école",
 						other: "Autre",
-						alreadyPartner: "Avez-vous déjà encadré un projet à l'ESILV ?",
+						alreadyPartner: "Avez-vous déjà proposé un projet à l'ESILV ?",
 						yes: "Oui",
 						no: "Non",
 					},
 					createProject: {
 						skills: "Compétences développées",
 						infos: "Informations complémentaires",
-						multipleTeams: "Acceptez vous que plusieurs équipes travaillent si le projet ?  ?",
+						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?  ?",
 						maxNumber: "Nombre maximum"
 					},
 					errors: {
@@ -254,6 +255,7 @@ i18next
 						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer.",
 						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
 						NaN: "Merci de saisir un nombre",
+						fillAll: "Merci de remplir tous les champs obligatoires",
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',

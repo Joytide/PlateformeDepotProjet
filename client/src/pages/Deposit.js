@@ -41,7 +41,7 @@ const DEFAULT_STATE = {
 	study_year: [],
 	majors_concerned: [],
 
-	stepIndex: 2,
+	stepIndex: 0,
 	title: "",
 	description: "",
 	keyWords: [],

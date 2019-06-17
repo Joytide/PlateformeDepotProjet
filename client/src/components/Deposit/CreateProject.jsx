@@ -17,6 +17,7 @@ import Switch from '@material-ui/core/Switch';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import i18n from '../i18n';
 
 const styles = {
@@ -43,6 +44,7 @@ class CreateProject extends React.Component {
         }
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleNext = this.handleNext.bind(this);
         this.handleSpecializations = this.handleSpecializations.bind(this);
         this.setFiles = this.setFiles.bind(this);
         this.renderSelect = this.renderSelect.bind(this);
@@ -144,6 +146,8 @@ class CreateProject extends React.Component {
                 .catch(err => {
                     this.props.snackbar.notification("error", i18n.t("errors.createProject", { lng: this.props.lng }));
                 });
+        } else {
+            this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng:this.props.lng }));
         }
     }
 
@@ -330,4 +334,4 @@ class CreateProject extends React.Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(CreateProject);
+export default withSnackbar(withStyles(styles, { withTheme: true })(CreateProject));
