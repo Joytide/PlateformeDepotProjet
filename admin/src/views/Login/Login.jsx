@@ -40,7 +40,7 @@ class Login extends React.Component {
             this.state.redirect = true;
 
         this.login = this.login.bind(this);
-        this.handlekeyDown = this.handlekeyDown .bind(this);
+        this.handlekeyDown = this.handlekeyDown.bind(this);
     }
 
     handleChange = id => event => {

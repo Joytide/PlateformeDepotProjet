@@ -105,8 +105,8 @@ class ProjectList extends React.Component {
                         transform(<p>{new Date(project.sub_date).toLocaleDateString()}</p>),
                         project.study_year.map(year => year.abbreviation).sort().join(', '),
                         project.specializations
-                            .map(spe => spe.status != "rejected" ? spe.specialization.abbreviation : "")
-                            .filter(spe => spe != "")
+                            .map(spe => spe.status !== "rejected" ? spe.specialization.abbreviation : "")
+                            .filter(spe => spe !== "")
                             .sort()
                             .join(', '),
                         (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)

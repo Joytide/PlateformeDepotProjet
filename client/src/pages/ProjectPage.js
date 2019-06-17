@@ -1,6 +1,5 @@
 import React from 'react';
 import i18n from '../components/i18n';
-import { Link } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';

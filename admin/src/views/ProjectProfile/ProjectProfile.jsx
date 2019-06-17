@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 // @material-ui/core components
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { FormControl, InputLabel, Select, Input, MenuItem } from '@material-ui/core'
+import { Input } from '@material-ui/core'
 import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -371,7 +371,7 @@ class ProjectProfile extends React.Component {
     render() {
         const { classes } = this.props;
 
-        let partnerInfo, projectInfo, years, actions, comments, files, specializations, other;
+        let partnerInfo, projectInfo, years, files, specializations, other;
 
         if (!this.state.loadingProject) {
             partnerInfo = (
@@ -463,16 +463,6 @@ class ProjectProfile extends React.Component {
                         </Typography>
                     </CardBody>
                 </Card>
-            );
-
-            actions = (
-                <GridContainer >
-                    <GridItem xs={12} sm={12} md={12}>
-                        <Button disabled={this.state.project.status === "validated"} color="success" name="validated" onClick={this.handleProjectStatus("validated")}>Valider le projet</Button>
-                        <Button disabled={this.state.project.status === "pending"} color="warning" name="pending" onClick={this.handleProjectStatus("pending")}>Mettre en attente</Button>
-                        <Button disabled={this.state.project.status === "rejected"} color="danger" name="rejected" onClick={this.handleProjectStatus("rejected")}>Rejeter le projet</Button>
-                    </GridItem>
-                </GridContainer>
             );
 
             files = (
@@ -567,7 +557,7 @@ class ProjectProfile extends React.Component {
                 let i = 0;
 
                 do {
-                    if (this.state.project.specializations.length > 0 && this.state.project.specializations[i].specialization._id == spe._id) {
+                    if (this.state.project.specializations.length > 0 && this.state.project.specializations[i].specialization._id === spe._id) {
                         if (this.state.project.specializations[i].status === "validated")
                             arr[1] = <Chip
                                 label="Validé"
@@ -587,7 +577,7 @@ class ProjectProfile extends React.Component {
                                 style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
                             />;
                         arr[2] = "";
-                        if (this.state.project.status == "pending") {
+                        if (this.state.project.status === "pending") {
                             arr[3] = (
                                 <div>
                                     <Button
@@ -620,7 +610,7 @@ class ProjectProfile extends React.Component {
                         break;
                     } else {
                         arr[1] = "Non concerné";
-                        if (this.state.project.status == "pending")
+                        if (this.state.project.status === "pending")
                             arr[2] = (
                                 <Tooltip title="Ajouter la majeure comme concernée par le projet" placement="top">
                                     <Button component="span" size="sm" color="info" onClick={this.addSpecialization(spe._id)}><Add />Ajouter</Button>
@@ -655,7 +645,7 @@ class ProjectProfile extends React.Component {
             )
         }
 
-        if (!this.state.loadingComments) {
+        /*if (!this.state.loadingComments) {
             let tableData = this.state.comments.map(comment => {
                 let date = new Date(comment.date)
                 return [
@@ -680,7 +670,7 @@ class ProjectProfile extends React.Component {
                     </CardBody>
                 </Card>
             );
-        }
+        }*/
 
         other = <Card>
             <CardHeader color={this.state.color}>

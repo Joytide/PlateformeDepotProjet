@@ -8,11 +8,8 @@ import KeyWords from './FormComponents/KeyWords';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { FormControl, InputLabel, Select, Input } from '@material-ui/core'
-import { Tooltip, Zoom } from '@material-ui/core';
 import Switch from '@material-ui/core/Switch';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
@@ -77,9 +74,10 @@ class CreateProject extends React.Component {
     };
 
     handleChange = e => {
+        let temp;
         switch (e.target.name) {
             case "year":
-                var temp = this.state.study_year;
+                temp = this.state.study_year;
                 if (e.target.checked) {
                     temp.push(e.target.value);
                 }
@@ -93,7 +91,7 @@ class CreateProject extends React.Component {
                 break;
 
             case "spe":
-                var temp = this.state.majors_concerned;
+                temp = this.state.majors_concerned;
                 if (e.target.checked) {
                     temp.push(e.target.value);
                 }
