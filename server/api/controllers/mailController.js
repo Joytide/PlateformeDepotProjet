@@ -79,8 +79,8 @@ ESILV's projects management team`;
     }).catch(console.error);
 });
 
-emitter.on("projectValidated", partnerId => {
-    Partner.findById(partnerId, (err, partner) => {
+emitter.on("projectValidated", data => {
+    Partner.findById(data.partnerId, (err, partner) => {
         if (err) console.error(err);
         else {
             const mailContent = `

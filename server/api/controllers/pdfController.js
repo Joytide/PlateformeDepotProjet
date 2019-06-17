@@ -25,7 +25,7 @@ const PDFUtils = {
         });
     },
 
-    /***
+    /**
      * Generate a HTML file for project
      * @param {ObjectId} projectID Project for which you want to generate a HTML file
      */
@@ -147,10 +147,9 @@ const PDFUtils = {
     }
 }
 
-
-emitter.on('projectValidated', projectID => {
+emitter.on('projectValidated', data => {
     PDFUtils
-        .generate(projectID)
+        .generate(data.projectId)
         .catch(console.error)
 });
 
