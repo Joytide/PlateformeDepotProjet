@@ -12,8 +12,8 @@ module.exports = function (app) {
 		.get(project.download_file);
 
 	app.route('/api/project/validation')
-		.post(auth.passport.authenticate('jwt'),project.projectValidation)
-		.put(auth.passport.authenticate('jwt'),project.addSpecialization);
+		.post(auth.passport.authenticate('jwt'), project.projectValidation)
+		.put(auth.passport.authenticate('jwt'), project.addSpecialization);
 
 	app.route('/api/projects')
 		.get(auth.passport.authenticate('jwt'), project.listProjects)
@@ -28,6 +28,9 @@ module.exports = function (app) {
 	app.route('/api/project/like')
 		.put(project.like)
 		.delete(project.unlike);
+
+	app.route('/api/project/csv')
+		.get(project.getCSV);
 
 	/*app.route('/api/edit/:editKey')
 	  .get(project.find_by_edit_key);*/

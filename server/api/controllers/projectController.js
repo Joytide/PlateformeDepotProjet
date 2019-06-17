@@ -5,6 +5,8 @@ const multer = require('multer');
 var path = require('path');
 var mongoose = require('mongoose');
 const { emitter } = require('../../eventsCommon');
+const { Parser } = require('json2csv');
+const fs = require('fs');
 
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
@@ -139,7 +141,7 @@ exports.createProject = (req, res, next) => {
 			study_year: data.study_year,
 			description: data.description,
 			partner: req.user._id,
-			maxTeams: data.maxNumber
+			maxTeams: parseInt(data.maxNumber)
 		});
 
 		if (data.keywords) newProject.keywords = data.keywords;
@@ -389,4 +391,107 @@ exports.addSpecialization = (req, res, next) => {
 	} else {
 		next(new Error("MissingParameter"));
 	}
+}
+
+exports.getCSV = (req, res, next) => {
+	Project.find({ status: "validated" })
+		.populate("partner specializations.specialization study_year")
+		.exec((err, projects) => {
+			if (err) next(err)
+			else {
+				const fields = [
+					{
+						label: "N° projet",
+						value: "number"
+					},
+					{
+						label: "Timestamp",
+						value: "sub_date"
+					},
+					{
+						label: "Vous êtes",
+						value: "partner.kind"
+					},
+					{
+						label: "Nom",
+						value: "partner.last_name"
+					},
+					{
+						label: "Prénom",
+						value: "partner.first_name"
+					},
+					{
+						label: "Email",
+						value: "partner.email"
+					},
+					{
+						label: "Téléphone",
+						value: "partner.phone"
+					},
+					{
+						label: "Entreprise",
+						value: "partner.company"
+					},
+					{
+						label: "Déjà partenaire",
+						value: "partner.alreadyPartner"
+					},
+					{
+						label: "Année",
+						value: row => row.study_year
+							.map(s => s.abbreviation)
+							.join(" / ")
+					},
+					{
+						label: "Majeure",
+						value: row => row.specializations
+							.filter(s => s.status === "validated")
+							.map(s => s.specialization.abbreviation)
+							.join(" / ")
+					},
+					{
+						label: "Titre du projet",
+						value: "title"
+					},
+					{
+						label: "Description",
+						value: "title"
+					},
+					{
+						label: "Description",
+						value: "description"
+					},
+					{
+						label: "Compétences développées",
+						value: "skills"
+					},
+					{
+						label: "Mots clefs",
+						value: row => row.keywords.join(", ")
+					},
+					{
+						label: "Plusieurs groupes ?",
+						value: row => row.maxTeams > 1 ? "Oui" : "Non"
+					},
+					{
+						label: "Nombre de groupes",
+						value: row => row.maxTeams > 1 ? row.maxTeams : ""
+					},
+					{
+						label: "Informations supplémentaires",
+						value: "infos"
+					}
+				];
+
+				const json2csvParser = new Parser({ fields });
+				const csv = json2csvParser.parse(projects);
+
+				const date = Date.now();
+
+				fs.writeFile(date + ".csv", csv, err => {
+					if (err) next(err);
+					else res.download(process.cwd() + "/" + date + ".csv");
+				})
+			}
+		});
 }

@@ -127,7 +127,7 @@ class CreateProject extends React.Component {
                 description: this.state.description,
                 skills: this.state.skills,
                 infos: this.state.infos,
-                maxNumber: parseInt(this.state.maxNumber)
+                maxNumber: this.state.maxNumber
             };
             if (this.state.keywords) data.keywords = this.state.keywords;
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
