@@ -87,7 +87,12 @@ const ProjectSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'File'
     },
-    number: String
+    number: String,
+    maxTeams: {
+        type: Number,
+        default: 1,
+        required: true
+    }
 });
 
 const Project = mongoose.model('Project', ProjectSchema);

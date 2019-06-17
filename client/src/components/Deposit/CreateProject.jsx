@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { FormControl, InputLabel, Select, Input } from '@material-ui/core'
 import { Tooltip, Zoom } from '@material-ui/core';
+import Switch from '@material-ui/core/Switch';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
@@ -36,7 +37,9 @@ class CreateProject extends React.Component {
             files: [],
             infos: "",
             skills: "",
-            keywords: []
+            keywords: [],
+            multipleTeams: false,
+            maxNumber: 1,
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -100,7 +103,11 @@ class CreateProject extends React.Component {
                 }
                 this.setState({ majors_concerned: temp });
                 break;
-
+            case "multipleTeams":
+                this.setState({
+                    [e.target.name]: e.target.checked
+                });
+                break;
             default:
                 this.setState({
                     [e.target.name]: e.target.value
@@ -119,7 +126,8 @@ class CreateProject extends React.Component {
                 majors_concerned: this.state.majors_concerned,
                 description: this.state.description,
                 skills: this.state.skills,
-                infos: this.state.infos
+                infos: this.state.infos,
+                maxNumber: parseInt(this.state.maxNumber)
             };
             if (this.state.keywords) data.keywords = this.state.keywords;
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
@@ -178,7 +186,7 @@ class CreateProject extends React.Component {
                     <br />
 
                     <Grid item>
-                        <Typography variant="subtitle1" align='center'>
+                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('years.label', { lng })}
                         </Typography>
                         <Grid container direction="row" justify='center'>
@@ -201,7 +209,7 @@ class CreateProject extends React.Component {
                     <br />
 
                     <Grid item>
-                        <Typography variant="subtitle1" align='center'>
+                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('majors.label', { lng })}
                         </Typography>
                         <Grid container direction="row" justify='center'>
@@ -222,6 +230,37 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                            {i18n.t('createProject.multipleTeams', { lng })}
+                        </Typography>
+                        <Grid container direction="row" justify='center'>
+                            <Grid item xs={4} md={2} lg={1}>
+                                <Switch
+                                    checked={this.state.multipleTeams}
+                                    onChange={this.handleChange}
+                                    name="multipleTeams"
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                            </Grid>
+                            <Grid item xs={8} md={4} lg={2}>
+                                {this.state.multipleTeams &&
+                                    <TextValidator
+                                        label={i18n.t('createProject.maxNumber', { lng })}
+                                        value={this.state.maxNumber}
+                                        validators={['required', 'matchRegexp:^[0-9]+$']}
+                                        errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
+                                        name="maxNumber"
+                                        onChange={this.handleChange}
+                                        fullWidth={true}
+                                        variant="outlined"
+
+                                    />
+                                }
+                            </Grid>
+                        </Grid>
+
+                    </Grid>
                     <br />
 
                     <Grid item>

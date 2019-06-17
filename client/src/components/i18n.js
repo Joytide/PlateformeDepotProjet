@@ -91,10 +91,13 @@ i18next
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
 						createPartner: "An error happened while trying to create your account. Please retry.",
 						createProject: "An error happened while trying to create your project. Please retry.",
+						NaN: "Please input a number",
 					},
 					createProject: {
 						skills: "Skills developped",
-						infos: "Further informations"
+						infos: "Further informations",
+						multipleTeams: "Do you accept that several teams work if the project ?",
+						maxNumber: "Maximum teams"
 					},
 					home: {
 						title: 'Industrial Innovation Projects',
@@ -242,12 +245,15 @@ i18next
 					},
 					createProject: {
 						skills: "Compétences développées",
-						infos: "Informations complémentaires"
+						infos: "Informations complémentaires",
+						multipleTeams: "Acceptez vous que plusieurs équipes travaillent si le projet ?  ?",
+						maxNumber: "Nombre maximum"
 					},
 					errors: {
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
 						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer.",
 						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
+						NaN: "Merci de saisir un nombre",
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',

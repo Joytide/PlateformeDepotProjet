@@ -138,7 +138,8 @@ exports.createProject = (req, res, next) => {
 			specializations: data.majors_concerned.map(spe => ({ specialization: spe })),
 			study_year: data.study_year,
 			description: data.description,
-			partner: req.user._id
+			partner: req.user._id,
+			maxTeams: data.maxNumber
 		});
 
 		if (data.keywords) newProject.keywords = data.keywords;
