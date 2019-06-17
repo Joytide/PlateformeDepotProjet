@@ -128,7 +128,7 @@ exports.listProjects = function (req, res, next) {
 
 exports.createProject = (req, res, next) => {
 	const data = req.body;
-	
+
 	if (data.title && data.description
 		&& data.majors_concerned && data.majors_concerned.length > 0
 		&& data.study_year && data.study_year.length > 0) {
@@ -342,14 +342,10 @@ exports.projectValidation = (req, res, next) => {
 					}
 
 					if (count == project.specializations.length) {
-						if (rejected) {
+						if (rejected)
 							project.status = "rejected";
-							emitter.emit("projectRefused", project._id);
-						}
-						else {
+						else
 							project.status = "validated";
-						}
-
 					}
 
 					project.save((err, savedProject) => {
@@ -357,8 +353,9 @@ exports.projectValidation = (req, res, next) => {
 							next(err)
 						else {
 							if (project.status === "validated")
-								emitter.emit("projectValidated", project._id);
-
+								emitter.emit("projectValidated", project.partner);
+							else if (project.status === "rejected")
+								emitter.emit("projectRejeted", project.parnter);
 							res.json(savedProject)
 						}
 					});

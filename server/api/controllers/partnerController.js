@@ -41,26 +41,7 @@ exports.addProject = (partnerId, projectId) => {
 		Partner.findByIdAndUpdate(partnerId, { $push: { projects: projectId } }, { new: true }, (err, partner) => {
 			if (err) reject(err);
 			else {
-				const mail = {
-					recipient: partner.email,
-					subject: `Soumission du projet sur la plateforme Devinci Project`,
-					content: `
-Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-Votre demande de soumission de projet a bien été enregistrée. \n 
-Cordialement,
-L'équipe DVP
-\n\n\n\n
-Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-Your project submission request has been registered.\n
-`
-				}
-
-				mailController.sendMail(mail)
-					.then(res => {
-						if (res === "MailSent")
-							resolve();
-					})
-					.catch(reject);
+				emitter.emit("projectSubmitted", { partner: partner });
 			}
 		});
 	});
@@ -106,7 +87,7 @@ exports.createPartner = (req, res, next) => {
 									);
 
 									res.json({ partner: newPartner, token: userToken });
-									
+
 									emitter.emit("partnerCreated", { partner: newPartner, key: keyData.key });
 								}
 							});
@@ -205,12 +186,7 @@ exports.resetPassword = (req, res, next) => {
 						else {
 							res.json(partner);
 
-							mailController.sendMail({
-								recipient: partner.email,
-								subject: "Lien de connexion sur la plateforme Devinci Project",
-								content: `Bonjour,
-								Voici le lien permettant de vous connecter à la plateforme Devinci Project : ${config.client.host + ":" + config.client.port}/login/partner/${pass.key}`
-							});
+							emitter.emit("resetLink", { key: pass.key, partner: partner });
 						}
 					});
 				})

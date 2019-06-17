@@ -45,7 +45,7 @@ By connecting to the platform, you can submit new projects or check if the one y
 If you encounter a problem, you can contact us at projetesilv@devinci.fr
 
 Sincerely yours,
-ESILV's projects management team`
+ESILV's projects management team`;
 
     sendMail({
         recipient: data.partner.email,
@@ -54,6 +54,117 @@ ESILV's projects management team`
     }).catch(console.error);
 });
 
+emitter.on("projectSubmitted", data => {
+    const mailContent = `
+Bonjour,
+
+Votre projet a bien été déposé sur la plateforme. Vous pouvez a tout moment vous connecter sur la plateforme pour suivre l'état de votre projet.
+
+Cordialement,
+L'équipe gestion de projets ESILV
+
+_________________________________________________________________________________________________________________________
+
+Hello,
+
+Your project has been successfuly submitted on the platform. You can check the status of your project at anytime by connecting to the platform.
+
+Sincerely yours,
+ESILV's projects management team`;
+
+    sendMail({
+        recipient: data.partner.email,
+        subject: `Soumission du projet réussie | Project successfuly submitted`,
+        content: mailContent
+    }).catch(console.error);
+});
+
+emitter.on("projectValidated", partnerId => {
+    Partner.findById(partnerId, (err, partner) => {
+        if (err) console.error(err);
+        else {
+            const mailContent = `
+Bonjour,
+
+Nous avons le plaisir de vous informer que votre projet a été retenu et sera donc proposé aux étudiants.
+
+Cordialement,
+L'équipe gestion de projets ESILV
+
+_________________________________________________________________________________________________________________________
+
+Hello,
+
+We are pleased to tell you that your project has been accepted and will therefore be proposed to students.
+
+Sincerely yours,
+ESILV's projects management team`;
+
+            sendMail({
+                recipient: partner.email,
+                subject: `Projet accepté | Project accepted`,
+                content: mailContent
+            }).catch(console.error);
+        }
+    });
+});
+
+emitter.on("projectRejeted", partnerId => {
+    Partner.findById(partnerId, (err, partner) => {
+        if (err) console.error(err);
+        else {
+            const mailContent = `
+Bonjour,
+
+Malheureusement, votre projet n'a pas été retenu.
+
+Cordialement,
+L'équipe gestion de projets ESILV
+
+_________________________________________________________________________________________________________________________
+
+Hello,
+
+Sadly, your project hasn't been retained.
+
+Sincerely yours,
+ESILV's projects management team`;
+
+            sendMail({
+                recipient: partner.email,
+                subject: `Projet accepté | Project accepted`,
+                content: mailContent
+            }).catch(console.error);
+        }
+    });
+});
+
+emitter.on("linkReset", data => {
+    const connectUrl = config.client.protocol + "://" + config.client.host + ":" + config.client.port + "/login/partner/" + data.key;
+    const mailContent = `
+Bonjour,
+
+Voici le nouveau lien vous permettant de vous connecter à la plateforme de dépôt de projet de l'ESILV : ${connectUrl}
+
+Cordialement,
+L'équipe gestion de projets ESILV
+
+_________________________________________________________________________________________________________________________
+
+Hello,
+
+This is the new link to log in to the project's submission platform of ESILV : ${connectUrl}
+
+Sincerely yours,
+ESILV's projects management team`;
+
+    sendMail({
+        recipient: data.partner.email,
+        subject: "Nouveau lien de connexion | New log in link",
+        content: mailContent
+    });
+});
+/*
 exports.retrieveEdit = (req, res) => {
     if (req.body.email != undefined && req.body.email != '') {
         Partner.findOne({ 'email': req.body.email }, (err, partner) => {
@@ -92,7 +203,7 @@ exports.retrieveEdit = (req, res) => {
     } else {
         res.send(new Error('Missing email parameter'));
     }
-};
+};*/
 
 const sendMail = data => {
     return new Promise((resolve, reject) => {
