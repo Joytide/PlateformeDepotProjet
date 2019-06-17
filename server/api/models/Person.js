@@ -64,6 +64,10 @@ const PartnerSchema = new Schema({
 		required: true
 	},
 	company: String,
+	phone: String,
+	address: String,
+	kind: String,
+	alreadyPartner: Boolean,
 	key: String,
 	projects: [
 		{

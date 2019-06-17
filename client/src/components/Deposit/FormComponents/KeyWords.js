@@ -7,12 +7,10 @@ class KeyWords extends Component {
         super(props);
 
         this.state = {
-            tags: this.props.tags ? this.props.tags : [],                           //{ id: 1, text: "Big Data" }, { id: 2, text: "BlockChain" }, { id: 3, text: "Aeronautique" }
-            suggestions: ["Test", "Test2"]
+            tags: []
         };
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAddition = this.handleAddition.bind(this);
-        this.handleDrag = this.handleDrag.bind(this);
     }
 
     handleDelete(i) {
@@ -29,18 +27,6 @@ class KeyWords extends Component {
         this.props.change(this.state.tags);
     }
 
-    handleDrag(tag, currPos, newPos) {
-        let tags = this.state.tags;
-
-        // mutate array 
-        tags.splice(currPos, 1);
-        tags.splice(newPos, 0, tag);
-
-        // re-render 
-        this.setState({ tags: tags });
-        this.props.change(this.state.tags);
-    }
-
     render() {
         const lng = this.props.lng;
         return (
@@ -52,6 +38,7 @@ class KeyWords extends Component {
                   fullWidthInput
                   label={i18n.t('keyword.label',{lng}) }
                   dataSource = {this.state.suggestions}
+                  variant="outlined"
                 />
         )
     };

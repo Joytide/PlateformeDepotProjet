@@ -25,7 +25,6 @@ const styles = theme => ({
 		margin: 'auto',
 		display: 'block',
 		maxWidth: '100%',
-		maxHeight: '100%',
 	},
 });
 
@@ -53,10 +52,10 @@ class HomePage extends React.Component {
 						<Grid container direction="column" justify="center" alignItems="flex-start" spacing={24}>
 							<Grid item>
 								<Grid container alignItems="center" justify="center" spacing={32}>
-									<Grid item xs={1}>
-										<img className={classes.logo} alt="logo_esilv" src="./logo_esilv_2.png" />
+									<Grid item xs={3}>
+										<img className={classes.logo} alt="logo_esilv" src="./logo_esilv.png" />
 									</Grid>
-									<Grid item xs={11}>
+									<Grid item xs={9}>
 										<Typography variant="h3">
 											{i18n.t('home.title', { lng })}
 										</Typography>

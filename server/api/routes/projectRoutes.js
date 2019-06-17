@@ -12,16 +12,13 @@ module.exports = function (app) {
 		.get(project.download_file);
 
 	app.route('/api/project/validation')
-		.post(auth.passport.authenticate('jwt'),project.projectValidation)
-		.put(auth.passport.authenticate('jwt'),project.addSpecialization);
+		.post(auth.passport.authenticate('jwt'), project.projectValidation)
+		.put(auth.passport.authenticate('jwt'), project.addSpecialization);
 
 	app.route('/api/projects')
 		.get(auth.passport.authenticate('jwt'), project.listProjects)
 		.put(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.createProject)
 		.post(project.update_a_project);
-
-	app.route('/api/export')
-		.get(project.exports_all_projects);
 
 	app.route('/api/project/:projectId([a-fA-F0-9]{24})')
 		.get(project.findById)
@@ -32,11 +29,11 @@ module.exports = function (app) {
 		.put(project.like)
 		.delete(project.unlike);
 
+	app.route('/api/project/csv')
+		.get(project.getCSV);
+
 	/*app.route('/api/edit/:editKey')
 	  .get(project.find_by_edit_key);*/
-
-	app.route('/api/export/:projectId')
-		.get(project.export_a_project);
 
 	app.route('/api/project/:title')
 		.get(project.filter_by_name);

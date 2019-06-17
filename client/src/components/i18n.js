@@ -23,7 +23,7 @@ i18next
 						title: 'List of projects',
 						accepted: 'Project accepted !',
 						pending: "Waiting for approval",
-						rejected: "Project rejected by school"
+						rejected: "Project not acepted by school"
 					},
 					major: { label: 'Major', },
 					filter: { label: 'Filters', },
@@ -37,13 +37,13 @@ i18next
 					submission: { label: 'Project Submission', },
 					message: { label: ' Thank you for your submission, your project is now waiting to be validated by the project team of the school. An email has been sent to your address testifying your deposit.', },
 					tellus: { label: 'Tell us about yourself', },
-					email: { label: 'Your email address', },
+					email: { label: 'Email address', },
 					field: { label: 'This field is required', },
 					field_length: { label: 'Maximum text length exceeded' },
 					notvalid: { label: 'email is not valid', },
-					company: { label: 'Your company', },
-					firstname: { label: 'Your first name', },
-					lastname: { label: 'Your last name', },
+					company: { label: 'Company', },
+					firstname: { label: 'First name', },
+					lastname: { label: 'Last name', },
 					back: { label: 'Back', },
 					next: { label: 'Next', },
 					createAccount: { label: 'Create account' },
@@ -75,7 +75,31 @@ i18next
 					schools: { h2: 'Our Schools', },
 					campus: { h3: 'One campus, four schools', },
 					leonard: { p: 'The Leonardo da Vinci Campus is three schools in Paris-La Défense: an engineering school, a management school, a multimedia school. In addition, an Institute offers continuing education.', },
-
+					createPartner: {
+						phone: 'Phone number',
+						address: "Address",
+						company: "A company",
+						association: "An association",
+						school: "A school",
+						other: "Other",
+						kind: "You are ?",
+						alreadyPartner: "Have you already been an ESILV partner ?",
+						yes: "Yes",
+						no: "No",
+					},
+					errors: {
+						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
+						createPartner: "An error happened while trying to create your account. Please retry.",
+						createProject: "An error happened while trying to create your project. Please retry.",
+						NaN: "Please input a number",
+						fillAll: "Please fill all required fields"
+					},
+					createProject: {
+						skills: "Skills developped",
+						infos: "Further informations",
+						multipleTeams: "Do you accept that several teams work if the project ?",
+						maxNumber: "Maximum teams"
+					},
 					home: {
 						title: 'Industrial Innovation Projects',
 						title_p1: 'You are a company, a laboratory, a student? You want to test an idea, create a prototype, decipher and / or explore a field of innovation, ...?',
@@ -101,7 +125,7 @@ i18next
 						p4_l3: 'Deadline for the submission of project proposals: 5 September 2018',
 						p4_l4: 'If you have any questions, please do not hesitate to contact us: projetesilv@devinci.fr',
 						p5: 'Thank you for your participation, and see you soon.',
-						p5_l1: 'The EGPE (ESILV Project Management Team)', 
+						p5_l1: 'The EGPE (ESILV Project Management Team)',
 					},
 					navs: {
 						home: 'Home',
@@ -112,10 +136,10 @@ i18next
 						admin: 'Admin',
 						linkLost: 'Project link lost',
 						welcome: 'Welcome',
-						disconnect:"Disconnect"
+						disconnect: "Disconnect"
 					},
 					forgetPass: {
-						title:"Lost link",
+						title: "Lost link",
 						submit: 'Submit',
 						desc: 'The first time you submitted a project, you should have received an email with a link to connect.\nIf it isn\'t in your spam inbox, we can send it again. You just have to fill the below textbox with your email address.',
 						textfield: "Your email address"
@@ -150,7 +174,7 @@ i18next
 						title: 'Liste des projets',
 						accepted: 'Projet accepté !',
 						pending: "En attente de validation",
-						rejected: "Projet rejetté par l'école"
+						rejected: "Projet non accepté par l'école"
 					},
 					major: { label: 'Majeure', },
 					filter: { label: 'Filtres', },
@@ -164,11 +188,11 @@ i18next
 					submission: { label: 'Soumission du projet', },
 					message: { label: '  Merci, votre projet est maintenant en attente de validation par l\'équipe de gestion projets. Un email vous a été envoyé attestant du dépôt du projet. ', },
 					tellus: { label: 'Parlez-nous de vous', },
-					email: { label: 'Votre adresse email', },
+					email: { label: 'Adresse email', },
 					field: { label: 'Ce champ est obligatoire', },
 					field_length: { label: 'Longueur maximale du texte dépassée' },
 					notvalid: { label: 'Email indiqué n\'est pas valide', },
-					company: { label: 'Votre entreprise', },
+					company: { label: 'Entreprise', },
 					firstname: { label: 'Prénom', },
 					lastname: { label: 'Nom', },
 					back: { label: 'Précédent', },
@@ -208,6 +232,31 @@ i18next
 						desc: 'Lors de la soumission de votre premier projet, un mail vous a été envoyé avec le lien de connexion.\nS\'il n\'est pas dans votre boite de spam, nous pouvons vous le renvoyer. Il suffit de remplir votre adresse mail ci-dessous.',
 						textfield: "Votre adresse mail"
 					},
+					createPartner: {
+						phone: 'Numéro de téléphone',
+						address: "Adresse",
+						kind: "Vous êtes ?",
+						company: "Une entreprise",
+						association: "Une association",
+						school: "Une école",
+						other: "Autre",
+						alreadyPartner: "Avez-vous déjà proposé un projet à l'ESILV ?",
+						yes: "Oui",
+						no: "Non",
+					},
+					createProject: {
+						skills: "Compétences développées",
+						infos: "Informations complémentaires",
+						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?  ?",
+						maxNumber: "Nombre maximum"
+					},
+					errors: {
+						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
+						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer.",
+						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
+						NaN: "Merci de saisir un nombre",
+						fillAll: "Merci de remplir tous les champs obligatoires",
+					},
 					home: {
 						title: 'Projets Innovation Industrielle',
 						title_p1: 'Vous êtes une entreprise, un laboratoire, un étudiant ? Vous souhaitez tester une idée, créer un prototype, déchiffrer et/ou explorer un terrain d\'innovation, ... ?',
@@ -244,7 +293,7 @@ i18next
 						admin: 'Admin',
 						linkLost: 'Lien oublié',
 						welcome: "Bienvenue ",
-						disconnect:"Se déconnecter"
+						disconnect: "Se déconnecter"
 					},
 					carousel: {
 						Title1: 'BermudZer : pricing d’options bermudéennes',

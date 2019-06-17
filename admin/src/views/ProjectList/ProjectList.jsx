@@ -22,6 +22,7 @@ import Warning from "components/Typography/Warning.jsx";
 
 import { api } from "config.json"
 import AuthService from "../../components/AuthService";
+import { withUser } from "../../providers/UserProvider/UserProvider"
 import { FormControlLabel } from "@material-ui/core";
 
 const styles = {
@@ -104,8 +105,8 @@ class ProjectList extends React.Component {
                         transform(<p>{new Date(project.sub_date).toLocaleDateString()}</p>),
                         project.study_year.map(year => year.abbreviation).sort().join(', '),
                         project.specializations
-                            .map(spe => spe.status != "rejected" ? spe.specialization.abbreviation : "")
-                            .filter(spe => spe != "")
+                            .map(spe => spe.status !== "rejected" ? spe.specialization.abbreviation : "")
+                            .filter(spe => spe !== "")
                             .sort()
                             .join(', '),
                         (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
@@ -119,7 +120,6 @@ class ProjectList extends React.Component {
     render() {
         const { classes } = this.props;
         let loadedContent;
-
         if (!this.state.loading) {
             loadedContent = (
                 <Table
@@ -201,9 +201,29 @@ class ProjectList extends React.Component {
                         {loadedContent}
                     </CardBody>
                 </Card>
+
+                {this.props.user.user.EPGE &&
+                    <Card>
+                        <CardHeader color="primary">
+                            <h4 className={classes.cardTitleWhite}>Téléchargement</h4>
+                            <p className={classes.cardCategoryWhite}>
+                                Téléchargements disponibles
+                            </p>
+                        </CardHeader>
+                        <CardBody>
+                            <a href={api.host + ":" + api.port + "/api/pdf/all"}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets validés au format PDF
+                        </Button>
+                            </a>
+                        </CardBody>
+                    </Card>
+                }
             </GridItem>
         </GridContainer>);
     }
 }
 
-export default withStyles(styles)(ProjectList);
+
+
+export default withUser(withStyles(styles)(ProjectList));

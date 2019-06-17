@@ -2,10 +2,11 @@
 
 var app = require('express')();
 const multer = require('multer');
-const PDFDocument = require('pdfkit');
 var path = require('path');
 var mongoose = require('mongoose');
 const { emitter } = require('../../eventsCommon');
+const { Parser } = require('json2csv');
+const fs = require('fs');
 
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
@@ -139,11 +140,14 @@ exports.createProject = (req, res, next) => {
 			specializations: data.majors_concerned.map(spe => ({ specialization: spe })),
 			study_year: data.study_year,
 			description: data.description,
-			partner: req.user._id
+			partner: req.user._id,
+			maxTeams: parseInt(data.maxNumber)
 		});
 
 		if (data.keywords) newProject.keywords = data.keywords;
 		if (data.files) newProject.files = data.files;
+		if (data.skills) newProject.skills = data.skills;
+		if (data.infos) newProject.infos = data.infos;
 
 		Project.estimatedDocumentCount({}, (err, count) => {
 			if (err) next(err);
@@ -261,42 +265,6 @@ exports.delete_a_project = (req, res) => {
 	});
 }
 
-exports.export_a_project = (req, res) => {
-	let doc = new PDFDocument;
-	Project.findById(req.params.projectId)
-		.exec((err, project) => {
-			if (err) {
-				res.send(err);
-			}
-			doc.pipe(res);
-			doc.fontSize(15).text(project.title, 50, 50);
-			doc.fontSize(11).text(`proposé par: ${project.partner.first_name} ${project.partner.last_name} - ${project.partner.company}`);
-			doc.fontSize(11).text(`pour les étudiants: ${project.study_year.toString()}`);
-			doc.fontSize(10).text(project.description, 50, 100);
-			doc.end();
-		});
-}
-
-exports.exports_all_projects = (req, res) => {
-	let doc = new PDFDocument;
-	Project.find({})
-		.exec((err, projects) => {
-			if (err) {
-				res.send(err);
-			}
-			doc.pipe(res);
-			projects.forEach((project, index) => {
-				doc.fontSize(20).text(`Projet n°${index}`);
-				doc.fontSize(15).text(project.title);
-				doc.fontSize(11).text(`proposé par: ${project.partner.first_name} ${project.partner.last_name} - ${project.partner.company}`);
-				doc.fontSize(11).text(`pour les étudiants: ${project.study_year.toString()}`);
-				doc.fontSize(10).text(project.description);
-				doc.addPage();
-			});
-			doc.end();
-		});
-}
-
 exports.like = (req, res) => {
 	let data = req.body;
 
@@ -377,14 +345,10 @@ exports.projectValidation = (req, res, next) => {
 					}
 
 					if (count == project.specializations.length) {
-						if (rejected) {
+						if (rejected)
 							project.status = "rejected";
-							emitter.emit("projectRefused", project._id);
-						}
-						else {
+						else
 							project.status = "validated";
-						}
-
 					}
 
 					project.save((err, savedProject) => {
@@ -392,8 +356,9 @@ exports.projectValidation = (req, res, next) => {
 							next(err)
 						else {
 							if (project.status === "validated")
-								emitter.emit("projectValidated", project._id);
-
+								emitter.emit("projectValidated", { partnerId: project.partner, projectId: project._id });
+							else if (project.status === "rejected")
+								emitter.emit("projectRejeted", project.parnter);
 							res.json(savedProject)
 						}
 					});
@@ -426,4 +391,107 @@ exports.addSpecialization = (req, res, next) => {
 	} else {
 		next(new Error("MissingParameter"));
 	}
+}
+
+exports.getCSV = (req, res, next) => {
+	Project.find({ status: "validated" })
+		.populate("partner specializations.specialization study_year")
+		.exec((err, projects) => {
+			if (err) next(err)
+			else {
+				const fields = [
+					{
+						label: "N° projet",
+						value: "number"
+					},
+					{
+						label: "Timestamp",
+						value: "sub_date"
+					},
+					{
+						label: "Vous êtes",
+						value: "partner.kind"
+					},
+					{
+						label: "Nom",
+						value: "partner.last_name"
+					},
+					{
+						label: "Prénom",
+						value: "partner.first_name"
+					},
+					{
+						label: "Email",
+						value: "partner.email"
+					},
+					{
+						label: "Téléphone",
+						value: "partner.phone"
+					},
+					{
+						label: "Entreprise",
+						value: "partner.company"
+					},
+					{
+						label: "Déjà partenaire",
+						value: "partner.alreadyPartner"
+					},
+					{
+						label: "Année",
+						value: row => row.study_year
+							.map(s => s.abbreviation)
+							.join(" / ")
+					},
+					{
+						label: "Majeure",
+						value: row => row.specializations
+							.filter(s => s.status === "validated")
+							.map(s => s.specialization.abbreviation)
+							.join(" / ")
+					},
+					{
+						label: "Titre du projet",
+						value: "title"
+					},
+					{
+						label: "Description",
+						value: "title"
+					},
+					{
+						label: "Description",
+						value: "description"
+					},
+					{
+						label: "Compétences développées",
+						value: "skills"
+					},
+					{
+						label: "Mots clefs",
+						value: row => row.keywords.join(", ")
+					},
+					{
+						label: "Plusieurs groupes ?",
+						value: row => row.maxTeams > 1 ? "Oui" : "Non"
+					},
+					{
+						label: "Nombre de groupes",
+						value: row => row.maxTeams > 1 ? row.maxTeams : ""
+					},
+					{
+						label: "Informations supplémentaires",
+						value: "infos"
+					}
+				];
+
+				const json2csvParser = new Parser({ fields });
+				const csv = json2csvParser.parse(projects);
+
+				const date = Date.now();
+
+				fs.writeFile(date + ".csv", csv, err => {
+					if (err) next(err);
+					else res.download(process.cwd() + "/" + date + ".csv");
+				})
+			}
+		});
 }

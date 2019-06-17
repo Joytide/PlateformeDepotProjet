@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 
 // @material-ui/core components
@@ -7,6 +8,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from "@material-ui/core/Checkbox";
 
+import Visibility from "@material-ui/icons/Visibility"
 
 
 // core components
@@ -20,6 +22,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import ChangePassword from "components/ChangePassword/ChangePassword.jsx";
+import Table from "components/Table/Table.jsx";
 
 import AuthService from "components/AuthService"
 
@@ -359,6 +362,26 @@ class UserProfile extends React.Component {
 									</GridContainer>
 								</CardFooter>
 							</Card>
+						</GridItem>
+
+						<GridItem xs={12} sm={12} md={12}>
+							{this.state.user.projects && this.state.user.projects.length > 0 &&
+								<Card>
+									<CardHeader color="primary">
+										<h4 className={classes.cardTitleWhite}>Liste des projets</h4>
+										<p className={classes.cardCategoryWhite}>Projets déposés par le partenaire</p>
+									</CardHeader>
+									<CardBody>
+										<Table
+											tableHeaderColor="primary"
+											tableHead={["Titre", "Lien"]}
+											tableData={this.state.user.projects.map(p => [
+												p.title,
+												<Link to={"/project/" + p._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>
+											])}
+										/>
+									</CardBody>
+								</Card>}
 						</GridItem>
 
 						<GridItem xs={12}>

@@ -164,14 +164,6 @@ function initDB() {
 					MNM.description.en = "Mechanics, CAD, Modelling, Aeronautics, Smart Building and cities, Automotive and land transport, Process Engineering";
 					MNM.abbreviation = "MNM";
 					MNM.save();
-
-					let Test = new Specialization();
-					Test.name.fr = "Nom de test pour la majeur";
-					Test.name.en = "Major test name";
-					Test.description.fr = "Description de test pour la majeur";
-					Test.description.en = "Major test description";
-					Test.abbreviation = "Test";
-					Test.save();
 				}
 			});
 
@@ -181,12 +173,6 @@ function initDB() {
 				if (err) throw err;
 				else if (count < 3) {
 					console.log("Creating years");
-
-					let A3 = new Year();
-					A3.abbreviation = "A3";
-					A3.name.fr = "Année 3";
-					A3.name.en = "3rd Year";
-					A3.save();
 
 					let A4 = new Year();
 					A4.abbreviation = "A4";

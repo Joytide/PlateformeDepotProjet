@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const sha256 = require('js-sha256')
 const jwt = require('jsonwebtoken');
 
+const { emitter } = require('../../eventsCommon');
 const config = require('../../config');
 
 const mailController = require('./mailController');
@@ -40,35 +41,16 @@ exports.addProject = (partnerId, projectId) => {
 		Partner.findByIdAndUpdate(partnerId, { $push: { projects: projectId } }, { new: true }, (err, partner) => {
 			if (err) reject(err);
 			else {
-				const mail = {
-					recipient: partner.email,
-					subject: `Soumission du projet sur la plateforme Devinci Project`,
-					content: `
-Bonjour ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-Votre demande de soumission de projet a bien été enregistrée. \n 
-Cordialement,
-L'équipe DVP
-\n\n\n\n
-Hello ${partner.first_name} ${partner.last_name} (${partner.company}), \n
-Your project submission request has been registered.\n
-`
-				}
-
-				mailController.sendMail(mail)
-					.then(res => {
-						if (res === "MailSent")
-							resolve();
-					})
-					.catch(reject);
+				emitter.emit("projectSubmitted", { partner: partner });
 			}
 		});
 	});
 }
 
-// Return a promise when creating a Partner
 exports.createPartner = (req, res, next) => {
 	const data = req.body;
-	if (data.first_name && data.last_name && data.email && data.company) {
+
+	if (data.first_name && data.last_name && data.email && data.company && data.kind && data.alreadyPartner !== undefined) {
 		Partner.findOne({ email: data.email }, async (err, partner) => {
 			if (err) next(err);
 			else {
@@ -78,11 +60,16 @@ exports.createPartner = (req, res, next) => {
 					next(error);
 				} else {
 					let newPartner = new Partner({
-						"first_name": data.first_name,
-						"last_name": data.last_name,
-						"email": data.email,
-						"company": data.company
+						first_name: data.first_name,
+						last_name: data.last_name,
+						email: data.email,
+						alreadyPartner: data.alreadyPartner,
+						kind: data.kind,
+						company: data.company
 					});
+
+					if (data.address) newPartner.company = data.address;
+					if (data.phone) newPartner.phone = data.phone;
 
 					generatePassword(16)
 						.then(keyData => {
@@ -101,13 +88,7 @@ exports.createPartner = (req, res, next) => {
 
 									res.json({ partner: newPartner, token: userToken });
 
-									mailController.sendMail({
-										recipient: newPartner.email,
-										subject: "Creation de votre compte sur la plateforme Devinci Project",
-										content: `Bonjour,
-										Nous avons le plaisir de vous annoncer que votre compte à bien été créé sur la plateforme Devinci-project.
-										Vous pouvez dès à présent vous connecter en cliquant sur le lien suivant : ${config.client.host + ':' + config.client.port}/login/partner/${keyData.key}`
-									});
+									emitter.emit("partnerCreated", { partner: newPartner, key: keyData.key });
 								}
 							});
 						})
@@ -205,12 +186,7 @@ exports.resetPassword = (req, res, next) => {
 						else {
 							res.json(partner);
 
-							mailController.sendMail({
-								recipient: partner.email,
-								subject: "Lien de connexion sur la plateforme Devinci Project",
-								content: `Bonjour,
-								Voici le lien permettant de vous connecter à la plateforme Devinci Project : ${config.client.host + ":" + config.client.port}/login/partner/${pass.key}`
-							});
+							emitter.emit("resetLink", { key: pass.key, partner: partner });
 						}
 					});
 				})

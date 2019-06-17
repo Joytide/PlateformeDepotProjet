@@ -1,6 +1,5 @@
 import React from 'react';
 import i18n from '../components/i18n';
-import { Link } from 'react-router-dom';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -87,15 +86,15 @@ class ProjectPage extends React.Component {
 
                                 <Grid container justify="flex-end">
                                     <Grid item>
-                                    { project.status === "validated" &&
-                                        <a href={api.host + ":" + api.port + "/api/project/file/" + project.pdf}>
-                                            <Button lng={lng} variant="outlined" color='secondary' style={{ marginRight: 12 }}>
-                                                <Typography variant="button" >
-                                                    {i18n.t('pdf.label', { lng })}
-                                                </Typography>
-                                            </Button>
-                                        </a>
-                                    }
+                                        {project.status === "validated" &&
+                                            <a href={api.host + ":" + api.port + "/api/project/file/" + project.pdf}>
+                                                <Button lng={lng} variant="outlined" color='secondary' style={{ marginRight: 12 }}>
+                                                    <Typography variant="button" >
+                                                        {i18n.t('pdf.label', { lng })}
+                                                    </Typography>
+                                                </Button>
+                                            </a>
+                                        }
                                     </Grid>
                                 </Grid>
 
@@ -124,7 +123,6 @@ class ProjectPage extends React.Component {
                                                 return <Chip
                                                     key={keyword}
                                                     label={keyword}
-                                                    color="grey"
                                                 />
                                             })
                                         }
@@ -141,16 +139,42 @@ class ProjectPage extends React.Component {
                                     </Tooltip>*/}
 
                                     </Grid>
-
-                                    <Grid item xs={8}>
+                                </Grid>
+                                <Grid container>
+                                    <Grid item xs={0} md={1} lg={2}></Grid>
+                                    <Grid item xs={12} md={10} lg={8}>
                                         <hr></hr>
-                                        <Typography component="">
+                                        <Typography align="justify">
                                             {nl2br(project.description)}
                                         </Typography>
+                                        <br />
+                                        <hr></hr>
+                                        {project.skills &&
+                                            <div>
+                                                <Typography variant="display1">
+                                                    Compétences développées :
+                                                </Typography>
+                                                <br />
+                                                <Typography>
+                                                    {nl2br(project.skills)}
+                                                </Typography>
+                                                <br /><br />
+                                            </div>
+                                        }
+                                        {project.infos &&
+                                            <div>
+                                                <Typography variant="display1">
+                                                    Informations complémentaires :
+                                                </Typography>
+
+                                                <Typography>
+                                                    {nl2br(project.infos)}
+                                                </Typography>
+                                            </div>
+                                        }
                                     </Grid>
                                 </Grid>
 
-                                <hr></hr>
 
                                 <Grid container spacing={8} >
                                     {

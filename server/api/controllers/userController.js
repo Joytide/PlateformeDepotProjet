@@ -201,11 +201,13 @@ exports.findById = (req, res) => {
             if (err) res.send(err);
             else if (person) res.json(person);
             else {
-                Partner.findById(data.id, (err, partner) => {
-                    if (err) res.send(err);
-                    else if (partner) res.json(partner);
-                    else res.send(new Error("UserNotFound"));
-                });
+                Partner.findById(data.id)
+                    .populate("projects")
+                    .exec((err, partner) => {
+                        if (err) res.send(err);
+                        else if (partner) res.json(partner);
+                        else res.send(new Error("UserNotFound"));
+                    });
             }
         });
     } else {
@@ -237,7 +239,7 @@ exports.changePassword = (req, res, next) => {
                             else res.json({ name: "PasswordChanged", message: "Password has been successfuly changed" });
                         });
                     });
-                else if(data.oldPassword && data.oldPassword.length === 64 && data.newPassword && data.newPassword.length === 64)
+                else if (data.oldPassword && data.oldPassword.length === 64 && data.newPassword && data.newPassword.length === 64)
                     bcrypt.compare(data.oldPassword, person.password, function (err, valid) {
                         if (err) next(err);
                         else if (valid) {
@@ -252,7 +254,7 @@ exports.changePassword = (req, res, next) => {
                         else
                             next(new Error('InvalidCredentials'));
                     });
-                else 
+                else
                     next(new Error('InvalidCredentials'));
             }
         });
@@ -262,7 +264,7 @@ exports.changePassword = (req, res, next) => {
     }
 }
 
-exports.myself = (req,res) => {
+exports.myself = (req, res) => {
     req.user.password = undefined;
     req.user.key = undefined;
     res.json(req.user);

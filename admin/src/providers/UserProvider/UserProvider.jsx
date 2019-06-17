@@ -72,4 +72,14 @@ class UserProvider extends React.Component {
 }
 UserProvider.contextType = UserContext;
 
+export function withUser(Component) {
+    return function WrapperComponent(props) {
+        return (
+            <UserContext.Consumer>
+                {user => <Component {...props} user={user} />}
+            </UserContext.Consumer>
+        );
+    };
+}
+
 export default UserProvider;

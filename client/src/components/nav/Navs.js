@@ -193,7 +193,7 @@ class Navs extends React.Component {
 				<AppBar position="fixed" color='primary'>
 					<Toolbar>
 						<Link to="/">
-							<img style={this.styles.title} alt="logo PULV" src="/logo_pulv.png" height="50" width="50" />
+							<img alt="logo PULV" src="/logo_pulv_blanc.png" height="60" width="60" style={{marginTop: "5px", marginBottom: "5px"}} />
 						</Link>
 
 						{this.context.user._id && user}
