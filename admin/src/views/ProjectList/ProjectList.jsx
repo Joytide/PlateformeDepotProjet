@@ -216,6 +216,11 @@ class ProjectList extends React.Component {
                                     Télécharger les projets validés au format PDF
                         </Button>
                             </a>
+                            <a href={api.host + ":" + api.port + "/api/project/csv"}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets validés au format CSV
+                        </Button>
+                            </a>
                         </CardBody>
                     </Card>
                 }
