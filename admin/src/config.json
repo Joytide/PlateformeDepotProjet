@@ -1,6 +1,6 @@
 {
     "api": {
-        "host": "https://api.devinci-project.fr",
+        "host": "https://projets-esilv.devinci.fr",
         "port": 443
     }
 }
