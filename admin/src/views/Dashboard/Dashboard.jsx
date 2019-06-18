@@ -55,10 +55,7 @@ class Dashboard extends React.Component {
 		return (
 			<GridContainer>
 				<GridItem xs={12}>
-					<h1>Construction en cours de la page</h1>
-					<p>N'hésitez pas à nous dire quelles informations vous souhaiteriez vous apparaître sur cette page :
-					<a href="mailto:theophile.bornon@devinci.fr">theophile.bornon@devinci.fr</a>
-					</p>
+					<img src="/phoque_you.jpg"></img>
 				</GridItem>
 			</GridContainer>
 		)
