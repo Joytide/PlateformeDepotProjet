@@ -152,7 +152,6 @@ class ProjectProfile extends React.Component {
 
     closeModal = () => {
         this.setState({ open: false, toDelete: "" });
-
     };
 
     // Check or uncheck checkbox when both project and years are loaded
@@ -357,7 +356,9 @@ class ProjectProfile extends React.Component {
                 this.setState({
                     success: true,
                     message: "Votre demande a bien été traité."
-                })
+                });
+
+                setTimeout(() => this.loadProjectData(), 2500);
             })
             .catch(err => {
                 console.error(err)
@@ -384,7 +385,7 @@ class ProjectProfile extends React.Component {
                     <CardBody>
                         <GridContainer>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2"  gutterBottom>
+                                <Typography variant="body2" gutterBottom>
                                     Entreprise :
                                 </Typography>
                                 <Typography gutterBottom>
@@ -392,7 +393,7 @@ class ProjectProfile extends React.Component {
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography  variant="body2" gutterBottom>
+                                <Typography variant="body2" gutterBottom>
                                     Mail :
                                 </Typography>
                                 <Typography gutterBottom>
@@ -400,7 +401,7 @@ class ProjectProfile extends React.Component {
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography  variant="body2" gutterBottom>
+                                <Typography variant="body2" gutterBottom>
                                     Nom :
                                 </Typography>
                                 <Typography gutterBottom>
