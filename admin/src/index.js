@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Redirect } from 'react-router'
 import { createBrowserHistory } from "history";
 import {
-	Router,
+	BrowserRouter as Router,
 	Route,
 	Switch
 } from 'react-router-dom'
@@ -27,7 +27,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 
 ReactDOM.render(
 	<UserProvider>
-		<Router history={hist}>
+		<Router history={hist} basename="/admin">
 			<Switch>
 				{indexRoutes.map((prop, key) => {
 					if (prop.exact)
