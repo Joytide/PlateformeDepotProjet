@@ -202,7 +202,7 @@ class ProjectList extends React.Component {
                     </CardBody>
                 </Card>
 
-                {this.props.user.user.EPGE &&
+                {(this.props.user.user.EPGE || this.props.user.user.admin) &&
                     <Card>
                         <CardHeader color="primary">
                             <h4 className={classes.cardTitleWhite}>Téléchargement</h4>
