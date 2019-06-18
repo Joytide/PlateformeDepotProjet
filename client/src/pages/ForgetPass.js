@@ -65,7 +65,7 @@ class ForgetPass extends Component {
                             fullWidth
                         /><br />
                         <Button variant="contained" color="primary" type="submit">
-                            <Typography>{i18n.t('forgetPass.submit', { lng })}</Typography>
+                            <Typography color="inherit">{i18n.t('forgetPass.submit', { lng })}</Typography>
                         </Button>
                     </form>
                 </Grid>
