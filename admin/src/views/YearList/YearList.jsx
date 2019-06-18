@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 
 import Visibility from "@material-ui/icons/Visibility"
+import Delete from "@material-ui/icons/Delete"
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -15,6 +16,7 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
 import Button from "components/CustomButtons/Button.jsx";
+import AuthService from "../../components/AuthService";
 
 import { api } from "config.json"
 
@@ -54,23 +56,64 @@ class YearList extends React.Component {
 
         this.state = {
             loading: true,
-            years: []
+            years: [],
+            open: false,
+            _id: ""
         };
     }
 
     componentWillMount() {
+        this.loadData()
+    }
+
+    loadData = () => {
         fetch(api.host + ":" + api.port + "/api/year", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
                 let yearData = data.map(year => [
                     year.abbreviation,
-                    year.name.fr, 
-                    year.name.en, 
-                    (<Link to={"/year/" + year._id}><Button size="sm" type="button" color="info"><Visibility /> Voir l'année</Button></Link>)
+                    year.name.fr,
+                    year.name.en,
+                    (
+                        <div>
+                            <Link to={"/year/" + year._id}>
+                                <Button size="sm" type="button" color="info">
+                                    <Visibility /> Voir l'année
+                </Button>
+                            </Link>
+                            <Button size="sm" type="button" color="danger" onClick={this.showModal(year._id)}>
+                                <Delete /> Supprimer l'année
+                    </Button>
+                        </div>)
                 ]);
 
                 this.setState({ years: yearData, loading: false });
             });
+    }
+
+    showModal = _id => () => {
+        this.setState({ open: true, _id });
+    }
+
+    closeModal = () => {
+        this.setState({ open: false, _id: "" });
+    }
+
+    deleteYear = () => {
+        const data = {
+            _id: this.state._id
+        };
+
+        AuthService.fetch(api.host + ":" + api.port + "/api/year",
+            {
+                method: "DELETE",
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.closeModal();
+                this.loadData();
+            }).catch(console.error);
     }
 
     render() {
