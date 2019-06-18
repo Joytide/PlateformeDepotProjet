@@ -32,6 +32,7 @@ import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Table from "components/Table/Table.jsx";
 
+import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
 import { api } from "../../config"
 
@@ -484,7 +485,9 @@ class ProjectProfile extends React.Component {
                                                         <a download href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
                                                             <Button size="sm" color="info">Télécharger</Button>
                                                         </a>
-                                                        <Button size="sm" color="danger" onClick={this.openModal(file._id)}>Supprimer</Button>
+                                                        {(this.props.user.user.EPGE || this.props.user.user.admin) &&
+                                                            <Button size="sm" color="danger" onClick={this.openModal(file._id)}>Supprimer</Button>
+                                                        }
                                                     </CardBody>
                                                 </Card>
                                             </GridItem>
@@ -495,22 +498,24 @@ class ProjectProfile extends React.Component {
 
                         </GridContainer>
                     </CardBody>
-                    <CardFooter>
-                        <GridContainer >
-                            <GridItem xs={12} sm={12} md={12}>
-                                <Input
-                                    className={classes.input}
-                                    id="raised-button-file"
-                                    type="file"
-                                    onChange={e => this.uploadFile(e.target.files[0])}
-                                    style={{ display: "none" }}
-                                />
-                                <label htmlFor="raised-button-file">
-                                    <Button component="span" size="sm" color="info"><Add />Ajouter un fichier</Button>
-                                </label>
-                            </GridItem>
-                        </GridContainer>
-                    </CardFooter>
+                    {(this.props.user.user.EPGE || this.props.user.user.admin) &&
+                        <CardFooter>
+                            <GridContainer >
+                                <GridItem xs={12} sm={12} md={12}>
+                                    <Input
+                                        className={classes.input}
+                                        id="raised-button-file"
+                                        type="file"
+                                        onChange={e => this.uploadFile(e.target.files[0])}
+                                        style={{ display: "none" }}
+                                    />
+                                    <label htmlFor="raised-button-file">
+                                        <Button component="span" size="sm" color="info"><Add />Ajouter un fichier</Button>
+                                    </label>
+                                </GridItem>
+                            </GridContainer>
+                        </CardFooter>
+                    }
                 </Card>
             )
 
@@ -577,35 +582,38 @@ class ProjectProfile extends React.Component {
                                 style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
                             />;
                         arr[2] = "";
+                        console.log(spe);
                         if (this.state.project.status === "pending") {
-                            arr[3] = (
-                                <div>
-                                    <Button
-                                        size="sm"
-                                        disabled={this.state.project.specializations[i].status === "validated"}
-                                        color="success"
-                                        name="validated"
-                                        onClick={this.specializationValidation("validated", spe._id)}>
-                                        Valider le projet
+                            if (this.props.user.user.admin
+                                || spe.referent.map(r => r._id).indexOf(this.props.user.user._id) !== -1)
+                                arr[3] = (
+                                    <div>
+                                        <Button
+                                            size="sm"
+                                            disabled={this.state.project.specializations[i].status === "validated"}
+                                            color="success"
+                                            name="validated"
+                                            onClick={this.specializationValidation("validated", spe._id)}>
+                                            Valider le projet
                                 </Button>
-                                    <Button
-                                        size="sm"
-                                        disabled={this.state.project.specializations[i].status === "pending"}
-                                        color="warning"
-                                        name="pending"
-                                        onClick={this.specializationValidation("pending", spe._id)}>
-                                        Mettre en attente
+                                        <Button
+                                            size="sm"
+                                            disabled={this.state.project.specializations[i].status === "pending"}
+                                            color="warning"
+                                            name="pending"
+                                            onClick={this.specializationValidation("pending", spe._id)}>
+                                            Mettre en attente
                                 </Button>
-                                    <Button
-                                        size="sm"
-                                        disabled={this.state.project.specializations[i].status === "rejected"}
-                                        color="danger"
-                                        name="rejected"
-                                        onClick={this.specializationValidation("rejected", spe._id)}>
-                                        Refuser le projet
+                                        <Button
+                                            size="sm"
+                                            disabled={this.state.project.specializations[i].status === "rejected"}
+                                            color="danger"
+                                            name="rejected"
+                                            onClick={this.specializationValidation("rejected", spe._id)}>
+                                            Refuser le projet
                                 </Button>
-                                </div>
-                            );
+                                    </div>
+                                );
                         }
                         break;
                     } else {
@@ -752,4 +760,4 @@ class ProjectProfile extends React.Component {
     }
 }
 
-export default withStyles(styles)(ProjectProfile);
+export default withUser(withStyles(styles)(ProjectProfile));

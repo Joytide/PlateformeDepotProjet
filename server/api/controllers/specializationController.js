@@ -130,7 +130,7 @@ exports.addReferent = (req, res, next) => {
     let data = req.body;
 
     if (data._id && data.referent) {
-        Administration.findOne({ _id: data.referent, EPGE: true }, (err, epge) => {
+        Administration.findOne({ _id: data.referent }, (err, epge) => {
             if (err && err.name === "CastError") {
                 err.status = 400;
                 err.message = "referent parameter must be an ObjectId";
@@ -189,7 +189,7 @@ exports.removeReferent = (req, res, next) => {
     let data = req.body;
 
     if (data._id && data.referent) {
-        Administration.findOne({ _id: data.referent, EPGE: true }, (err, epge) => {
+        Administration.findOne({ _id: data.referent }, (err, epge) => {
             if (err && err.name === "CastError") {
                 err.status = 400;
                 err.message = "referent parameter must be an ObjectId";

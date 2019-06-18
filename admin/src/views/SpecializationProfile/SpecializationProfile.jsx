@@ -100,7 +100,7 @@ class SpecializationProfile extends React.Component {
                 }
             });
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/user/EPGE")
+        AuthService.fetch(api.host + ":" + api.port + "/api/user/administration")
             .then(res => res.json())
             .then(data => {
                 if (data) {
