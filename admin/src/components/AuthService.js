@@ -20,15 +20,15 @@ const AuthService = {
 
     setToken: idToken => {
         // Saves user token to localStorage
-        localStorage.setItem('token', idToken)
+        localStorage.setItem('adminToken', idToken)
     },
 
     getToken: () => {
-        if (!AuthService.isTokenExpired(localStorage.getItem('token'))) {
-            return localStorage.getItem('token')
+        if (!AuthService.isTokenExpired(localStorage.getItem('adminToken'))) {
+            return localStorage.getItem('adminToken')
         }
         else {
-            localStorage.removeItem('token');
+            localStorage.removeItem('adminToken');
             return null;
         }
     },
