@@ -441,13 +441,6 @@ class ProjectProfile extends React.Component {
                             {this.state.project.title}
                         </Typography>
                         <br />
-                        <Typography >
-                            Pitch du projet :
-                                </Typography>
-                        <Typography >
-                            ...
-                        </Typography>
-                        <br />
                         <Typography>
                             Description :
                         </Typography>
@@ -462,6 +455,27 @@ class ProjectProfile extends React.Component {
                         </Typography>
                         <Typography>
                             {this.state.project.keywords.join(', ')}
+                        </Typography>
+                        <br />
+                        <Typography >
+                            Compétences développées :
+                        </Typography>
+                        <Typography>
+                            {this.state.project.skills}
+                        </Typography>
+                        <br />
+                        <Typography >
+                            Informations supplémentaires :
+                        </Typography>
+                        <Typography>
+                            {this.state.project.infos}
+                        </Typography>
+                        <br />
+                        <Typography >
+                            Nombre maximum d'équipes sur le projet :
+                        </Typography>
+                        <Typography>
+                            {this.state.project.maxTeams}
                         </Typography>
                     </CardBody>
                 </Card>
