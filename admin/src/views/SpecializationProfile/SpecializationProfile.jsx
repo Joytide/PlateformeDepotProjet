@@ -301,6 +301,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
+                                                disabled: !user.admin,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.descriptionFr
                                             }}
@@ -314,6 +315,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
+                                                disabled: !user.admin,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.descriptionEn
                                             }}
