@@ -26,12 +26,12 @@ class UserProvider extends React.Component {
 
 		this.state = {
 			user: {}, // une valeur de départ
-			setToken: token => {
-				localStorage.setItem("token", token);
+			setToken: adminToken => {
+				localStorage.setItem("adminToken", adminToken);
 				this.refreshUser();
 			},
 			disconnect: () => {
-				localStorage.removeItem("token");
+				localStorage.removeItem("adminToken");
 				this.setState({ user: {} });
 			}
 		};
@@ -54,7 +54,7 @@ class UserProvider extends React.Component {
 			})
 			.catch(err => {
 				if (err.status === 401)
-					localStorage.removeItem("token");
+					localStorage.removeItem("adminToken");
 			});
 	}
 
