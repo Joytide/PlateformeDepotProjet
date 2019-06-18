@@ -130,7 +130,7 @@ function initDB() {
 			.find()
 			.estimatedDocumentCount((err, count) => {
 				if (err) throw err;
-				else if (count < 5) {
+				else if (count < 4) {
 					console.log("Creating specializations");
 
 					let IBO = new Specialization();
@@ -171,7 +171,7 @@ function initDB() {
 			.find()
 			.estimatedDocumentCount((err, count) => {
 				if (err) throw err;
-				else if (count < 3) {
+				else if (count < 2) {
 					console.log("Creating years");
 
 					let A4 = new Year();
