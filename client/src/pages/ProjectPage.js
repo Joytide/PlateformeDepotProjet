@@ -3,7 +3,6 @@ import i18n from '../components/i18n';
 
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
 import nl2br from 'react-newline-to-break';
@@ -83,20 +82,6 @@ class ProjectPage extends React.Component {
                                 <Typography align="center" variant="h3" paragraph>
                                     {project.number + " - " + project.title}
                                 </Typography>
-
-                                <Grid container justify="flex-end">
-                                    <Grid item>
-                                        {project.status === "validated" &&
-                                            <a href={api.host + ":" + api.port + "/api/project/file/" + project.pdf}>
-                                                <Button lng={lng} variant="outlined" color='secondary' style={{ marginRight: 12 }}>
-                                                    <Typography variant="button" >
-                                                        {i18n.t('pdf.label', { lng })}
-                                                    </Typography>
-                                                </Button>
-                                            </a>
-                                        }
-                                    </Grid>
-                                </Grid>
 
                                 <Grid container justify="space-between">
                                     <Grid item xs={12}>

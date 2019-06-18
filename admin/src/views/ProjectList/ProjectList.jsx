@@ -202,7 +202,7 @@ class ProjectList extends React.Component {
                     </CardBody>
                 </Card>
 
-                {this.props.user.user.EPGE &&
+                {(this.props.user.user.EPGE || this.props.user.user.admin) &&
                     <Card>
                         <CardHeader color="primary">
                             <h4 className={classes.cardTitleWhite}>Téléchargement</h4>
@@ -214,6 +214,11 @@ class ProjectList extends React.Component {
                             <a href={api.host + ":" + api.port + "/api/pdf/all"}>
                                 <Button size="sm" color="info">
                                     Télécharger les projets validés au format PDF
+                        </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/csv"}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets validés au format CSV
                         </Button>
                             </a>
                         </CardBody>

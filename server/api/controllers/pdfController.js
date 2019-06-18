@@ -182,7 +182,7 @@ exports.generateAllProjectsPDf = (req, res, next) => {
                 PDFUtils
                     .chainPDF(projects)
                     .then(() => {
-                        res.sendFile(process.cwd() + "/PDF/AllProjects.pdf");
+                        res.download(process.cwd() + "/PDF/AllProjects.pdf");
                     })
                     .catch(next);
             }
