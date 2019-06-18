@@ -45,5 +45,5 @@
     "eject": "react-scripts eject"
   },
   "proxy": "http://localhost:3001",
-  "homepage": "https://projets-esilv.devinci.fr/partner"
+  "homepage": "https://projets-esilv.devinci.fr/"
 }
