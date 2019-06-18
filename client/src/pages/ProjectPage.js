@@ -84,20 +84,6 @@ class ProjectPage extends React.Component {
                                     {project.number + " - " + project.title}
                                 </Typography>
 
-                                <Grid container justify="flex-end">
-                                    <Grid item>
-                                        {project.status === "validated" &&
-                                            <a href={api.host + ":" + api.port + "/api/project/file/" + project.pdf}>
-                                                <Button lng={lng} variant="outlined" color='secondary' style={{ marginRight: 12 }}>
-                                                    <Typography variant="button" >
-                                                        {i18n.t('pdf.label', { lng })}
-                                                    </Typography>
-                                                </Button>
-                                            </a>
-                                        }
-                                    </Grid>
-                                </Grid>
-
                                 <Grid container justify="space-between">
                                     <Grid item xs={12}>
                                         {
