@@ -86,7 +86,7 @@ class YearList extends React.Component {
                                 <Button size="sm" type="button" color="danger" onClick={this.showModal(year._id)}>
                                     <Delete /> Supprimer l'année
                     </Button>
-                            }
+                            }   
                         </div>)
                 ]);
 
