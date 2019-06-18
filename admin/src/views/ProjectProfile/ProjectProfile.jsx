@@ -384,7 +384,7 @@ class ProjectProfile extends React.Component {
                     <CardBody>
                         <GridContainer>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography gutterBottom>
+                                <Typography variant="body2"  gutterBottom>
                                     Entreprise :
                                 </Typography>
                                 <Typography gutterBottom>
@@ -392,7 +392,7 @@ class ProjectProfile extends React.Component {
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography gutterBottom>
+                                <Typography  variant="body2" gutterBottom>
                                     Mail :
                                 </Typography>
                                 <Typography gutterBottom>
@@ -400,7 +400,7 @@ class ProjectProfile extends React.Component {
                                 </Typography>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
-                                <Typography gutterBottom>
+                                <Typography  variant="body2" gutterBottom>
                                     Nom :
                                 </Typography>
                                 <Typography gutterBottom>
