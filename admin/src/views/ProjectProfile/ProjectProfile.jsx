@@ -91,7 +91,7 @@ class ProjectProfile extends React.Component {
     componentDidMount() {
         this.loadProjectData();
         this.loadStaticData();
-        this.loadProjectComments();
+        //this.loadProjectComments();
     }
 
     loadProjectData() {
@@ -582,7 +582,6 @@ class ProjectProfile extends React.Component {
                                 style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
                             />;
                         arr[2] = "";
-                        console.log(spe);
                         if (this.state.project.status === "pending") {
                             if (this.props.user.user.admin
                                 || spe.referent.map(r => r._id).indexOf(this.props.user.user._id) !== -1)
