@@ -17,6 +17,7 @@ import CardBody from "components/Card/CardBody.jsx";
 
 import Button from "components/CustomButtons/Button.jsx";
 import AuthService from "../../components/AuthService";
+import { withUser } from "../../providers/UserProvider/UserProvider"
 
 import { api } from "config.json"
 
@@ -81,9 +82,11 @@ class YearList extends React.Component {
                                     <Visibility /> Voir l'année
                 </Button>
                             </Link>
-                            <Button size="sm" type="button" color="danger" onClick={this.showModal(year._id)}>
-                                <Delete /> Supprimer l'année
+                            {this.props.user.user.admin &&
+                                <Button size="sm" type="button" color="danger" onClick={this.showModal(year._id)}>
+                                    <Delete /> Supprimer l'année
                     </Button>
+                            }
                         </div>)
                 ]);
 
@@ -147,4 +150,4 @@ class YearList extends React.Component {
     }
 }
 
-export default withStyles(styles)(YearList);
+export default withUser(withStyles(styles)(YearList));

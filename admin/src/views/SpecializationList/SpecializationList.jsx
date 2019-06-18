@@ -18,6 +18,7 @@ import Button from "components/CustomButtons/Button.jsx";
 import Modal from "components/Modal/Modal.jsx";
 
 import { api } from "config.json"
+import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "../../components/AuthService";
 
 const styles = {
@@ -81,9 +82,11 @@ class SpecializationList extends React.Component {
                                     <Visibility /> Voir la majeure
                         </Button>
                             </Link>
-                            <Button size="sm" type="button" color="danger" onClick={this.showModal(specialization._id)}>
-                                <Delete /> Supprimer la majeure
+                            {this.props.user.user.admin &&
+                                <Button size="sm" type="button" color="danger" onClick={this.showModal(specialization._id)}>
+                                    <Delete /> Supprimer la majeure
                         </Button>
+                            }
                         </div>
                     )
                 ]);
@@ -163,4 +166,4 @@ class SpecializationList extends React.Component {
     }
 }
 
-export default withStyles(styles)(SpecializationList);
+export default withUser(withStyles(styles)(SpecializationList));
