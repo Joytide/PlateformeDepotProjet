@@ -206,7 +206,7 @@ exports.removeReferent = (req, res, next) => {
                     else if (err) next(err);
                     else if (spe) {
                         let referent_index = spe.referent.indexOf(epge._id);
-                        spe.referent = spe.referent.slice(referent_index, 1);
+                        spe.referent.splice(referent_index, 1);
                         spe
                             .save()
                             .then(savedSpe => res.json(savedSpe))
