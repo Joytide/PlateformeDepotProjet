@@ -513,7 +513,7 @@ class ProjectProfile extends React.Component {
 
                         </GridContainer>
                     </CardBody>
-                    {(this.props.user.user.EPGE || this.props.user.user.admin) &&
+                    {(this.props.user.user.EPGE || this.props.user.user.admin) && this.state.project.status === "pending" &&
                         <CardFooter>
                             <GridContainer >
                                 <GridItem xs={12} sm={12} md={12}>
