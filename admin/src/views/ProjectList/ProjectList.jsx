@@ -214,12 +214,17 @@ class ProjectList extends React.Component {
                             <a href={api.host + ":" + api.port + "/api/pdf/all"}>
                                 <Button size="sm" color="info">
                                     Télécharger les projets validés au format PDF
-                        </Button>
+                                </Button>
                             </a>
                             <a href={api.host + ":" + api.port + "/api/project/csv"}>
                                 <Button size="sm" color="info">
                                     Télécharger les projets validés au format CSV
-                        </Button>
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/student"}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets zippés
+                                </Button>
                             </a>
                         </CardBody>
                     </Card>
