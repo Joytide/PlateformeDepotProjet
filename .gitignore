@@ -13,5 +13,5 @@ server/PDF/*.pdf
 .vscode
 
 server/config.json
-
+server/exports/*
 *.csv

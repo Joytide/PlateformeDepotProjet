@@ -32,6 +32,8 @@ module.exports = function (app) {
 	app.route('/api/project/csv')
 		.get(project.getCSV);
 
+	app.route('/api/project/student')
+		.get(project.studentFolder);
 	/*app.route('/api/edit/:editKey')
 	  .get(project.find_by_edit_key);*/
 

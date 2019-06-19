@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 
 import Visibility from "@material-ui/icons/Visibility"
+import Delete from "@material-ui/icons/Delete"
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -13,10 +14,12 @@ import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-
 import Button from "components/CustomButtons/Button.jsx";
+import Modal from "components/Modal/Modal.jsx";
 
 import { api } from "config.json"
+import { withUser } from "../../providers/UserProvider/UserProvider"
+import AuthService from "../../components/AuthService";
 
 const styles = {
     cardCategoryWhite: {
@@ -54,23 +57,67 @@ class SpecializationList extends React.Component {
 
         this.state = {
             loading: true,
-            specializations: []
+            specializations: [],
+            open: false,
+            _id: ""
         };
     }
 
     componentWillMount() {
+        this.loadData();
+    }
+
+    loadData = () => {
         fetch(api.host + ":" + api.port + "/api/specialization", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
                 let specializationsData = data.map(specialization => [
-                    specialization.abbreviation, 
-                    specialization.name.fr, 
-                    specialization.name.en, 
-                    (<Link to={"/specialization/" + specialization._id}><Button size="sm" type="button" color="info"><Visibility /> Voir la majeure</Button></Link>)
+                    specialization.abbreviation,
+                    specialization.name.fr,
+                    specialization.name.en,
+                    (
+                        <div>
+                            <Link to={"/specialization/" + specialization._id}>
+                                <Button size="sm" type="button" color="info">
+                                    <Visibility /> Voir la majeure
+                        </Button>
+                            </Link>
+                            {this.props.user.user.admin &&
+                                <Button size="sm" type="button" color="danger" onClick={this.showModal(specialization._id)}>
+                                    <Delete /> Supprimer la majeure
+                        </Button>
+                            }
+                        </div>
+                    )
                 ]);
 
                 this.setState({ specializations: specializationsData, loading: false });
             });
+    }
+
+    showModal = _id => () => {
+        this.setState({ open: true, _id });
+    }
+
+    closeModal = () => {
+        this.setState({ open: false, _id: "" });
+    }
+
+    deleteSpe = () => {
+        const data = {
+            _id: this.state._id
+        };
+
+        AuthService.fetch(api.host + ":" + api.port + "/api/specialization",
+            {
+                method: "DELETE",
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.closeModal();
+                this.loadData();
+            }).catch(console.error);
     }
 
     render() {
@@ -80,28 +127,43 @@ class SpecializationList extends React.Component {
             return (<div></div>);
         } else {
             return (
-                <GridContainer>
-                    <GridItem xs={12} sm={12} md={12}>
-                        <Card>
-                            <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Liste des majeures</h4>
-                                <p className={classes.cardCategoryWhite}>
-                                    Liste de toutes les majeures existantes sur la plateforme
+                <div>
+                    <Modal
+                        open={this.state.open}
+                        closeModal={this.closeModal}
+                        title="Supprimer cette majeure ?"
+                        content={(<div>Etes vous sûr de vouloir supprimer cette majeure ?
+                    <br />
+                            Toute suppression est définitive et aucun retour en arrière n'est possible.
+                    </div>)}
+                        buttonColor="danger"
+                        buttonContent="Supprimer"
+                        validation={this.deleteSpe}
+                    />
+                    <GridContainer>
+
+                        <GridItem xs={12} sm={12} md={12}>
+                            <Card>
+                                <CardHeader color="primary">
+                                    <h4 className={classes.cardTitleWhite}>Liste des majeures</h4>
+                                    <p className={classes.cardCategoryWhite}>
+                                        Liste de toutes les majeures existantes sur la plateforme
             </p>
-                            </CardHeader>
-                            <CardBody>
-                                <Table
-                                    tableHeaderColor="primary"
-                                    tableHead={["Abbréviation", "Nom (fr)", "Nom (en)", "Actions"]}
-                                    tableData={this.state.specializations}
-                                />
-                            </CardBody>
-                        </Card>
-                    </GridItem>
-                </GridContainer>
+                                </CardHeader>
+                                <CardBody>
+                                    <Table
+                                        tableHeaderColor="primary"
+                                        tableHead={["Abbréviation", "Nom (fr)", "Nom (en)", "Actions"]}
+                                        tableData={this.state.specializations}
+                                    />
+                                </CardBody>
+                            </Card>
+                        </GridItem>
+                    </GridContainer>
+                </div>
             );
         }
     }
 }
 
-export default withStyles(styles)(SpecializationList);
+export default withUser(withStyles(styles)(SpecializationList));

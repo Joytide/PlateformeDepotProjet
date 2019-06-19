@@ -37,7 +37,7 @@ class UserProvider extends React.Component {
 		};
 	}
 
-	componentDidMount() {
+	componentWillMount() {
 		this.refreshUser();
 	}
 

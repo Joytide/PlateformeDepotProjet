@@ -66,11 +66,11 @@ app.use((req, res, next) => {
 var auth_routes = require('./api/routes/authRoutes')
 auth_routes(app);
 
-var mail = require('./api/routes/mailsRoutes');
-mail(app);
+var mailRoutes = require('./api/routes/mailsRoutes');
+mailRoutes(app);
 
-var pdf = require('./api/routes/pdfRoutes');
-pdf(app);
+var pdfRoutes = require('./api/routes/pdfRoutes');
+pdfRoutes(app);
 
 var project_routes = require('./api/routes/projectRoutes');
 project_routes(app); //register the route
@@ -87,8 +87,8 @@ yearRoutes(app);
 var userRoutes = require('./api/routes/userRoutes');
 userRoutes(app);
 
-var commentRoutes = require('./api/routes/commentRoutes');
-commentRoutes(app);
+/*var commentRoutes = require('./api/routes/commentRoutes');
+commentRoutes(app);*/
 
 app.use('/static', express.static('./.uploads'));
 // uncomment after placing your favicon in /public

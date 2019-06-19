@@ -25,7 +25,7 @@ import ChangePassword from "components/ChangePassword/ChangePassword.jsx";
 import Table from "components/Table/Table.jsx";
 
 import AuthService from "components/AuthService"
-
+import { withUser } from "../../providers/UserProvider/UserProvider"
 import { api } from "../../config"
 
 const styles = {
@@ -220,7 +220,8 @@ class UserProfile extends React.Component {
 								}}
 								inputProps={{
 									value: user.company,
-									onChange: this.handleChange
+									onChange: this.handleChange,
+									disabled: !this.props.user.user.admin
 								}}
 							/>
 						</GridItem>
@@ -235,7 +236,7 @@ class UserProfile extends React.Component {
 								<FormControlLabel
 									control={
 										<Checkbox
-											disabled={this.state.adminCheckboxDisabled}
+											disabled={this.state.adminCheckboxDisabled || !this.props.user.user.admin}
 											onChange={this.handleCheckboxChange('admin')}
 											checked={user.admin}
 											value="admin"
@@ -251,7 +252,7 @@ class UserProfile extends React.Component {
 								<FormControlLabel
 									control={
 										<Checkbox
-											disabled={this.state.EPGECheckboxDisabled}
+											disabled={this.state.EPGECheckboxDisabled || !this.props.user.user.admin}
 											onChange={this.handleCheckboxChange('epge')}
 											checked={user.EPGE}
 											value="epge"
@@ -318,7 +319,8 @@ class UserProfile extends React.Component {
 												}}
 												inputProps={{
 													value: user.first_name,
-													onChange: this.handleChange
+													onChange: this.handleChange,
+													disabled: !this.props.user.user.admin
 												}}
 											/>
 										</GridItem>
@@ -331,7 +333,8 @@ class UserProfile extends React.Component {
 												}}
 												inputProps={{
 													value: user.last_name,
-													onChange: this.handleChange
+													onChange: this.handleChange,
+													disabled: !this.props.user.user.admin
 												}}
 											/>
 										</GridItem>
@@ -397,4 +400,4 @@ class UserProfile extends React.Component {
 	}
 }
 
-export default withStyles(styles)(UserProfile);
+export default withUser(withStyles(styles)(UserProfile));

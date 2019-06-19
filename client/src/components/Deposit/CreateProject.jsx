@@ -11,6 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
@@ -145,7 +146,7 @@ class CreateProject extends React.Component {
                     this.props.snackbar.notification("error", i18n.t("errors.createProject", { lng: this.props.lng }));
                 });
         } else {
-            this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng:this.props.lng }));
+            this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }));
         }
     }
 
@@ -217,16 +218,18 @@ class CreateProject extends React.Component {
                         <Grid container direction="row" justify='center'>
                             {this.state.specializations.map(spe =>
                                 <Grid item key={spe._id}>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                onChange={this.handleChange}
-                                                value={spe._id}
-                                                name="spe"
-                                            />
-                                        }
-                                        label={lng === "fr" ? spe.name.fr : spe.name.en}
-                                    />
+                                    <Tooltip placement="bottom" title={lng === "fr" ? spe.description.fr : spe.description.en}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    onChange={this.handleChange}
+                                                    value={spe._id}
+                                                    name="spe"
+                                                />
+                                            }
+                                            label={lng === "fr" ? spe.name.fr : spe.name.en}
+                                        />
+                                    </Tooltip>
                                 </Grid>
                             )}
                         </Grid>
