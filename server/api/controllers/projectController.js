@@ -7,12 +7,14 @@ var mongoose = require('mongoose');
 const { emitter } = require('../../eventsCommon');
 const { Parser } = require('json2csv');
 const fs = require('fs');
+const { spawn, exec } = require('child_process');
 
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const File = mongoose.model('File');
 const Specialization = mongoose.model('Specialization');
+const Year = mongoose.model('Year');
 
 const mailer = require('nodemailer');
 const config = require('../../config');
@@ -492,6 +494,69 @@ exports.getCSV = (req, res, next) => {
 					if (err) next(err);
 					else res.download(process.cwd() + "/" + date + ".csv");
 				})
+			}
+		});
+}
+
+exports.studentFolder = async (req, res, next) => {
+	let date = Date.now();
+	let baseDirectory = process.cwd() + "/exports/" + date;
+
+	let yearPromise = Year.find({}).exec();
+	let spePromise = Specialization.find({}).exec();
+
+	let [years, spe] = await Promise.all([yearPromise, spePromise]);
+
+	fs.mkdirSync(baseDirectory, { recursive: true });
+
+	for (let i = 0; i < years.length; i++) {
+		for (let j = 0; j < spe.length; j++) {
+			fs.mkdirSync(baseDirectory + "/" + years[i].abbreviation + "/" + spe[j].abbreviation, { recursive: true });
+		}
+	}
+
+	Project
+		.find({ status: "validated" })
+		.populate("files pdf specializations.specialization study_year")
+		.exec((err, projects) => {
+			if (err) throw err;
+			else if (projects) {
+				projects.forEach(project => {
+					project.study_year.forEach(year => {
+						project.specializations
+							.filter(spe => spe.status === "validated")
+							.forEach(spe => {
+								let fileName = project.number + " - " + project.title;
+								if (project.files.length > 0) {
+									fs.mkdirSync(baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName)
+									fs.copyFileSync(
+										project.pdf.path,
+										baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + "/" + fileName + ".pdf"
+									);
+
+									project.files.forEach(file => {
+										fs.copyFileSync(
+											file.path,
+											baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + "/" + file.originalName)
+									});
+								} else {
+									fs.copyFileSync(
+										project.pdf.path,
+										baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + ".pdf"
+									);
+								}
+							});
+					});
+				});
+
+				exec("cd exports && zip -9 -r " + date + ".zip " + date, err => {
+					if (err) next(err);
+					else {
+						res.download(baseDirectory + ".zip");
+					}
+				});
+			} else {
+				res.send("No project validated yet");
 			}
 		});
 }
