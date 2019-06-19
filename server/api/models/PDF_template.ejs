@@ -20,7 +20,7 @@
         .header div {
             display: inline-block;
             vertical-align: middle;
-        }
+        } 
 
         .header .img {
             width: 35%;
@@ -87,6 +87,19 @@
             </p>
             <p><span style="font-weight:bold">Description : </span>
                 <%- project.description.replace(/\n/gi, '<br />') %>
+            </p>
+        </div>
+    </div>
+    <div class="body">
+        <div class="description">
+            <p><span style="font-weight:bold">Mots clefs : </span>
+                <%= project.keywords.join(", ") %>
+            </p>
+            <p><span style="font-weight:bold">Compétences développées : </span>
+                <%- project.skills %>
+            </p>
+            <p><span style="font-weight:bold">Informations complémentaires : </span>
+                <%- project.infos %>
             </p>
         </div>
     </div>
