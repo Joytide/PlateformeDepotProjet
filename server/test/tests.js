@@ -1367,25 +1367,6 @@ describe("Things related to specializations", () => {
                         done();
                     });
             });
-
-            it("it shouldn't be able to add someone who isn't member of egpe team to referent", done => {
-                Helper
-                    .createAdministration()
-                    .then(administration => {
-                        requester
-                            .put('/api/specialization/referent')
-                            .send({ _id: testing_spe._id, referent: administration._id })
-                            .set("authorization", tokens['administrator'])
-                            .end((err, res) => {
-                                res.should.have.status(400);
-                                res.body.should.be.a('object');
-                                res.body.should.have.property("name", "UserNotFound");
-
-                                done();
-                            });
-                    })
-                    .catch(done);
-            });
         });
 
         it("it shouldn't add a referent to a spe because the user isn't an admnisistrator (partner)", done => {
