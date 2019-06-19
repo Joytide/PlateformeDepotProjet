@@ -9,11 +9,6 @@ import Divider from '@material-ui/core/Divider';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import Visibility from "@material-ui/icons/Visibility"
@@ -31,6 +26,7 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Table from "components/Table/Table.jsx";
+import Modal from "components/Modal/Modal.jsx";
 
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
@@ -77,7 +73,8 @@ class ProjectProfile extends React.Component {
             comments: [],
             specializations_concerned: [],
             color: "primary",
-            open: false,
+            openFileModal: false,
+            openValidationModal: false,
             toDelete: ""
         }
 
@@ -88,7 +85,7 @@ class ProjectProfile extends React.Component {
         this.checkboxMapping = this.checkboxMapping.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.loadProjectData();
         this.loadStaticData();
         //this.loadProjectComments();
@@ -146,12 +143,20 @@ class ProjectProfile extends React.Component {
             });
     }
 
-    openModal = _id => () => {
-        this.setState({ open: true, toDelete: _id });
+    openFileModal = _id => () => {
+        this.setState({ openFileModal: true, toDelete: _id });
     };
 
-    closeModal = () => {
-        this.setState({ open: false, toDelete: "" });
+    closeFileModal = () => {
+        this.setState({ openFileModal: false, toDelete: "" });
+    };
+
+    openValidationModal = _id => () => {
+        this.setState({ openValidationModal: true });
+    };
+
+    closeValidationModal = () => {
+        this.setState({ openValidationModal: false });
     };
 
     // Check or uncheck checkbox when both project and years are loaded
@@ -323,20 +328,39 @@ class ProjectProfile extends React.Component {
     }
 
     specializationValidation = (status, speId) => () => {
-        let data = {
-            speId,
-            status,
-            projectId: this.state.project._id
-        };
+        function sendValidation() {
+            let data = {
+                speId,
+                status,
+                projectId: this.state.project._id
+            };
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/project/validation", {
-            method: "POST",
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => {
-                this.loadProjectData();
+            AuthService.fetch(api.host + ":" + api.port + "/api/project/validation", {
+                method: "POST",
+                body: JSON.stringify(data)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    this.setState({ openValidationModal: false });
+                    this.loadProjectData();
+                });
+        }
+        
+        let pendingProject = this.state.project.specializations.filter(spe => spe.status === "pending").length + (status === "pending" ? 1 : -1);
+
+        if (pendingProject === 0) {
+            this.setState({
+                openValidationModal: true,
+                callbackValidation: sendValidation.bind(this)
             });
+        }
+        else {
+            sendValidation.call(this);
+        }
+    }
+
+    validModal = () => {
+        this.state.callbackValidation();
     }
 
     regeneratePDF = () => {
@@ -501,7 +525,7 @@ class ProjectProfile extends React.Component {
                                                             <Button size="sm" color="info">Télécharger</Button>
                                                         </a>
                                                         {(this.props.user.user.EPGE || this.props.user.user.admin) &&
-                                                            <Button size="sm" color="danger" onClick={this.openModal(file._id)}>Supprimer</Button>
+                                                            <Button size="sm" color="danger" onClick={this.openFileModal(file._id)}>Supprimer</Button>
                                                         }
                                                     </CardBody>
                                                 </Card>
@@ -732,30 +756,31 @@ class ProjectProfile extends React.Component {
                     close
                 />
 
-                <Dialog
-                    open={this.state.open}
-                    onClose={this.closeModal}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Supprimer ce fichier ?"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            Etes vous sûr de vouloir supprimer ce fichier ?
-                            <br />
-                            Toute suppression est définitive et aucun retour en arrière n'est possible.
-                        </DialogContentText>
-                    </DialogContent>
+                <Modal
+                    open={this.state.openFileModal}
+                    closeModal={this.closeFileModal}
+                    title="Supprimer ce fichier ?"
+                    content={(<div>Etes vous sûr de vouloir supprimer ce fichier ?
+                        <br />
+                        Toute suppression est définitive et aucun retour en arrière n'est possible.
+                        </div>)}
+                    buttonColor="danger"
+                    buttonContent="Supprimer"
+                    validation={this.deleteFile}
+                />
 
-                    <DialogActions>
-                        <Button onClick={this.closeModal} size="sm" color="info" autoFocus>
-                            Annuler
-                        </Button>
-                        <Button size="sm" color="danger" onClick={this.deleteFile}>
-                            Supprimer
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                <Modal
+                    open={this.state.openValidationModal}
+                    closeModal={this.closeValidationModal}
+                    title="Valider/Refuser ce projet ?"
+                    content={(<div>
+                        Une fois ce projet validé/refusé, il ne sera plus possible d'effectuer de modification<br />
+                        Si vous souhaitez ajouter une majeure, merci de le faire avant de valider/refuser le projet pour votre majeure
+                        </div>)}
+                    buttonColor="danger"
+                    buttonContent="Continuer"
+                    validation={this.validModal}
+                />
 
                 <GridItem xs={12} sm={12} md={12}>
                     {partnerInfo}
