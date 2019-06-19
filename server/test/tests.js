@@ -1610,31 +1610,27 @@ Helper.emptyUserDb = () => {
     return new Promise((resolve, reject) => {
         Helper
             .emptyPartnerDb()
-            .then(() => {
-                Helper
-                    .emptyPersonDb()
-                    .then(() => resolve())
-                    .catch(err => reject(err));
-            })
-            .catch(err => reject(err));
+            .then(res => res.emptyPersonDb())
+            .then(resolve)
+            .catch(reject)
     });
 };
 
 Helper.emptyPersonDb = () => {
     return new Promise((resolve, reject) => {
-        Person.deleteMany({}, (err) => {
+        Person.deleteMany({}, err => {
             if (err) reject(err);
-            else resolve();
-        })
+            else resolve(Helper);
+        });
     });
 };
 
 Helper.emptyPartnerDb = () => {
     return new Promise((resolve, reject) => {
-        Partner.deleteMany({}, (err) => {
+        Partner.deleteMany({}, err => {
             if (err) reject(err);
-            else resolve();
-        })
+            else resolve(Helper);
+        });
     });
 };
 
