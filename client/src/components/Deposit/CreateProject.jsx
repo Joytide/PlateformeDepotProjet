@@ -249,7 +249,7 @@ class CreateProject extends React.Component {
                                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 />
                             </Grid>
-                            <Grid item xs={8} md={4} lg={2}>
+                            <Grid item xs={8} md={6} lg={4}>
                                 {this.state.multipleTeams &&
                                     <TextValidator
                                         label={i18n.t('createProject.maxNumber', { lng })}

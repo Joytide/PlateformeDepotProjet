@@ -101,7 +101,7 @@ i18next
 						skills: "Skills developped",
 						infos: "Further informations",
 						multipleTeams: "Do you accept that several teams work if the project ?",
-						maxNumber: "Maximum teams"
+						maxNumber: "If so, how many teams do you accept ?"
 					},
 					home: {
 						title: 'Industrial Innovation Projects',
