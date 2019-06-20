@@ -86,7 +86,8 @@ i18next
 						alreadyPartner: "Have you already been an ESILV partner ?",
 						yes: "Yes",
 						no: "No",
-						created: "Your account has been successfuly created. An email has been sent."
+						created: "Your account has been successfuly created. An email has been sent.",
+						alreadyPartner: "You are already logged in. Clic on next to submit your project",
 					},
 					errors: {
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
@@ -248,7 +249,8 @@ i18next
 						alreadyPartner: "Avez-vous déjà proposé un projet à l'ESILV ?",
 						yes: "Oui",
 						no: "Non",
-						created: "Votre compte a bien été créer. Un mail vous a été envoyé."
+						created: "Votre compte a bien été créer. Un mail vous a été envoyé.",
+						alreadyPartner: "Vous êtes déjà connecté. Cliquez sur suivant pour déposer votre projet",
 					},
 					createProject: {
 						skills: "Compétences développées",
