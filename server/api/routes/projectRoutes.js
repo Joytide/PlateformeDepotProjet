@@ -5,7 +5,7 @@ const auth = require('../controllers/authController');
 
 module.exports = function (app) {
 	app.route('/api/project/file')
-		.post(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.upload.single("file"), project.uploadDone)
+		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Partner", "EPGE"]), project.upload.single("file"), project.uploadDone)
 		.delete(auth.passport.authenticate('jwt'), auth.areAuthorized("EPGE"), project.deleteFile);
 
 	app.route('/api/project/file/:id([a-fA-F0-9]{24})')
