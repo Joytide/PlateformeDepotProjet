@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import Checkbox from '@material-ui/core/Checkbox';
+import Chip from '@material-ui/core/Chip';
 
 import Visibility from "@material-ui/icons/Visibility"
 
@@ -85,6 +86,21 @@ class ProjectList extends React.Component {
     loadProjects() {
         let queryParams = `?validated=${this.state.validatedProjects}&rejected=${this.state.rejectedProjects}&pending=${this.state.pendingProjects}&mine=${this.state.myProject}`
 
+        const validatedChip = <Chip
+            label="Validé"
+            style={{ backgroundColor: "#4caf50", color: "white" }}
+        />;
+
+        const refusedChip = <Chip
+            label="Refusé"
+            style={{ backgroundColor: "rgb(244, 67, 54)", color: "white" }}
+        />;
+
+        const pendingChip = <Chip
+            label="En attente de validation"
+            style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
+        />;
+
         AuthService.fetch(api.host + ":" + api.port + "/api/projects" + queryParams)
             .then(res => res.json())
             .then(data => {
@@ -99,10 +115,10 @@ class ProjectList extends React.Component {
                     else if (project.status === "pending") transform = warning;
 
                     return [
-                        transform(<p>{project.title}</p>),
-                        transform(<p>{project.partner.company}</p>),
-                        transform(<p>{project.status === "validated" ? "Validé" : (project.status === "pending" ? "En attente" : "Refusé")}</p>),
-                        transform(<p>{new Date(project.sub_date).toLocaleDateString()}</p>),
+                        <p>{project.title}</p>,
+                        <p>{project.partner.company}</p>,
+                        <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
+                        <p>{new Date(project.sub_date).toLocaleDateString()}</p>,
                         project.study_year.map(year => year.abbreviation).sort().join(', '),
                         project.specializations
                             .map(spe => spe.status !== "rejected" ? spe.specialization.abbreviation : "")
