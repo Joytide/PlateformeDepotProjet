@@ -49,6 +49,7 @@ class CreateProject extends React.Component {
     }
 
     componentWillMount() {
+        window.scroll(0,0);
         AuthService.fetch('/api/specialization')
             .then(res => res.json())
             .then(specializations => {
