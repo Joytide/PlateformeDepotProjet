@@ -105,7 +105,7 @@ class HomePage extends React.Component {
 									<Link to="/deposit">{i18n.t('home.p4_l1', { lng })}</Link><br />
 									{i18n.t('home.p4_l2', { lng })}<br />
 									{i18n.t('home.p4_l3', { lng })}<br />
-									{i18n.t('home.p4_l4', { lng })}<br />
+									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l4', { lng })}}></a><br />
 								</Typography>
 							</Grid>
 							<Grid item>
