@@ -91,12 +91,13 @@ class CreatePartner extends React.Component {
                         this.context.setToken(data.token);
                         var event = new Event('logged');
                         document.dispatchEvent(event);
-                        this.props.next();
+                        this.props.next({ newAccount: true });
                     }
                 })
                 .catch(err => {
                     if (err.json)
                         err.json().then(errData => {
+                            console.error(err);
                             const { lng } = this.props;
                             if (errData.name === "EmailUsed") {
                                 this.props.snackbar.notification("error", i18n.t('errors.emailUsed', { lng }), 10000);

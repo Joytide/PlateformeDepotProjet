@@ -14,6 +14,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
 import AuthService from '../components/AuthService';
+import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 import i18n from '../components/i18n';
 /**
  * Deposit of a project
@@ -66,7 +67,10 @@ class Deposit extends React.Component {
 
 
 	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
-	handleNext = () => {
+	handleNext = data => {
+		if (data && data.newAccount)
+			this.props.snackbar.notification("success", i18n.t("createPartner.created", { lng: this.props.lng }));
+
 		const { stepIndex } = this.state;
 
 		if (!this.state.finished) {
@@ -224,4 +228,4 @@ class Deposit extends React.Component {
 	}
 }
 
-export default withStyles(styles, { withTheme: true })(Deposit);
+export default withSnackbar(withStyles(styles, { withTheme: true })(Deposit));
