@@ -64,8 +64,6 @@ class Deposit extends React.Component {
 
 	}
 
-
-
 	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
 	handleNext = data => {
 		if (data && data.newAccount)
@@ -80,40 +78,6 @@ class Deposit extends React.Component {
 			});
 		}
 	};
-
-	// A voir s'il est vraiment nécessaire de pouvoir revenir en arrière
-	handlePrev = () => {
-		const { stepIndex } = this.state;
-		if (stepIndex > 0) {
-			this.setState({ stepIndex: stepIndex - 1 });
-		}
-	};
-
-	FilesUpload() {
-		return new Promise((resolve, reject) => {
-			var formData = new FormData()
-			/*Object.keys(this.state.files).forEach((key)=>{  //On parcourt la liste des fichiers
-				const file = this.state.files[key]
-				formData.append(key, new Blob([file], {type : file.type}), file.name || 'file') //On ajoute dans le formData le fichier
-			})*/
-
-			this.state.files.forEach((file) => {
-				formData.append(file.name, new Blob([file], { type: file.type }), file.name || 'file')
-			})
-
-			AuthService.fetch('/api/addFile', {
-				method: 'POST',
-				body: formData
-			})
-				.then((resp) => {
-					resp.json().then((urls) => {
-						this.setState({ urls: urls })
-						return resolve()
-					});
-				})
-				.catch((err) => { return reject(err) })
-		});
-	}
 
 	getStepContent(stepIndex) {
 		const lng = this.props.lng;
