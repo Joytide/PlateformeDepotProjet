@@ -58,7 +58,7 @@ i18next
 					delete: { label: 'Delete', },
 					keyword: { label: 'Keywords (Press Enter between each keywords !)', },
 					files: { label: 'Others Files', },
-					dropfiles: { label: 'Drop files here or click to upload', },
+					dropfiles: { label: 'If needed, drop files here', },
 					acceptedfiles: { label: 'Accepted files : png , pdf , csv ...', },
 					pdf: { label: 'Export as PDF', },
 					click: { label: ' Click here', },
@@ -207,9 +207,9 @@ i18next
 					descriptionProj: { label: 'Description complete de votre projet *', },
 					finish: { label: 'Terminer', },
 					delete: { label: 'Supprimer', },
-					keyword: { label: 'Mots clés (appuyez sur Entrée entre chaque mots clefs ! )', },
+					keyword: { label: 'Mots clés (appuyez sur Entrée entre chaque mot clefs ! )', },
 					files: { label: 'Autres Fichiers ', },
-					dropfiles: { label: 'Déposez les fichiers ici ou cliquez pour télécharger', },
+					dropfiles: { label: 'Déposez ici les fichiers pouvant renseigner sur votre projet si besoin' },
 					acceptedfiles: { label: 'Types de fichiers acceptés : png , pdf , csv ...', },
 					pdf: { label: 'Exporter en PDF', },
 					click: { label: ' Cliquez ici', },
@@ -247,8 +247,8 @@ i18next
 					createProject: {
 						skills: "Compétences développées",
 						infos: "Informations complémentaires",
-						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?  ?",
-						maxNumber: "Nombre maximum"
+						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?",
+						maxNumber: "Dans ce cas combien d'équipes maximum acceptez-vous ?"
 					},
 					errors: {
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
