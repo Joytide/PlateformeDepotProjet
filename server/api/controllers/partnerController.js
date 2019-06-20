@@ -174,23 +174,27 @@ exports.deletePartner = (req, res) => {
 
 exports.resetPassword = (req, res, next) => {
 	const data = req.body;
-
 	if (data.email) {
 		Partner.findOne({ email: data.email }, (err, partner) => {
-			generatePassword(16)
-				.then(pass => {
-					partner.key = pass.hash;
+			if (partner) {
+				generatePassword(16)
+					.then(pass => {
+						partner.key = pass.hash;
 
-					partner.save(err => {
-						if (err) next(err);
-						else {
-							res.json(partner);
+						partner.save(err => {
+							if (err) next(err);
+							else {
+								res.json({ done: 1 });
 
-							emitter.emit("resetLink", { key: pass.key, partner: partner });
-						}
-					});
-				})
-				.catch(next);
+								emitter.emit("resetLink", { key: pass.key, partner: partner });
+							}
+						});
+					})
+					.catch(next);
+			}
+			else {
+				next(new Error("PartnerNotFound"));
+			}
 		});
 	} else {
 		next(new Error('MissingParameter'));
