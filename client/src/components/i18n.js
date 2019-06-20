@@ -93,7 +93,9 @@ i18next
 						createPartner: "An error happened while trying to create your account. Please retry.",
 						createProject: "An error happened while trying to create your project. Please retry.",
 						NaN: "Please input a number",
-						fillAll: "Please fill all required fields"
+						fillAll: "Please fill all required fields",
+						partnerNotFound: "No user found with that email",
+						default: "Something wrong happened. Please retry",
 					},
 					createProject: {
 						skills: "Skills developped",
@@ -143,7 +145,8 @@ i18next
 						title: "Lost link",
 						submit: 'Submit',
 						desc: 'The first time you submitted a project, you should have received an email with a link to connect.\nIf it isn\'t in your spam inbox, we can send it again. You just have to fill the below textbox with your email address.',
-						textfield: "Your email address"
+						textfield: "Your email address",
+						mailSent: "An email has been sent with your new connection link",
 					},
 					carousel: {
 						Title1: 'BermudZer: bermudean option pricing',
@@ -231,7 +234,8 @@ i18next
 						title: "Lien de connexion perdu",
 						submit: 'Envoyer',
 						desc: 'Lors de la soumission de votre premier projet, un mail vous a été envoyé avec le lien de connexion.\nS\'il n\'est pas dans votre boite de spam, nous pouvons vous le renvoyer. Il suffit de remplir votre adresse mail ci-dessous.',
-						textfield: "Votre adresse mail"
+						textfield: "Votre adresse mail",
+						mailSent:"Un mail vous a été envoyé avec votre nouveau lien de connexion"
 					},
 					createPartner: {
 						phone: 'Numéro de téléphone',
@@ -258,6 +262,8 @@ i18next
 						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
 						NaN: "Merci de saisir un nombre",
 						fillAll: "Merci de remplir tous les champs obligatoires",
+						partnerNotFound: "Aucun utilisateur trouvé avec cette adresse mail",
+						default: "Une erreur est survenue. Merci de réessayer",
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',
