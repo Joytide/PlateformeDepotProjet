@@ -285,7 +285,7 @@ class ProjectProfile extends React.Component {
                 if (data.ok) {
                     this.setState({ open: false, toDelete: "" }, () => {
                         this.loadProjectData();
-                        this.closeModal();
+                        this.closeFileModal();
                     });
                 }
             });
