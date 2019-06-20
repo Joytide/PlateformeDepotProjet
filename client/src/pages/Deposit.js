@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import AuthService from '../components/AuthService';
 import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 import i18n from '../components/i18n';
 /**

@@ -17,9 +17,6 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
 import Button from "components/CustomButtons/Button.jsx";
-import Danger from "components/Typography/Danger.jsx";
-import Success from "components/Typography/Success.jsx";
-import Warning from "components/Typography/Warning.jsx";
 
 import { api } from "config.json"
 import AuthService from "../../components/AuthService";
@@ -105,15 +102,6 @@ class ProjectList extends React.Component {
             .then(res => res.json())
             .then(data => {
                 let projectsData = data.map(project => {
-                    const danger = content => <Danger>{content}</Danger>;
-                    const success = content => <Success>{content}</Success>;
-                    const warning = content => <Warning>{content}</Warning>;
-
-                    let transform;
-                    if (project.status === "validated") transform = success;
-                    else if (project.status === "rejected") transform = danger;
-                    else if (project.status === "pending") transform = warning;
-
                     return [
                         <p>{project.title}</p>,
                         <p>{project.partner.company}</p>,
