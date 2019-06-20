@@ -241,15 +241,18 @@ class CreateProject extends React.Component {
                             {i18n.t('createProject.multipleTeams', { lng })}
                         </Typography>
                         <Grid container direction="row" justify='center'>
-                            <Grid item xs={4} md={2} lg={1}>
+                            <Grid item xs={4} md={3} lg={2}>
+                                {i18n.t("createPartner.no", {lng})}
                                 <Switch
                                     checked={this.state.multipleTeams}
                                     onChange={this.handleChange}
                                     name="multipleTeams"
                                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 />
+                                {i18n.t("createPartner.yes", {lng})}                                
                             </Grid>
-                            <Grid item xs={8} md={6} lg={4}>
+
+                            <Grid item xs={12} md={6} lg={4}>
                                 {this.state.multipleTeams &&
                                     <TextValidator
                                         label={i18n.t('createProject.maxNumber', { lng })}
