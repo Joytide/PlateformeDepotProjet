@@ -58,7 +58,7 @@ i18next
 					delete: { label: 'Delete', },
 					keyword: { label: 'Keywords (Press Enter between each keywords !)', },
 					files: { label: 'Others Files', },
-					dropfiles: { label: 'Drop files here or click to upload', },
+					dropfiles: { label: 'If needed, drop files here', },
 					acceptedfiles: { label: 'Accepted files : png , pdf , csv ...', },
 					pdf: { label: 'Export as PDF', },
 					click: { label: ' Click here', },
@@ -86,19 +86,23 @@ i18next
 						alreadyPartner: "Have you already been an ESILV partner ?",
 						yes: "Yes",
 						no: "No",
+						created: "Your account has been successfuly created. An email has been sent.",
+						isExisting: "You are already logged in. Clic on next to submit your project",
 					},
 					errors: {
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
 						createPartner: "An error happened while trying to create your account. Please retry.",
 						createProject: "An error happened while trying to create your project. Please retry.",
 						NaN: "Please input a number",
-						fillAll: "Please fill all required fields"
+						fillAll: "Please fill all required fields",
+						partnerNotFound: "No user found with that email",
+						default: "Something wrong happened. Please retry",
 					},
 					createProject: {
 						skills: "Skills developped",
 						infos: "Further informations",
 						multipleTeams: "Do you accept that several teams work if the project ?",
-						maxNumber: "Maximum teams"
+						maxNumber: "If so, how many teams do you accept ?"
 					},
 					home: {
 						title: 'Industrial Innovation Projects',
@@ -123,7 +127,7 @@ i18next
 						p4_l1: 'Click here to start the process of submitting a project.',
 						p4_l2: 'You will then be asked to provide information on the partner and then describe the proposed project, and identify the desired and expected competencies.',
 						p4_l3: 'Deadline for the submission of project proposals: 5 September 2018',
-						p4_l4: 'If you have any questions, please do not hesitate to contact us: projetesilv@devinci.fr',
+						p4_l4: 'If you have any questions, please do not hesitate to contact us: <a href="mailto:projetesilv@devinci.fr">projetesilv@devinci.fr</a>',
 						p5: 'Thank you for your participation, and see you soon.',
 						p5_l1: 'The EGPE (ESILV Project Management Team)',
 					},
@@ -142,7 +146,8 @@ i18next
 						title: "Lost link",
 						submit: 'Submit',
 						desc: 'The first time you submitted a project, you should have received an email with a link to connect.\nIf it isn\'t in your spam inbox, we can send it again. You just have to fill the below textbox with your email address.',
-						textfield: "Your email address"
+						textfield: "Your email address",
+						mailSent: "An email has been sent with your new connection link",
 					},
 					carousel: {
 						Title1: 'BermudZer: bermudean option pricing',
@@ -207,9 +212,9 @@ i18next
 					descriptionProj: { label: 'Description complete de votre projet *', },
 					finish: { label: 'Terminer', },
 					delete: { label: 'Supprimer', },
-					keyword: { label: 'Mots clés (appuyez sur Entrée entre chaque mots clefs ! )', },
+					keyword: { label: 'Mots clés (appuyez sur Entrée entre chaque mot clefs ! )', },
 					files: { label: 'Autres Fichiers ', },
-					dropfiles: { label: 'Déposez les fichiers ici ou cliquez pour télécharger', },
+					dropfiles: { label: 'Déposez ici les fichiers pouvant renseigner sur votre projet si besoin' },
 					acceptedfiles: { label: 'Types de fichiers acceptés : png , pdf , csv ...', },
 					pdf: { label: 'Exporter en PDF', },
 					click: { label: ' Cliquez ici', },
@@ -230,7 +235,8 @@ i18next
 						title: "Lien de connexion perdu",
 						submit: 'Envoyer',
 						desc: 'Lors de la soumission de votre premier projet, un mail vous a été envoyé avec le lien de connexion.\nS\'il n\'est pas dans votre boite de spam, nous pouvons vous le renvoyer. Il suffit de remplir votre adresse mail ci-dessous.',
-						textfield: "Votre adresse mail"
+						textfield: "Votre adresse mail",
+						mailSent:"Un mail vous a été envoyé avec votre nouveau lien de connexion"
 					},
 					createPartner: {
 						phone: 'Numéro de téléphone',
@@ -243,12 +249,14 @@ i18next
 						alreadyPartner: "Avez-vous déjà proposé un projet à l'ESILV ?",
 						yes: "Oui",
 						no: "Non",
+						created: "Votre compte a bien été créer. Un mail vous a été envoyé.",
+						isExisting: "Vous êtes déjà connecté. Cliquez sur suivant pour déposer votre projet",
 					},
 					createProject: {
 						skills: "Compétences développées",
 						infos: "Informations complémentaires",
-						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?  ?",
-						maxNumber: "Nombre maximum"
+						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?",
+						maxNumber: "Dans ce cas combien d'équipes maximum acceptez-vous ?"
 					},
 					errors: {
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
@@ -256,6 +264,8 @@ i18next
 						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
 						NaN: "Merci de saisir un nombre",
 						fillAll: "Merci de remplir tous les champs obligatoires",
+						partnerNotFound: "Aucun utilisateur trouvé avec cette adresse mail",
+						default: "Une erreur est survenue. Merci de réessayer",
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',
@@ -280,7 +290,7 @@ i18next
 						p4_l1: 'Cliquez ici pour commencer le dépôt d\'un projet.',
 						p4_l2: 'Vous devrez alors donner des information sur le partenaire puis décrire le projet proposé, et cibler les compétences voulues et attendues.',
 						p4_l3: 'Deadline pour le dépôt des proposition de projets : 5 Septembre 2018',
-						p4_l4: 'Pour toute question, n\'hésitez pas à nous contacter : projetesilv@devinci.fr',
+						p4_l4: 'Pour toute question, n\'hésitez pas à nous contacter : <a href="mailto:projetesilv@devinci.fr">projetesilv@devinci.fr</a>',
 						p5: 'Merci de votre participation, et à très bientôt.',
 						p5_l1: 'L\'EGPE (Equipe Gestion Projets ESILV)',
 					},

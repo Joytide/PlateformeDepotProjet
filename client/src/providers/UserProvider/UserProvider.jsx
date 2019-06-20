@@ -36,7 +36,7 @@ class UserProvider extends React.Component {
 		};
 	}
 
-	componentDidMount() {
+	componentWillMount() {
 		this.refreshUser();
 	}
 
@@ -72,3 +72,13 @@ class UserProvider extends React.Component {
 UserProvider.contextType = UserContext;
 
 export default UserProvider;
+
+export function withUser(Component) {
+    return function WrapperComponent(props) {
+        return (
+            <UserContext.Consumer>
+                {user => <Component {...props} user={user} />}
+            </UserContext.Consumer>
+        );
+    };
+}

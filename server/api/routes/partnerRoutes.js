@@ -5,13 +5,8 @@ const auth = require('../controllers/authController');
 
 
 module.exports = function (app) {
-	app.route('/api/partner')
-		.get(auth.passport.authenticate('jwt'), partner.listAllPartners)
-		.put(partner.createPartner)
-		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Partner"]), (req, res) => {
-			res.send(req.user);
-		});
-
+	app.route('/api/partner/reset')
+		.post(partner.resetPassword)
 
 	app.route('/api/partner/:id([a-fA-F0-9]{24})')
 		.get(partner.findById)
@@ -25,6 +20,11 @@ module.exports = function (app) {
 	app.route('/api/partner/:email')
 		.get(partner.findByMail);
 
-	app.route('/api/partner/reset')
-		.post(partner.resetPassword)
+	app.route('/api/partner')
+		// Staff access only
+		.get(auth.passport.authenticate('jwt'), partner.listAllPartners)
+		.put(partner.createPartner)
+		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Partner"]), (req, res) => {
+			res.send(req.user);
+		});
 };

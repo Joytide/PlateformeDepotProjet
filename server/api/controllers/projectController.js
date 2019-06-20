@@ -77,16 +77,26 @@ exports.uploadDone = (req, res, next) => {
 exports.deleteFile = (req, res, next) => {
 	const data = req.body;
 	if (data.fileID) {
-		File.deleteOne({ _id: data.fileID }, (err, raw) => {
-			if (err) next(err)
-			else {
-				Project.updateOne({ files: data.fileID }, { $pull: { files: data.fileID } }, err => {
-					if (err) next(err);
-					else
-						res.json(raw);
-				});
-			}
-		});
+		if (req.user.__t === "Partner") {
+			File.deleteOne({ _id: data.fileID, projectID: null, owner: req.user._id }, (err, raw) => {
+				if (err) next(err)
+				else {
+					res.json(raw);
+				}
+			});
+		}
+		else {
+			File.deleteOne({ _id: data.fileID }, (err, raw) => {
+				if (err) next(err)
+				else {
+					Project.updateOne({ files: data.fileID }, { $pull: { files: data.fileID } }, err => {
+						if (err) next(err);
+						else
+							res.json(raw);
+					});
+				}
+			});
+		}
 	} else {
 		next(new Error('MissingParameter'));
 	}
@@ -398,9 +408,29 @@ exports.addSpecialization = (req, res, next) => {
 exports.getCSV = (req, res, next) => {
 	Project.find({ status: "validated" })
 		.populate("partner specializations.specialization study_year")
-		.exec((err, projects) => {
+		.exec(async (err, projects) => {
 			if (err) next(err)
 			else {
+				let yearPromise = Year.find({}).exec();
+				let spePromise = Specialization.find({}).exec();
+
+				let [years, specializations] = await Promise.all([yearPromise, spePromise]);
+				let yearsFields = [], specializationsFields = [];
+
+				for (let i = 0; i < years.length; i++) {
+					yearsFields.push({
+						label: years[i].abbreviation,
+						value: row => row.study_year.filter(y => y.abbreviation === years[i].abbreviation).length > 0 ? "X" : ""
+					});
+				}
+
+				for (let i = 0; i < specializations.length; i++) {
+					specializationsFields.push({
+						label: specializations[i].abbreviation,
+						value: row => row.specializations.filter(s => s.status === "validated" && s.specialization.abbreviation === specializations[i].abbreviation).length > 0 ? "X" : ""
+					});
+				}
+
 				const fields = [
 					{
 						label: "N° projet",
@@ -438,19 +468,8 @@ exports.getCSV = (req, res, next) => {
 						label: "Déjà partenaire",
 						value: "partner.alreadyPartner"
 					},
-					{
-						label: "Année",
-						value: row => row.study_year
-							.map(s => s.abbreviation)
-							.join(" / ")
-					},
-					{
-						label: "Majeure",
-						value: row => row.specializations
-							.filter(s => s.status === "validated")
-							.map(s => s.specialization.abbreviation)
-							.join(" / ")
-					},
+					...yearsFields,
+					...specializationsFields,
 					{
 						label: "Titre du projet",
 						value: "title"

@@ -90,7 +90,7 @@ class ProjectPage extends React.Component {
                                                 return <Chip
                                                     key={year._id}
                                                     label={year.abbreviation}
-                                                    style={{ color: "white", backgroundColor: "#03a9f4" }}
+                                                    style={{ color: "white", backgroundColor: "#03a9f4", marginRight: "5px" }}
                                                 />
                                             })
                                         }
@@ -101,6 +101,7 @@ class ProjectPage extends React.Component {
                                                     key={spe._id}
                                                     label={spe.specialization.abbreviation}
                                                     color="secondary"
+                                                    style={{ marginRight: "5px"}}
                                                 />)
                                         }
                                         {
@@ -108,6 +109,7 @@ class ProjectPage extends React.Component {
                                                 return <Chip
                                                     key={keyword}
                                                     label={keyword}
+                                                    style={{ marginRight: "5px"}}
                                                 />
                                             })
                                         }

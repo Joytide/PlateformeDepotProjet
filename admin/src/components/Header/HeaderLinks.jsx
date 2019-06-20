@@ -20,7 +20,7 @@ import PowerSettings from "@material-ui/icons/PowerSettingsNew"
 //import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
-import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { withUser } from "../../providers/UserProvider/UserProvider";
 
 import headerLinksStyle from "assets/jss/material-dashboard-react/components/headerLinksStyle.jsx";
 
@@ -48,9 +48,9 @@ class HeaderLinks extends React.Component {
 				</div>
 					*/}
 				<Button color="transparent" href="#" className={classes.title}>
-					Bonjour {this.context.user.first_name + " " + this.context.user.last_name}
+					Bonjour {this.props.user.user.first_name + " " + this.props.user.user.last_name}
 				</Button>
-				<Link to="/" onClick={this.context.disconnect}>
+				<Link to="/" onClick={this.props.user.disconnect}>
 					<Button
 						color={window.innerWidth > 959 ? "transparent" : "white"}
 						justIcon={window.innerWidth > 959}
@@ -164,6 +164,4 @@ class HeaderLinks extends React.Component {
 	}
 }
 
-HeaderLinks.contextType = UserContext;
-
-export default withStyles(headerLinksStyle)(HeaderLinks);
+export default withUser(withStyles(headerLinksStyle)(HeaderLinks));

@@ -13,6 +13,8 @@ import SnackbarContent from '@material-ui/core/SnackbarContent';
 import WarningIcon from '@material-ui/icons/Warning';
 import { withStyles } from '@material-ui/core/styles';
 
+const DEFAULT_DURATION = 4000;
+
 const variantIcon = {
 	success: CheckCircleIcon,
 	warning: WarningIcon,
@@ -118,12 +120,12 @@ class SnackbarProvider extends React.Component {
 
 				this.setState({
 					variant,
-					duration: duration ? duration : this.state.duration,
+					duration: duration ? duration : DEFAULT_DURATION,
 					message,
 					open:true
 				})
 			},
-			duration: 4000,
+			duration: DEFAULT_DURATION,
 			message: "",
 			variant: "error",
 			open: false

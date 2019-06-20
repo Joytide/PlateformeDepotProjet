@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import Checkbox from '@material-ui/core/Checkbox';
+import Chip from '@material-ui/core/Chip';
 
 import Visibility from "@material-ui/icons/Visibility"
 
@@ -16,9 +17,6 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
 import Button from "components/CustomButtons/Button.jsx";
-import Danger from "components/Typography/Danger.jsx";
-import Success from "components/Typography/Success.jsx";
-import Warning from "components/Typography/Warning.jsx";
 
 import { api } from "config.json"
 import AuthService from "../../components/AuthService";
@@ -85,24 +83,30 @@ class ProjectList extends React.Component {
     loadProjects() {
         let queryParams = `?validated=${this.state.validatedProjects}&rejected=${this.state.rejectedProjects}&pending=${this.state.pendingProjects}&mine=${this.state.myProject}`
 
+        const validatedChip = <Chip
+            label="Validé"
+            style={{ backgroundColor: "#4caf50", color: "white" }}
+        />;
+
+        const refusedChip = <Chip
+            label="Refusé"
+            style={{ backgroundColor: "rgb(244, 67, 54)", color: "white" }}
+        />;
+
+        const pendingChip = <Chip
+            label="En attente de validation"
+            style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
+        />;
+
         AuthService.fetch(api.host + ":" + api.port + "/api/projects" + queryParams)
             .then(res => res.json())
             .then(data => {
                 let projectsData = data.map(project => {
-                    const danger = content => <Danger>{content}</Danger>;
-                    const success = content => <Success>{content}</Success>;
-                    const warning = content => <Warning>{content}</Warning>;
-
-                    let transform;
-                    if (project.status === "validated") transform = success;
-                    else if (project.status === "rejected") transform = danger;
-                    else if (project.status === "pending") transform = warning;
-
                     return [
-                        transform(<p>{project.title}</p>),
-                        transform(<p>{project.partner.company}</p>),
-                        transform(<p>{project.status === "validated" ? "Validé" : (project.status === "pending" ? "En attente" : "Refusé")}</p>),
-                        transform(<p>{new Date(project.sub_date).toLocaleDateString()}</p>),
+                        <p>{project.title}</p>,
+                        <p>{project.partner.company}</p>,
+                        <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
+                        <p>{new Date(project.sub_date).toLocaleDateString()}</p>,
                         project.study_year.map(year => year.abbreviation).sort().join(', '),
                         project.specializations
                             .map(spe => spe.status !== "rejected" ? spe.specialization.abbreviation : "")

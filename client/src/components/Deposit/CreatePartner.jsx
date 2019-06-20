@@ -14,7 +14,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
 import i18n from '../i18n';
-import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { withUser } from "../../providers/UserProvider/UserProvider";
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 
 const styles = {
@@ -41,13 +41,16 @@ class CreatePartner extends React.Component {
         this.handleRadioChange = this.handleRadioChange.bind(this);
     }
 
-    componentDidMount() {
-        if (this.context.user._id)
-            this.setState({
-                ...this.context.user,
-                alreadyPartner: this.context.user.alreadyPartner.toString(),
+    static getDerivedStateFromProps(props, state) {
+        if (props.user.user._id)
+            return {
+                ...props.user.user,
+                alreadyPartner: props.user.user.alreadyPartner.toString(),
                 isExisting: true
-            });
+            }
+        return {
+            isExisting: false
+        }
     }
 
     handleChange = e => {
@@ -88,15 +91,16 @@ class CreatePartner extends React.Component {
                 })
                 .then(data => {
                     if (data.token) {
-                        this.context.setToken(data.token);
+                        this.props.user.setToken(data.token);
                         var event = new Event('logged');
                         document.dispatchEvent(event);
-                        this.props.next();
+                        this.props.next({ newAccount: true });
                     }
                 })
                 .catch(err => {
                     if (err.json)
                         err.json().then(errData => {
+                            console.error(err);
                             const { lng } = this.props;
                             if (errData.name === "EmailUsed") {
                                 this.props.snackbar.notification("error", i18n.t('errors.emailUsed', { lng }), 10000);
@@ -115,6 +119,7 @@ class CreatePartner extends React.Component {
 
     render() {
         const { lng, classes } = this.props;
+
         return (
             <ValidatorForm ref="form" onSubmit={this.handleNext}>
                 <Grid container direction="column" spacing={24} className={classes.paper} >
@@ -248,6 +253,4 @@ class CreatePartner extends React.Component {
     }
 }
 
-CreatePartner.contextType = UserContext;
-
-export default withSnackbar(withStyles(styles, { withTheme: true })(CreatePartner));
+export default withUser(withSnackbar(withStyles(styles, { withTheme: true })(CreatePartner)));

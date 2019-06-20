@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import AuthService from '../components/AuthService';
+import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 import i18n from '../components/i18n';
 /**
  * Deposit of a project
@@ -41,7 +41,7 @@ const DEFAULT_STATE = {
 	study_year: [],
 	majors_concerned: [],
 
-	stepIndex: 0,
+	stepIndex: 1,
 	title: "",
 	description: "",
 	keyWords: [],
@@ -63,10 +63,11 @@ class Deposit extends React.Component {
 
 	}
 
-
-
 	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
-	handleNext = () => {
+	handleNext = data => {
+		if (data && data.newAccount)
+			this.props.snackbar.notification("success", i18n.t("createPartner.created", { lng: this.props.lng }));
+
 		const { stepIndex } = this.state;
 
 		if (!this.state.finished) {
@@ -76,40 +77,6 @@ class Deposit extends React.Component {
 			});
 		}
 	};
-
-	// A voir s'il est vraiment nécessaire de pouvoir revenir en arrière
-	handlePrev = () => {
-		const { stepIndex } = this.state;
-		if (stepIndex > 0) {
-			this.setState({ stepIndex: stepIndex - 1 });
-		}
-	};
-
-	FilesUpload() {
-		return new Promise((resolve, reject) => {
-			var formData = new FormData()
-			/*Object.keys(this.state.files).forEach((key)=>{  //On parcourt la liste des fichiers
-				const file = this.state.files[key]
-				formData.append(key, new Blob([file], {type : file.type}), file.name || 'file') //On ajoute dans le formData le fichier
-			})*/
-
-			this.state.files.forEach((file) => {
-				formData.append(file.name, new Blob([file], { type: file.type }), file.name || 'file')
-			})
-
-			AuthService.fetch('/api/addFile', {
-				method: 'POST',
-				body: formData
-			})
-				.then((resp) => {
-					resp.json().then((urls) => {
-						this.setState({ urls: urls })
-						return resolve()
-					});
-				})
-				.catch((err) => { return reject(err) })
-		});
-	}
 
 	getStepContent(stepIndex) {
 		const lng = this.props.lng;
@@ -224,4 +191,4 @@ class Deposit extends React.Component {
 	}
 }
 
-export default withStyles(styles, { withTheme: true })(Deposit);
+export default withSnackbar(withStyles(styles, { withTheme: true })(Deposit));

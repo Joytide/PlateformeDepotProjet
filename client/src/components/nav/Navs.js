@@ -85,7 +85,7 @@ class Navs extends React.Component {
 			mobileMoreAnchorEl: null
 		}
 	}
-
+	
 	handleProfileMenuOpen = event => {
 		this.setState({ anchorEl: event.currentTarget });
 	};

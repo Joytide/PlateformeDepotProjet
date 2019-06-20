@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { Typography } from '@material-ui/core';
 import i18n from '../components/i18n';
+import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 import AuthService from '../components/AuthService';
 
 class ForgetPass extends Component {
@@ -29,11 +30,23 @@ class ForgetPass extends Component {
                 method: 'POST',
                 body: JSON.stringify(form)
             })
-                .then(res => res.json())
                 .then(res => {
+                    if (!res.ok) throw res
+                    else return res.json()
+                })
+                .then(res => {
+                    this.props.snackbar.notification("success", i18n.t("forgetPass.mailSent", { lng: this.props.lng }));
                 })
                 .catch(error => {
-                    console.error(error);
+                    error.json()
+                        .then(data => {
+                            if (data.message === "PartnerNotFound")
+                                this.props.snackbar.notification("danger", i18n.t("errors.partnerNotFound", { lng: this.props.lng }));
+                            else
+                                this.props.snackbar.notification("danger", i18n.t("forgetPass.default", { lng: this.props.lng }));
+
+
+                        });
                 });
         } else {
 
@@ -51,7 +64,7 @@ class ForgetPass extends Component {
         return (
             <Grid container alignItems="center" justify="center">
                 <Grid item xs={12} md={6} lg={4}>
-                    <Typography variant="h4">{i18n.t("forgetPass.title", {lng})}</Typography>
+                    <Typography variant="h4">{i18n.t("forgetPass.title", { lng })}</Typography>
                     <br />
                     <form onSubmit={this.handleSubmit.bind(this)}>
                         {i18n.t('forgetPass.desc', { lng }).split('\n').map((line, index) => <Typography key={index}>{line}</Typography>)}
@@ -74,4 +87,4 @@ class ForgetPass extends Component {
     }
 }
 
-export default ForgetPass;
+export default withSnackbar(ForgetPass);

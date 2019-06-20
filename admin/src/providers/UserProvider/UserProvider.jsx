@@ -1,6 +1,6 @@
 import React, { createContext } from "react"; // on importe createContext qui servira à la création d'un ou plusieurs contextes
 import AuthService from "../../components/AuthService";
-import {api} from "../../config"
+import { api } from "../../config"
 
 /**
  * `createContext` contient 2 propriétés :
@@ -53,8 +53,12 @@ class UserProvider extends React.Component {
 				});
 			})
 			.catch(err => {
-				if (err.status === 401)
-					localStorage.removeItem("adminToken");
+				if (err.status === 401) {
+					if (localStorage.getItem("adminToken") !== null) {
+						window.location.href = "/admin";
+						localStorage.removeItem("adminToken");
+					}
+				}
 			});
 	}
 
@@ -73,13 +77,13 @@ class UserProvider extends React.Component {
 UserProvider.contextType = UserContext;
 
 export function withUser(Component) {
-    return function WrapperComponent(props) {
-        return (
-            <UserContext.Consumer>
-                {user => <Component {...props} user={user} />}
-            </UserContext.Consumer>
-        );
-    };
+	return function WrapperComponent(props) {
+		return (
+			<UserContext.Consumer>
+				{user => <Component {...props} user={user} />}
+			</UserContext.Consumer>
+		);
+	};
 }
 
 export default UserProvider;

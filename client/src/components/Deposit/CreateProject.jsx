@@ -49,6 +49,7 @@ class CreateProject extends React.Component {
     }
 
     componentWillMount() {
+        window.scroll(0,0);
         AuthService.fetch('/api/specialization')
             .then(res => res.json())
             .then(specializations => {
@@ -169,7 +170,7 @@ class CreateProject extends React.Component {
     render() {
         const { lng, classes } = this.props;
         return (
-            <ValidatorForm ref="form" onSubmit={this.handleNext}>
+            <ValidatorForm ref="form" onSubmit={this.handleNext} onError={() => this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }))}>
                 <Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
                     <Grid item>
                         <Typography align='center' variant='h6'>{i18n.t('projectPres.h2', { lng })}</Typography>
@@ -240,20 +241,24 @@ class CreateProject extends React.Component {
                             {i18n.t('createProject.multipleTeams', { lng })}
                         </Typography>
                         <Grid container direction="row" justify='center'>
-                            <Grid item xs={4} md={2} lg={1}>
+                            <Grid item xs={4} md={3} lg={2}>
+                                {i18n.t("createPartner.no", {lng})}
                                 <Switch
                                     checked={this.state.multipleTeams}
                                     onChange={this.handleChange}
                                     name="multipleTeams"
                                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 />
+                                {i18n.t("createPartner.yes", {lng})}                                
                             </Grid>
-                            <Grid item xs={8} md={4} lg={2}>
+
+                            <Grid item xs={12} md={6} lg={4}>
                                 {this.state.multipleTeams &&
                                     <TextValidator
                                         label={i18n.t('createProject.maxNumber', { lng })}
                                         value={this.state.maxNumber}
                                         validators={['required', 'matchRegexp:^[0-9]+$']}
+                                        
                                         errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
                                         name="maxNumber"
                                         onChange={this.handleChange}

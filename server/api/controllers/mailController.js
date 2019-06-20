@@ -139,7 +139,7 @@ ESILV's projects management team`;
     });
 });
 
-emitter.on("linkReset", data => {
+emitter.on("resetLink", data => {
     const connectUrl = config.client.protocol + "://" + config.client.host + ":" + config.client.port + "/login/partner/" + data.key;
     const mailContent = `
 Bonjour,
