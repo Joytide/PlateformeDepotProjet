@@ -345,7 +345,7 @@ class ProjectProfile extends React.Component {
                     this.loadProjectData();
                 });
         }
-        
+
         let pendingProject = this.state.project.specializations.filter(spe => spe.status === "pending").length + (status === "pending" ? 1 : -1);
 
         if (pendingProject === 0) {
@@ -623,6 +623,7 @@ class ProjectProfile extends React.Component {
                         arr[2] = "";
                         if (this.state.project.status === "pending") {
                             if (this.props.user.user.admin
+                                || this.props.user.user.EPGE
                                 || spe.referent.map(r => r._id).indexOf(this.props.user.user._id) !== -1)
                                 arr[3] = (
                                     <div>
