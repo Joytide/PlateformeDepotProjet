@@ -87,7 +87,7 @@ i18next
 						yes: "Yes",
 						no: "No",
 						created: "Your account has been successfuly created. An email has been sent.",
-						alreadyPartner: "You are already logged in. Clic on next to submit your project",
+						isExisting: "You are already logged in. Clic on next to submit your project",
 					},
 					errors: {
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
@@ -250,7 +250,7 @@ i18next
 						yes: "Oui",
 						no: "Non",
 						created: "Votre compte a bien été créer. Un mail vous a été envoyé.",
-						alreadyPartner: "Vous êtes déjà connecté. Cliquez sur suivant pour déposer votre projet",
+						isExisting: "Vous êtes déjà connecté. Cliquez sur suivant pour déposer votre projet",
 					},
 					createProject: {
 						skills: "Compétences développées",
