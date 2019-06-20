@@ -44,12 +44,28 @@ class FilesInputs extends React.Component {
                         type: file.type,
                         _id: data._id
                     }];
-                    
+
                     this.setFiles(list);
                     return { files: list };
                 });
             });
 
+    }
+
+    deleteFile = fileID => () => {
+        const data = {
+            fileID
+        }
+        AuthService.fetch("/api/project/file", {
+            method: "DELETE",
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    files: this.state.files.filter(f => f._id !== fileID)
+                })
+            })
     }
 
     render() {
@@ -63,7 +79,6 @@ class FilesInputs extends React.Component {
                         onChange={this.onChange}
                         onError={this.OnFilesError}
                         accepts={['image/*', 'application/pdf']}
-                        multiple
                         maxFiles={3}
                         maxFileSize={10000000}
                         minFileSize={0}
@@ -79,7 +94,7 @@ class FilesInputs extends React.Component {
                             <a key={index} className="justify-content-between file-add list-group-item list-group-item-action">
                                 <div>
                                     <p>{file.name}</p>
-                                    <p data-key={file.id} className="text-right">{i18n.t('delete.label', { lng })} </p>
+                                    <p className="text-right" onClick={this.deleteFile(file._id)}>{i18n.t('delete.label', { lng })} </p>
                                 </div>
                             </a>)
                     )

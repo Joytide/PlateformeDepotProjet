@@ -77,16 +77,26 @@ exports.uploadDone = (req, res, next) => {
 exports.deleteFile = (req, res, next) => {
 	const data = req.body;
 	if (data.fileID) {
-		File.deleteOne({ _id: data.fileID }, (err, raw) => {
-			if (err) next(err)
-			else {
-				Project.updateOne({ files: data.fileID }, { $pull: { files: data.fileID } }, err => {
-					if (err) next(err);
-					else
-						res.json(raw);
-				});
-			}
-		});
+		if (req.user.__t === "Partner") {
+			File.deleteOne({ _id: data.fileID, projectID: null, owner: req.user._id }, (err, raw) => {
+				if (err) next(err)
+				else {
+					res.json(raw);
+				}
+			});
+		}
+		else {
+			File.deleteOne({ _id: data.fileID }, (err, raw) => {
+				if (err) next(err)
+				else {
+					Project.updateOne({ files: data.fileID }, { $pull: { files: data.fileID } }, err => {
+						if (err) next(err);
+						else
+							res.json(raw);
+					});
+				}
+			});
+		}
 	} else {
 		next(new Error('MissingParameter'));
 	}
