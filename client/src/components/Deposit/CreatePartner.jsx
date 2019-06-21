@@ -41,6 +41,10 @@ class CreatePartner extends React.Component {
         this.handleRadioChange = this.handleRadioChange.bind(this);
     }
 
+    componentDidMount() {
+        window.scroll(0, 0);
+    }
+
     static getDerivedStateFromProps(props, state) {
         if (props.user.user._id)
             return {
