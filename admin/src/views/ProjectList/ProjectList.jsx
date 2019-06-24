@@ -128,7 +128,7 @@ class ProjectList extends React.Component {
             loadedContent = (
                 <Table
                     tableHeaderColor="primary"
-                    tableHead={["Nom du projet", "Entreprise", "Status", "Date de soumission", "Année", "Majeure", "Actions"]}
+                    tableHead={["Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
                     tableData={this.state.projects}
                 />
             );
