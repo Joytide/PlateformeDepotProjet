@@ -109,8 +109,7 @@ class ProjectList extends React.Component {
                         <p>{new Date(project.sub_date).toLocaleDateString()}</p>,
                         project.study_year.map(year => year.abbreviation).sort().join(', '),
                         project.specializations
-                            .map(spe => spe.status !== "rejected" ? spe.specialization.abbreviation : "")
-                            .filter(spe => spe !== "")
+                            .map(spe => spe.specialization.abbreviation + (spe.status === "pending" ? " (En attente)" : (spe.status === "validated" ? " (Validé)" : "(Refusé)")))
                             .sort()
                             .join(', '),
                         (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
@@ -128,7 +127,7 @@ class ProjectList extends React.Component {
             loadedContent = (
                 <Table
                     tableHeaderColor="primary"
-                    tableHead={["Nom du projet", "Entreprise", "Status", "Date de soumission", "Année", "Majeure", "Actions"]}
+                    tableHead={["Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
                     tableData={this.state.projects}
                 />
             );
