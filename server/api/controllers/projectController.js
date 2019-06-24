@@ -370,7 +370,7 @@ exports.projectValidation = (req, res, next) => {
 							if (project.status === "validated")
 								emitter.emit("projectValidated", { partnerId: project.partner, projectId: project._id });
 							else if (project.status === "rejected")
-								emitter.emit("projectRejeted", project.parnter);
+								emitter.emit("projectRejeted", project.partner);
 							res.json(savedProject)
 						}
 					});

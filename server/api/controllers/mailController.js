@@ -132,7 +132,7 @@ ESILV's projects management team`;
 
             sendMail({
                 recipient: partner.email,
-                subject: `Projet accepté | Project accepted`,
+                subject: `Projet non accepté | Project not accepted`,
                 content: mailContent
             }).catch(console.error);
         }
