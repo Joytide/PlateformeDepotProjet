@@ -71,40 +71,114 @@ class Carousel extends React.Component {
 
 		//déclaration des projets affichés dans le carousel
 		//propriété 'info' non affichée
-		const tutorialSteps = [
-			{
-				label: i18n.t('carousel.Title1', { lng }),
-				info: i18n.t('carousel.Text1', { lng }),
-				imgPath: './pictures/project1.jpg',
-				link: 'https://www.esilv.fr/portfolios/bermudzer-pricing-doption-bermudeennes/'
-			},
-			{
-				label: i18n.t('carousel.Title2', { lng }),
-				info: i18n.t('carousel.Text2', { lng }),
-				imgPath: './pictures/project2.jpg',
-				link: 'https://www.esilv.fr/portfolios/vinci-eco-drive-conception-et-pilotage-du-bloc-moteur-shell-eco-marathon-2015/'
-			},
-			{
-				label: i18n.t('carousel.Title3', { lng }),
-				info: i18n.t('carousel.Text3', { lng }),
-				imgPath: './pictures/project3.jpg',
-				link: 'https://www.esilv.fr/portfolios/id-cam-accessibilite-numerique-non-voyants-mal-voyants/'
-			},
-			{
-				label: i18n.t('carousel.Title4', { lng }),
-				info: i18n.t('carousel.Text4', { lng }),
-				imgPath: './pictures/project4.jpg',
-				link: 'https://www.esilv.fr/portfolios/analyse-big-data-des-sites-unesco-via-les-reseaux-sociaux/'
-			},
-		].sort(() => Math.random() - 0.5);
+		const tutorialSteps = [{
+			imgPath: './pictures/Visuel_PA4_18_08.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_23-24.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_36.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_47.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_56.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_65.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_84.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/project2.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/visuel_equipe.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_10.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_26.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_37.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_50.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_58.jpg.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_73.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_93.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/project4.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_18.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_3.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_40.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_52.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_59.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/Visuel_PA4_18_78.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/project1.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		},
+		{
+			imgPath: './pictures/visuel2.jpg',
+			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
+		}].sort(() => Math.random() - 0.5);
 
 		const maxSteps = tutorialSteps.length;
 
 		return (
 			<div className={classes.root}>
 				<div className={classes.link} onClick={() => window.open(tutorialSteps[activeStep].link, "_blank")}>
-					<Paper square elevation={0} className={classes.header}>
-						<Typography>{tutorialSteps[activeStep].label}</Typography>
+					<Paper square elevation={0} className={classes.header}>					
+					<a dangerouslySetInnerHTML={{__html :i18n.t('home.title_p2', { lng })}}></a>
 					</Paper>
 					<AutoPlaySwipeableViews
 						axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -113,32 +187,12 @@ class Carousel extends React.Component {
 						enableMouseEvents
 					>
 						{tutorialSteps.map((step, index) => (
-							<div key={step.label}>
-								{Math.abs(activeStep - index) <= 2 ? (
-									<img className={classes.img} src={step.imgPath} alt={step.label} />
-								) : null}
+							<div key={step.index}>
+								<img className={classes.img} src={step.imgPath} alt={"Projet ESILV"} />
 							</div>
 						))}
 					</AutoPlaySwipeableViews>
 				</div>
-				<MobileStepper
-					steps={maxSteps}
-					position="static"
-					activeStep={activeStep}
-					className={classes.mobileStepper}
-					nextButton={
-						<Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
-							{i18n.t('carousel.next', { lng })}
-							{theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-						</Button>
-					}
-					backButton={
-						<Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
-							{i18n.t('carousel.back', { lng })}
-							{theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-						</Button>
-					}
-				/>
 			</div>
 		);
 	}

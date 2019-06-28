@@ -97,15 +97,17 @@ class HomePage extends React.Component {
 									{i18n.t('home.p3_l5', { lng })}<br />
 									{i18n.t('home.p3_l6', { lng })}<br />
 									{i18n.t('home.p3_l7', { lng })}<br />
+									{i18n.t('home.p3_l8', { lng })}<br />
 								</Typography>
 							</Grid>
 							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p4', { lng })}</Typography>
 								<Typography align="justify">
 									<Link to="/deposit">{i18n.t('home.p4_l1', { lng })}</Link><br />
-									{i18n.t('home.p4_l2', { lng })}<br />
-									{i18n.t('home.p4_l3', { lng })}<br />
+									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l2', { lng })}}></a><br />
+									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l3', { lng })}}></a><br />
 									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l4', { lng })}}></a><br />
+									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l5', { lng })}}></a><br />
 								</Typography>
 							</Grid>
 							<Grid item>

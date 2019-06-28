@@ -138,7 +138,7 @@ class YearList extends React.Component {
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Abbréviation", "Nom (fr)", "Nom (en)", "Actions"]}
+                                    tableHead={["Abréviation", "Nom (fr)", "Nom (en)", "Actions"]}
                                     tableData={this.state.years}
                                 />
                             </CardBody>

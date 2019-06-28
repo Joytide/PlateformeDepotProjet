@@ -150,7 +150,7 @@ class YearProfile extends React.Component {
                                         <GridContainer>
                                             <GridItem xs={12} sm={12} md={4}>
                                                 <CustomInput
-                                                    labelText="Abbréviation"
+                                                    labelText="Abréviation"
                                                     id="abbreviation"
                                                     formControlProps={{
                                                         fullWidth: true
