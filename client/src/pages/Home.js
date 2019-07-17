@@ -49,7 +49,7 @@ class HomePage extends React.Component {
 			<div>
 				<Grid className={classes.root}>
 					<Paper className={classes.paper}>
-						<Grid container direction="column" justify="center" alignItems="flex-start" spacing={24}>
+						<Grid container direction="column" justify="center" spacing={24}>
 							<Grid item>
 								<Grid container alignItems="center" justify="center" spacing={32}>
 									<Grid item xs={3}>
@@ -68,7 +68,7 @@ class HomePage extends React.Component {
 									{i18n.t('home.title_p1', { lng })}<br />
 								</Typography>
 							</Grid>
-							<Grid item>
+							<Grid item xs={12}>
 								<Carousel lng={lng} />
 							</Grid>
 							<Grid item>
