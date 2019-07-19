@@ -30,7 +30,10 @@ module.exports = function (app) {
 		.delete(project.unlike);
 
 	app.route('/api/project/csv')
-		.get(project.getCSV);
+		.get(project.getCSV({ status: "validated" }));
+
+	app.route('/api/project/csv/full')
+		.get(project.getCSV({}));
 
 	app.route('/api/project/student')
 		.get(project.studentFolder);

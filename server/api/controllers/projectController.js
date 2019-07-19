@@ -405,8 +405,8 @@ exports.addSpecialization = (req, res, next) => {
 	}
 }
 
-exports.getCSV = (req, res, next) => {
-	Project.find({ status: "validated" })
+exports.getCSV = find => (req, res, next) => {
+	Project.find(find)
 		.populate("partner specializations.specialization study_year")
 		.exec(async (err, projects) => {
 			if (err) next(err)
@@ -435,6 +435,10 @@ exports.getCSV = (req, res, next) => {
 					{
 						label: "N° projet",
 						value: "number"
+					},
+					{
+						label: "Statut",
+						value: "status"
 					},
 					{
 						label: "Timestamp",
