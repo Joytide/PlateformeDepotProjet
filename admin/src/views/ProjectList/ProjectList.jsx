@@ -224,6 +224,11 @@ class ProjectList extends React.Component {
                                     Télécharger les projets validés au format CSV
                                 </Button>
                             </a>
+                            <a href={api.host + ":" + api.port + "/api/project/csv/full"}>
+                                <Button size="sm" color="info">
+                                    Télécharger tous les projets au format CSV
+                                </Button>
+                            </a>
                             <a href={api.host + ":" + api.port + "/api/project/student"}>
                                 <Button size="sm" color="info">
                                     Télécharger les projets zippés
