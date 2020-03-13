@@ -678,9 +678,26 @@ const Stats = {
 						"specialization": "$specializations.specialization",
 						"status": "$specializations.status"
 					},
-					"total":
+					"count":
 					{
 						"$sum": 1
+					}
+				}
+			},
+			{
+				"$group":
+				{
+					"_id":
+					{
+						"specialization": "$_id.specialization"
+					},
+					"stats": {
+						"$addToSet": {
+							"status": "$_id.status",
+							"total": {
+								"$sum": "$count"
+							}
+						}
 					}
 				}
 			},
