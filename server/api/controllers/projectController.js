@@ -634,6 +634,23 @@ const Stats = {
 				}
 			},
 			{
+				"$group":
+				{
+					"_id":
+					{
+						"study_year": "$_id.study_year"
+					},
+					"stats": {
+						"$addToSet": {
+							"status": "$_id.status",
+							"total": {
+								"$sum": "$count"
+							}
+						}
+					}
+				}
+			},
+			{
 				"$lookup":
 				{
 					"from": "years",
