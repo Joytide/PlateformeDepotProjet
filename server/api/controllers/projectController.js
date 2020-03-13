@@ -480,10 +480,6 @@ exports.getCSV = find => (req, res, next) => {
 					},
 					{
 						label: "Description",
-						value: "title"
-					},
-					{
-						label: "Description",
 						value: "description"
 					},
 					{
