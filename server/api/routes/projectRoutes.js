@@ -8,6 +8,9 @@ module.exports = function (app) {
 		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Partner", "EPGE"]), project.upload.single("file"), project.uploadDone)
 		.delete(auth.passport.authenticate('jwt'), auth.areAuthorized(["Partner", "EPGE"]), project.deleteFile);
 
+	app.route('/api/project/stats')
+		.get(project.getStats);
+
 	app.route('/api/project/file/:id([a-fA-F0-9]{24})')
 		.get(project.download_file);
 

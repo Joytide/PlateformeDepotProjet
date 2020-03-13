@@ -547,7 +547,7 @@ exports.studentFolder = async (req, res, next) => {
 						project.specializations
 							.filter(spe => spe.status === "validated")
 							.forEach(spe => {
-								let fileName = project.number + " - " + project.title.replace('/',' ');
+								let fileName = project.number + " - " + project.title.replace('/', ' ');
 								if (project.files.length > 0) {
 									fs.mkdirSync(baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName)
 									fs.copyFileSync(
@@ -581,3 +581,152 @@ exports.studentFolder = async (req, res, next) => {
 			}
 		});
 }
+
+exports.getStats = (req, res, next) => {
+	Promise.all([Stats.count(), Stats.general(), Stats.byYear(), Stats.bySpe(), Stats.byYearSubSpe()])
+		.then(values => {
+			res.json({
+				count: values[0],
+				general: values[1],
+				byYear: values[2],
+				bySpe: values[3],
+				byYearSubSpe: values[4]
+			});
+		});
+}
+
+const Stats = {
+	count: () => Project.countDocuments(),
+
+	// Gets number of project validated, pending, rejected
+	general: () => Project
+		.aggregate([
+			{
+				"$group":
+				{
+					"_id": "$status",
+					"total":
+					{
+						"$sum": 1
+					}
+				}
+			}
+		]),
+
+	// Gets number of project validated, pending, rejected grouped by year
+	byYear: () => Project
+		.aggregate([
+			{
+				"$unwind": "$study_year"
+			},
+			{
+				"$group":
+				{
+					"_id":
+					{
+						"study_year": "$study_year",
+						"status": "$status"
+					},
+					"count":
+					{
+						"$sum": 1
+					}
+				}
+			},
+			{
+				"$lookup":
+				{
+					"from": "years",
+					"localField": "_id.study_year",
+					"foreignField": "_id",
+					"as": "_id.study_year"
+				}
+			}
+		]),
+
+	// Gets number of project validated, pending, rejected grouped by spe
+	bySpe: () => Project.aggregate(
+		[
+			{
+				"$unwind": "$specializations"
+			},
+			{
+				"$group":
+				{
+					"_id":
+					{
+						"specialization": "$specializations.specialization",
+						"status": "$specializations.status"
+					},
+					"total":
+					{
+						"$sum": 1
+					}
+				}
+			},
+			{
+				"$lookup":
+				{
+					"from": "specializations",
+					"localField": "_id.specialization",
+					"foreignField": "_id",
+					"as": "_id.specialization"
+				}
+			}
+		]),
+
+	// Gets number of project validated, pending, rejected grouped by years and with details by spe
+	byYearSubSpe: () => Project.aggregate(
+		[
+			{ "$unwind": "$study_year" },
+			{ "$unwind": "$specializations" },
+			{
+				"$group":
+				{
+					"_id":
+					{
+						"study_year": "$study_year",
+						"specialization": "$specializations.specialization",
+						"status": "$specializations.status"
+					},
+					"total":
+					{
+						"$sum": 1
+					}
+				}
+			},
+			{
+				"$lookup":
+				{
+					"from": "specializations",
+					"localField": "_id.specialization",
+					"foreignField": "_id",
+					"as": "_id.specialization"
+				}
+			},
+			{
+				"$group":
+				{
+					"_id": "$_id.study_year",
+					"specializations": {
+						"$addToSet":
+						{
+							"specialization": "$_id.specialization",
+							"status": "$_id.status",
+							"count": "$total"
+						}
+					}
+				}
+			},
+			{
+				"$lookup":
+				{
+					"from": "years",
+					"localField": "_id",
+					"foreignField": "_id",
+					"as": "_id"
+				}
+			},
+		]
+	)
+};
