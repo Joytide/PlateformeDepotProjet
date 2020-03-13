@@ -528,11 +528,13 @@ exports.studentFolder = async (req, res, next) => {
 
 	fs.mkdirSync(baseDirectory, { recursive: true });
 
+	// create a new folder for the exports. Sub folders for each years and specializations are then created
 	for (let i = 0; i < years.length; i++) {
 		for (let j = 0; j < spe.length; j++) {
 			fs.mkdirSync(baseDirectory + "/" + years[i].abbreviation + "/" + spe[j].abbreviation, { recursive: true });
 		}
 	}
+
 
 	Project
 		.find({ status: "validated" })
@@ -545,7 +547,7 @@ exports.studentFolder = async (req, res, next) => {
 						project.specializations
 							.filter(spe => spe.status === "validated")
 							.forEach(spe => {
-								let fileName = project.number + " - " + project.title;
+								let fileName = project.number + " - " + project.title.replace('/',' ');
 								if (project.files.length > 0) {
 									fs.mkdirSync(baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName)
 									fs.copyFileSync(
