@@ -605,7 +605,6 @@ const Stats = {
 				"$group":
 				{
 					"_id": "$status",
-					"status": "$status",
 					"total":
 					{
 						"$sum": 1
