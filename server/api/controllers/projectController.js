@@ -745,6 +745,26 @@ const Stats = {
 				}
 			},
 			{
+				"$unwind": "$_id.specialization"
+			},
+			{
+				"$group":
+				{
+					"_id":
+					{
+						"study_year": "$_id.study_year",
+						"specialization": "$_id.specialization"
+					},
+					"stats": {
+						"$addToSet": {
+							"status": "$_id.status",
+							"total": "$total"
+						}
+					},
+					"total": {"$sum": "$total"}
+				}
+			},
+			{
 				"$group":
 				{
 					"_id": "$_id.study_year",
@@ -752,8 +772,9 @@ const Stats = {
 						"$addToSet":
 						{
 							"specialization": "$_id.specialization",
-							"status": "$_id.status",
-							"count": "$total"
+							"stats": "$stats",
+							"total": "$total"
+							
 						}
 					}
 				}
@@ -764,11 +785,11 @@ const Stats = {
 					"from": "years",
 					"localField": "_id",
 					"foreignField": "_id",
-					"as": "_id"
+					"as": "year"
 				}
 			},
 			{
-				"$unwind": "$_id"
+				"$unwind": "$year"
 			}
 		]
 	)
