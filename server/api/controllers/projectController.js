@@ -641,6 +641,9 @@ const Stats = {
 					"foreignField": "_id",
 					"as": "_id.study_year"
 				}
+			},
+			{
+				"$unwind": "$_id.study_year"
 			}
 		]),
 
@@ -672,6 +675,9 @@ const Stats = {
 					"foreignField": "_id",
 					"as": "_id.specialization"
 				}
+			},
+			{
+				"$unwind": "$_id.specialization"
 			}
 		]),
 
@@ -727,6 +733,9 @@ const Stats = {
 					"as": "_id"
 				}
 			},
+			{
+				"$unwind": "$_id"
+			}
 		]
 	)
 };
