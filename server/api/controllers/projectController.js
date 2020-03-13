@@ -327,7 +327,7 @@ exports.download_file = (req, res, next) => {
 		if (err)
 			next(err);
 		if (file)
-			res.download(file.path, file.originalName)
+			res.download(file.path, file.originalName.replace('/', ' '))
 		else
 			next(new Error('FileNotFound'));
 	});
