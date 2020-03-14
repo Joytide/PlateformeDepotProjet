@@ -81,7 +81,13 @@ class Dashboard extends React.Component {
 		const { classes } = this.props;
 
 		if (this.state.statsLoaded)
-			this.state.stats.byYear.map(year => console.log(year));
+			console.log(this.state.stats.byYearSubSpe, this.state.stats.byYearSubSpe[0].specializations.map(spe => formatStats(spe.stats)).flat());
+
+		console.log(repeatArray([
+			'#4caf50',
+			'rgb(255, 152, 0)',
+			'rgb(244, 67, 54)',
+		], 4))
 
 		return (
 			<GridContainer>
@@ -116,6 +122,7 @@ class Dashboard extends React.Component {
 									</CardBody>
 								</Card>
 							</GridItem>
+
 							<GridItem xs={12} md={12} lg={8}>
 								<Card>
 									<CardHeader color="primary">
@@ -129,13 +136,39 @@ class Dashboard extends React.Component {
 													<GridItem xs={12} md={6} key={year._id.study_year._id}>
 														<h4>{year._id.study_year.name.fr}</h4>
 														<Doughnut data={{
-															labels: ["Validés", "En attente", "Refusés"],
+															labels: formatLabels(year.stats),
 															datasets: [{
-																data: [
-																	year.stats.find(val => val.status === "validated").total,
-																	year.stats.find(val => val.status === "pending").total,
-																	year.stats.find(val => val.status === "rejected").total
-																],
+																data: formatStats(year.stats),
+																backgroundColor: [
+																	'#4caf50',
+																	'rgb(255, 152, 0)',
+																	'rgb(244, 67, 54)',
+																]
+															}]
+														}} />
+													</GridItem>
+												)}
+										</GridContainer>
+
+									</CardBody>
+								</Card>
+							</GridItem>
+							<GridItem xs={12} md={12} lg={12}>
+								<Card>
+									<CardHeader color="primary">
+										<h4 className={classes.cardTitleWhite}>Projets triés par majeure</h4>
+									</CardHeader>
+									<CardBody>
+										<GridContainer>
+											{this.state.stats.bySpe
+												.sort((s1, s2) => s1._id.specialization.name.fr > s2._id.specialization.name.fr)
+												.map(spe =>
+													<GridItem xs={12} md={6} lg={3} key={spe._id.specialization._id}>
+														<h4>{spe._id.specialization.name.fr}</h4>
+														<Doughnut data={{
+															labels: formatLabels(spe.stats),
+															datasets: [{
+																data: formatStats(spe.stats),
 																backgroundColor: [
 																	'#4caf50',
 																	'rgb(255, 152, 0)',
@@ -166,3 +199,37 @@ Dashboard.propTypes = {
 };
 
 export default withStyles(styles)(Dashboard);
+
+function formatStats(stats) {
+	let status = ["validated", "pending", "rejected"];
+	let dataToReturn = [];
+
+	for (let i = 0; i < status.length; i++) {
+		let finder = stats.find(val => val.status === status[i])
+		if (finder === undefined)
+			dataToReturn[i] = 0;
+		else
+			dataToReturn[i] = finder.total;
+	}
+
+	return dataToReturn;
+}
+
+function formatLabels(stats) {
+	let statNumbers = formatStats(stats);
+	return [
+		"Validés (" + statNumbers[0] + ")",
+		"En attente (" + statNumbers[1] + ")",
+		"Refusés (" + statNumbers[2] + ")"
+	];
+}
+
+function repeatArray(array, n) {
+	let result = [];
+
+	for (let i = 0; i < n; i++)
+		for (let j = 0; j < array.length; j++)
+			result.push(array[j]);
+
+	return result
+}
