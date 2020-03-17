@@ -608,7 +608,13 @@ const Stats = {
 					"total":
 					{
 						"$sum": 1
-					}
+					},
+
+				},
+			},
+			{
+				"$addFields": {
+					"status": "$_id"
 				}
 			}
 		]),
@@ -761,7 +767,7 @@ const Stats = {
 							"total": "$total"
 						}
 					},
-					"total": {"$sum": "$total"}
+					"total": { "$sum": "$total" }
 				}
 			},
 			{
@@ -774,7 +780,7 @@ const Stats = {
 							"specialization": "$_id.specialization",
 							"stats": "$stats",
 							"total": "$total"
-							
+
 						}
 					}
 				}
