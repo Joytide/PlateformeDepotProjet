@@ -91,12 +91,15 @@ class Dashboard extends React.Component {
 							<GridItem xs={12} md={6} lg={4}>
 								<Card>
 									<CardHeader color="primary">
-										<h4 className={classes.cardTitleWhite}>Projets déposés</h4>
+										<h4 className={classes.cardTitleWhite}>Statistiques des projets déposés</h4>
 									</CardHeader>
 									<CardBody>
 										<p>Nombre de projets déposés : {this.state.stats.count}</p>
 										<Doughnut data={{
-											labels: ["Validés", "En attente", "Refusés"],
+											labels: [
+												"Validés (" + this.state.stats.general.find(val => val._id === "validated").total + ")",
+												"En attente (" + this.state.stats.general.find(val => val._id === "pending").total + ")",
+												"Refusés (" + this.state.stats.general.find(val => val._id === "rejected").total + ")"],
 											datasets: [{
 												data: [
 													this.state.stats.general.find(val => val._id === "validated").total,
