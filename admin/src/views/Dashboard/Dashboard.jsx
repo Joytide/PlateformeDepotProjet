@@ -160,7 +160,7 @@ class Dashboard extends React.Component {
 											{this.state.stats.bySpe
 												.sort((s1, s2) => s1._id.specialization.name.fr > s2._id.specialization.name.fr)
 												.map(spe =>
-													<GridItem xs={12} md={6} lg={3} key={spe._id.specialization._id}>
+													<GridItem xs={12} md={6} lg={2} key={spe._id.specialization._id}>
 														<h4>{spe._id.specialization.name.fr}</h4>
 														<Doughnut data={{
 															labels: formatLabels(spe.stats),
