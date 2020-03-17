@@ -80,15 +80,6 @@ class Dashboard extends React.Component {
 	render() {
 		const { classes } = this.props;
 
-		if (this.state.statsLoaded)
-			console.log(this.state.stats.byYearSubSpe, this.state.stats.byYearSubSpe[0].specializations.map(spe => formatStats(spe.stats)).flat());
-
-		console.log(repeatArray([
-			'#4caf50',
-			'rgb(255, 152, 0)',
-			'rgb(244, 67, 54)',
-		], 4))
-
 		return (
 			<GridContainer>
 				{this.state.statsLoaded &&
