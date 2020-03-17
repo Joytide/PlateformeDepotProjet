@@ -85,7 +85,7 @@ class Dashboard extends React.Component {
 				<GridItem xs={12}>
 					<img alt="Phoque you" src="/admin/phoque_you.jpg"></img>
 				</GridItem>
-				{this.state.statsLoaded &&
+				{this.state.statsLoaded && this.state.stats.count > 0 &&
 					<GridItem xs={12}>
 						<GridContainer>
 							<GridItem xs={12} md={6} lg={4}>
