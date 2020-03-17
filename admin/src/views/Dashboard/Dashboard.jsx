@@ -98,11 +98,7 @@ class Dashboard extends React.Component {
 										<Doughnut data={{
 											labels: formatLabels(this.state.stats.general),
 											datasets: [{
-												data: [
-													this.state.stats.general.find(val => val._id === "validated").total,
-													this.state.stats.general.find(val => val._id === "pending").total,
-													this.state.stats.general.find(val => val._id === "rejected").total
-												],
+												data: formatStats(this.state.stats.general),
 												backgroundColor: [
 													'#4caf50',
 													'rgb(255, 152, 0)',
