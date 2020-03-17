@@ -96,10 +96,7 @@ class Dashboard extends React.Component {
 									<CardBody>
 										<p>Nombre de projets déposés : {this.state.stats.count}</p>
 										<Doughnut data={{
-											labels: [
-												"Validés (" + this.state.stats.general.find(val => val._id === "validated").total + ")",
-												"En attente (" + this.state.stats.general.find(val => val._id === "pending").total + ")",
-												"Refusés (" + this.state.stats.general.find(val => val._id === "rejected").total + ")"],
+											labels: formatLabels(this.state.stats.general),
 											datasets: [{
 												data: [
 													this.state.stats.general.find(val => val._id === "validated").total,
