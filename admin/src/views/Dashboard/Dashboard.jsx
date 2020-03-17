@@ -14,7 +14,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import { api } from "config.json"
 import AuthService from "../../components/AuthService";
 // chartjs
-import { Doughnut, Pie } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 
 const styles = {
 	cardCategoryWhite: {
@@ -213,14 +213,4 @@ function formatLabels(stats) {
 		"En attente (" + statNumbers[1] + ")",
 		"Refusés (" + statNumbers[2] + ")"
 	];
-}
-
-function repeatArray(array, n) {
-	let result = [];
-
-	for (let i = 0; i < n; i++)
-		for (let j = 0; j < array.length; j++)
-			result.push(array[j]);
-
-	return result
 }
