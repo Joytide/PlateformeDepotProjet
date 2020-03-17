@@ -82,6 +82,9 @@ class Dashboard extends React.Component {
 
 		return (
 			<GridContainer>
+				<GridItem xs={12}>
+					<img alt="Phoque you" src="/admin/phoque_you.jpg"></img>
+				</GridItem>
 				{this.state.statsLoaded &&
 					<GridItem xs={12}>
 						<GridContainer>
@@ -177,9 +180,6 @@ class Dashboard extends React.Component {
 						</GridContainer>
 					</GridItem>
 				}
-				<GridItem xs={12}>
-					<img alt="Phoque you" src="/admin/phoque_you.jpg"></img>
-				</GridItem>
 			</GridContainer>
 		)
 	}
