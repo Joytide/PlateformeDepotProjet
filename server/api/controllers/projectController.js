@@ -150,7 +150,6 @@ exports.createProject = (req, res, next) => {
 			maxTeams: parseInt(data.maxNumber)
 		});
 
-		if (data.keywords) newProject.keywords = data.keywords;
 		if (data.files) newProject.files = data.files;
 		if (data.skills) newProject.skills = data.skills;
 		if (data.infos) newProject.infos = data.infos;

@@ -3,7 +3,6 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import FilesInputs from './FormComponents/FilesInputs';
-import KeyWords from './FormComponents/KeyWords';
 
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -36,7 +35,6 @@ class CreateProject extends React.Component {
             files: [],
             infos: "",
             skills: "",
-            keywords: [],
             multipleTeams: false,
             maxNumber: 1,
         }
@@ -118,8 +116,6 @@ class CreateProject extends React.Component {
         }
     }
 
-    handleKeyWords = key => this.setState({ keywords: key })
-
     handleNext = e => {
         if (this.state.title && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description) {
             let data = {
@@ -131,7 +127,6 @@ class CreateProject extends React.Component {
                 infos: this.state.infos,
                 maxNumber: this.state.maxNumber
             };
-            if (this.state.keywords) data.keywords = this.state.keywords;
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
             AuthService.fetch("/api/projects/", {
@@ -317,9 +312,6 @@ class CreateProject extends React.Component {
                         />
                     </Grid>
 
-                    <Grid item>
-                        <KeyWords lng={lng} change={this.handleKeyWords} />
-                    </Grid>
                     <Grid item>
                         <FilesInputs lng={lng} setFiles={this.setFiles} />
                     </Grid>
