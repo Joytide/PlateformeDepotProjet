@@ -66,9 +66,6 @@ app.use((req, res, next) => {
 var auth_routes = require('./api/routes/authRoutes')
 auth_routes(app);
 
-var mailRoutes = require('./api/routes/mailsRoutes');
-mailRoutes(app);
-
 var pdfRoutes = require('./api/routes/pdfRoutes');
 pdfRoutes(app);
 
