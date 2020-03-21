@@ -40,10 +40,12 @@ const ProjectSchema = new Schema({
         ref: "Year",
         required: true
     }], //(Number)
-    keywords: {
-        type: Array,
-        required: true
-    },  //(String)
+    keywords: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Keyword'
+        }
+    ], 
     status: {
         type: String,
         enum: ["validated", "rejected", "pending"],

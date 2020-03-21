@@ -399,6 +399,50 @@ exports.addSpecialization = (req, res, next) => {
 	}
 }
 
+exports.addKeyword = (req, res, next) => {
+	const data = req.body;
+
+	if (data.keywordId && data.projectId) {
+		Project.findOne({ _id: data.projectId }, (err, project) => {
+			if (err) next(err);
+			else if (project) {
+				project.keywords.push(data.keywordId);
+				project.save((err, sProject) => {
+					if (err) next(err);
+					else res.json(sProject);
+				})
+			}
+			else {
+				next(new Error("ProjectNotFound"));
+			}
+		});
+	} else {
+		next(new Error("MissingParameter"));
+	}
+}
+
+exports.removeKeyword = (req, res, next) => {
+	const data = req.body;
+
+	if (data.keywordId && data.projectId) {
+		Project.findOne({ _id: data.projectId }, (err, project) => {
+			if (err) next(err);
+			else if (project) {
+				project.keywords = project.keywords.filter(keywordId => keywordId != data.keywordId)
+				project.save((err, sProject) => {
+					if (err) next(err);
+					else res.json(sProject);
+				})
+			}
+			else {
+				next(new Error("ProjectNotFound"));
+			}
+		});
+	} else {
+		next(new Error("MissingParameter"));
+	}
+}
+
 exports.getCSV = find => (req, res, next) => {
 	Project.find(find)
 		.populate("partner specializations.specialization study_year")

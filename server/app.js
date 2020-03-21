@@ -24,6 +24,7 @@ const Specialization = require('./api/models/Specialization');
 const Year = require('./api/models/Year');
 const Task = require('./api/models/Task');
 const File = require('./api/models/File');
+const Keyword = require('./api/models/Keyword');
 
 const config = require('./config.json');
 
@@ -83,6 +84,9 @@ yearRoutes(app);
 
 var userRoutes = require('./api/routes/userRoutes');
 userRoutes(app);
+
+var keywordRoutes = require('./api/routes/keywordRoutes');
+keywordRoutes(app);
 
 /*var commentRoutes = require('./api/routes/commentRoutes');
 commentRoutes(app);*/

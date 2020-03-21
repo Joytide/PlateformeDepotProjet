@@ -8,6 +8,10 @@ module.exports = function (app) {
 		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Partner", "EPGE"]), project.upload.single("file"), project.uploadDone)
 		.delete(auth.passport.authenticate('jwt'), auth.areAuthorized(["Partner", "EPGE"]), project.deleteFile);
 
+	app.route('/api/project/keyword')
+		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Administration"]), project.addKeyword)
+		.delete(auth.passport.authenticate('jwt'), auth.areAuthorized(["Administration"]), project.removeKeyword);
+
 	app.route('/api/project/stats')
 		.get(project.getStats);
 

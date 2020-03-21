@@ -13,10 +13,12 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import Visibility from "@material-ui/icons/Visibility"
 import Add from "@material-ui/icons/Add"
+import Remove from "@material-ui/icons/Remove"
 import Cached from "@material-ui/icons/Cached"
-
+import FormControl from '@material-ui/core/FormControl';
 
 // core components
+import CustomInput from "components/CustomInput/CustomInput.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
@@ -75,19 +77,26 @@ class ProjectProfile extends React.Component {
             color: "primary",
             openFileModal: false,
             openValidationModal: false,
-            toDelete: ""
+            toDelete: "",
+            newKeyword: "",
+            keywords: []
         }
 
         this.loadProjectData = this.loadProjectData.bind(this);
         this.loadProjectComments = this.loadProjectComments.bind(this);
+        this.loadKeywords = this.loadKeywords.bind(this);
         this.loadStaticData = this.loadStaticData.bind(this);
         this.addSpecialization = this.addSpecialization.bind(this);
         this.checkboxMapping = this.checkboxMapping.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.addKeyword = this.addKeyword.bind(this);
+        this.removeKeyword = this.removeKeyword.bind(this);
     }
 
     componentWillMount() {
         this.loadProjectData();
         this.loadStaticData();
+        this.loadKeywords();
         //this.loadProjectComments();
     }
 
@@ -140,6 +149,16 @@ class ProjectProfile extends React.Component {
                     specializations: data,
                     loadingSpecialization: false,
                 })
+            });
+    }
+
+    loadKeywords() {
+        AuthService.fetch(api.host + ":" + api.port + "/api/keyword", {
+            method: "GET",
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({ keywords: data });
             });
     }
 
@@ -327,6 +346,51 @@ class ProjectProfile extends React.Component {
             });
     }
 
+    createKeyword = () => {
+        AuthService.fetch(api.host + ":" + api.port + "/api/keyword", {
+            method: "POST",
+            body: JSON.stringify({ name: this.state.newKeyword })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.name !== "Error")
+                    this.setState({ newKeyword: "", keywords: [...this.state.keywords, data] })
+            });
+    }
+
+    addKeyword = id => () => {
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
+            method: "POST",
+            body: JSON.stringify({ projectId: this.props.match.params.id, keywordId: id })
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    project: {
+                        ...this.state.project,
+                        keywords: data.keywords
+                    }
+                });
+            });
+    }
+
+    removeKeyword = id => () => {
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
+            method: "DELETE",
+            body: JSON.stringify({ projectId: this.props.match.params.id, keywordId: id })
+        })
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    project: {
+                        ...this.state.project,
+                        keywords: data.keywords
+                    }
+                });
+            });
+    }
+
+
     specializationValidation = (status, speId) => () => {
         function sendValidation() {
             let data = {
@@ -394,10 +458,14 @@ class ProjectProfile extends React.Component {
 
     }
 
+    handleChange = event => {
+        this.setState({ [event.target.name]: event.target.value });
+    };
+
     render() {
         const { classes } = this.props;
 
-        let partnerInfo, projectInfo, years, files, specializations, other;
+        let partnerInfo, projectInfo, years, files, specializations, other, keywords;
 
         if (!this.state.loadingProject) {
             partnerInfo = (
@@ -475,13 +543,6 @@ class ProjectProfile extends React.Component {
                         <Divider />
                         <br />
                         <Typography >
-                            Mot(s) clé(s) :
-                        </Typography>
-                        <Typography>
-                            {this.state.project.keywords.join(', ')}
-                        </Typography>
-                        <br />
-                        <Typography >
                             Compétences développées :
                         </Typography>
                         <Typography>
@@ -504,6 +565,66 @@ class ProjectProfile extends React.Component {
                     </CardBody>
                 </Card>
             );
+
+            let addedKeywords = [], nonAddedKeywords = [];
+            this.state.keywords.forEach(keyword => {
+                if (this.state.project.keywords.indexOf(keyword._id) != -1) {
+                    addedKeywords.push(
+                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.removeKeyword(keyword._id)}><Remove />{keyword.displayName}</Button>
+                    );
+
+                }
+                else {
+                    nonAddedKeywords.push(
+                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.addKeyword(keyword._id)}><Add />{keyword.displayName}</Button>
+                    );
+                }
+            })
+
+            keywords = (
+                <Card>
+                    <CardHeader color={this.state.color}>
+                        <h4 className={classes.cardTitleWhite}>Mots-clefs</h4>
+                    </CardHeader>
+                    <CardBody>
+                        <GridContainer>
+                            <GridItem xs={12}>
+                                <Typography>
+                                    Mots-clefs déjà associés au projet (cliquer sur le mot clef pour le retirer) :
+                                </Typography>
+                                {addedKeywords}
+                                <Divider />
+                                <Typography>
+                                    Mots-clefs non-associés au projet (cliquer sur le mot clef pour l'ajouter) :
+                                </Typography>
+                                {nonAddedKeywords}
+                            </GridItem>
+                        </GridContainer>
+                    </CardBody>
+                    {(this.props.user.user.EPGE || this.props.user.user.admin) && this.state.project.status === "pending" &&
+                        <CardFooter>
+                            <GridContainer >
+                                <GridItem xs={12}>
+                                    <FormControl>
+                                        <CustomInput
+                                            labelText="Nouveau mot clef"
+                                            inputProps={{
+                                                value: this.state.newKeyword,
+                                                onChange: this.handleChange,
+                                                name: "newKeyword"
+                                            }}
+                                            formControlProps={{
+                                                fullWidth: false
+                                            }}
+                                        />
+                                    </FormControl>
+                                    <Button component="span" size="sm" color="info" onClick={this.createKeyword}><Add />Ajouter un nouveau mot clef</Button>
+                                </GridItem>
+                            </GridContainer>
+                        </CardFooter>
+                    }
+                </Card>
+            )
 
             files = (
                 <Card>
@@ -787,6 +908,8 @@ class ProjectProfile extends React.Component {
                     {partnerInfo}
 
                     {projectInfo}
+
+                    {keywords}
 
                     {files}
 
