@@ -1,24 +1,18 @@
 'use strict';
 
-var app = require('express')();
 const multer = require('multer');
 var path = require('path');
 var mongoose = require('mongoose');
 const { emitter } = require('../../eventsCommon');
 const { Parser } = require('json2csv');
 const fs = require('fs');
-const { spawn, exec } = require('child_process');
+const { exec } = require('child_process');
 
 const Project = mongoose.model('Project');
-const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const File = mongoose.model('File');
 const Specialization = mongoose.model('Specialization');
 const Year = mongoose.model('Year');
-
-const mailer = require('nodemailer');
-const config = require('../../config');
-
 const partnerController = require('./partnerController');
 
 const storage = multer.diskStorage({

@@ -2,15 +2,12 @@
 
 const mongoose = require('mongoose');
 const Partner = mongoose.model('Partner');
-const Project = mongoose.model('Project');
 const crypto = require('crypto');
 const sha256 = require('js-sha256')
 const jwt = require('jsonwebtoken');
 
 const { emitter } = require('../../eventsCommon');
 const config = require('../../config');
-
-const mailController = require('./mailController');
 
 exports.listAllPartners = function (req, res) {
 	if (req.user.__t == "EPGE") {

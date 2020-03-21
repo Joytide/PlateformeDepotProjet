@@ -3,9 +3,6 @@ const mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Comment = mongoose.model('Comment');
 
-const partnerController = require('./partnerController');
-const bcryptConf = require('../../config.json').bcrypt;
-
 exports.findProjectComment = (req, res, next) => {
     const data = req.params;
 

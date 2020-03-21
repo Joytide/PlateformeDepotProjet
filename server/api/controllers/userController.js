@@ -2,7 +2,6 @@
 
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const email_validator = require('email-validator');
 
 const Person = mongoose.model('Person');
 const Student = mongoose.model('Student');
