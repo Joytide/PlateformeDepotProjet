@@ -120,10 +120,14 @@ class Carousel extends React.Component {
 			imgPath: './pictures/Visuel_PA4_18_78.jpg',
 			link: 'https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/'
 		}];
-		
+
 		this.state = {
 			actualStep: Math.round(Math.random() * (this.tutorialSteps.length - 1)),
 		};
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timer);
 	}
 
 
@@ -132,7 +136,7 @@ class Carousel extends React.Component {
 		const { actualStep } = this.state;
 		let lng = this.props.lng;
 
-		setTimeout(() => {
+		this.timer = setTimeout(() => {
 			this.setState({ actualStep: Math.round(Math.random() * (this.tutorialSteps.length - 1)) })
 		}, 1500);
 
