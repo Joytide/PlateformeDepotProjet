@@ -14,6 +14,7 @@ server/PDF/*.pdf
 
 server/config.json
 server/exports/*
+server/lock
 *.csv
 
 client/src/config.json

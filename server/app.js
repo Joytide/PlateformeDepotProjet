@@ -88,6 +88,9 @@ userRoutes(app);
 var keywordRoutes = require('./api/routes/keywordRoutes');
 keywordRoutes(app);
 
+var settingRoutes = require('./api/routes/settingRoutes');
+settingRoutes(app);
+
 /*var commentRoutes = require('./api/routes/commentRoutes');
 commentRoutes(app);*/
 
