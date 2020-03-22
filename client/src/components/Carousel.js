@@ -126,19 +126,22 @@ class Carousel extends React.Component {
 		};
 	}
 
-	componentWillUnmount() {
-		clearTimeout(this.timer);
+	componentWillMount() {
+		this.timer = setInterval(() => {
+			this.setState({ actualStep: Math.round(Math.random() * (this.tutorialSteps.length - 1)) })
+		}, 1500);
 	}
 
+	componentWillUnmount() {
+		clearInterval(this.timer);
+	}
 
 	render() {
 		const { classes } = this.props;
 		const { actualStep } = this.state;
 		let lng = this.props.lng;
 
-		this.timer = setTimeout(() => {
-			this.setState({ actualStep: Math.round(Math.random() * (this.tutorialSteps.length - 1)) })
-		}, 1500);
+
 
 		return (
 			<Grid container className={classes.root}>
