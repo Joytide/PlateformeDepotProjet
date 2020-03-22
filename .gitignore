@@ -17,5 +17,5 @@ server/exports/*
 server/lock
 *.csv
 
-client/src/config.json
 admin/src/config.json
+client/src/config.json
