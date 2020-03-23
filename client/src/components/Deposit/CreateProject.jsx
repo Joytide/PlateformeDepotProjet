@@ -36,6 +36,7 @@ class CreateProject extends React.Component {
             infos: "",
             skills: "",
             multipleTeams: false,
+            RandD: false,
             maxNumber: 1,
         }
 
@@ -47,7 +48,7 @@ class CreateProject extends React.Component {
     }
 
     componentWillMount() {
-        window.scroll(0,0);
+        window.scroll(0, 0);
         AuthService.fetch('/api/specialization')
             .then(res => res.json())
             .then(specializations => {
@@ -104,6 +105,11 @@ class CreateProject extends React.Component {
                 this.setState({ majors_concerned: temp });
                 break;
             case "multipleTeams":
+                this.setState({
+                    [e.target.name]: e.target.checked
+                });
+                break;
+            case "RandD":
                 this.setState({
                     [e.target.name]: e.target.checked
                 });
@@ -237,14 +243,14 @@ class CreateProject extends React.Component {
                         </Typography>
                         <Grid container direction="row" justify='center'>
                             <Grid item xs={4} md={3} lg={2}>
-                                {i18n.t("createPartner.no", {lng})}
+                                {i18n.t("createPartner.no", { lng })}
                                 <Switch
                                     checked={this.state.multipleTeams}
                                     onChange={this.handleChange}
                                     name="multipleTeams"
                                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 />
-                                {i18n.t("createPartner.yes", {lng})}                                
+                                {i18n.t("createPartner.yes", { lng })}
                             </Grid>
 
                             <Grid item xs={12} md={6} lg={4}>
@@ -253,7 +259,7 @@ class CreateProject extends React.Component {
                                         label={i18n.t('createProject.maxNumber', { lng })}
                                         value={this.state.maxNumber}
                                         validators={['required', 'matchRegexp:^[0-9]+$']}
-                                        
+
                                         errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
                                         name="maxNumber"
                                         onChange={this.handleChange}
@@ -262,6 +268,25 @@ class CreateProject extends React.Component {
 
                                     />
                                 }
+                            </Grid>
+                        </Grid>
+
+                    </Grid>
+                    <br />
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                            {i18n.t('createProject.RandD', { lng })}
+                        </Typography>
+                        <Grid container direction="row" justify='center'>
+                            <Grid item xs={4} md={3} lg={2}>
+                                {i18n.t("createPartner.no", { lng })}
+                                <Switch
+                                    checked={this.state.RandD}
+                                    onChange={this.handleChange}
+                                    name="RandD"
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                                {i18n.t("createPartner.yes", { lng })}
                             </Grid>
                         </Grid>
 

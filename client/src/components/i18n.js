@@ -102,7 +102,8 @@ i18next
 						skills: "Skills developped",
 						infos: "Further informations",
 						multipleTeams: "Do you accept that several teams work if the project ?",
-						maxNumber: "If so, how many teams do you accept ?"
+						maxNumber: "If so, how many teams do you accept ?",
+						RandD: "Is it a research and development project ?"
 					},
 					home: {
 						title: 'Industrial Innovation Projects',
@@ -259,7 +260,8 @@ i18next
 						skills: "Compétences développées",
 						infos: "Informations complémentaires",
 						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?",
-						maxNumber: "Dans ce cas combien d'équipes maximum acceptez-vous ?"
+						maxNumber: "Dans ce cas combien d'équipes maximum acceptez-vous ?",
+						RandD: "Est-ce un projet de recherche et développement ?"
 					},
 					errors: {
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
