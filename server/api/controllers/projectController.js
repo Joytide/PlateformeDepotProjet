@@ -197,6 +197,25 @@ exports.findById = (req, res) => {
 		});
 }
 
+exports.findByIdSelectFiles = projectId => new Promise((resolve, reject) => {
+	if (projectId)
+		Project
+			.findById(projectId, 'files')
+			.populate({
+				path: 'files',
+				select: 'originalName'
+			})
+			.exec((err, projectFiles) => {
+				if (err)
+					reject(err);
+				else
+					resolve(projectFiles);
+			});
+	else
+		reject(new Error('Missing project id parameter'))
+});
+
+
 exports.find_by_edit_key = (req, res) => {
 	Project.findOne({ edit_key: req.params.editKey }, (err, project) => {
 		if (err) {

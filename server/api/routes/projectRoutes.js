@@ -27,6 +27,14 @@ module.exports = function (app) {
 		.put(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.createProject)
 		.post(project.update_a_project);
 
+	app.route('/api/project/:projectId([a-fA-F0-9]{24})/files')
+		.get((req, res, next) => {
+			project
+				.findByIdSelectFiles(req.params.projectId)
+				.then(projectFiles => res.json(projectFiles))
+				.catch(err => next(err));
+		});
+
 	app.route('/api/project/:projectId([a-fA-F0-9]{24})')
 		.get(project.findById)
 		.post(project.update_a_project)

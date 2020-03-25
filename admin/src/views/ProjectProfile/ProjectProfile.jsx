@@ -34,6 +34,11 @@ import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
 import { api } from "../../config"
 
+import PartnerInfo from "./PartnerInfo";
+import ProjectInfo from "./ProjectInfo";
+import Keywords from "./Keywords";
+import Files from "./Files";
+
 const styles = {
     cardCategoryWhite: {
         color: "rgba(255,255,255,.62)",
@@ -67,37 +72,24 @@ class ProjectProfile extends React.Component {
             loadingProject: true,
             loadingYear: true,
             loadingSpecialization: true,
-            loadingComments: true,
             checkedYears: {},
             years: [],
             specializations: [],
             project: {},
-            comments: [],
             specializations_concerned: [],
             color: "primary",
-            openFileModal: false,
             openValidationModal: false,
-            toDelete: "",
-            newKeyword: "",
-            keywords: []
         }
 
         this.loadProjectData = this.loadProjectData.bind(this);
-        this.loadProjectComments = this.loadProjectComments.bind(this);
-        this.loadKeywords = this.loadKeywords.bind(this);
         this.loadStaticData = this.loadStaticData.bind(this);
         this.addSpecialization = this.addSpecialization.bind(this);
         this.checkboxMapping = this.checkboxMapping.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.addKeyword = this.addKeyword.bind(this);
-        this.removeKeyword = this.removeKeyword.bind(this);
     }
 
     componentWillMount() {
         this.loadProjectData();
         this.loadStaticData();
-        this.loadKeywords();
-        //this.loadProjectComments();
     }
 
     loadProjectData() {
@@ -111,17 +103,6 @@ class ProjectProfile extends React.Component {
                     specializations_concerned: data.specializations.map(spe => spe.specialization),
                     color: color
                 }, this.checkboxMapping);
-            });
-    }
-
-    loadProjectComments() {
-        fetch(api.host + ":" + api.port + "/api/comment/" + this.props.match.params.id)
-            .then(res => res.json())
-            .then(data => {
-                this.setState({
-                    comments: data,
-                    loadingComments: false,
-                });
             });
     }
 
@@ -151,24 +132,6 @@ class ProjectProfile extends React.Component {
                 })
             });
     }
-
-    loadKeywords() {
-        AuthService.fetch(api.host + ":" + api.port + "/api/keyword", {
-            method: "GET",
-        })
-            .then(res => res.json())
-            .then(data => {
-                this.setState({ keywords: data });
-            });
-    }
-
-    openFileModal = _id => () => {
-        this.setState({ openFileModal: true, toDelete: _id });
-    };
-
-    closeFileModal = () => {
-        this.setState({ openFileModal: false, toDelete: "" });
-    };
 
     openValidationModal = _id => () => {
         this.setState({ openValidationModal: true });
@@ -290,46 +253,6 @@ class ProjectProfile extends React.Component {
             });
     }
 
-    deleteFile = () => {
-        const data = {
-            fileID: this.state.toDelete
-        };
-
-        AuthService.fetch(api.host + ":" + api.port + "/api/project/file", {
-            method: "DELETE",
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.ok) {
-                    this.setState({ open: false, toDelete: "" }, () => {
-                        this.loadProjectData();
-                        this.closeFileModal();
-                    });
-                }
-            });
-    }
-
-    uploadFile = file => {
-        var formData = new FormData();
-        formData.append("partnerID", this.state.project.partner._id);
-        formData.append("projectID", this.state.project._id)
-        formData.append("file", new Blob([file], { type: file.type }), file.name || 'file');
-
-
-        fetch(api.host + ":" + api.port + '/api/project/file', {
-            method: "POST",
-            headers: {
-                "Authorization": AuthService.getToken()
-            },
-            body: formData
-        })
-            .then(res => res.json())
-            .then(data => {
-                this.loadProjectData();
-            });
-    }
-
     addSpecialization = id => () => {
         let data = {
             speId: id,
@@ -345,51 +268,6 @@ class ProjectProfile extends React.Component {
                 this.loadProjectData();
             });
     }
-
-    createKeyword = () => {
-        AuthService.fetch(api.host + ":" + api.port + "/api/keyword", {
-            method: "POST",
-            body: JSON.stringify({ name: this.state.newKeyword })
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.name !== "Error")
-                    this.setState({ newKeyword: "", keywords: [...this.state.keywords, data] })
-            });
-    }
-
-    addKeyword = id => () => {
-        AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
-            method: "POST",
-            body: JSON.stringify({ projectId: this.props.match.params.id, keywordId: id })
-        })
-            .then(res => res.json())
-            .then(data => {
-                this.setState({
-                    project: {
-                        ...this.state.project,
-                        keywords: data.keywords
-                    }
-                });
-            });
-    }
-
-    removeKeyword = id => () => {
-        AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
-            method: "DELETE",
-            body: JSON.stringify({ projectId: this.props.match.params.id, keywordId: id })
-        })
-            .then(res => res.json())
-            .then(data => {
-                this.setState({
-                    project: {
-                        ...this.state.project,
-                        keywords: data.keywords
-                    }
-                });
-            });
-    }
-
 
     specializationValidation = (status, speId) => () => {
         function sendValidation() {
@@ -458,10 +336,6 @@ class ProjectProfile extends React.Component {
 
     }
 
-    handleChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
-    };
-
     render() {
         const { classes } = this.props;
 
@@ -469,216 +343,26 @@ class ProjectProfile extends React.Component {
 
         if (!this.state.loadingProject) {
             partnerInfo = (
-                <Card>
-                    <CardHeader color={this.state.color}>
-                        <h4 className={classes.cardTitleWhite}>Information partenaire</h4>
-                        <p className={classes.cardCategoryWhite}>Informations disponibles sur le partenaire</p>
-                    </CardHeader>
-                    <CardBody>
-                        <GridContainer>
-                            <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2" gutterBottom>
-                                    Entreprise :
-                                </Typography>
-                                <Typography gutterBottom>
-                                    {this.state.project.partner.company}
-                                </Typography>
-                            </GridItem>
-                            <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2" gutterBottom>
-                                    Mail :
-                                </Typography>
-                                <Typography gutterBottom>
-                                    <a href={"mailto:" + this.state.project.partner.email}>{this.state.project.partner.email}</a>
-                                </Typography>
-                            </GridItem>
-                            <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2" gutterBottom>
-                                    Nom :
-                                </Typography>
-                                <Typography gutterBottom>
-                                    {this.state.project.partner.last_name}
-                                </Typography>
-                            </GridItem>
-                            <GridItem xs={12} sm={12} md={6}>
-                                <Typography variant="body2" gutterBottom>
-                                    Prénom :
-                        </Typography>
-                                <Typography gutterBottom>
-                                    {this.state.project.partner.first_name}
-                                </Typography>
-                            </GridItem>
-                        </GridContainer>
-                    </CardBody>
-                    <CardFooter>
-                        <GridContainer >
-                            <GridItem xs={12} sm={12} md={12}>
-                                <Link to={"/user/" + this.state.project.partner._id}>
-                                    <Button size="sm" color="info"><Visibility />Profil du partenaire</Button>
-                                </Link>
-                            </GridItem>
-                        </GridContainer>
-                    </CardFooter>
-                </Card>
+                <PartnerInfo color={this.state.color} partner={this.state.project.partner} />
             );
 
             projectInfo = (
-                <Card>
-                    <CardHeader color={this.state.color}>
-                        <h4 className={classes.cardTitleWhite}>Information projet</h4>
-                        <p className={classes.cardCategoryWhite}>Informations sur le projet proposé par le partenaire</p>
-                    </CardHeader>
-                    <CardBody>
-                        <Typography variant="display2" align="center">
-                            {this.state.project.title}
-                        </Typography>
-                        <br />
-                        <Typography>
-                            Description :
-                        </Typography>
-                        <Typography className={classes.displayLineBreak}>
-                            {this.state.project.description}
-                        </Typography>
-                        <br />
-                        <Divider />
-                        <br />
-                        <Typography >
-                            Compétences développées :
-                        </Typography>
-                        <Typography>
-                            {this.state.project.skills}
-                        </Typography>
-                        <br />
-                        <Typography >
-                            Informations supplémentaires :
-                        </Typography>
-                        <Typography>
-                            {this.state.project.infos}
-                        </Typography>
-                        <br />
-                        <Typography >
-                            Nombre maximum d'équipes sur le projet :
-                        </Typography>
-                        <Typography>
-                            {this.state.project.maxTeams}
-                        </Typography>
-                    </CardBody>
-                </Card>
+                <ProjectInfo color={this.state.color} project={this.state.project} />
             );
 
-            let addedKeywords = [], nonAddedKeywords = [];
-            this.state.keywords.forEach(keyword => {
-                if (this.state.project.keywords.indexOf(keyword._id) != -1) {
-                    addedKeywords.push(
-                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.removeKeyword(keyword._id)}><Remove />{keyword.displayName}</Button>
-                    );
-
-                }
-                else {
-                    nonAddedKeywords.push(
-                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.addKeyword(keyword._id)}><Add />{keyword.displayName}</Button>
-                    );
-                }
-            })
-
             keywords = (
-                <Card>
-                    <CardHeader color={this.state.color}>
-                        <h4 className={classes.cardTitleWhite}>Mots-clefs</h4>
-                    </CardHeader>
-                    <CardBody>
-                        <GridContainer>
-                            <GridItem xs={12}>
-                                <Typography>
-                                    Mots-clefs déjà associés au projet (cliquer sur le mot clef pour le retirer) :
-                                </Typography>
-                                {addedKeywords}
-                                <Divider />
-                                <Typography>
-                                    Mots-clefs non-associés au projet (cliquer sur le mot clef pour l'ajouter) :
-                                </Typography>
-                                {nonAddedKeywords}
-                            </GridItem>
-                        </GridContainer>
-                    </CardBody>
-                    {(this.props.user.user.EPGE || this.props.user.user.admin) && this.state.project.status === "pending" &&
-                        <CardFooter>
-                            <GridContainer >
-                                <GridItem xs={12}>
-                                    <FormControl>
-                                        <CustomInput
-                                            labelText="Nouveau mot clef"
-                                            inputProps={{
-                                                value: this.state.newKeyword,
-                                                onChange: this.handleChange,
-                                                name: "newKeyword"
-                                            }}
-                                            formControlProps={{
-                                                fullWidth: false
-                                            }}
-                                        />
-                                    </FormControl>
-                                    <Button component="span" size="sm" color="info" onClick={this.createKeyword}><Add />Ajouter un nouveau mot clef</Button>
-                                </GridItem>
-                            </GridContainer>
-                        </CardFooter>
-                    }
-                </Card>
+                <Keywords color={this.state.color} projectKeywords={this.state.project.keywords} projectId={this.props.match.params.id} />
             )
 
             files = (
-                <Card>
-                    <CardHeader color={this.state.color}>
-                        <h4 className={classes.cardTitleWhite}>Liste des fichiers</h4>
-                        <p className={classes.cardCategoryWhite}>Fichiers proposés par le partenaire</p>
-                    </CardHeader>
-                    <CardBody>
-                        <GridContainer>
-                            {
-                                this.state.project.files.map(file => {
-                                    if (file != null)
-                                        return (
-                                            <GridItem xs={12} sm={12} md={6} key={file._id}>
-                                                <Card style={{ width: "20rem" }}>
-                                                    <CardBody>
-                                                        <h4>{file.originalName}</h4>
-                                                        <a download href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
-                                                            <Button size="sm" color="info">Télécharger</Button>
-                                                        </a>
-                                                        {(this.props.user.user.EPGE || this.props.user.user.admin) &&
-                                                            <Button size="sm" color="danger" onClick={this.openFileModal(file._id)}>Supprimer</Button>
-                                                        }
-                                                    </CardBody>
-                                                </Card>
-                                            </GridItem>
-                                        );
-                                    else return <div></div>;
-                                })
-                            }
-
-                        </GridContainer>
-                    </CardBody>
-                    {(this.props.user.user.EPGE || this.props.user.user.admin) && this.state.project.status === "pending" &&
-                        <CardFooter>
-                            <GridContainer >
-                                <GridItem xs={12} sm={12} md={12}>
-                                    <Input
-                                        className={classes.input}
-                                        id="raised-button-file"
-                                        type="file"
-                                        onChange={e => this.uploadFile(e.target.files[0])}
-                                        style={{ display: "none" }}
-                                    />
-                                    <label htmlFor="raised-button-file">
-                                        <Button component="span" size="sm" color="info"><Add />Ajouter un fichier</Button>
-                                    </label>
-                                </GridItem>
-                            </GridContainer>
-                        </CardFooter>
-                    }
-                </Card>
-            )
-
+                <Files
+                    color={this.state.color}
+                    projectFiles={this.state.project.files}
+                    projectStatus={this.state.project.status}
+                    projectId={this.props.match.params.id}
+                    partnerId={this.state.project.partner._id}
+                />
+            );
         }
         if (!this.state.loadingYear) {
             years = (
@@ -813,33 +497,6 @@ class ProjectProfile extends React.Component {
             )
         }
 
-        /*if (!this.state.loadingComments) {
-            let tableData = this.state.comments.map(comment => {
-                let date = new Date(comment.date)
-                return [
-                    date.toLocaleDateString() + " à " + date.toLocaleTimeString(),
-                    <Link to={"/user/" + comment.author._id}>{comment.author.last_name.toUpperCase() + " " + comment.author.first_name}</Link>,
-                    comment.content
-                ];
-            });
-
-            comments = (
-                <Card>
-                    <CardHeader color={this.state.color}>
-                        <h4 className={classes.cardTitleWhite}>Commentaires sur le projet</h4>
-                        <p className={classes.cardCategoryWhite}>Ces commentaires sont strictement privés et sont uniquement adressés aux membres de l'administration</p>
-                    </CardHeader>
-                    <CardBody>
-                        <Table
-                            tableHeaderColor="primary"
-                            tableHead={['Date', 'Auteur', 'Contenu du commentaire']}
-                            tableData={tableData}
-                        />
-                    </CardBody>
-                </Card>
-            );
-        }*/
-
         other = <Card>
             <CardHeader color={this.state.color}>
                 <h4 className={classes.cardTitleWhite}>Autre options</h4>
@@ -877,7 +534,7 @@ class ProjectProfile extends React.Component {
                     closeNotification={() => this.setState({ error: false })}
                     close
                 />
-
+                {/*
                 <Modal
                     open={this.state.openFileModal}
                     closeModal={this.closeFileModal}
@@ -890,7 +547,7 @@ class ProjectProfile extends React.Component {
                     buttonContent="Supprimer"
                     validation={this.deleteFile}
                 />
-
+                */}
                 <Modal
                     open={this.state.openValidationModal}
                     closeModal={this.closeValidationModal}
