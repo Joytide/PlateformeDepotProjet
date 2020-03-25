@@ -99,7 +99,7 @@ class PartnerInfo extends React.Component {
 }
 
 PartnerInfo.propTypes = {
-    cardColor: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
     partner: PropTypes.object.isRequired,
 }
 

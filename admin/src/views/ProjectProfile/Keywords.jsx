@@ -212,7 +212,7 @@ class Keywords extends React.Component {
 }
 
 Keywords.propTypes = {
-    cardColor: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
     projectKeywords: PropTypes.array.isRequired,
     projectId: PropTypes.string.isRequired,
 }

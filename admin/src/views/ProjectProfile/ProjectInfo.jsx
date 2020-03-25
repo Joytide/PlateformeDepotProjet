@@ -83,7 +83,7 @@ class ProjectInfo extends React.Component {
 }
 
 ProjectInfo.propTypes = {
-    cardColor: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
     project: PropTypes.object.isRequired,
 }
 

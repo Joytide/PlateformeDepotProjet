@@ -38,6 +38,7 @@ import PartnerInfo from "./PartnerInfo";
 import ProjectInfo from "./ProjectInfo";
 import Keywords from "./Keywords";
 import Files from "./Files";
+import Years from "./Years";
 
 const styles = {
     cardCategoryWhite: {
@@ -70,10 +71,7 @@ class ProjectProfile extends React.Component {
             success: false,
             message: "",
             loadingProject: true,
-            loadingYear: true,
             loadingSpecialization: true,
-            checkedYears: {},
-            years: [],
             specializations: [],
             project: {},
             specializations_concerned: [],
@@ -84,7 +82,6 @@ class ProjectProfile extends React.Component {
         this.loadProjectData = this.loadProjectData.bind(this);
         this.loadStaticData = this.loadStaticData.bind(this);
         this.addSpecialization = this.addSpecialization.bind(this);
-        this.checkboxMapping = this.checkboxMapping.bind(this);
     }
 
     componentWillMount() {
@@ -102,27 +99,11 @@ class ProjectProfile extends React.Component {
                     loadingProject: false,
                     specializations_concerned: data.specializations.map(spe => spe.specialization),
                     color: color
-                }, this.checkboxMapping);
+                });
             });
     }
 
     loadStaticData() {
-        fetch(api.host + ":" + api.port + "/api/year")
-            .then(res => res.json())
-            .then(years => {
-                let checkedYears = {};
-
-                years.forEach(year => {
-                    checkedYears[year._id] = false;
-                });
-
-                this.setState({
-                    years: years,
-                    checkedYears: checkedYears,
-                    loadingYear: false,
-                }, this.checkboxMapping);
-            });
-
         fetch(api.host + ":" + api.port + "/api/specialization")
             .then(res => res.json())
             .then(data => {
@@ -140,84 +121,6 @@ class ProjectProfile extends React.Component {
     closeValidationModal = () => {
         this.setState({ openValidationModal: false });
     };
-
-    // Check or uncheck checkbox when both project and years are loaded
-    checkboxMapping() {
-        if (!this.state.loadingProject && !this.state.loadingYear) {
-            let checkedYears = {};
-
-            let yearsConcerned = this.state.project.study_year.map(year => year._id);
-
-            this.state.years.forEach(year => {
-                if (yearsConcerned.indexOf(year._id) !== -1) checkedYears[year._id] = true;
-                else checkedYears[year._id] = false;
-            });
-
-            this.setState({
-                checkedYears: checkedYears
-            });
-        }
-    }
-
-    handleCheckboxChange = event => {
-        const checked = event.target.checked;
-        const id = event.target.id;
-
-        let checkedCount = 0;
-        for (const id in this.state.checkedYears)
-            if (this.state.checkedYears[id])
-                checkedCount++;
-
-        if (checkedCount >= 2 || checked) {
-            let yearList = [];
-
-            for (let yearId in this.state.checkedYears)
-                if ((this.state.checkedYears[yearId] && yearId !== id) || (!this.state.checkedYears[yearId] && yearId === id))
-                    yearList.push(yearId);
-
-            const data = {
-                _id: this.state.project._id,
-                study_year: yearList
-            }
-
-            fetch(api.host + ":" + api.port + "/api/projects", {
-                method: "POST",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            })
-                .then(res => {
-                    if (!res.ok) throw res;
-                    else return res.json()
-                })
-                .then(data => {
-                    this.setState({
-                        project: data
-                    });
-                    this.checkboxMapping();
-                })
-                .catch(err => {
-                    this.setState({
-                        error: true,
-                        message: "Une erreur est survenue lors de la sauvegarde des données."
-                    });
-                    console.error(err);
-                });
-        } else {
-            this.setState({
-                error: true,
-                message: "Le projet doit à minima concerner à une année."
-            }, () => {
-                setTimeout(() => {
-                    this.setState({
-                        error: false
-                    });
-                }, 2500);
-            });
-        }
-    }
 
     handleProjectStatus = action => () => {
         const data = {
@@ -352,7 +255,7 @@ class ProjectProfile extends React.Component {
 
             keywords = (
                 <Keywords color={this.state.color} projectKeywords={this.state.project.keywords} projectId={this.props.match.params.id} />
-            )
+            );
 
             files = (
                 <Files
@@ -363,43 +266,17 @@ class ProjectProfile extends React.Component {
                     partnerId={this.state.project.partner._id}
                 />
             );
-        }
-        if (!this.state.loadingYear) {
+
             years = (
-                <Card>
-                    <CardHeader color={this.state.color}>
-                        <h4 className={classes.cardTitleWhite}>Années</h4>
-                        <p className={classes.cardCategoryWhite}>Années concernées par le projet</p>
-                    </CardHeader>
-                    <CardBody>
-                        <GridContainer>
-                            <GridItem xs={12} md={12}>
-                                <GridContainer alignItems="center" justify="center">
-                                    {this.state.years.map(year =>
-                                        <GridItem xs={12} md={3} key={year._id}>
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        onChange={this.handleCheckboxChange}
-                                                        checked={this.state.checkedYears[year._id]}
-                                                        id={year._id}
-                                                        disabled={this.state.project.status !== "pending"}
-                                                        color="primary"
-                                                    />
-                                                }
-                                                label={year.name.fr}
-                                            />
-                                        </GridItem>
-                                    )}
-                                </GridContainer>
-                            </GridItem>
-                        </GridContainer>
-                    </CardBody>
-                    <CardFooter>
-                    </CardFooter>
-                </Card >
+                <Years
+                    color={this.state.color}
+                    projectStatus={this.state.project.status}
+                    projectId={this.props.match.params.id}
+                    studyYears={this.state.project.study_year}
+                />
             );
         }
+
         if (!this.state.loadingSpecialization && !this.state.loadingProject) {
             let speData = this.state.specializations.map(spe => {
                 let arr = [spe.name.fr, "", "", ""];
@@ -534,20 +411,6 @@ class ProjectProfile extends React.Component {
                     closeNotification={() => this.setState({ error: false })}
                     close
                 />
-                {/*
-                <Modal
-                    open={this.state.openFileModal}
-                    closeModal={this.closeFileModal}
-                    title="Supprimer ce fichier ?"
-                    content={(<div>Etes vous sûr de vouloir supprimer ce fichier ?
-                        <br />
-                        Toute suppression est définitive et aucun retour en arrière n'est possible.
-                        </div>)}
-                    buttonColor="danger"
-                    buttonContent="Supprimer"
-                    validation={this.deleteFile}
-                />
-                */}
                 <Modal
                     open={this.state.openValidationModal}
                     closeModal={this.closeValidationModal}

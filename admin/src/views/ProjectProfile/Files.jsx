@@ -1,22 +1,11 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 
 // @material-ui/core components
-import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Input } from '@material-ui/core'
-import Divider from '@material-ui/core/Divider';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Chip from '@material-ui/core/Chip';
-import Tooltip from '@material-ui/core/Tooltip';
 
-import Visibility from "@material-ui/icons/Visibility"
 import Add from "@material-ui/icons/Add"
-import Remove from "@material-ui/icons/Remove"
-import Cached from "@material-ui/icons/Cached"
-import FormControl from '@material-ui/core/FormControl';
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";

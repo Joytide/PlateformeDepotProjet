@@ -25,7 +25,7 @@ module.exports = function (app) {
 	app.route('/api/projects')
 		.get(auth.passport.authenticate('jwt'), project.listProjects)
 		.put(auth.passport.authenticate('jwt'), auth.areAuthorized("Partner"), project.createProject)
-		.post(project.update_a_project);
+		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Administration"]), project.update_a_project);
 
 	app.route('/api/project/:projectId([a-fA-F0-9]{24})/files')
 		.get((req, res, next) => {
@@ -37,7 +37,7 @@ module.exports = function (app) {
 
 	app.route('/api/project/:projectId([a-fA-F0-9]{24})')
 		.get(project.findById)
-		.post(project.update_a_project)
+		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Administration"]), project.update_a_project)
 		.delete(project.delete_a_project);
 
 	app.route('/api/project/like')
