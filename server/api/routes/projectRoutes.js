@@ -35,6 +35,14 @@ module.exports = function (app) {
 				.catch(err => next(err));
 		});
 
+	app.route('/api/project/:projectId([a-fA-F0-9]{24})/specializations')
+		.get((req, res, next) => {
+			project
+				.findByIdSelectSpecializations(req.params.projectId)
+				.then(projectSpecializations => res.json(projectSpecializations))
+				.catch(err => next(err));
+		});
+
 	app.route('/api/project/:projectId([a-fA-F0-9]{24})')
 		.get(project.findById)
 		.post(auth.passport.authenticate('jwt'), auth.areAuthorized(["Administration"]), project.update_a_project)
