@@ -1,32 +1,21 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 
 // @material-ui/core components
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
-import { Input } from '@material-ui/core'
-import Divider from '@material-ui/core/Divider';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import Visibility from "@material-ui/icons/Visibility"
 import Add from "@material-ui/icons/Add"
-import Remove from "@material-ui/icons/Remove"
-import Cached from "@material-ui/icons/Cached"
-import FormControl from '@material-ui/core/FormControl';
 
 // core components
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Table from "components/Table/Table.jsx";
 import Modal from "components/Modal/Modal.jsx";
