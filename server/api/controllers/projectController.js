@@ -262,6 +262,9 @@ exports.update_a_project = (req, res) => {
 				else {
 					let update = {};
 					if (data.title) update.title = data.title;
+					if (data.infos) update.infos = data.infos;
+					if (data.maxTeams) update.maxTeams = data.maxTeams;
+					if (data.skills) update.skills = data.skills;
 					if (data.description) update.description = data.description;
 					if (data.majors_concerned) update.specializations = data.majors_concerned.map(spe => ({ specialization: spe }));
 					if (data.study_year) update.study_year = data.study_year;
