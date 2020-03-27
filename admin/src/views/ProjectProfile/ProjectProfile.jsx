@@ -81,39 +81,39 @@ class ProjectProfile extends React.Component {
             });
     }
 
-   /* handleProjectStatus = action => () => {
-        const data = {
-            _id: this.state.project._id,
-            status: action
-        }
-
-        fetch(api.host + ":" + api.port + "/api/projects", {
-            method: "POST",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data)
-        })
-            .then(res => {
-                if (!res.ok) throw res;
-                else return res.json()
-            })
-            .then(data => {
-                let color = data.status === "pending" ? "warning" : (data.status === "validated" ? "success" : "danger");
-                this.setState({
-                    project: data,
-                    color: color
-                });
-            })
-            .catch(err => {
-                this.setState({
-                    error: true,
-                    message: "Une erreur est survenue lors de la sauvegarde des données."
-                });
-                console.error(err);
-            });
-    }*/
+    /* handleProjectStatus = action => () => {
+         const data = {
+             _id: this.state.project._id,
+             status: action
+         }
+ 
+         fetch(api.host + ":" + api.port + "/api/projects", {
+             method: "POST",
+             mode: "cors",
+             headers: {
+                 "Content-Type": "application/json",
+             },
+             body: JSON.stringify(data)
+         })
+             .then(res => {
+                 if (!res.ok) throw res;
+                 else return res.json()
+             })
+             .then(data => {
+                 let color = data.status === "pending" ? "warning" : (data.status === "validated" ? "success" : "danger");
+                 this.setState({
+                     project: data,
+                     color: color
+                 });
+             })
+             .catch(err => {
+                 this.setState({
+                     error: true,
+                     message: "Une erreur est survenue lors de la sauvegarde des données."
+                 });
+                 console.error(err);
+             });
+     }*/
 
     regeneratePDF = () => {
         let data = {
@@ -153,15 +153,25 @@ class ProjectProfile extends React.Component {
 
         if (!this.state.loadingProject) {
             partnerInfo = (
-                <PartnerInfo color={this.state.color} partner={this.state.project.partner} />
+                <PartnerInfo
+                    color={this.state.color}
+                    partner={this.state.project.partner}
+                />
             );
 
             projectInfo = (
-                <ProjectInfo color={this.state.color} project={this.state.project} />
+                <ProjectInfo
+                    color={this.state.color}
+                    project={this.state.project}
+                />
             );
 
             keywords = (
-                <Keywords color={this.state.color} projectKeywords={this.state.project.keywords} projectId={this.props.match.params.id} />
+                <Keywords
+                    color={this.state.color}
+                    projectKeywords={this.state.project.keywords}
+                    projectId={this.props.match.params.id}
+                />
             );
 
             files = (
