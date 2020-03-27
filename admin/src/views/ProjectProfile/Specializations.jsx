@@ -55,6 +55,7 @@ class Specializations extends React.Component {
             specializations: [],
             projectSpecializations: this.props.projectSpecializations,
             callbackValidation: () => {},
+            openValidationModal: false
         }
     }
 
@@ -278,8 +279,8 @@ class Specializations extends React.Component {
 
 Specializations.propTypes = {
     color: PropTypes.string.isRequired,
-    projectSpecializations: PropTypes.object.isRequired,
-    projectStatus: PropTypes.object.isRequired,
+    projectSpecializations: PropTypes.array.isRequired,
+    projectStatus: PropTypes.string.isRequired,
     projectId: PropTypes.string.isRequired,
 }
 
