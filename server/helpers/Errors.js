@@ -12,7 +12,7 @@ class ErrorHandler extends Error {
 
 class MissingParameterError extends ErrorHandler {
     constructor(parameters) {
-        console.log(typeof(parameters))
+        console.log(typeof (parameters))
         if (parameters && parameters instanceof Array)
             super(400, "MissingParameter", "One or many parameters are missing from the request. Expected parameters : " + parameters.join(' ,'));
         else
@@ -35,6 +35,12 @@ class ExistingNameError extends ErrorHandler {
     }
 }
 
+class PartnerNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "PartnerNotFound", infos || "The id you specified for this partner has not been found");
+    }
+}
+
 class MongoError extends ErrorHandler {
     constructor(error) {
         if (env == 'dev')
@@ -44,7 +50,7 @@ class MongoError extends ErrorHandler {
     }
 }
 
-function handleError(error, req, res, next) {
+const handleError = (error, req, res, next) => {
     res.status(error.code).json({ code: error.message, message: error.infos });
 }
 
@@ -54,7 +60,7 @@ function handleError(error, req, res, next) {
  * @param {string} varName Variable name to return if there is an error
  * @param {string} typeExpected Type expexted for the given variable
  */
-isValidType = (variable, varName, typeExpected) =>
+const isValidType = (variable, varName, typeExpected) =>
     new Promise((resolve, reject) => {
         if (variable)
             if (typeof (variable) == typeExpected)
@@ -71,6 +77,20 @@ isValidType = (variable, varName, typeExpected) =>
 
     });
 
+/**
+* Check if the variables types are correct
+* @param {[var]} variables Variables to test
+* @param {[string]} varsName Variables' name to return if there is an error
+* @param {[string]} typesExpected Types expexted for the given variables
+*/
+const areValidTypes = (variables, varsName, typesExpected) => {
+    let promises = [];
+    for (let i = 0; i < variables.length; i++)
+        promises.push(isValidType(variables[i], varsName[i], typesExpected[i]));
+
+    return Promise.all(promises);
+}
+
 
 
 
@@ -79,6 +99,8 @@ module.exports = {
     MissingParameterError,
     InvalidParameterError,
     MongoError,
+    PartnerNotFoundError,
     handleError,
-    isValidType
+    isValidType,
+    areValidTypes
 }

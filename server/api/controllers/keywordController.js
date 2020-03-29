@@ -1,4 +1,4 @@
-const { ExistingNameError, MongoError, isValidType } = require('../../helpers/Errors');
+const { ExistingNameError, MongoError, isValidType, areValidTypes } = require('../../helpers/Errors');
 const mongoose = require('mongoose');
 const Keyword = mongoose.model('Keyword');
 
@@ -45,8 +45,7 @@ exports.getAll = () =>
  */
 exports.update = ({ id, name }) =>
     new Promise((resolve, reject) => {
-        isValidType(id, "id", "ObjectId")
-            .then(() => isValidType(name, "name", "string"))
+        areValidTypes([id, name], ["id", "name"], ["ObjectId", "string"])
             // Ensure that the new name isn't already used
             .then(() => countKeywords(name))
             .then(count => {

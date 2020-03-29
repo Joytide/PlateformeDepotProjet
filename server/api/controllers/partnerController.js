@@ -1,11 +1,10 @@
-'use strict';
-
 const mongoose = require('mongoose');
-const Partner = mongoose.model('Partner');
 const crypto = require('crypto');
 const sha256 = require('js-sha256')
 const jwt = require('jsonwebtoken');
+const { isValidType, PartnerNotFound } = require('../../helpers/Errors');
 
+const Partner = mongoose.model('Partner');
 const { emitter } = require('../../eventsCommon');
 const config = require('../../config');
 
@@ -169,34 +168,37 @@ exports.deletePartner = (req, res) => {
 	});
 }
 
-exports.resetPassword = (req, res, next) => {
-	const data = req.body;
-	if (data.email) {
-		Partner.findOne({ email: data.email }, (err, partner) => {
-			if (partner) {
-				generatePassword(16)
-					.then(pass => {
-						partner.key = pass.hash;
-
-						partner.save(err => {
-							if (err) next(err);
-							else {
-								res.json({ done: 1 });
-
-								emitter.emit("resetLink", { key: pass.key, partner: partner });
-							}
-						});
-					})
-					.catch(next);
-			}
-			else {
-				next(new Error("PartnerNotFound"));
-			}
-		});
-	} else {
-		next(new Error('MissingParameter'));
-	}
-}
+/**
+ * Reset partner password
+ * @param {string} email Partner's email address
+ */
+exports.resetPassword = ({ email }) =>
+	new Promise((resolve, reject) => {
+		let partner;
+		isValidType(email, "email", "string")
+			.then(() =>
+				Partner
+					.findOne({ email })
+					.exec()
+			)
+			.then(result => {
+				if (result) {
+					partner = result;
+					return generatePassword(16);
+				}
+				else
+					throw new PartnerNotFound()
+			})
+			.then(pass => {
+				partner.key = pass.hash;
+				return partner.save();
+			})
+			.then(dataSaved => {
+				emitter.emit("resetLink", { key: pass.key, partner: dataSaved });
+				resolve(dataSaved);
+			})
+			.catch(reject);
+	});
 
 function generatePassword(size) {
 	return new Promise((resolve, reject) => {

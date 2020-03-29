@@ -6,7 +6,12 @@ const auth = require('../controllers/authController');
 
 module.exports = function (app) {
 	app.route('/api/partner/reset')
-		.post(partner.resetPassword)
+		.post((req, res, next) => {
+			partner
+				.resetPassword(req.body)
+				.then(data => res.json(data))
+				.catch(next);
+		});
 
 	app.route('/api/partner/:id([a-fA-F0-9]{24})')
 		.get(partner.findById)
