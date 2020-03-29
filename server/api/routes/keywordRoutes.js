@@ -6,7 +6,7 @@ module.exports = app => {
     app.route('/api/keyword')
         .get(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("Administration"),
+            auth.areAuthorized(["Administration", "EPGE"]),
             (req, res, next) => {
                 keyword
                     .getAll()
@@ -16,28 +16,32 @@ module.exports = app => {
         )
         .post(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("Administration"),
+            auth.areAuthorized(["Administration", "EPGE"]),
             (req, res, next) => {
-                if (req.body.name)
-                    keyword
-                        .create(req.body.name)
-                        .then(result => res.json(result))
-                        .catch(next);
-                else
-                    next(new Error('InvalidParameters'))
+                keyword
+                    .create(req.body)
+                    .then(result => res.json(result))
+                    .catch(next);
             }
         )
         .put(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("Administration"),
+            auth.areAuthorized(["Administration", "EPGE"]),
             (req, res, next) => {
-                if (req.body.id && req.body.newName)
-                    keyword
-                        .update(req.body.id, req.body, newName)
-                        .then(result => res.json(result))
-                        .catch(next);
-                else
-                    next(new Error('InvalidParameters'));
+                keyword
+                    .update(req.body)
+                    .then(result => res.json(result))
+                    .catch(next);
+            }
+        )
+        .delete(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized(["Administration", "EPGE"]),
+            (req, res, next) => {
+                keyword
+                    .delete(req.body)
+                    .then(result => res.json(result))
+                    .catch(next);
             }
         );
 };

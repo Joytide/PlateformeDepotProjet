@@ -1,82 +1,92 @@
+const { ExistingNameError, MongoError, isValidType } = require('../../helpers/Errors');
 const mongoose = require('mongoose');
 const Keyword = mongoose.model('Keyword');
 
-exports.create = displayName =>
+/**
+ * Creates a new keyword
+ * @param {string} name Keyword's display name
+ */
+exports.create = ({ name }) =>
     new Promise((resolve, reject) => {
-        if (displayName != "" && typeof (displayName) == "string")
-            countKeywords(displayName)
-                .then(count => {
-                    if (count > 0)
-                        reject(new Error("NameUsed"));
-                    else {
-                        console.log("displayName: ", displayName)
-                        let keyword = new Keyword();
-                        keyword.displayName = displayName;
-                        keyword.lcName = displayName.toLowerCase();
+        isValidType(name, "name", "string")
+            .then(() => countKeywords(name))
+            .then(count => {
+                if (count > 0)
+                    throw new ExistingNameError();
+                else {
+                    let keyword = new Keyword();
+                    keyword.displayName = name;
+                    keyword.lcName = name.toLowerCase();
 
-                        keyword.save((err, sKeyword) => {
-                            if (err) reject(err);
-                            else resolve(sKeyword);
-                        });
-                    }
-                })
-                .catch(reject);
-        else
-            reject(new Error("InvalidParameters"))
+                    return keyword.save();
+                }
+            })
+            .then(resolve)
+            .catch(reject);
     });
 
+/**
+ * Returns all existing keywords
+ */
 exports.getAll = () =>
     new Promise((resolve, reject) => {
         Keyword.find({}, (err, res) => {
-            if (err) reject(err);
-            else resolve(res);
+            if (err)
+                reject(new MongoError(err));
+            else
+                resolve(res);
         });
     });
 
-exports.update = (objectID, newName) =>
+/**
+ * Update a keyword name
+ * @param {ObjectId} objectID Keyword's object id
+ * @param {string} name Keyword's new name
+ */
+exports.update = ({ id, name }) =>
     new Promise((resolve, reject) => {
-        if (newName != "" && typeof (newName) == "string")
+        isValidType(id, "id", "ObjectId")
+            .then(() => isValidType(name, "name", "string"))
             // Ensure that the new name isn't already used
-            countKeywords(newName)
-                .then(count => {
-                    if (count > 0)
-                        reject(new Error({ ok: 0, error: "Name already used", code: "NameUsed" }));
-                    else {
-                        Keyword.updateOne(
+            .then(() => countKeywords(name))
+            .then(count => {
+                if (count > 0)
+                    throw new ExistingNameError();
+                else
+                    return Keyword
+                        .updateOne(
+                            { _id: id },
                             {
-                                _id: objectID
-                            },
-                            {
-                                displayName: newName,
-                                lcName: newName.toLowerCase()
-                            },
-                            (err, ops) => {
-                                if (err)
-                                    reject(err);
-                                else
-                                    resolve(ops);
+                                displayName: name,
+                                lcName: name.toLowerCase()
                             }
-                        );
-                    }
-                })
-                .catch(reject);
-        else
-            reject(new Error({ ok: 0, error: "Invalid type or empty string", code: "InvalidInput" }));
+                        ).exec();
+            })
+            .then(resolve)
+            .catch(reject);
     });
 
-exports.delete = id =>
+/**
+ * Delete a keyword
+ * @param {ObjectId} id Keyword's id to delete
+ */
+exports.delete = ({ id }) =>
     new Promise((resolve, reject) => {
-        Keyword.deleteOne({ _id: id }, err => {
-            if (err) reject(err);
-            else resolve();
-        });
+        isValidType(id, "id", "ObjectId")
+            .then(() => Keyword.deleteOne({ _id: id }))
+            .then(resolve)
+            .catch(reject);
     });
 
-let countKeywords = name =>
+/**
+ * Count how many keywords are already using a given name
+ * @param {string} name Keyword name
+ */
+const countKeywords = name =>
     new Promise((resolve, reject) => {
         Keyword.countDocuments({ lcName: name.toLowerCase() }, (err, count) => {
             if (err)
-                reject(err);
+                reject(new MongoError(err));
             else
                 resolve(count);
         });
