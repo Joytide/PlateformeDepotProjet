@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --timeout 10000 --recursive",
     "server": "nodemon app.js",
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "client": "cd ../client && npm start",
     "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
   },
