@@ -291,7 +291,7 @@ exports.update_a_project = (req, res) => {
 }
 
 exports.delete_a_project = (req, res) => {
-	Project.findByIdAndRemove(req.params.projectId, function (err, note) {
+	/*Project.findByIdAndRemove(req.params.projectId, function (err, note) {
 		if (err) {
 			if (err.kind === 'ObjectId') {
 				return res.status(404).send({ message: "Project not found with id " + req.params.noteId });
@@ -304,7 +304,7 @@ exports.delete_a_project = (req, res) => {
 		}
 
 		res.send({ message: "Project deleted successfully!" });
-	});
+	});*/
 }
 
 exports.like = (req, res) => {
