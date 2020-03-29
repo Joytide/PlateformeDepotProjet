@@ -197,6 +197,40 @@ exports.findById = (req, res) => {
 		});
 }
 
+exports.findByIdSelectFiles = projectId => new Promise((resolve, reject) => {
+	if (projectId)
+		Project
+			.findById(projectId, 'files')
+			.populate({
+				path: 'files',
+				select: 'originalName'
+			})
+			.exec((err, projectFiles) => {
+				if (err)
+					reject(err);
+				else
+					resolve(projectFiles);
+			});
+	else
+		reject(new Error('Missing project id parameter'))
+});
+
+exports.findByIdSelectSpecializations = projectId => new Promise((resolve, reject) => {
+	if (projectId)
+		Project
+			.findById(projectId, 'specializations')
+			.populate('specializations.specialization')
+			.exec((err, projectSpecializations) => {
+				if (err)
+					reject(err);
+				else
+					resolve(projectSpecializations);
+			});
+	else
+		reject(new Error('Missing project id parameter'))
+});
+
+
 exports.find_by_edit_key = (req, res) => {
 	Project.findOne({ edit_key: req.params.editKey }, (err, project) => {
 		if (err) {
@@ -228,6 +262,9 @@ exports.update_a_project = (req, res) => {
 				else {
 					let update = {};
 					if (data.title) update.title = data.title;
+					if (data.infos) update.infos = data.infos;
+					if (data.maxTeams) update.maxTeams = data.maxTeams;
+					if (data.skills) update.skills = data.skills;
 					if (data.description) update.description = data.description;
 					if (data.majors_concerned) update.specializations = data.majors_concerned.map(spe => ({ specialization: spe }));
 					if (data.study_year) update.study_year = data.study_year;
