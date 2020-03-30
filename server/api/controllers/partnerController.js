@@ -31,8 +31,19 @@ exports.addProject = (partnerId, projectId) => {
 	});
 }
 
-
-exports.createPartner = ({ ...data }) =>
+/**
+ * Create a new partner
+ * @param {Object} partner Partner's informations
+ * @param {string} partner.first_name Partner's first name
+ * @param {string} partner.last_name Partner's last name
+ * @param {string} partner.email Partner's email
+ * @param {string} partner.company Partner's company name
+ * @param {string} partner.kind Partner's kind (enterprise, association, school, other...)
+ * @param {boolean} partner.alreadyPartner If the partner has already deposited projects another year
+ * @param {string} [partner.phone] Optional - Partner's phone number
+ * @param {string} [partner.address] Optional - Partner's address
+ */
+exports.createPartner = ({...data}) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
 			[data.first_name, data.last_name, data.email, data.company, data.kind, data.alreadyPartner],
@@ -86,7 +97,8 @@ exports.createPartner = ({ ...data }) =>
 
 /**
  * Find a partner from email
- * @param {string} email Partner's email
+ * @param {Object} partner
+ * @param {string} partner.email Partner's email
  */
 exports.findByMail = ({ email }) =>
 	new Promise((resolve, reject) => {
@@ -108,7 +120,8 @@ exports.findByMail = ({ email }) =>
 
 /**
  * Find a partner given an id
- * @param {ObjectId} id Partner's id
+ * @param {Object} partner
+ * @param {ObjectId} partner.id Partner's id
  */
 exports.findById = ({ id }) =>
 	new Promise((resolve, reject) => {
@@ -129,7 +142,8 @@ exports.findById = ({ id }) =>
 
 /**
  * Find a partner given his key
- * @param {string} key Partner's key
+ * @param {Object} partner
+ * @param {string} partner.key Partner's key
  */
 exports.findByKey = ({ key }) =>
 	new Promise((resolve, reject) => {
@@ -148,14 +162,13 @@ exports.findByKey = ({ key }) =>
 			.catch(reject);
 	});
 
-
-
 /**
  * Update partner's informations
- * @param {ObjectId} id Partner's id
- * @param {string} company [Optional] New company value
- * @param {string} first_name [Optional] New first_name value
- * @param {string} last_name [Optional] New last_name value
+ * @param {Object} partner
+ * @param {ObjectId} partner.id Partner's id
+ * @param {string} partner.company [Optional] New company value
+ * @param {string} partner.first_name [Optional] New first_name value
+ * @param {string} partner.last_name [Optional] New last_name value
  */
 exports.updatePartner = ({ id, ...data }) =>
 	new Promise((resolve, reject) => {
@@ -175,7 +188,8 @@ exports.updatePartner = ({ id, ...data }) =>
 
 /**
  * Reset partner password
- * @param {string} email Partner's email address
+ * @param {Object} partner
+ * @param {string} partner.email Partner's email
  */
 exports.resetPassword = ({ email }) =>
 	new Promise((resolve, reject) => {

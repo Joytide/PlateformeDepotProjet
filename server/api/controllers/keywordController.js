@@ -4,7 +4,8 @@ const Keyword = mongoose.model('Keyword');
 
 /**
  * Creates a new keyword
- * @param {string} name Keyword's display name
+ * @param {Object} keyword
+ * @param {string} keyword.name Keyword's display name
  */
 exports.create = ({ name }) =>
     new Promise((resolve, reject) => {
@@ -40,8 +41,9 @@ exports.getAll = () =>
 
 /**
  * Update a keyword name
- * @param {ObjectId} objectID Keyword's object id
- * @param {string} name Keyword's new name
+ * @param {Object} keyword
+ * @param {ObjectId} keyword.id Keyword's object id
+ * @param {string} keyword.name Keyword's new name
  */
 exports.update = ({ id, name }) =>
     new Promise((resolve, reject) => {
@@ -67,7 +69,8 @@ exports.update = ({ id, name }) =>
 
 /**
  * Delete a keyword
- * @param {ObjectId} id Keyword's id to delete
+ * @param {Object} keyword
+ * @param {ObjectId} keyword.id Keyword's id to delete
  */
 exports.delete = ({ id }) =>
     new Promise((resolve, reject) => {
