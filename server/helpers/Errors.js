@@ -47,6 +47,12 @@ class PartnerNotFoundError extends ErrorHandler {
     }
 }
 
+class YearNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "YearNotFound", infos || "The id you specified for this year has not been found");
+    }
+}
+
 class MongoError extends ErrorHandler {
     constructor(error) {
         if (env == 'dev')
@@ -117,6 +123,7 @@ module.exports = {
     InvalidParameterError,
     MongoError,
     PartnerNotFoundError,
+    YearNotFoundError,
     handleError,
     isValidType,
     areValidTypes

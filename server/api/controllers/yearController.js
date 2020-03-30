@@ -1,124 +1,120 @@
-'use strict';
+const mongoose = require('mongoose');
+const Year = mongoose.model('Year');
+const { isValidType, areValidTypes, YearNotFoundError } = require('../../helpers/Errors');
 
-var mongoose = require('mongoose');
-var Year = mongoose.model('Year');
+/**
+ * Returns the list of existing year(s)
+ */
+exports.list = () =>
+    new Promise((resolve, reject) => {
+        Year.find({})
+            .sort({ abbreviation: 1 })
+            .exec()
+            .then(years => {
+                if (years)
+                    resolve(years);
+                else
+                    resolve([]);
+            })
+            .catch(reject);
+    });
 
-exports.list = function (req, res, next) {
-    Year.find({})
-        .sort({ abbreviation: 1 })
-        .exec((err, years) => {
-            if (err)
-                next(err);
-            else
-                res.json(years);
-        });
-};
+/**
+ * Create a new year
+ * @param {Object} year 
+ * @param {string} year.nameEn English name for the new year
+ * @param {string} year.nameFr French name for the new year
+ * @param {string} year.abbreviation Abbreviation for the new year
+ */
+exports.create = ({ ...data }) =>
+    new Promise((resolve, reject) => {
+        areValidTypes(
+            [data.nameEn, data.nameFr, data.abbreviation],
+            ["nameEn", "nameFr", "abbreviation"],
+            ["string", "string", "string"]
+        )
+            .then(() => {
+                let year = new Year();
+                year.name.en = data.nameEn;
+                year.name.fr = data.nameFr;
+                year.abbreviation = data.abbreviation
 
-exports.create = function (req, res, next) {
-    let data = req.body;
+                return year.save((err, ye) => {
+                    if (err) next(err);
+                    else res.json(ye);
+                });
+            })
+            .then(savedYear => resolve(savedYear))
+            .catch(reject);
+    });
 
-    if (data.nameEn && data.nameFr && data.abbreviation) {
-        let year = new Year();
-        year.name.en = data.nameEn;
-        year.name.fr = data.nameFr;
-        year.abbreviation = data.abbreviation
+/**
+ * Delete a year
+ * @param {Object} year 
+ * @param {string} year.id Id of the year to delete
+ */
+exports.delete = ({ ...id }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() =>
+                Year
+                    .deleteOne({ id })
+                    .exec()
+            )
+            .then(resolve)
+            .catch(reject);
+    });
 
-        year.save((err, ye) => {
-            if (err) next(err);
-            else res.json(ye);
-        });
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation");
-        error.name = "MissingParameter"
-        error.status = 400;
-        next(error);
-    }
-};
+/**
+ * Delete a year
+ * @param {Object} year 
+ * @param {string} year.id Id of the year to delete
+ */
+exports.findById = ({ ...id }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() =>
+                Year.findById(data._id)
+                    .exec()
+            )
+            .then(year => {
+                if (year)
+                    resolve(year);
+                else
+                    throw new YearNotFoundError();
+            })
+            .catch(reject);
+    });
 
-exports.delete = (req, res, next) => {
-    let data = req.body;
-
-    if (data._id) {
-        Year.findByIdAndDelete(data._id, (err, data) => {
-            if (err && err.name === "CastError") {
-                err.status = 400;
-                err.message = "_id parameter must be an ObjectId";
-                next(err);
-            }
-            else if (err)
-                next(err);
-            else
-                res.json(data || {});
-        });
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
-        error.name = "MissingId"
-        error.status = 400;
-        next(error);
-    }
-}
-
-exports.findById = (req, res, next) => {
-    let data = req.params;
-
-    if (data._id) {
-        Year.findById(data._id)
-            .exec((err, year) => {
-                if (err) next(err);
-                else if (year) res.json(year);
-                else res.json({});
-            });
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
-        error.name = "MissingId"
-        error.status = 400;
-        next(error);
-    }
-}
-
-exports.update = (req, res, next) => {
-    const data = req.body;
-
-    if (data._id) {
-        let update = {};
-
-        if (data.nameFr != undefined) update['name.fr'] = data.nameFr;
-        if (data.nameEn != undefined) update['name.en'] = data.nameEn;
-        if (data.abbreviation != undefined) update['abbreviation'] = data.abbreviation;
-
-        if (Object.keys(update).length > 0) {
-            Year.findOne({ _id: data._id }, (err, year) => {
-                if (err && err.name === "CastError") {
-                    err.status = 400;
-                    err.message = "_id parameter must be an ObjectId";
-                    next(err);
-                }
-                else if (err)
-                    next(err);
-                else if (year) {
-                    year.set(update);
-
-                    year.save((err) => {
-                        if (err) next(err);
-                        else res.json(year);
-                    });
+/**
+ * Update a year 
+ * @param {Object} year 
+ * @param {string} year.id Id of the year to delete
+ * @param {string} [year.nameFr] Optional - New french name
+ * @param {string} [year.nameEn] Optional - New english name
+ * @param {string} [year.abbreviation] Optional - New abbreviation
+ */
+exports.update = ({ id, ...data }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() => {
+                Year
+                    .findOne({ _id: id })
+                    .exec()
+            })
+            .then(year => {
+                if (!year) {
+                    throw new YearNotFoundError();
                 } else {
-                    let error = new Error("Can't find any year with that ObjectId");
-                    error.status = 400;
-                    error.name = "YearNotFound"
-                    next(error);
+                    let update = {};
+
+                    if (data.nameFr != undefined) update['name.fr'] = year.nameFr;
+                    if (data.nameEn != undefined) update['name.en'] = year.nameEn;
+                    if (data.abbreviation != undefined) update['abbreviation'] = year.abbreviation;
+
+                    return year.save();
                 }
-            });
-        } else {
-            let error = new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation");
-            error.name = "MissingParameter"
-            error.status = 400;
-            next(error);
-        }
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
-        error.name = "MissingId"
-        error.status = 400;
-        next(error);
-    }
-}
+            })
+            .then(year => resolve(year))
+            .catch(reject);
+    });
