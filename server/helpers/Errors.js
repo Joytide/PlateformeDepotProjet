@@ -35,6 +35,12 @@ class ExistingNameError extends ErrorHandler {
     }
 }
 
+class ExistingEmailError extends ErrorHandler {
+    constructor(infos) {
+        super(409, "ExistingEmail", infos || "The email specified is already used");
+    }
+}
+
 class PartnerNotFoundError extends ErrorHandler {
     constructor(infos) {
         super(400, "PartnerNotFound", infos || "The id you specified for this partner has not been found");
@@ -65,11 +71,21 @@ const isValidType = (variable, varName, typeExpected) =>
         if (variable)
             if (typeof (variable) == typeExpected)
                 resolve()
+
+            else if (typeExpected == "boolean")
+                if (typeof variable == "boolean")
+                    resolve();
+                else if (variable === "true" || variable === "false")
+                    resolve();
+                else
+                    reject();
+
             else if (typeExpected == "ObjectId")
                 if (mongoose.Types.ObjectId.isValid(variable))
                     resolve();
                 else
                     reject(new InvalidParameterError(varName, typeExpected));
+
             else
                 reject(new InvalidParameterError(varName, typeExpected));
         else
@@ -95,6 +111,7 @@ const areValidTypes = (variables, varsName, typesExpected) => {
 
 
 module.exports = {
+    ExistingEmailError,
     ExistingNameError,
     MissingParameterError,
     InvalidParameterError,
