@@ -43,7 +43,7 @@ exports.addProject = (partnerId, projectId) => {
  * @param {string} [partner.phone] Optional - Partner's phone number
  * @param {string} [partner.address] Optional - Partner's address
  */
-exports.createPartner = ({...data}) =>
+exports.createPartner = ({ ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
 			[data.first_name, data.last_name, data.email, data.company, data.kind, data.alreadyPartner],
@@ -111,7 +111,7 @@ exports.findByMail = ({ email }) =>
 			)
 			.then(partner => {
 				if (!partner)
-					resolve({});
+					throw (new PartnerNotFound());
 				else
 					resolve(partner);
 			})
@@ -155,7 +155,7 @@ exports.findByKey = ({ key }) =>
 			)
 			.then(partner => {
 				if (!partner)
-					resolve({});
+					throw (new PartnerNotFound());
 				else
 					resolve(partner);
 			})
