@@ -1,5 +1,6 @@
 const keyword = require('../controllers/keywordController');
 const auth = require('../controllers/authController');
+const { handleRequest } = require('../../helpers/Request');
 
 
 module.exports = app => {
@@ -7,41 +8,21 @@ module.exports = app => {
         .get(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized(["Administration", "EPGE"]),
-            (req, res, next) => {
-                keyword
-                    .getAll()
-                    .then(result => res.json(result))
-                    .catch(next);
-            }
+            handleRequest(keyword.getAll)
         )
         .post(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized(["Administration", "EPGE"]),
-            (req, res, next) => {
-                keyword
-                    .create(req.body)
-                    .then(result => res.json(result))
-                    .catch(next);
-            }
+            handleRequest(keyword.create)
         )
         .put(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized(["Administration", "EPGE"]),
-            (req, res, next) => {
-                keyword
-                    .update(req.body)
-                    .then(result => res.json(result))
-                    .catch(next);
-            }
+            handleRequest(keyword.update)
         )
         .delete(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized(["Administration", "EPGE"]),
-            (req, res, next) => {
-                keyword
-                    .delete(req.body)
-                    .then(result => res.json(result))
-                    .catch(next);
-            }
+            handleRequest(keyword.delete)
         );
 };
