@@ -560,26 +560,26 @@ exports.studentFolder = () =>
 		let date = Date.now();
 		let baseDirectory = process.cwd() + "/exports/" + date;
 
-		let yearPromise = Year.find({}).exec();
-		let spePromise = Specialization.find({}).exec();
-
-		let [years, spe] = await Promise.all([yearPromise, spePromise]);
-
-		fs.mkdirSync(baseDirectory, { recursive: true });
-
-		// create a new folder for the exports. Sub folders for each years and specializations are then created
-		for (let i = 0; i < years.length; i++) {
-			for (let j = 0; j < spe.length; j++) {
-				fs.mkdirSync(baseDirectory + "/" + years[i].abbreviation + "/" + spe[j].abbreviation, { recursive: true });
-			}
-		}
-
-		Project
+		let findYears = Year.find({}).exec();
+		let findSpecializations = Specialization.find({}).exec();
+		let findProjects = Project
 			.find({ status: "validated" })
 			.populate("files pdf specializations.specialization study_year")
-			.exec()
-			.then(projects => {
+			.exec();
+
+		Promise
+			.all([findYears, findSpecializations, findProjects])
+			.then(([years, specializations, projects]) => {
 				if (projects) {
+					fs.mkdirSync(baseDirectory, { recursive: true });
+
+					// create a new folder for the exports. Sub folders for each years and specializations are then created
+					for (let i = 0; i < years.length; i++) {
+						for (let j = 0; j < specializations.length; j++) {
+							fs.mkdirSync(baseDirectory + "/" + years[i].abbreviation + "/" + specializations[j].abbreviation, { recursive: true });
+						}
+					}
+
 					projects.forEach(project => {
 						project.study_year.forEach(year => {
 							project.specializations
