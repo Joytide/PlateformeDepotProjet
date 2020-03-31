@@ -1,28 +1,29 @@
 const userController = require('../controllers/userController');
 const auth = require('../controllers/authController');
+const { handleRequest } = require('../../helpers/Request');
 
 module.exports = (app) => {
     app.route('/api/user/administration')
-        .get(userController.listAdministration);
+        .get(handleRequest(userController.listAdministration()));
 
     app.route('/api/user/EPGE')
-        .get(userController.listEPGE);
+        .get(handleRequest(userController.listAdministration({ EPGE: true })));
 
     app.route('/api/user/:id([a-fA-F0-9]{24})')
-        .get(userController.findById);
+        .get(handleRequest(userController.findById));
 
     app.route('/api/user')
-        .get(userController.list)
-        .put(userController.create)
-        .delete(userController.delete)
-        .post(userController.update);
+        .get(handleRequest(userController.list))
+        .put(handleRequest(userController.create))
+        //.delete(handleRequest(userController.delete))
+        .post(handleRequest(userController.update));
 
     app.route('/api/user/me')
-        .get(auth.passport.authenticate('jwt'), userController.myself);
+        .get(handleRequest(userController.myself));
 
     app.route('/api/user/isAdmin')
-        .get(auth.passport.authenticate('jwt'), userController.isAdmin);
+        .get(handleRequest(userController.isAdmin));
 
     app.route('/api/user/password')
-        .post(auth.passport.authenticate('jwt'), auth.areAuthorized(['Administration']), userController.changePassword);
+        .post(handleRequest(userController.changePassword));
 }

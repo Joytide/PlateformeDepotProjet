@@ -11,260 +11,255 @@ const Administration = mongoose.model('Administration');
 const partnerController = require('./partnerController');
 const bcryptConf = require('../../config.json').bcrypt;
 
-exports.list = (req, res) => {
-    Person.find({})
-        .exec((err, persons) => {
-            Partner.find({}, (err, partners) => {
-                if (err) res.send(err);
-                else res.json(persons.concat(partners));
+const {
+    isValidType,
+    areValidTypes,
+    BCryptError,
+    ExistingEmailError,
+    ForbiddenError,
+    InvalidCredentialsError,
+    InvalidPasswordError,
+    InvalidTypeError,
+    UserNotFoundError } = require('../../helpers/Errors');
+
+/**
+ * List all users of the platform
+ */
+exports.list = () =>
+    new Promise((resolve, reject) => {
+        let personFind = Person.find({}).exec();
+        let partnerFind = Partner.find({}).exec();
+
+        Promise
+            .all([personFind, partnerFind])
+            .then(([persons, partners]) => {
+                resolve(persons.concat(partners));
             })
-        });
-}
+            .catch(reject);
+    });
 
-exports.listAdministration = (req, res) => {
-    Administration.find({})
-        .exec((err, admins) => {
-            if (err) res.send(err);
-            else res.json(admins);
-        });
-}
+/**
+ * List administration's user
+ * @param {Object} [filters] Optional - Filters to apply for the search
+ * @param {boolean} [filters.EPGE] Optional - Show only EGPE members
+ */
+exports.listAdministration = (filters = {}) => () =>
+    new Promise((resolve, reject) => {
+        Administration
+            .find(filters)
+            .exec()
+            .then(admins => resolve(admins))
+            .catch(reject);
+    });
 
-exports.listEPGE = (req, res) => {
-    Administration.find({ EPGE: true })
-        .exec((err, epge) => {
-            if (err) res.send(err);
-            else res.json(epge);
-        });
-}
-
-exports.create = (req, res, next) => {
-    let data = req.body;
-
-    if (data.firstName && data.lastName && data.email && data.type) {
+/**
+ * Create a new user
+ * @param {Object} user
+ * @param {string} user.first_name User's first name
+ * @param {string} user.last_name User's last name
+ * @param {string} user.email User's email
+ * @param {string} user.type User's type. Accepted values : partner, administration, EPGE
+ * @param {string} user.company If the user is a partner. Company name
+ * @param {string} [user.phone] Optional - If the user is a partner. Phone number
+ * @param {string} [user.address] Optional - If the user is a partner. Address
+ * @param {string} user.password If the user is administration's or EGPE's member : password hashed in SHA256
+ * @param {string} [user.admin] If the user is administration's or EGPE's member : is (s)he an admin ?
+ */
+exports.create = ({ ...data }) =>
+    new Promise((resolve, reject) => {
         if (data.type === "partner") {
-            if (data.company) {
-                data.last_name = data.lastName;
-                data.first_name = data.firstName;
-                partnerController
-                    .createPartner(data)
-                    .then(valid => res.send(valid))
-                    .catch(next);
-            } else {
-                let error = new Error(`Missing a parameter. Expected parameters : 
-                (string) firstName, 
-                (string) lastName, 
-                (string) email, 
-                ("student"|"partner"|"EPGE"|"administration") type
-                (string) company (for partners only)`
-                );
-                error.status = 400;
-                next(error);
-            }
-        } else {
-            Person.findOne({ email: data.email }, (err, person) => {
-                if (err) next(err);
-                else {
-                    if (person) {
-                        let error = new Error("Email already used by a partner");
-                        error.name = "EmailUsed";
-                        error.status = 400;
-                        next(error);
-                    } else {
-                        if (data.type === "EPGE" || data.type === "administration") {
-                            if (data.password && data.password.length === 64) {
-                                let administration = new Administration();
-                                administration.last_name = data.lastName;
-                                administration.first_name = data.firstName;
-                                administration.email = data.email;
-                                administration.EPGE = data.type === "EPGE";
-                                administration.admin = data.type | false;
+            partnerController
+                .createPartner(data)
+                .then(partner => resolve(partner))
+                .catch(reject);
+        }
+        else if (data.type === "EPGE" || data.type === "administration") {
+            areValidTypes(
+                [data.first_name, data.last_name, data.email, data.type],
+                ["first_name", "last_name", "email", "type"],
+                ["string", "string", "string", "string"]
+            )
+                .then(() =>
+                    Person
+                        .findOne({ email: data.email })
+                        .exec()
+                )
+                .then(person => {
+                    if (person)
+                        throw new ExistingEmailError()
+                    else {
+                        if (data.password && data.password.length === 64)
+                            return bcrypt.hash(data.password, bcryptConf.saltRounds);
+                        else
+                            throw new InvalidPasswordError();
+                    }
+                })
+                .then(passwordHash => {
+                    let administration = new Administration();
 
-                                bcrypt.hash(data.password, bcryptConf.saltRounds, (err, hash) => {
-                                    if (err) next(err);
-                                    else {
-                                        administration.password = hash;
+                    administration.last_name = data.last_name;
+                    administration.first_name = data.first_name;
+                    administration.email = data.email;
+                    administration.EPGE = data.type === "EPGE";
+                    administration.admin = data.admin | false;
+                    administration.password = passwordHash;
 
-                                        administration.save((err, ad) => {
-                                            if (err) next(err);
-                                            else res.json(ad);
-                                        });
-                                    }
-                                });
-                            } else {
-                                let error = new Error(`Invalid password parameter :
-                                (string) password. Must be hashed in sha256`
-                                );
-                                error.status = 400;
-                                next(error);
-                            }
-                        } else {
-                            let student = new Student();
-                            student.first_name = data.firstName;
-                            student.last_name = data.lastName;
-                            student.email = data.email;
+                    return administration.save();
+                })
+                .then(administration => resolve(administration))
+                .catch(reject);
+        }
+        else
+            reject(new InvalidTypeError());
+    });
 
-                            student.save((err, stu) => {
-                                if (err) next(err);
-                                else res.json(stu);
-                            });
+/**
+ * Delete a user
+ * @param {Object} user
+ * @param {ObjectId} user.id User's id
+ */
+exports.delete = ({ id }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() =>
+                Person
+                    .deleteOne({ _id: id })
+                    .exec()
+            )
+            .then(resolve)
+            .catch(reject);
+    });
+
+
+/**
+* Update an administration's user
+* @param {Object} user
+* @param {string} user.first_name User's first name
+* @param {string} user.last_name User's last name
+* @param {string} user.email User's email
+* @param {string} [user.admin] If the user is administration's or EGPE's member : is (s)he an admin ?
+*/
+exports.update = ({ id, ...data }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() => {
+                let update = {};
+
+                if (data.admin !== undefined) update.admin = data.admin;
+                if (data.EPGE !== undefined) update.EPGE = data.EPGE;
+                if (data.firstName !== undefined) update.first_name = data.first_name;
+                if (data.lastName !== undefined) update.last_name = data.last_name;
+
+                return Administration
+                    .updateOne({ _id: id }, update)
+                    .exec()
+            })
+            .then(writeOps => resolve(writeOps))
+            .catch(reject);
+    });
+
+/**
+ * Find an user given his id
+ * @param {Object} user
+ * @param {string} user.id User's id
+ */
+exports.findById = ({ id }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() => {
+                let findPerson = Person.findOne({ _id: id });
+                let findPartner = Partner.findOne({ _id: id });
+
+                return Promise.all([findPerson, findPartner]);
+            })
+            .then(([person, partner]) => {
+                if (person)
+                    resolve(person)
+                else if (partner)
+                    resolve(partner);
+                else
+                    throw new UserNotFoundError();
+            })
+            .catch(reject);
+    });
+
+/**
+ * Check if a logged user is an admin
+ */
+exports.isAdmin = ({ user }) =>
+    new Promise((resolve, reject) => {
+        resolve({
+            _id: user._id,
+            admin: user.admin
+        });
+    });
+
+/**
+ * Change a user's password
+ * @param {Object} user Provided by auth
+ * @param {Object} id Id of the to change password
+ * @param {string} oldPassword Old password of the user in SHA256
+ * @param {string} newPassword New password of the user in SHA256
+ */
+exports.changePassword = ({ user, id, oldPassword, newPassword }) =>
+    new Promise((resolve, reject) => {
+        areValidTypes(
+            [id, oldPassword, newPassword],
+            ["id", "oldPassword", "newPassword"],
+            ["ObjectId", "string", "string"]
+        )
+            .then(() => {
+                if ((id == user._id) || user.admin)
+                    return Administration
+                        .findOne({ _id: id })
+                        .exec()
+                else
+                    throw new ForbiddenError();
+            })
+            .then(async administration => {
+                // If there is (the old password specified or the user is an admin) and the new password is specified
+                if (((oldPassword && oldPassword.length === 64) || user.admin) && newPassword && newPassword.length === 64) {
+                    let valid = false;
+
+                    if (user.admin)
+                        valid = true;
+                    else {
+                        try {
+                            valid = await bcrypt.compare(oldPassword, administration.password);
+                        } catch (e) {
+                            throw new BCryptError(e);
                         }
                     }
-                }
-            });
-        }
-    } else {
-        let error = new Error(`Missing a parameter. Expected parameters : 
-        (string) firstName, 
-        (string) lastName, 
-        (string) email, 
-        ("student"|"partner"|"EPGE"|"administration") type
-        (string) company (for partners only)
-        (string) password (for admin|EPGE only). Must be hashed in sha256`
-        );
-        error.status = 400;
-        error.name = "MissingParameter";
-        next(error);
-    }
-}
 
-exports.delete = (req, res) => {
-    let data = req.body;
-    if (data._id) {
-        Person.findByIdAndRemove(data._id, (err, data) => {
-            if (err) res.send(err);
-            else res.json(data);
-        })
-    } else {
-        res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id`));
-    }
-}
+                    if (valid) {
+                        let hash;
 
-exports.update = (req, res, next) => {
-    const data = req.body;
-
-    if (data._id) {
-        let update = {};
-
-        if (data.admin !== undefined) update.admin = data.admin;
-        if (data.EPGE !== undefined) update.EPGE = data.EPGE;
-        if (data.firstName !== undefined) update.first_name = data.firstName;
-        if (data.lastName !== undefined) update.last_name = data.lastName;
-        if (data.company !== undefined && data.__t === "Partner") update.company = data.company;
-
-        if (Object.keys(update).length > 0) {
-            function updateUser(err, user) {
-                if (err && err.name === "CastError") {
-                    err.status = 400;
-                    err.message = "_id parameter must be an ObjectId";
-                    next(err);
-                }
-                else if (err) next(err);
-                else if (user) {
-                    user.set(update);
-                    user.save((err, updatedUser) => {
-                        if (err) next(err);
-                        else res.json(updatedUser);
-                    });
-                }
-                else {
-                    let error = new Error("Can't find any user with that ObjectId");
-                    error.status = 400;
-                    error.name = "UserNotFound"
-                    next(error);
-                }
-            }
-
-            if (data.__t === "Partner") {
-                Partner.findOne({ _id: data._id }, updateUser);
-            } else {
-                Person.findOne({ _id: data._id }, updateUser);
-            }
-        } else {
-            let error = new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation");
-            error.name = "MissingParameter"
-            error.status = 400;
-            next(error);
-        }
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
-        error.name = "MissingId"
-        error.status = 400;
-        next(error);
-    }
-}
-
-exports.findById = (req, res) => {
-    let data = req.params;
-    if (data.id) {
-        Person.findById(data.id, (err, person) => {
-            if (err) res.send(err);
-            else if (person) res.json(person);
-            else {
-                Partner.findById(data.id)
-                    .populate("projects")
-                    .exec((err, partner) => {
-                        if (err) res.send(err);
-                        else if (partner) res.json(partner);
-                        else res.send(new Error("UserNotFound"));
-                    });
-            }
-        });
-    } else {
-        res.status(400).send(new Error(`Missing a parameter. Expected parameters : (ObjectId) _id`));
-    }
-}
-
-exports.isAdmin = (req, res) => {
-    req.user;
-
-    res.json({
-        _id: req.user._id,
-        admin: req.user.admin
-    });
-}
-
-exports.changePassword = (req, res, next) => {
-    const data = req.body;
-    if ((data.userID == req.user._id) || req.user.admin) {
-        Person.findById(data.userID, (err, person) => {
-            if (err)
-                next(err);
-            else {
-                if (req.user.admin && data.newPassword && data.newPassword.length === 64)
-                    bcrypt.hash(data.newPassword, bcryptConf.saltRounds, (err, hash) => {
-                        person.password = hash;
-                        person.save(err => {
-                            if (err) next(err);
-                            else res.json({ name: "PasswordChanged", message: "Password has been successfuly changed" });
-                        });
-                    });
-                else if (data.oldPassword && data.oldPassword.length === 64 && data.newPassword && data.newPassword.length === 64)
-                    bcrypt.compare(data.oldPassword, person.password, function (err, valid) {
-                        if (err) next(err);
-                        else if (valid) {
-                            bcrypt.hash(data.newPassword, bcryptConf.saltRounds, (err, hash) => {
-                                person.password = hash;
-                                person.save(err => {
-                                    if (err) next(err);
-                                    else res.json({ name: "PasswordChanged", message: "Password has been successfuly changed" });
-                                });
-                            });
+                        try {
+                            valid = await bcrypt.hash(newPassword, bcryptConf.saltRounds);
+                        } catch (e) {
+                            throw new BCryptError(e);
                         }
-                        else
-                            next(new Error('InvalidCredentials'));
-                    });
-                else
-                    next(new Error('InvalidCredentials'));
-            }
-        });
-    }
-    else {
-        next(new Error("MissingParameter"))
-    }
-}
 
-exports.myself = (req, res) => {
-    req.user.password = undefined;
-    req.user.key = undefined;
-    res.json(req.user);
-}
+                        administration.password = hash;
+                        return administration.save();
+                    } else
+                        throw new InvalidCredentialsError();
+                }
+                else
+                    throw new InvalidCredentialsError();
+            })
+            .then(administration => resolve(administration))
+            .catch(reject);
+    });
+
+/**
+ * Returns data of a logged user
+ */
+exports.myself = ({ user }) =>
+    new Promise((resolve, reject) => {
+        resolve({
+            ...user,
+            password: undefined,
+            key: undefined
+        });
+    });

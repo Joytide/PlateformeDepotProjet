@@ -169,6 +169,10 @@ exports.findByKey = ({ key }) =>
  * @param {string} partner.company [Optional] New company value
  * @param {string} partner.first_name [Optional] New first_name value
  * @param {string} partner.last_name [Optional] New last_name value
+ * @param {string} partner.phone [Optional] New phone value
+ * @param {string} partner.address [Optional] New address value
+ * @param {string} partner.kind [Optional] New kind value
+ * @param {boolean} partner.alreadyPartner [Optional] New alreadyPartner value
  */
 exports.updatePartner = ({ id, ...data }) =>
 	new Promise((resolve, reject) => {
@@ -177,10 +181,16 @@ exports.updatePartner = ({ id, ...data }) =>
 				let updateData = {
 					company: data.company,
 					first_name: data.first_name,
-					last_name: data.last_name
+					last_name: data.last_name,
+					phone: data.phone,
+					address: data.address,
+					kind: data.kind,
+					alreadyPartner: data.alreadyPartner
 				};
 
-				return Partner.updateOne({ _id: id }, updateData);
+				return Partner
+					.updateOne({ _id: id }, updateData)
+					.exec();
 			})
 			.then(res => resolve(res))
 			.catch(reject);

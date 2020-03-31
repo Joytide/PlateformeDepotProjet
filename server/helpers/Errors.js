@@ -10,13 +10,37 @@ class ErrorHandler extends Error {
     }
 }
 
-class MissingParameterError extends ErrorHandler {
-    constructor(parameters) {
-        console.log(typeof (parameters))
-        if (parameters && parameters instanceof Array)
-            super(400, "MissingParameter", "One or many parameters are missing from the request. Expected parameters : " + parameters.join(' ,'));
+class BCryptError extends ErrorHandler {
+    constructor(error) {
+        if (env == 'dev')
+            super(500, 'BCryptError', error)
         else
-            super(400, "MissingParameter", "One or many parameters are missing from the request. Expected parameters : n/a (refer to documentation for this endpoint");
+            super(500, "InternalServerError", "Something wrong happened on the server side");
+    }
+}
+
+class ExistingEmailError extends ErrorHandler {
+    constructor(infos) {
+        super(409, "ExistingEmail", infos || "The email specified is already used");
+    }
+}
+
+class ExistingNameError extends ErrorHandler {
+    constructor(infos) {
+        super(409, "ExistingName", infos || "The name specified is already used");
+    }
+}
+
+
+class ForbiddenError extends ErrorHandler {
+    constructor(infos) {
+        super(403, "Forbidden", infos || "You don't have permissions to do this");
+    }
+}
+
+class InvalidCredentialsError extends ErrorHandler {
+    constructor() {
+        super(400, "InvalidCredentials", "Invalid credentials");
     }
 }
 
@@ -29,27 +53,25 @@ class InvalidParameterError extends ErrorHandler {
     }
 }
 
-class ExistingNameError extends ErrorHandler {
-    constructor(infos) {
-        super(409, "ExistingName", infos || "The name specified is already used");
+class InvalidPasswordError extends ErrorHandler {
+    constructor() {
+        super(400, "InvalidPassword", "Invalid password parameter : password must be hashed in sha256");
     }
 }
 
-class ExistingEmailError extends ErrorHandler {
-    constructor(infos) {
-        super(409, "ExistingEmail", infos || "The email specified is already used");
+class InvalidTypeError extends ErrorHandler {
+    constructor() {
+        super(400, "InvalidType", "Invalid type for the user. Admitted types : partner, EPGE, administration");
     }
 }
 
-class PartnerNotFoundError extends ErrorHandler {
-    constructor(infos) {
-        super(400, "PartnerNotFound", infos || "The id you specified for this partner has not been found");
-    }
-}
-
-class YearNotFoundError extends ErrorHandler {
-    constructor(infos) {
-        super(400, "YearNotFound", infos || "The id you specified for this year has not been found");
+class MissingParameterError extends ErrorHandler {
+    constructor(parameters) {
+        console.log(typeof (parameters))
+        if (parameters && parameters instanceof Array)
+            super(400, "MissingParameter", "One or many parameters are missing from the request. Expected parameters : " + parameters.join(' ,'));
+        else
+            super(400, "MissingParameter", "One or many parameters are missing from the request. Expected parameters : n/a (refer to documentation for this endpoint");
     }
 }
 
@@ -59,6 +81,24 @@ class MongoError extends ErrorHandler {
             super(500, 'MongoError', error)
         else
             super(500, "InternalServerError", "Something wrong happened on the server side");
+    }
+}
+
+class PartnerNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "PartnerNotFound", infos || "The id you specified for this partner has not been found");
+    }
+}
+
+class UserNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "UserNotFound", infos || "The id you specified for this user has not been found");
+    }
+}
+
+class YearNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "YearNotFound", infos || "The id you specified for this year has not been found");
     }
 }
 
@@ -117,12 +157,18 @@ const areValidTypes = (variables, varsName, typesExpected) => {
 
 
 module.exports = {
+    BCryptError,
     ExistingEmailError,
     ExistingNameError,
-    MissingParameterError,
+    ForbiddenError,
+    InvalidCredentialsError,
     InvalidParameterError,
+    InvalidPasswordError,
+    InvalidTypeError,
+    MissingParameterError,
     MongoError,
     PartnerNotFoundError,
+    UserNotFoundError,
     YearNotFoundError,
     handleError,
     isValidType,

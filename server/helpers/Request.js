@@ -3,7 +3,7 @@ exports.handleRequest = func => (req, res, next) => {
         {
             ...req.body,
             ...req.params,
-            ...req.user
+            user: req.user
         }
     )
         .then(data => res.json(data))
