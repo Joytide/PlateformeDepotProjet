@@ -31,6 +31,11 @@ class ExistingNameError extends ErrorHandler {
     }
 }
 
+class FileNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "FileNotFound", infos || "The id you specified for this file has not been found");
+    }
+}
 
 class ForbiddenError extends ErrorHandler {
     constructor(infos) {
@@ -90,6 +95,12 @@ class PartnerNotFoundError extends ErrorHandler {
     }
 }
 
+class ProjectNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "ProjectNotFound", infos || "The id you specified for this project has not been found");
+    }
+}
+
 class ReferentAlreadyRegisteredError extends ErrorHandler {
     constructor(infos) {
         super(409, "ReferentAlreadyRegistered", infos || "This referent has already been assigned to that specialization");
@@ -126,26 +137,28 @@ const handleError = (error, req, res, next) => {
  */
 const isValidType = (variable, varName, typeExpected) =>
     new Promise((resolve, reject) => {
-        if (variable)
+        if (variable) {
             if (typeof (variable) == typeExpected)
-                resolve()
+                return resolve();
 
-            else if (typeExpected == "boolean")
-                if (typeof variable == "boolean")
-                    resolve();
-                else if (variable === "true" || variable === "false")
-                    resolve();
-                else
-                    reject();
+            if (typeExpected == "boolean")
+                if (variable === "true" || variable === "false")
+                    return resolve();
+            
+            if(typeExpected == "number")
+                if(parseInt(variable, 10) != NaN)
+                    return resolve();
 
-            else if (typeExpected == "ObjectId")
+            if (typeExpected == "ObjectId")
                 if (mongoose.Types.ObjectId.isValid(variable))
-                    resolve();
-                else
-                    reject(new InvalidParameterError(varName, typeExpected));
+                    return resolve();
 
-            else
-                reject(new InvalidParameterError(varName, typeExpected));
+            if (typeExpected == "Array")
+                if (variable instanceof Array)
+                    return resolve();
+
+            return reject(new InvalidParameterError(varName, typeExpected));
+        }
         else
             reject(new MissingParameterError([varName]));
 
@@ -173,6 +186,7 @@ module.exports = {
     BCryptError,
     ExistingEmailError,
     ExistingNameError,
+    FileNotFoundError,
     ForbiddenError,
     InvalidCredentialsError,
     InvalidParameterError,
@@ -181,6 +195,7 @@ module.exports = {
     MissingParameterError,
     MongoError,
     PartnerNotFoundError,
+    ProjectNotFoundError,
     ReferentAlreadyRegisteredError,
     SpecializationNotFoundError,
     UserNotFoundError,

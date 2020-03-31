@@ -14,6 +14,10 @@ fs.readFile(lockPath, 'UTF-8', (err, data) => {
     }
 });
 
+/**
+ * Change the state of the platform (open /close)
+ * @param {string} newState Acceots lock or unlock. Defaults unlock
+ */
 exports.changeState = newState =>
     new Promise((resolve, reject) => {
         fs.writeFile(lockPath, newState == "lock" ? "true" : "false", err => {
