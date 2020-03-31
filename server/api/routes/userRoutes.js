@@ -14,9 +14,9 @@ module.exports = (app) => {
 
     app.route('/api/user')
         .get(handleRequest(userController.list))
-        .put(handleRequest(userController.create))
+        .post(handleRequest(userController.create))
         //.delete(handleRequest(userController.delete))
-        .post(handleRequest(userController.update));
+        .put(handleRequest(userController.update));
 
     app.route('/api/user/me')
         .get(handleRequest(userController.myself));

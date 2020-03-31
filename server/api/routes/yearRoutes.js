@@ -11,9 +11,9 @@ module.exports = (app) => {
         // Everybody can get the complete list of years
         .get(handleRequest(yearController.list))
         // Only administrators can create a year
-        .put(handleRequest(yearController.create))
+        .post(handleRequest(yearController.create))
         // Only administrators can delete a year
         .delete(handleRequest(yearController.delete))
         // Only administrators can update a year
-        .post(handleRequest(yearController.update));
+        .put(handleRequest(yearController.update));
 }
