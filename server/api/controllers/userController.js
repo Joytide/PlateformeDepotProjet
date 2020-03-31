@@ -54,16 +54,15 @@ exports.listAdministration = (filters = {}) => () =>
 
 /**
  * Create a new user
- * @param {Object} user
- * @param {string} user.first_name User's first name
- * @param {string} user.last_name User's last name
- * @param {string} user.email User's email
- * @param {string} user.type User's type. Accepted values : partner, administration, EPGE
- * @param {string} user.company If the user is a partner. Company name
- * @param {string} [user.phone] Optional - If the user is a partner. Phone number
- * @param {string} [user.address] Optional - If the user is a partner. Address
- * @param {string} user.password If the user is administration's or EGPE's member : password hashed in SHA256
- * @param {string} [user.admin] If the user is administration's or EGPE's member : is (s)he an admin ?
+ * @param {string} first_name User's first name
+ * @param {string} last_name User's last name
+ * @param {string} email User's email
+ * @param {string} type User's type. Accepted values : partner, administration, EPGE
+ * @param {string} company If the user is a partner. Company name
+ * @param {string} [phone] Optional - If the user is a partner. Phone number
+ * @param {string} [address] Optional - If the user is a partner. Address
+ * @param {string} password If the user is administration's or EGPE's member : password hashed in SHA256
+ * @param {string} [admin] If the user is administration's or EGPE's member : is (s)he an admin ?
  */
 exports.create = ({ ...data }) =>
     new Promise((resolve, reject) => {
@@ -160,8 +159,7 @@ exports.update = ({ id, ...data }) =>
 
 /**
  * Find an user given his id
- * @param {Object} user
- * @param {string} user.id User's id
+ * @param {ObjectId} id User's id
  */
 exports.findById = ({ id }) =>
     new Promise((resolve, reject) => {

@@ -90,6 +90,18 @@ class PartnerNotFoundError extends ErrorHandler {
     }
 }
 
+class ReferentAlreadyRegisteredError extends ErrorHandler {
+    constructor(infos) {
+        super(409, "ReferentAlreadyRegistered", infos || "This referent has already been assigned to that specialization");
+    }
+}
+
+class SpecializationNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "SpecializationNotFound", infos || "The id you specified for this specialization has not been found");
+    }
+}
+
 class UserNotFoundError extends ErrorHandler {
     constructor(infos) {
         super(400, "UserNotFound", infos || "The id you specified for this user has not been found");
@@ -157,6 +169,7 @@ const areValidTypes = (variables, varsName, typesExpected) => {
 
 
 module.exports = {
+    ErrorHandler,
     BCryptError,
     ExistingEmailError,
     ExistingNameError,
@@ -168,6 +181,8 @@ module.exports = {
     MissingParameterError,
     MongoError,
     PartnerNotFoundError,
+    ReferentAlreadyRegisteredError,
+    SpecializationNotFoundError,
     UserNotFoundError,
     YearNotFoundError,
     handleError,

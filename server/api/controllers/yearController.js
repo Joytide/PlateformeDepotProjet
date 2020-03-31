@@ -21,10 +21,9 @@ exports.list = () =>
 
 /**
  * Create a new year
- * @param {Object} year 
- * @param {string} year.nameEn English name for the new year
- * @param {string} year.nameFr French name for the new year
- * @param {string} year.abbreviation Abbreviation for the new year
+ * @param {string} nameEn English name for the new year
+ * @param {string} nameFr French name for the new year
+ * @param {string} abbreviation Abbreviation for the new year
  */
 exports.create = ({ ...data }) =>
     new Promise((resolve, reject) => {
@@ -50,10 +49,9 @@ exports.create = ({ ...data }) =>
 
 /**
  * Delete a year
- * @param {Object} year 
- * @param {string} year.id Id of the year to delete
+ * @param {string} id Id of the year to delete
  */
-exports.delete = ({ ...id }) =>
+exports.delete = ({ id }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
             .then(() =>
@@ -66,9 +64,8 @@ exports.delete = ({ ...id }) =>
     });
 
 /**
- * Delete a year
- * @param {Object} year 
- * @param {string} year.id Id of the year to delete
+ * Find a year given his id
+ * @param {ObjectId} id Id of the year to delete
  */
 exports.findById = ({ ...id }) =>
     new Promise((resolve, reject) => {
@@ -88,11 +85,10 @@ exports.findById = ({ ...id }) =>
 
 /**
  * Update a year 
- * @param {Object} year 
- * @param {string} year.id Id of the year to delete
- * @param {string} [year.nameFr] Optional - New french name
- * @param {string} [year.nameEn] Optional - New english name
- * @param {string} [year.abbreviation] Optional - New abbreviation
+ * @param {ObjectId} id Id of the year to delete
+ * @param {string} [nameFr] Optional - New french name
+ * @param {string} [nameEn] Optional - New english name
+ * @param {string} [abbreviation] Optional - New abbreviation
  */
 exports.update = ({ id, ...data }) =>
     new Promise((resolve, reject) => {

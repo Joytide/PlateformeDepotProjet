@@ -4,233 +4,167 @@ const mongoose = require('mongoose');
 const Specialization = mongoose.model('Specialization');
 const Administration = mongoose.model('Administration');
 
-exports.list = function (req, res, next) {
-    Specialization.find({})
-        .populate({ path: 'referent', select: "first_name last_name _id" })
-        .exec((err, specializations) => {
-            if (err)
-                next(err);
-            else
-                res.json(specializations || []);
-        });
-};
+const { isValidType, areValidTypes, ReferentAlreadyRegisteredError, SpecializationNotFoundError, UserNotFoundError } = require('../../helpers/Errors');
 
-exports.create = function (req, res, next) {
-    let data = req.body;
-
-    if (data.nameEn && data.nameFr && data.descriptionEn && data.descriptionFr && data.abbreviation) {
-        let specialization = new Specialization();
-        specialization.name.en = data.nameEn;
-        specialization.name.fr = data.nameFr;
-        specialization.description.en = data.descriptionEn;
-        specialization.description.fr = data.descriptionFr;
-        specialization.abbreviation = data.abbreviation;
-
-        specialization.save((err, spe) => {
-            if (err) next(err);
-            else res.json(spe);
-        });
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (string) nameEn, (string) nameFr, (string) abbreviation");
-        error.status = 400;
-        error.name = "MissingParameter"
-        next(error);
-    }
-};
-
-exports.delete = (req, res, next) => {
-    let data = req.body;
-
-    if (data._id) {
-        Specialization.findByIdAndDelete(data._id, (err, data) => {
-            if (err && err.name === "CastError") {
-                err.status = 400;
-                err.message = "_id parameter must be an ObjectId";
-                next(err);
-            }
-            else if (err) next(err);
-            else res.send(data || {});
-        });
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
-        error.name = "MissingId"
-        error.status = 400;
-        next(error);
-    }
-}
-
-exports.findById = (req, res, next) => {
-    let data = req.params;
-
-    if (data._id) {
-        Specialization.findOne({ _id: data._id })
+/**
+ * List all existing specializations
+ */
+exports.list = () =>
+    new Promise((resolve, reject) => {
+        Specialization.find({})
             .populate({ path: 'referent', select: "first_name last_name _id" })
-            .exec((err, spe) => {
-                if (err) next(err);
-                else res.json(spe || {});
-            });
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
-        error.name = "MissingId"
-        error.status = 400;
-        next(error);
-    }
-}
+            .exec()
+            .then(specializations => resolve(specializations || []))
+            .catch(reject);
+    });
 
-exports.update = (req, res, next) => {
-    const data = req.body;
+/**
+ * Create a new specialization
+ * @param {string} nameEn English name of the specialization
+ * @param {string} nameFr French name of the specialization
+ * @param {string} descriptionEn English description of the specialization
+ * @param {string} descriptionFr French description of the specialization
+ * @param {string} abbreviation Abbreviation of the specialization
+ */
+exports.create = ({ ...data }) =>
+    new Promise((resolve, reject) => {
+        areValidTypes(
+            [data.nameEn, data.nameFr, data.descriptionEn, data.descriptionFr, data.abbreviation],
+            ["nameEn", "nameFr", "descriptionEn", "descriptionFr", "abbreviation"],
+            ["string", "string", "string", "string", "string"]
+        )
+            .then(() => {
+                let specialization = new Specialization();
+                specialization.name.en = data.nameEn;
+                specialization.name.fr = data.nameFr;
+                specialization.description.en = data.descriptionEn;
+                specialization.description.fr = data.descriptionFr;
+                specialization.abbreviation = data.abbreviation;
 
-    if (data._id) {
-        let update = {};
+                return specialization.save();
+            })
+            .then(specialization => resolve(specialization))
+            .catch(reject);
+    });
 
-        if (data.abbreviation != undefined) update['abbreviation'] = data.abbreviation;
-        if (data.nameFr != undefined) update['name.fr'] = data.nameFr;
-        if (data.nameEn != undefined) update['name.en'] = data.nameEn;
-        if (data.descriptionFr != undefined) update['description.fr'] = data.descriptionFr;
-        if (data.descriptionEn != undefined) update['description.en'] = data.descriptionEn;
+/**
+ * Delete a specialization
+ * @param {ObjectId} id Id of the specialization to delete
+ */
+exports.delete = ({ id }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() =>
+                Specialization
+                    .deleteOne({ _id: id })
+                    .exec()
+            )
+            .then(resolve)
+            .catch(reject);
+    });
 
-        if (Object.keys(update).length > 0) {
-            Specialization.findOne({ _id: data._id }, (err, spe) => {
-                if (err && err.name === "CastError") {
-                    err.status = 400;
-                    err.message = "_id parameter must be an ObjectId";
-                    next(err);
-                }
-                else if (err) next(err);
-                else if (spe) {
-                    spe.set(update);
-                    spe.save((err, updatedSpe) => {
-                        if (err) next(err);
-                        else res.json(updatedSpe);
-                    });
-                }
-                else {
-                    let error = new Error("Can't find any spe with that ObjectId");
-                    error.status = 400;
-                    error.name = "SpecializationNotFound"
-                    next(error);
-                }
-            });
-        } else {
-            let error = new Error("Missing a parameter. Expected parameters : (string) nameFr or (string) nameEn or (string) abbreviation");
-            error.name = "MissingParameter"
-            error.status = 400;
-            next(error);
-        }
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id");
-        error.name = "MissingId"
-        error.status = 400;
-        next(error);
-    }
-}
 
-// When function returns UserNotFound, it could mean that user is existing with that id but he isn't member of EGPE team
-exports.addReferent = (req, res, next) => {
-    let data = req.body;
+/**
+ * Find a specialization by id
+ * @param {ObjectId} id Id of the specialization to find
+ */
+exports.findById = ({ id }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() =>
+                Specialization
+                    .findOne({ _id: id })
+                    .populate({ path: 'referent', select: "first_name last_name _id" })
+                    .exec()
+            )
+            .then(specialization => resolve(specialization))
+            .catch(reject);
+    });
 
-    if (data._id && data.referent) {
-        Administration.findOne({ _id: data.referent }, (err, epge) => {
-            if (err && err.name === "CastError") {
-                err.status = 400;
-                err.message = "referent parameter must be an ObjectId";
-                next(err);
-            }
-            else if (err) next(err);
-            else if (epge) {
-                Specialization.findOne({ _id: data._id }, (err, spe) => {
-                    if (err && err.name === "CastError") {
-                        err.status = 400;
-                        err.message = "referent parameter must be an ObjectId";
-                        next(err);
+/**
+ * Update a specialization
+ * @param {ObjectId} id
+ * @param {string} [nameEn] Optional - English name of the specialization
+ * @param {string} [nameFr] Optional - French name of the specialization
+ * @param {string} [descriptionEn] Optional - English description of the specialization
+ * @param {string} [descriptionFr] Optional - French description of the specialization
+ * @param {string} [abbreviation] Optional - Abbreviation of the specialization
+ */
+exports.update = ({ id, ...data }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() => {
+                let update = {};
+
+                if (data.abbreviation != undefined) update['abbreviation'] = data.abbreviation;
+                if (data.nameFr != undefined) update['name.fr'] = data.nameFr;
+                if (data.nameEn != undefined) update['name.en'] = data.nameEn;
+                if (data.descriptionFr != undefined) update['description.fr'] = data.descriptionFr;
+                if (data.descriptionEn != undefined) update['description.en'] = data.descriptionEn;
+
+                Specialization
+                    .updateOne({ _id: id }, update)
+                    .exec();
+            })
+            .then(writeOps => resolve(writeOps))
+            .catch(reject)
+    });
+
+/**
+ * Add a referent to a specialization
+ * @param {ObjectId} specializationId Id of the specialization
+ * @param {ObjectId} referentId Id of the referent
+ */
+exports.addReferent = ({ specializationId, referentId }) =>
+    new Promise((resolve, reject) => {
+        areValidTypes(
+            [specializationId, referentId],
+            ["specializationId", "referentId"],
+            ["ObjectId", "ObjectId"]
+        )
+            .then(() => {
+                let findSpecialization = Specialization.findOne({ _id: specializationId }).exec();
+                let administrationExists = Administration.exists({ _id: referentId });
+
+                return Promise.all([findSpecialization, administrationExists]);
+            })
+            .then(([specialization, administrationExists]) => {
+                if (specialization && administrationExists) {
+                    if (specialization.referent.indexOf(referentId) === -1) {
+                        specialization.referent.push(referentId);
+                        return spe.save();
                     }
-                    else if (err) next(err);
-                    else if (spe) {
-                        if (spe.referent.indexOf(epge._id.toString()) === -1) {
-                            spe.referent.push(epge._id);
-                            spe
-                                .save()
-                                .then(savedSpe => res.json(savedSpe))
-                                .catch(next);
-                        } else {
-                            let error = new Error("User is already listed as a referent of the specialization");
-                            error.status = 400;
-                            error.name = "AlreadyReferent"
-                            next(error);
-                        }
-                    }
-                    else {
-                        let error = new Error("Can't find any specialization with that ObjectId");
-                        error.status = 400;
-                        error.name = "SpecializationNotFound"
-                        next(error);
-                    }
-                });
-            }
-            else {
-                let error = new Error("Can't find any EGPE member with that ObjectId");
-                error.status = 400;
-                error.name = "UserNotFound"
-                next(error);
-            }
-        });
+                    else
+                        throw new ReferentAlreadyRegisteredError();
+                } else if (!specialization)
+                    throw new SpecializationNotFoundError();
+                else
+                    throw new UserNotFoundError();
+            })
+            .then(specialization => resolve(specialization))
+            .catch(reject);
+    });
 
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id, (ObjectID) referent");
-        error.name = "MissingParameter"
-        error.status = 400;
-        next(error);
-    }
-}
-
-// When function returns SpecializationNotFound, it could mean that specialization exists but not with the referent passed as a parameter
-// When function returns UserNotFound, it could mean that user is existing with that id but he isn't member of EGPE team
-exports.removeReferent = (req, res, next) => {
-    let data = req.body;
-
-    if (data._id && data.referent) {
-        Administration.findOne({ _id: data.referent }, (err, epge) => {
-            if (err && err.name === "CastError") {
-                err.status = 400;
-                err.message = "referent parameter must be an ObjectId";
-                next(err);
-            }
-            else if (err) next(err);
-            else if (epge) {
-                Specialization.findOne({ _id: data._id, referent: epge._id }, (err, spe) => {
-                    if (err && err.name === "CastError") {
-                        err.status = 400;
-                        err.message = "referent parameter must be an ObjectId";
-                        next(err);
-                    }
-                    else if (err) next(err);
-                    else if (spe) {
-                        let referent_index = spe.referent.indexOf(epge._id);
-                        spe.referent.splice(referent_index, 1);
-                        spe
-                            .save()
-                            .then(savedSpe => res.json(savedSpe))
-                            .catch(next);
-                    }
-                    else {
-                        let error = new Error("Can't find any specialization with that ObjectId");
-                        error.status = 400;
-                        error.name = "SpecializationNotFound"
-                        next(error);
-                    }
-                });
-            }
-            else {
-                let error = new Error("Can't find any EGPE member with that ObjectId");
-                error.status = 400;
-                error.name = "UserNotFound"
-                next(error);
-            }
-        });
-    } else {
-        let error = new Error("Missing a parameter. Expected parameters : (ObjectID) _id, (ObjectID) referent");
-        error.name = "MissingParameter"
-        error.status = 400;
-        next(error);
-    }
-}
+/**
+ * Remove a referent from a specialization
+ * @param {ObjectId} specializationId Id of the specialization
+ * @param {ObjectId} referentId Id of the referent
+ */
+exports.removeReferent = ({ specializationId, referentId }) =>
+    new Promise((resolve, reject) => {
+        areValidTypes(
+            [specializationId, referentId],
+            ["specializationId", "referentId"],
+            ["ObjectId", "ObjectId"]
+        )
+            .then(() =>
+                Specialization
+                    .updateOne(
+                        { _id: specializationId, referent: referentId },
+                        { "$pull": { referent: referentId } }
+                    )
+                    .exec()
+            )
+            .then(resolve)
+            .catch(reject);
+    });
