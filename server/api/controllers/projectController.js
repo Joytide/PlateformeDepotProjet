@@ -438,7 +438,7 @@ exports.removeKeyword = ({ keywordId, projectId }) =>
 /**
  * Exports all projects informations into a csv
  */
-exports.getCSV = find => () =>
+exports.getCSV = (find = {}) => () =>
 	new Promise((resolve, reject) => {
 		let findProject = Project.find(find)
 			.populate("partner specializations.specialization study_year")
