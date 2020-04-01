@@ -12,7 +12,7 @@ const Person = mongoose.model('Person');
 const Partner = mongoose.model('Partner');
 
 const config = require('../../config.json');
-const { UserNotFoundError } = require('../../helpers/Errors');
+const { UserNotFoundError, ForbiddenError, PartnerNotFoundError, MissingParameterError } = require('../../helpers/Errors');
 
 // Strategy pour log l'utilisateur avec son nom d'utilisateur & mot de passe.
 // Si les identifiants sont bon. Alors on lui renvoie son token jwt pour
@@ -80,12 +80,25 @@ passport.use('jwt', new JWTstrategy({
         .catch(err => done(err));
 }));
 
-exports.logPartner = (req, res) => {
+passport.serializeUser(function (token, done) {
+    done(null, token);
+});
+
+passport.deserializeUser(function (id, done) {
+    User.findById({ _id: id }, function (err, user) {
+        done(err, user);
+    });
+});
+
+exports.passport = passport;
+
+exports.logPartner = (req, res, next) => {
     if (req.body.key) {
         Partner.findOne({ key: req.body.key }, (err, partner) => {
-            if (err) res.send(err);
+            if (err)
+                next(err);
             if (!partner)
-                res.status(401).send({ type: "NotExisting" });
+                next(new PartnerNotFoundError());
             else {
                 let userToken = jwt.sign(
                     { id: partner._id },
@@ -99,13 +112,13 @@ exports.logPartner = (req, res) => {
             }
         });
     } else {
-        res.status(400).send({ message: "Missing key parameter", type: "MissingParameter" });
+        next(new MissingParameterError("key"))
     }
 }
 
 exports.areAuthorized = authorized => (req, res, next) => {
     if (!req.user) {
-        next(new Error('Unauthorized access'));
+        next(new ForbiddenError());
     } else {
         if (req.user.admin)
             next();
@@ -115,26 +128,7 @@ exports.areAuthorized = authorized => (req, res, next) => {
             next();
         else if (authorized.indexOf("EPGE") !== -1 && req.user.EPGE)
             next();
-        else {
-            let error = new Error('Unautorized access');
-            error.status = 401;
-            error.name = "Unauthorized";
-            next(error);
-        }
-
+        else
+            next(new ForbiddenError());
     }
-
 }
-
-
-passport.serializeUser(function (token, done) {
-    done(null, token);
-});
-
-passport.deserializeUser(function (id, done) {
-    User.findById({ _id: id }, function (err, user) {
-        done(err, user);
-    });
-});
-
-exports.passport = passport;
