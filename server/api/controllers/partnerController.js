@@ -11,7 +11,7 @@ const config = require('../../config');
 /**
  * List all partners
  */
-exports.getAll =
+exports.getAll = () =>
 	new Promise((resolve, reject) => {
 		Partner.find()
 			.populate('projects')
@@ -19,6 +19,20 @@ exports.getAll =
 			.then(resolve)
 			.catch(reject);
 	});
+
+exports.myself = ({ user }) =>
+	new Promise((resolve, reject) => {
+		Partner
+			.findOne({ _id: user._id })
+			.populate({
+				path: "projects",
+				populate: { path: "specializations.specialization study_year" }
+			})
+			.exec()
+			.then(resolve)
+			.catch(reject);
+	});
+
 
 exports.addProject = (partnerId, projectId) => {
 	return new Promise((resolve, reject) => {

@@ -7,6 +7,12 @@ module.exports = app => {
 	app.route('/api/partner/reset')
 		.post(handleRequest(partner.resetPassword));
 
+	app.route('/api/partner/me')
+		.get(
+			auth.passport.authenticate('jwt'),
+			handleRequest(partner.myself)
+		)
+
 	app.route('/api/partner/:id([a-fA-F0-9]{24})')
 		.get(handleRequest(partner.findById))
 		.put(handleRequest(partner.updatePartner));
