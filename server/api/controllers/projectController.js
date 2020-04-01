@@ -229,7 +229,7 @@ exports.createProject = ({ user, ...data }) =>
  * Find a project by id 
  * @param {ObjectId} id Id of the project to search for
  */
-exports.findById = ({ id }) =>
+exports.findById = ({ id, user }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() =>
@@ -241,9 +241,15 @@ exports.findById = ({ id }) =>
 						path: 'files',
 						select: 'originalName'
 					})
+					.lean()
 					.exec()
 			)
-			.then(project => resolve(project))
+			.then(project => {
+				if (user.__t == "Partner" && project.partner._id.toString() != user._id.toString())
+					reject(new ForbiddenError());
+				else
+					resolve(project)
+			})
 			.catch(reject);
 	});
 

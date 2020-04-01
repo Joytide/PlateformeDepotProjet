@@ -21,16 +21,27 @@ const styles = {
 class ProjectPage extends React.Component {
     constructor(props) {
         super(props);
+        let project = {};
+
+        if (this.props.location.state)
+            project = this.props.location.state.project
+
         this.state = {
-            project: this.props.project,
-            loaded: false,
+            project: project,
+            loaded: project != {} ? true : false,
             isLiked: false,
         }
     }
 
     componentDidMount() {
+        if(!this.state.loaded) {
         AuthService.fetch('/api/project/' + this.props.match.params.key)
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json()
+                else
+                    throw res
+            })
             .then(project => {
 
                 this.setState({ project: project, loaded: true });
@@ -40,7 +51,9 @@ class ProjectPage extends React.Component {
                 else {
                     this.setState({ isLiked: false });
                 }
-            });
+            })
+            .catch(err => console.error(err));
+        }
     }
 
     handleChange = () => {
@@ -101,7 +114,7 @@ class ProjectPage extends React.Component {
                                                     key={spe._id}
                                                     label={spe.specialization.abbreviation}
                                                     color="secondary"
-                                                    style={{ marginRight: "5px"}}
+                                                    style={{ marginRight: "5px" }}
                                                 />)
                                         }
                                         {
@@ -109,7 +122,7 @@ class ProjectPage extends React.Component {
                                                 return <Chip
                                                     key={keyword}
                                                     label={keyword}
-                                                    style={{ marginRight: "5px"}}
+                                                    style={{ marginRight: "5px" }}
                                                 />
                                             })
                                         }

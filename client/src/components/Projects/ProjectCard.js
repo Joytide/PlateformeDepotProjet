@@ -68,7 +68,14 @@ class ProjectCard extends React.Component {
 		if (project._id) {
 			return (
 				<div>
-					<Link to={`/Projects/${this.props.project._id}`} key={this.props.project._id} style={{textDecoration: "none"}}>
+					<Link
+						to={{
+							pathname: `/Projects/${this.props.project._id}`,
+							state: { project }
+						}}
+						key={this.props.project._id}
+						style={{ textDecoration: "none" }}
+					>
 						<Card style={{ borderBottom: 2, marginBottom: 8 }}>
 
 							<CardContent>

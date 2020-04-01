@@ -73,21 +73,21 @@ module.exports = function (app) {
 			handleRequest(project.update)
 		);
 
-	app.route('/api/project/:projectId([a-fA-F0-9]{24})/files')
+	app.route('/api/project/:id([a-fA-F0-9]{24})/files')
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.findByIdSelectFiles)
 		);
 
-	app.route('/api/project/:projectId([a-fA-F0-9]{24})/specializations')
+	app.route('/api/project/:id([a-fA-F0-9]{24})/specializations')
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.findByIdSelectSpecializations)
 		);
 
-	app.route('/api/project/:projectId([a-fA-F0-9]{24})')
+	app.route('/api/project/:id([a-fA-F0-9]{24})')
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized(["Administration", "EPGE", "Partner"]),
