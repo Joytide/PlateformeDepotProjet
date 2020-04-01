@@ -39,16 +39,16 @@ exports.addProject = (partnerId, projectId) => {
  * @param {string} partner.email Partner's email
  * @param {string} partner.company Partner's company name
  * @param {string} partner.kind Partner's kind (enterprise, association, school, other...)
- * @param {boolean} partner.alreadyPartner If the partner has already deposited projects another year
+ * @param {boolean} [partner.alreadyPartner=false] Optional - Default false If the partner has already deposited projects another year
  * @param {string} [partner.phone] Optional - Partner's phone number
  * @param {string} [partner.address] Optional - Partner's address
  */
 exports.createPartner = ({ ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.first_name, data.last_name, data.email, data.company, data.kind, data.alreadyPartner],
-			["first_name", "last_name", "email", "company", "kind", "alreadyPartner"],
-			["string", "string", "string", "string", "string", "boolean"]
+			[data.first_name, data.last_name, data.email, data.company, data.kind],
+			["first_name", "last_name", "email", "company", "kind"],
+			["string", "string", "string", "string", "string"]
 		)
 			.then(() =>
 				Partner
@@ -63,7 +63,7 @@ exports.createPartner = ({ ...data }) =>
 						first_name: data.first_name,
 						last_name: data.last_name,
 						email: data.email,
-						alreadyPartner: data.alreadyPartner,
+						alreadyPartner: data.alreadyPartner | false,
 						kind: data.kind,
 						company: data.company
 					});
