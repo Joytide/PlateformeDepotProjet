@@ -230,7 +230,7 @@ exports.createProject = ({ user, ...data }) =>
 	});
 
 /**
- * Find a project by id 
+ * Find a project by id. Partners can onyl retrive their own projects
  * @param {ObjectId} id Id of the project to search for
  */
 exports.findById = ({ id, user }) =>

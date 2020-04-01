@@ -117,7 +117,7 @@ exports.create = ({ ...data }) =>
  * @param {Object} user
  * @param {ObjectId} user.id User's id
  */
-exports.delete = ({ id }) =>
+/*exports.delete = ({ id }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
             .then(() =>
@@ -127,7 +127,7 @@ exports.delete = ({ id }) =>
             )
             .then(resolve)
             .catch(reject);
-    });
+    });*/
 
 
 /**
