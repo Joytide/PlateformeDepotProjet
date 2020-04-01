@@ -177,7 +177,7 @@ exports.listProjects = ({ user, ...data }) =>
 exports.createProject = ({ user, ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber]
+			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber],
 			["title", "description", "majors_concerned", "study_year", "maxNumber"],
 			["string", "string", "Array", "Array", "number"]
 		)
@@ -187,7 +187,7 @@ exports.createProject = ({ user, ...data }) =>
 					.exec()
 			)
 			.then(count => {
-				newProject = new Project({
+				let newProject = new Project({
 					title: data.title,
 					specializations: data.majors_concerned.map(spe => ({ specialization: spe })),
 					study_year: data.study_year,
@@ -204,18 +204,24 @@ exports.createProject = ({ user, ...data }) =>
 				return newProject.save();
 			})
 			.then(project => {
+				let promises = [];
 				if (project.files)
-					File
-						.updateMany(
-							{ _id: project.files },
-							{ projectID: project._id }
-						)
+					promises.push(
+						File
+							.updateMany(
+								{ _id: project.files },
+								{ projectID: project._id }
+							)
+							.exec())
+				promises.push(
+					Partner
+						.updateOne({ _id: user._id }, { $push: { projects: project._id } })
 						.exec()
-						.then(() => resolve(project))
-						.catch(reject);
-				else
-					resolve(project);
+				);
+
+				return Promise.all(promises);
 			})
+			.then(() => resolve())
 			.catch(reject);
 	});
 
