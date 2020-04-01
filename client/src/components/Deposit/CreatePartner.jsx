@@ -80,11 +80,12 @@ class CreatePartner extends React.Component {
                 company: this.state.company,
                 phone: this.state.phone,
                 kind: this.state.kind,
+                address: this.state.address,
                 alreadyPartner: this.state.alreadyPartner === "true",
             };
 
             AuthService.fetch("/api/partner/", {
-                method: "PUT",
+                method: "POST",
                 body: JSON.stringify(data)
             })
                 .then(res => {
@@ -102,21 +103,12 @@ class CreatePartner extends React.Component {
                     }
                 })
                 .catch(err => {
-                    if (err.json)
-                        err.json().then(errData => {
-                            console.error(err);
-                            const { lng } = this.props;
-                            if (errData.name === "EmailUsed") {
-                                this.props.snackbar.notification("error", i18n.t('errors.emailUsed', { lng }), 10000);
-                            } else {
-                                this.props.snackbar.notification("error", i18n.t('errors.createPartner', { lng }), 10000);
-                            }
-                            console.error(errData);
-                        });
-                    else {
-                        const { lng } = this.props;
+                    const { lng } = this.props
+                    console.error(err);
+                    if (err.status === 409)
+                        this.props.snackbar.notification("error", i18n.t('errors.emailUsed', { lng }), 10000);
+                    else
                         this.props.snackbar.notification("error", i18n.t('errors.createPartner', { lng }), 10000);
-                    }
                 });
         }
     }

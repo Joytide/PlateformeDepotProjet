@@ -109,11 +109,6 @@ class CreateProject extends React.Component {
                     [e.target.name]: e.target.checked
                 });
                 break;
-            case "RandD":
-                this.setState({
-                    [e.target.name]: e.target.checked
-                });
-                break;
             default:
                 this.setState({
                     [e.target.name]: e.target.value
@@ -135,17 +130,20 @@ class CreateProject extends React.Component {
             };
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
-            AuthService.fetch("/api/projects/", {
-                method: "PUT",
+            AuthService.fetch("/api/project/", {
+                method: "POST",
                 body: JSON.stringify(data)
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data._id)
-                        this.props.next();
+                .then(res => {
+                    if (res.ok)
+                        this.props.next()
+                    else
+                        throw res;
                 })
                 .catch(err => {
-                    this.props.snackbar.notification("error", i18n.t("errors.createProject", { lng: this.props.lng }));
+                    const { lng } = this.props;
+                    console.error(err);
+                    this.props.snackbar.notification("error", i18n.t("errors.createProject", { lng }));
                 });
         } else {
             this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }));
@@ -268,25 +266,6 @@ class CreateProject extends React.Component {
 
                                     />
                                 }
-                            </Grid>
-                        </Grid>
-
-                    </Grid>
-                    <br />
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
-                            {i18n.t('createProject.RandD', { lng })}
-                        </Typography>
-                        <Grid container direction="row" justify='center'>
-                            <Grid item xs={4} md={3} lg={2}>
-                                {i18n.t("createPartner.no", { lng })}
-                                <Switch
-                                    checked={this.state.RandD}
-                                    onChange={this.handleChange}
-                                    name="RandD"
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                />
-                                {i18n.t("createPartner.yes", { lng })}
                             </Grid>
                         </Grid>
 
