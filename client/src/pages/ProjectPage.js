@@ -117,15 +117,6 @@ class ProjectPage extends React.Component {
                                                     style={{ marginRight: "5px" }}
                                                 />)
                                         }
-                                        {
-                                            project.keywords.sort().map(keyword => {
-                                                return <Chip
-                                                    key={keyword}
-                                                    label={keyword}
-                                                    style={{ marginRight: "5px" }}
-                                                />
-                                            })
-                                        }
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Typography variant="subtitle1">
