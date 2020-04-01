@@ -4,28 +4,59 @@ const { handleRequest } = require('../../helpers/Request');
 
 module.exports = (app) => {
     app.route('/api/user/administration')
-        .get(handleRequest(userController.listAdministration()));
+        .get(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            handleRequest(userController.listAdministration())
+        );
 
     app.route('/api/user/EPGE')
-        .get(handleRequest(userController.listAdministration({ EPGE: true })));
+        .get(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            handleRequest(userController.listAdministration({ EPGE: true }))
+        );
 
     app.route('/api/user/:id([a-fA-F0-9]{24})')
-        .get(handleRequest(userController.findById));
+        .get(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            handleRequest(userController.findById)
+        );
 
     app.route('/api/user')
-        .get(handleRequest(userController.list))
-        .post(handleRequest(userController.create))
-        //.delete(handleRequest(userController.delete))
-        .put(handleRequest(userController.update));
+        .get(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("Administrator"),
+            handleRequest(userController.list)
+        )
+        .post(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("Administrator"),
+            handleRequest(userController.create)
+        )
+        .put(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("Administrator"),
+            handleRequest(userController.update)
+        );
 
     app.route('/api/user/me')
         .get(
             auth.passport.authenticate('jwt'),
-            handleRequest(userController.myself));
+            handleRequest(userController.myself)
+        );
 
     app.route('/api/user/isAdmin')
-        .get(handleRequest(userController.isAdmin));
+        .get(
+            auth.passport.authenticate('jwt'),
+            handleRequest(userController.isAdmin)
+        );
 
     app.route('/api/user/password')
-        .post(handleRequest(userController.changePassword));
+        .post(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("Administraton"),
+            handleRequest(userController.changePassword)
+        );
 }

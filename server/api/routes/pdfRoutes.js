@@ -1,11 +1,16 @@
-'use strict';
-
 const pdfController = require('../controllers/pdfController');
+const auth = require('../controllers/authController');
 
 module.exports = (app) => {
     app.route('/api/pdf/')
-        .post(pdfController.regeneratePDF);
+        .post(
+			auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            pdfController.regeneratePDF);
         
     app.route('/api/pdf/all')
-        .get(pdfController.generateAllProjectsPDf);
+        .get(
+			auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            pdfController.generateAllProjectsPDf);
 };

@@ -6,7 +6,7 @@ module.exports = app => {
         .get((req, res, next) => res.json({ open: setting.getState() }))
         .post(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("Admin"),
+            auth.areAuthorized("Administrator"),
             (req, res, next) => {
                 const { newState } = req.body;
 

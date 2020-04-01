@@ -10,30 +10,37 @@ module.exports = function (app) {
 	app.route('/api/project/file')
 		.post(
 			auth.passport.authenticate('jwt'),
-			auth.areAuthorized(["Partner", "EPGE"]),
+			// W.I.P Referent only
+			auth.areAuthorized(["Partner", "Administration", "EPGE"]),
 			project.upload.single("file"),
 			project.uploadDone
 		)
 		.delete(
 			auth.passport.authenticate('jwt'),
-			auth.areAuthorized(["Partner", "EPGE"]),
+			// W.I.P Referent only
+			auth.areAuthorized(["Partner", "Administration", "EPGE"]),
 			handleRequest(project.deleteFile)
 		);
 
 	app.route('/api/project/file/:id([a-fA-F0-9]{24})')
 		.get(
+			auth.passport.authenticate('jwt'),
+			// Partner download own files only
+			auth.areAuthorized(["Partner", "Administration", "EPGE"]),
 			handleRequest(project.download_file)
 		);
 
 	app.route('/api/project/keyword')
 		.post(
 			auth.passport.authenticate('jwt'),
-			auth.areAuthorized(["Administration"]),
+			// W.I.P Referent only
+			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.addKeyword)
 		)
 		.delete(
 			auth.passport.authenticate('jwt'),
-			auth.areAuthorized(["Administration"]),
+			// W.I.P Referent only
+			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.removeKeyword)
 		);
 
@@ -47,11 +54,13 @@ module.exports = function (app) {
 	app.route('/api/project/validation')
 		.post(
 			auth.passport.authenticate('jwt'),
+			// W.I.P Referent only
 			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.projectValidation)
 		)
 		.put(
 			auth.passport.authenticate('jwt'),
+			// W.I.P Referent can only add his own specialization
 			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.addSpecialization)
 		);
@@ -69,6 +78,7 @@ module.exports = function (app) {
 		)
 		.put(
 			auth.passport.authenticate('jwt'),
+			// W.I.P Referent only
 			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.update)
 		);
@@ -95,6 +105,7 @@ module.exports = function (app) {
 		)
 		.put(
 			auth.passport.authenticate('jwt'),
+			// W.I.P Referent only
 			auth.areAuthorized(["Administration", "EPGE"]),
 			handleRequest(project.update)
 		)
@@ -102,21 +113,21 @@ module.exports = function (app) {
 	app.route('/api/project/csv')
 		.get(
 			auth.passport.authenticate('jwt'),
-			auth.areAuthorized(["Administration", "EPGE"]),
+			auth.areAuthorized("EPGE"),
 			handleRequest(project.getCSV({ status: "validated" }))
 		);
 
 	app.route('/api/project/csv/full')
 		.get(
 			auth.passport.authenticate('jwt'),
-			auth.areAuthorized(["Administration", "EPGE"]),
+			auth.areAuthorized("EPGE"),
 			handleRequest(project.getCSV())
 		);
 
 	app.route('/api/project/student')
 		.get(
 			auth.passport.authenticate('jwt'),
-			auth.areAuthorized(["Administration", "EPGE"]),
+			auth.areAuthorized("EPGE"),
 			handleRequest(project.studentFolder)
 		);
 };

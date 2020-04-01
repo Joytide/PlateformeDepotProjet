@@ -14,16 +14,32 @@ module.exports = app => {
 		)
 
 	app.route('/api/partner/:id([a-fA-F0-9]{24})')
-		.get(handleRequest(partner.findById))
-		.put(handleRequest(partner.updatePartner));
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("Administration"),
+			handleRequest(partner.findById)
+		)
+		.put(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("EPGE"),
+			handleRequest(partner.updatePartner)
+		);
 
 	app.route('/api/partner/:key([a-zA-Z0-9]{16})')
 		.get(handleRequest(partner.findByKey));
 
 	app.route('/api/partner/:email')
-		.get(handleRequest(partner.findByMail));
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("Administration"),
+			handleRequest(partner.findByMail)
+		);
 
 	app.route('/api/partner')
-		.get(handleRequest(partner.getAll))
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("Administration"),
+			andleRequest(partner.getAll)
+		)
 		.post(handleRequest(partner.createPartner));
 };

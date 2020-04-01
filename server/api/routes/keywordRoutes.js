@@ -17,12 +17,12 @@ module.exports = app => {
         )
         .put(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized(["Administration", "EPGE"]),
+            auth.areAuthorized("EPGE"),
             handleRequest(keyword.update)
         )
         .delete(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized(["Administration", "EPGE"]),
+            auth.areAuthorized("EPGE"),
             handleRequest(keyword.delete)
         );
 };
