@@ -9,13 +9,14 @@ const fs = require('fs');
 const { exec } = require('child_process');
 
 const Project = mongoose.model('Project');
+const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const File = mongoose.model('File');
 const Specialization = mongoose.model('Specialization');
 const Year = mongoose.model('Year');
 const partnerController = require('./partnerController');
 
-const { isValidType, areValidTypes, ProjectNotFoundError, FileNotFoundError, InvalidParameterError } = require('../../helpers/Errors');
+const { isValidType, areValidTypes, ProjectNotFoundError, FileNotFoundError, ForbiddenError, InvalidParameterError } = require('../../helpers/Errors');
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -75,9 +76,9 @@ exports.uploadDone = (req, res, next) => {
  * Delete a file
  * @param {ObjectId} id Id of the file to delete
  */
-exports.deleteFile = ({ id }) =>
+exports.deleteFile = ({ id, user }) =>
 	new Promise((resolve, reject) => {
-		isValidType(id, "id", "ObjectId")
+		let deleteFileProcess = () => isValidType(id, "id", "ObjectId")
 			.then(() =>
 				File.
 					findOne({ _id: id })
@@ -104,7 +105,25 @@ exports.deleteFile = ({ id }) =>
 			})
 			.then(() => resolve())
 			.catch(reject);
+
+		/* Ensure that the partner is allowed to delete that file */
+		/* He can only delete a file that's not associated to a project yet */
+		if (user.__t == "Partner") {
+			Project
+				.estimatedDocumentCount({ files: id })
+				.exec()
+				.then(count => {
+					if (count > 0)
+						reject(new ForbiddenError());
+					else
+						deleteFileProcess();
+				})
+				.catch(reject);
+		}
+		else
+			deleteFileProcess();
 	});
+
 
 /**
  * List all existing projects
