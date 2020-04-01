@@ -219,9 +219,13 @@ exports.createProject = ({ user, ...data }) =>
 						.exec()
 				);
 
-				return Promise.all(promises);
+				return Promise.all(promises)
+					.then(() => {
+						emitter.emit("projectSubmitted", { partner: project.partner });
+						resolve();
+					})
+					.catch(reject);
 			})
-			.then(() => resolve())
 			.catch(reject);
 	});
 
