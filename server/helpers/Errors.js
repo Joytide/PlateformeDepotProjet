@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 class ErrorHandler extends Error {
     constructor(code, message, infos) {
         super();
-        this.code = code;
-        this.message = message;
+        this.code = code || 500;
+        this.message = message || "Internal Server Error";
         this.infos = infos;
     }
 }
@@ -126,6 +126,7 @@ class YearNotFoundError extends ErrorHandler {
 }
 
 const handleError = (error, req, res, next) => {
+    console.error(error);
     res.status(error.code).json({ code: error.message, message: error.infos });
 }
 
