@@ -135,11 +135,8 @@ class Carousel extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-		const { actualStep } = this.state;
 		let lng = this.props.lng;
-
-
-
+		
 		return (
 			<Grid container className={classes.root}>
 				<Grid item xs={12}>
