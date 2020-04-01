@@ -128,7 +128,7 @@ class YearNotFoundError extends ErrorHandler {
 const handleError = (error, req, res, next) => {
     console.error(error);
     if (error instanceof ErrorHandler)
-    res.status(error.code).json({ code: error.message, message: error.infos });
+        res.status(error.code).json({ code: error.message, message: error.infos });
     else 
         res.status(500).json({});
 }
@@ -148,9 +148,9 @@ const isValidType = (variable, varName, typeExpected) =>
             if (typeExpected == "boolean")
                 if (variable === "true" || variable === "false")
                     return resolve();
-            
-            if(typeExpected == "number")
-                if(parseInt(variable, 10) != NaN)
+
+            if (typeExpected == "number")
+                if (parseInt(variable, 10) != NaN)
                     return resolve();
 
             if (typeExpected == "ObjectId")
