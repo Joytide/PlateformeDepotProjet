@@ -4,6 +4,7 @@ import { FormGroup, Label } from "reactstrap";
 import i18n from '../../i18n';
 import AuthService from '../../AuthService';
 import { api } from "../../../config.json";
+import { withSnackbar } from "../../../providers/SnackbarProvider/SnackbarProvider";
 
 
 class FilesInputs extends React.Component {
@@ -35,7 +36,12 @@ class FilesInputs extends React.Component {
             },
             body: formData
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                else
+                    return res.json();
+            })
             .then(data => {
                 this.setState(state => {
                     file._id = data._id;
@@ -48,23 +54,35 @@ class FilesInputs extends React.Component {
                     this.setFiles(list);
                     return { files: list };
                 });
+            })
+            .catch(err => {
+                const { lng } = this.props;
+                console.error(err);
+                this.props.snackbar.notification("error", i18n.t('errors.default', { lng }), 10000);
             });
 
     }
 
     deleteFile = fileID => () => {
         const data = {
-            fileID
+            id: fileID
         }
         AuthService.fetch("/api/project/file", {
             method: "DELETE",
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
-            .then(data => {
-                this.setState({
-                    files: this.state.files.filter(f => f._id !== fileID)
-                })
+            .then(res => {
+                if (res.ok)
+                    this.setState({
+                        files: this.state.files.filter(f => f._id !== fileID)
+                    })
+                else
+                    throw res;
+            })
+            .catch(err => {
+                const { lng } = this.props;
+                console.error(err);
+                this.props.snackbar.notification("error", i18n.t('errors.default', { lng }), 10000);
             })
     }
 
@@ -104,4 +122,4 @@ class FilesInputs extends React.Component {
     }
 }
 
-export default FilesInputs;
+export default withSnackbar(FilesInputs);
