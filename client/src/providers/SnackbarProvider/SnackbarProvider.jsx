@@ -1,6 +1,5 @@
 import React, { createContext } from "react"; // on importe createContext qui servira à la création d'un ou plusieurs contextes
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
@@ -54,11 +53,11 @@ function MySnackbarContent(props) {
 
 	return (
 		<SnackbarContent
-			className={classNames(classes[variant], className)}
+			className={classes[variant]}
 			aria-describedby="client-snackbar"
 			message={
 				<span id="client-snackbar" className={classes.message}>
-					<Icon className={classNames(classes.icon, classes.iconVariant)} />
+					<Icon className={classes.icon} />
 					{message}
 				</span>
 			}

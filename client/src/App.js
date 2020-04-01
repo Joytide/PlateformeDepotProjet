@@ -4,7 +4,7 @@ import { Route, Switch, BrowserRouter } from "react-router-dom";
 import Home from './pages/Home';
 import Projects from './pages/Projects';
 import Deposit from './pages/Deposit';
-import Connection from './pages/Connection';
+//import Connection from './pages/Connection';
 //import Admin from './pages/Admin';
 import Partner from './pages/Partner'
 import Login from './pages/Login';
@@ -62,7 +62,7 @@ class App extends Component {
 										<Route exact path="/Projects" render={(routeProps) => (<Projects lng={lng} {...routeProps} />)} />
 										<Route exact path="/Projects/:key" render={(routeProps) => (<ProjectPage lng={lng} {...routeProps} />)} />
 										<Route exact path="/deposit" render={(routeProps) => (<Deposit lng={lng} {...routeProps} />)} />
-										<Route exact path="/Connection" render={(routeProps) => (<Connection lng={lng} {...routeProps} />)} />
+										{/*<Route exact path="/Connection" render={(routeProps) => (<Connection lng={lng} {...routeProps} />)} />*/}
 										{/*<Route exact path="/Admin" render={(routeProps) => (<Admin lng={lng} {...routeProps} />)} />*/}
 										<Route exact path="/partner" render={(routeProps) => (<Partner lng={lng} {...routeProps} />)} />
 										<Route exact path="/Forgot" render={(routeProps) => (<ForgetPass lng={lng} {...routeProps} />)} />

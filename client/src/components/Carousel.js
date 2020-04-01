@@ -3,11 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import SwipeableViews from 'react-swipeable-views';
-import { autoPlay } from 'react-swipeable-views-utils';
 import i18n from '../components/i18n';
 
-const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const styles = theme => ({
 	header: {

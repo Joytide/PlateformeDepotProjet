@@ -7,8 +7,7 @@
     "test": "mocha --timeout 10000 --recursive",
     "server": "nodemon app.js",
     "start": "nodemon app.js",
-    "client": "cd ../client && npm start",
-    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
+    "client": "cd ../client && npm start"
   },
   "author": "Thomas Denneulin - Sofian Amirou - Cyrine Bouzayene - Sajeevan Puvikaran - Vidushan Chooriyakumaran",
   "license": "ISC",
@@ -16,9 +15,7 @@
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.2",
     "colors": "^1.3.2",
-    "concurrently": "^3.5.1",
     "ejs": "^2.6.1",
-    "email-validator": "^2.0.4",
     "express": "^4.16.2",
     "js-sha256": "^0.9.0",
     "json2csv": "^4.5.1",

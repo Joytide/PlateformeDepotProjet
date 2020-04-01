@@ -19,7 +19,9 @@ module.exports = (app) => {
         .put(handleRequest(userController.update));
 
     app.route('/api/user/me')
-        .get(handleRequest(userController.myself));
+        .get(
+            auth.passport.authenticate('jwt'),
+            handleRequest(userController.myself));
 
     app.route('/api/user/isAdmin')
         .get(handleRequest(userController.isAdmin));
