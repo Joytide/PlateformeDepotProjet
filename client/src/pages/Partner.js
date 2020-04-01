@@ -17,7 +17,7 @@ class Partner extends React.Component {
         AuthService
             .getUser()
             .then(data => {
-                AuthService.fetch("/api/partner")
+                AuthService.fetch("/api/partner/me")
                     .then(res => res.json())
                     .then(partner => {
                         if (partner) {
