@@ -12,6 +12,7 @@ const Person = mongoose.model('Person');
 const Partner = mongoose.model('Partner');
 
 const config = require('../../config.json');
+const { UserNotFoundError } = require('../../helpers/Errors');
 
 // Strategy pour log l'utilisateur avec son nom d'utilisateur & mot de passe.
 // Si les identifiants sont bon. Alors on lui renvoie son token jwt pour
@@ -21,30 +22,34 @@ passport.use('login', new LocalStrategy({
     passwordField: "password"
 },
     (username, password, done) => {
-        Person.findOne({ email: username }, (err, user) => {
-            if (err) return done(err);
-            else {
-                if (!user) {
-                    return done(null, false, { message: "Incorrect username or password" });
-                } else {
-                    bcrypt.compare(password, user.password, function (err, valid) {
-                        if (err) return done(err);
-
-                        if (valid) {
-                            let userToken = jwt.sign(
-                                { id: user._id },
-                                config.jwt.secret,
-                                {
-                                    expiresIn: 60 * 60 * 24
-                                }
-                            );
-                            return done(null, { token: userToken });
-                        }
+        Person
+            .findOne({ email: username })
+            .select("_id password")
+            .lean()
+            .exec((err, user) => {
+                if (err) return done(err);
+                else {
+                    if (!user) {
                         return done(null, false, { message: "Incorrect username or password" });
-                    });
+                    } else {
+                        bcrypt.compare(password, user.password, function (err, valid) {
+                            if (err) return done(err);
+
+                            if (valid) {
+                                let userToken = jwt.sign(
+                                    { id: user._id },
+                                    config.jwt.secret,
+                                    {
+                                        expiresIn: 60 * 60 * 24
+                                    }
+                                );
+                                return done(null, { token: userToken });
+                            }
+                            return done(null, false, { message: "Incorrect username or password" });
+                        });
+                    }
                 }
-            }
-        });
+            });
     }
 ));
 
@@ -57,22 +62,23 @@ passport.use('jwt', new JWTstrategy({
     jwtFromRequest: req => {
         return req.headers.authorization;
     }
-}, async (token, done) => {
-    try {
-        //Pass the user details to the next middleware
-        Person.findOne({ _id: token.id }, (err, person) => {
-            if (err) return done(err);
-            else if (person)
-                return done(null, person);
+}, (token, done) => {
+    let findPerson = Person.findOne({ _id: token.id }).lean().exec();
+    let findPartner = Partner.findOne({ _id: token.id }).lean().exec();
+
+    //Pass the user details to the next middleware
+    Promise
+        .all([findPerson, findPartner])
+        .then(([person, partner]) => {
+            console.log(person, partner)
+            if (person)
+                done(null, person);
+            else if (partner)
+                done(null, partner);
             else
-                Partner.findOne({ _id: token.id }, (err, partner) => {
-                    if (err) return done(err);
-                    return done(null, partner);
-                });
-        });
-    } catch (error) {
-        done(error);
-    }
+                done(new UserNotFoundError());
+        })
+        .catch(err => done(err));
 }));
 
 exports.logPartner = (req, res) => {
