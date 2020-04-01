@@ -70,7 +70,6 @@ passport.use('jwt', new JWTstrategy({
     Promise
         .all([findPerson, findPartner])
         .then(([person, partner]) => {
-            console.log(person, partner)
             if (person)
                 done(null, person);
             else if (partner)
