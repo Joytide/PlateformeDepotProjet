@@ -127,7 +127,10 @@ class YearNotFoundError extends ErrorHandler {
 
 const handleError = (error, req, res, next) => {
     console.error(error);
+    if (error instanceof ErrorHandler)
     res.status(error.code).json({ code: error.message, message: error.infos });
+    else 
+        res.status(500).json({});
 }
 
 /**
