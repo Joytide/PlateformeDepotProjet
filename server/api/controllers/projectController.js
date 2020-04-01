@@ -42,12 +42,16 @@ const storage = multer.diskStorage({
 				(err, fileSaved) => {
 					if (err) cb(err);
 					if (projectID) {
-						Project.updateOne({ _id: projectID }, { $push: { files: fileSaved._id } }, err => {
-
-						});
+						Project
+							.updateOne(
+								{ _id: projectID },
+								{
+									$push: { files: fileSaved._id }
+								})
+							.exec();
 					}
 					req.fileDocument = fileSaved;
-					cb(null, req.user._id + '_' + fileSaved._id + path.extname(file.originalname))
+					cb(null, fileSaved._id + path.extname(file.originalname))
 				});
 		}
 	}
@@ -64,10 +68,7 @@ exports.upload = multer({
 });
 
 exports.uploadDone = (req, res, next) => {
-	req.fileDocument.path = req.file.path;
-	req.fileDocument.save(err => {
-		res.send({ _id: req.fileDocument._id, originalName: req.fileDocument.originalName });
-	});
+	res.send({ _id: req.fileDocument._id, originalName: req.fileDocument.originalName });
 }
 
 /**
@@ -78,15 +79,30 @@ exports.deleteFile = ({ id }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() =>
-				File
-					.deleteOne({ _id: id })
+				File.
+					findOne({ _id: id })
+					.lean()
 					.exec()
 			)
-			.then(() =>
-				Project
-					.updateOne({ files: id }, { $pull: { files: id } })
-					.exec()
-			)
+			.then(file => {
+				if (file) {
+					let filePath = path.join(process.cwd(), ".uploads", file._id + path.extname(file.originalName));
+					console.log(filePath);
+					let deleteFileDb = File
+						.deleteOne({ _id: id })
+						.exec();
+					let updateProject = Project
+						.updateOne({ files: id }, { $pull: { files: id } })
+						.exec();
+					let deleteFile = fs.promises
+						.unlink(filePath);
+
+					return Promise.all([deleteFileDb, updateProject, deleteFile])
+				}
+				else
+					throw new FileNotFoundError();
+			})
+			.then(() => resolve())
 			.catch(reject);
 	});
 
