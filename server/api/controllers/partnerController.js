@@ -33,18 +33,6 @@ exports.myself = ({ user }) =>
 			.catch(reject);
 	});
 
-
-exports.addProject = (partnerId, projectId) => {
-	return new Promise((resolve, reject) => {
-		Partner.findByIdAndUpdate(partnerId, { $push: { projects: projectId } }, { new: true }, (err, partner) => {
-			if (err) reject(err);
-			else {
-				emitter.emit("projectSubmitted", { partner: partner });
-			}
-		});
-	});
-}
-
 /**
  * Create a new partner
  * @param {Object} partner Partner's informations
