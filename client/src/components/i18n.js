@@ -11,7 +11,7 @@ i18next
 				translation: {
 					deposit: { label: "Deposit project" },
 					year: { label: 'Year', },
-					partner: { label: 'Proposed by', },
+					partner: { label: 'Submit date', },
 					firm: { label: 'Company' },
 					title: { label: 'Project\'s title' },
 					keywords: { label: 'Keywords', },
@@ -171,7 +171,7 @@ i18next
 				translation: {
 					deposit: { label: "Deposer le projet" },
 					year: { label: 'Année', },
-					partner: { label: 'Proposé par', },
+					partner: { label: 'Proposé le', },
 					firm: { label: 'Entreprise' },
 					title: { label: 'Titre du projet' },
 					keywords: { label: 'Mots-clés', },

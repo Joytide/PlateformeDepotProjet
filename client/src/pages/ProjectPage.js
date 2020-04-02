@@ -25,34 +25,35 @@ class ProjectPage extends React.Component {
 
         if (this.props.location.state)
             project = this.props.location.state.project
-
+        console.log(project);
         this.state = {
             project: project,
-            loaded: project != {} ? true : false,
+            loaded: project !== {} ? true : false,
             isLiked: false,
         }
     }
 
     componentDidMount() {
-        if(!this.state.loaded) {
-        AuthService.fetch('/api/project/' + this.props.match.params.key)
-            .then(res => {
-                if (res.ok)
-                    return res.json()
-                else
-                    throw res
-            })
-            .then(project => {
+        if (!this.state.loaded) {
+            console.log("requesting");
+            AuthService.fetch('/api/project/' + this.props.match.params.key)
+                .then(res => {
+                    if (res.ok)
+                        return res.json()
+                    else
+                        throw res
+                })
+                .then(project => {
 
-                this.setState({ project: project, loaded: true });
-                if (project.likes.find((element) => { return element === this.state.userId; })) {
-                    this.setState({ isLiked: true });
-                }
-                else {
-                    this.setState({ isLiked: false });
-                }
-            })
-            .catch(err => console.error(err));
+                    this.setState({ project: project, loaded: true });
+                    if (project.likes.find((element) => { return element === this.state.userId; })) {
+                        this.setState({ isLiked: true });
+                    }
+                    else {
+                        this.setState({ isLiked: false });
+                    }
+                })
+                .catch(err => console.error(err));
         }
     }
 
@@ -120,7 +121,7 @@ class ProjectPage extends React.Component {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Typography variant="subtitle1">
-                                            {i18n.t('partner.label', { lng })} : {project.partner.company}, {new Date(project.edit_date).toLocaleDateString()}
+                                            {i18n.t('partner.label', { lng })} {new Date(project.edit_date).toLocaleDateString()}
                                         </Typography>
 
                                         {/*<Tooltip title="Like">
@@ -132,7 +133,7 @@ class ProjectPage extends React.Component {
                                     </Grid>
                                 </Grid>
                                 <Grid container>
-                                    <Grid item xs={0} md={1} lg={2}></Grid>
+                                    <Grid item md={1} lg={2}></Grid>
                                     <Grid item xs={12} md={10} lg={8}>
                                         <hr></hr>
                                         <Typography align="justify">
