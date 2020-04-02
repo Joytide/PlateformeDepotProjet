@@ -85,7 +85,7 @@ class Navs extends React.Component {
 			mobileMoreAnchorEl: null
 		}
 	}
-	
+
 	handleProfileMenuOpen = event => {
 		this.setState({ anchorEl: event.currentTarget });
 	};
@@ -142,7 +142,7 @@ class Navs extends React.Component {
 				open={isMobileMenuOpen}
 				onClose={this.handleMobileMenuClose}
 			>
-				<Link to="/">
+				<Link to="/" >
 					<MenuItem color="inherit">
 						<div>{i18n.t('navs.home', { lng })}</div>
 					</MenuItem>
@@ -193,13 +193,13 @@ class Navs extends React.Component {
 				<AppBar position="fixed" color='primary'>
 					<Toolbar>
 						<Link to="/">
-							<img alt="logo PULV" src="/logo_pulv_blanc.png" height="60" width="60" style={{marginTop: "5px", marginBottom: "5px"}} />
+							<img alt="logo PULV" src="/logo_pulv_blanc.png" height="60" width="60" style={{ marginTop: "5px", marginBottom: "5px" }} />
 						</Link>
 
 						{this.context.user._id && user}
 						<div className={classes.grow} />
 						<div className={classes.sectionDesktop}>
-							<Link to="/">
+							<Link to="/" style={{ textDecoration: "none" }}>
 								<Button color="inherit" className={classes.button}>
 									<div>{i18n.t('navs.home', { lng })}</div>
 								</Button>
@@ -211,20 +211,20 @@ class Navs extends React.Component {
 									</Button>
 								</Link>
 							}
-							<Link to="/deposit">
+							<Link to="/deposit" style={{ textDecoration: "none" }}>
 								<Button color="inherit" className={classes.button}>
 									<div>{i18n.t('navs.submit', { lng })}</div>
 								</Button>
 							</Link>
 							{this.context.user._id &&
-								<Link to="/" onClick={this.context.disconnect}>
+								<Link to="/" onClick={this.context.disconnect} style={{ textDecoration: "none" }}>
 									<Button color="inherit" className={classes.button}>
 										<div>{i18n.t('navs.disconnect', { lng })}</div>
 									</Button>
 								</Link>
 							}
 							{!this.context.user._id &&
-								<Link to="/forgot">
+								<Link to="/forgot" style={{ textDecoration: "none" }}>
 									<Button color="inherit" className={classes.button}>
 										<div>{i18n.t('navs.linkLost', { lng })}</div>
 									</Button>

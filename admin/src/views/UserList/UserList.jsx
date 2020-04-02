@@ -18,6 +18,7 @@ import Button from "components/CustomButtons/Button.jsx";
 import Danger from "components/Typography/Danger.jsx";
 
 import { api } from "config.json"
+import AuthService from "components/AuthService"
 
 const styles = {
     cardCategoryWhite: {
@@ -59,12 +60,8 @@ class UserList extends React.Component {
         };
     }
 
-    showProfile(id) {
-
-    }
-
     componentWillMount() {
-        fetch(api.host + ":" + api.port + "/api/user", { crossDomain: true })
+        AuthService.fetch(api.host + ":" + api.port + "/api/user", { crossDomain: true })
             .then(res => res.json())
             .then(data => {
                 let userData = data.map(user => {

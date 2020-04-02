@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 const sha256 = require('js-sha256')
 const jwt = require('jsonwebtoken');
-const { isValidType, areValidTypes, PartnerNotFound, ExistingEmailError } = require('../../helpers/Errors');
+const { isValidType, areValidTypes, PartnerNotFoundError, ExistingEmailError } = require('../../helpers/Errors');
 
 const Partner = mongoose.model('Partner');
 const { emitter } = require('../../eventsCommon');
@@ -26,7 +26,7 @@ exports.myself = ({ user }) =>
 			.findOne({ _id: user._id })
 			.populate({
 				path: "projects",
-				populate: { path: "specializations.specialization study_year" }
+				populate: { path: "specializations.specialization study_year files" }
 			})
 			.exec()
 			.then(resolve)
@@ -180,15 +180,13 @@ exports.updatePartner = ({ id, ...data }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() => {
-				let updateData = {
-					company: data.company,
-					first_name: data.first_name,
-					last_name: data.last_name,
-					phone: data.phone,
-					address: data.address,
-					kind: data.kind,
-					alreadyPartner: data.alreadyPartner
-				};
+				let updateData = {};
+				let keysList = ["company", "first_name", "last_name", "phone", "address", "kind", "alreadyPartner"]
+
+				keysList.forEach(key => {
+					if (data[key]) 
+					updateData[key] = data[key];
+				});
 
 				return Partner
 					.updateOne({ _id: id }, updateData)
@@ -218,14 +216,14 @@ exports.resetPassword = ({ email }) =>
 					return generatePassword(16);
 				}
 				else
-					throw new PartnerNotFound()
+					throw new PartnerNotFoundError();
 			})
 			.then(pass => {
 				partner.key = pass.hash;
+				emitter.emit("resetLink", { key: pass.key, partner: partner });
 				return partner.save();
 			})
 			.then(dataSaved => {
-				emitter.emit("resetLink", { key: pass.key, partner: dataSaved });
 				resolve(dataSaved);
 			})
 			.catch(reject);

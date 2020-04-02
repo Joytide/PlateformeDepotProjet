@@ -13,6 +13,7 @@ import { withStyles } from '@material-ui/core/styles';
 import VerticalAlignBottom from '@material-ui/icons/VerticalAlignBottom';
 
 import AuthService from '../components/AuthService';
+import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 import { api } from "../config";
 
 const styles = {
@@ -25,17 +26,18 @@ class ProjectPage extends React.Component {
 
         if (this.props.location.state)
             project = this.props.location.state.project
-        console.log(project);
+
+        console.log(Object.keys(project).length);
+
         this.state = {
             project: project,
-            loaded: project !== {} ? true : false,
+            loaded: Object.keys(project).length > 0 ? true : false,
             isLiked: false,
         }
     }
 
     componentDidMount() {
         if (!this.state.loaded) {
-            console.log("requesting");
             AuthService.fetch('/api/project/' + this.props.match.params.key)
                 .then(res => {
                     if (res.ok)
@@ -53,7 +55,12 @@ class ProjectPage extends React.Component {
                         this.setState({ isLiked: false });
                     }
                 })
-                .catch(err => console.error(err));
+                .catch(err => {
+                    console.error(err)
+                    if (err.status)
+                        this.props.snackbar.notification("danger", i18n.t("errors.unauthorized", { lng: this.props.lng }));
+
+                });
         }
     }
 
@@ -196,4 +203,4 @@ class ProjectPage extends React.Component {
     }
 }
 
-export default withStyles(styles)(ProjectPage);
+export default withSnackbar(withStyles(styles)(ProjectPage));

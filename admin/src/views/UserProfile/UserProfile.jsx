@@ -70,7 +70,7 @@ class UserProfile extends React.Component {
 	}
 
 	componentDidMount() {
-		fetch(api.host + ":" + api.port + "/api/user/" + this.props.match.params.id)
+		AuthService.fetch(api.host + ":" + api.port + "/api/user/" + this.props.match.params.id)
 			.then(res => res.json())
 			.then(data => {
 				if (data) {
@@ -105,16 +105,20 @@ class UserProfile extends React.Component {
 
 	update() {
 		let data = {
-			_id: this.state.user._id,
+			id: this.state.user._id,
 			company: this.state.user.company,
-			firstName: this.state.user.first_name,
-			lastName: this.state.user.last_name,
+			first_name: this.state.user.first_name,
+			lasrt_name: this.state.user.last_name,
 			email: this.state.user.email,
 			__t: this.state.user.__t
 		}
 
-		AuthService.fetch(api.host + ":" + api.port + "/api/user", {
-			method: "POST",
+		let url = api.host + ":" + api.port + "/api/user";
+		if(this.state.user.__t == "Partner") 
+			url = api.host + ":" + api.port + "/api/partner"
+
+		AuthService.fetch(url, {
+			method: "PUT",
 			mode: "cors",
 			headers: {
 				"Content-Type": "application/json",
@@ -128,8 +132,7 @@ class UserProfile extends React.Component {
 			})
 			.then(res => {
 				this.setState({
-					user: res,
-					user_old: res,
+					user_old: this.state.user,
 					modified: false
 				});
 

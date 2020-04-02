@@ -1,7 +1,8 @@
 import React from 'react';
 import ProjectsListCard from '../components/Projects/ProjectsListCard';
 import AuthService from '../components/AuthService';
-
+import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
+import i18n from '../components/i18n';
 
 class Partner extends React.Component {
     constructor(props) {
@@ -14,21 +15,25 @@ class Partner extends React.Component {
     }
 
     componentDidMount() {
-        AuthService
-            .getUser()
-            .then(data => {
-                AuthService.fetch("/api/partner/me")
-                    .then(res => res.json())
-                    .then(partner => {
-                        if (partner) {
-                            this.setState({
-                                partner: partner,
-                                loaded: true
-                            });
-                        }
-                    })
-
-            });
+        AuthService.fetch("/api/partner/me")
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res
+            })
+            .then(partner => {
+                if (partner) {
+                    this.setState({
+                        partner: partner,
+                        loaded: true
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                this.props.snackbar.notification("danger", i18n.t("errors.default", { lng: this.props.lng }));
+            })
     }
 
     render() {
@@ -44,4 +49,4 @@ class Partner extends React.Component {
     }
 }
 
-export default Partner;
+export default withSnackbar(Partner);

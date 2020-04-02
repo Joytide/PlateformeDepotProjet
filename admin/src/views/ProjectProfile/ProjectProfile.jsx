@@ -69,8 +69,13 @@ class ProjectProfile extends React.Component {
     }
 
     loadProjectData() {
-        fetch(api.host + ":" + api.port + "/api/project/" + this.props.match.params.id)
-            .then(res => res.json())
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/" + this.props.match.params.id)
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 let color = data.status === "pending" ? "warning" : (data.status === "validated" ? "success" : "danger");
                 this.setState({
@@ -78,7 +83,8 @@ class ProjectProfile extends React.Component {
                     loadingProject: false,
                     color: color
                 });
-            });
+            })
+            .catch(err => console.error(err));
     }
 
     /* handleProjectStatus = action => () => {

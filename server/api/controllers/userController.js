@@ -138,23 +138,23 @@ exports.create = ({ ...data }) =>
 * @param {string} user.email User's email
 * @param {string} [user.admin] If the user is administration's or EGPE's member : is (s)he an admin ?
 */
-exports.update = ({ id, ...data }) =>
+exports.update = ({ user, id, ...data }) =>
     new Promise((resolve, reject) => {
-        isValidType(id, "id", "ObjectId")
-            .then(() => {
-                let update = {};
+            isValidType(id, "id", "ObjectId")
+                .then(() => {
+                    let update = {};
 
-                if (data.admin !== undefined) update.admin = data.admin;
-                if (data.EPGE !== undefined) update.EPGE = data.EPGE;
-                if (data.firstName !== undefined) update.first_name = data.first_name;
-                if (data.lastName !== undefined) update.last_name = data.last_name;
+                    if (data.admin !== undefined) update.admin = data.admin;
+                    if (data.EPGE !== undefined) update.EPGE = data.EPGE;
+                    if (data.firstName !== undefined) update.first_name = data.first_name;
+                    if (data.lastName !== undefined) update.last_name = data.last_name;
 
-                return Administration
-                    .updateOne({ _id: id }, update)
-                    .exec()
-            })
-            .then(writeOps => resolve(writeOps))
-            .catch(reject);
+                    return Administration
+                        .updateOne({ _id: id }, update)
+                        .exec()
+                })
+                .then(writeOps => resolve(writeOps))
+                .catch(reject);
     });
 
 /**

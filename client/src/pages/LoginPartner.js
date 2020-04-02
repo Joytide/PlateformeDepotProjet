@@ -6,7 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import sha256 from 'js-sha256';
 import AuthService from '../components/AuthService';
-import {UserContext} from "../providers/UserProvider/UserProvider";
+import { UserContext } from "../providers/UserProvider/UserProvider";
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -30,11 +30,17 @@ class LoginPartner extends React.Component {
 
     componentDidMount() {
         let key = this.props.match.params.key;
+
         AuthService.fetch('/api/login/partner/', {
             method: "POST",
             body: JSON.stringify({ key: sha256(key) })
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json()
+                else
+                    throw res
+            })
             .then(data => {
                 if (data.token) {
                     this.context.setToken(data.token);

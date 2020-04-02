@@ -41,5 +41,12 @@ module.exports = app => {
 			auth.areAuthorized("Administration"),
 			handleRequest(partner.getAll)
 		)
-		.post(handleRequest(partner.createPartner));
+		.post(
+			handleRequest(partner.createPartner)
+		)
+		.put(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("EPGE"),
+			handleRequest(partner.updatePartner)
+		);
 };

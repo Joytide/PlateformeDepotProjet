@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid';
 import { Typography } from '@material-ui/core';
 import i18n from '../components/i18n';
 import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
-import AuthService from '../components/AuthService';
 
 class ForgetPass extends Component {
 
@@ -21,36 +20,33 @@ class ForgetPass extends Component {
     handleSubmit(event) {
         event.preventDefault();
 
-        if (this.state.email) {
-            const form = {
-                email: this.state.email
-            };
+        const form = {
+            email: this.state.email
+        };
 
-            AuthService.fetch('/api/partner/reset', {
-                method: 'POST',
-                body: JSON.stringify(form)
+        fetch('/api/partner/reset', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(form)
+        })
+            .then(res => {
+                if (!res.ok) throw res
+                else return res.json()
             })
-                .then(res => {
-                    if (!res.ok) throw res
-                    else return res.json()
-                })
-                .then(res => {
-                    this.props.snackbar.notification("success", i18n.t("forgetPass.mailSent", { lng: this.props.lng }));
-                })
-                .catch(error => {
-                    error.json()
-                        .then(data => {
-                            if (data.message === "PartnerNotFound")
-                                this.props.snackbar.notification("danger", i18n.t("errors.partnerNotFound", { lng: this.props.lng }));
-                            else
-                                this.props.snackbar.notification("danger", i18n.t("forgetPass.default", { lng: this.props.lng }));
-
-
-                        });
-                });
-        } else {
-
-        }
+            .then(res => {
+                this.props.snackbar.notification("success", i18n.t("forgetPass.mailSent", { lng: this.props.lng }));
+            })
+            .catch(error => {
+                error.json()
+                    .then(data => {
+                        if (data.code === "PartnerNotFound")
+                            this.props.snackbar.notification("danger", i18n.t("errors.partnerNotFound", { lng: this.props.lng }));
+                        else
+                            this.props.snackbar.notification("danger", i18n.t("errors.default", { lng: this.props.lng }));
+                    });
+            });
     }
 
     handleChange(e) {

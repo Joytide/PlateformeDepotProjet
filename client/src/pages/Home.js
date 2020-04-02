@@ -30,17 +30,6 @@ const styles = theme => ({
 
 
 class HomePage extends React.Component {
-	handleKeyChosen(key) {
-		if (key === "Student") {
-			sessionStorage.setItem("Connected", "True");
-			sessionStorage.setItem("typePerson", "3");
-			window.location.reload();
-		} else {
-			sessionStorage.setItem("typePerson", "4");
-			this.props.history.push("/Deposit");
-		}
-	}
-
 	render() {
 		let lng = this.props.lng;
 		const { classes } = this.props;
@@ -104,10 +93,10 @@ class HomePage extends React.Component {
 								<Typography variant="h5">{i18n.t('home.p4', { lng })}</Typography>
 								<Typography align="justify">
 									<Link to="/deposit">{i18n.t('home.p4_l1', { lng })}</Link><br />
-									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l2', { lng })}}></a><br />
-									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l3', { lng })}}></a><br />
-									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l4', { lng })}}></a><br />
-									<a dangerouslySetInnerHTML={{__html :i18n.t('home.p4_l5', { lng })}}></a><br />
+									<a dangerouslySetInnerHTML={{ __html: i18n.t('home.p4_l2', { lng }) }}></a><br />
+									<a dangerouslySetInnerHTML={{ __html: i18n.t('home.p4_l3', { lng }) }}></a><br />
+									<a dangerouslySetInnerHTML={{ __html: i18n.t('home.p4_l4', { lng }) }}></a><br />
+									<a dangerouslySetInnerHTML={{ __html: i18n.t('home.p4_l5', { lng }) }}></a><br />
 								</Typography>
 							</Grid>
 							<Grid item>

@@ -97,6 +97,7 @@ i18next
 						fillAll: "Please fill all required fields",
 						partnerNotFound: "No user found with that email",
 						default: "Something wrong happened. Please retry later",
+						unauthorized: "Action denied. Please ensure that you are correctly logged in."
 					},
 					createProject: {
 						skills: "Skills developped",
@@ -271,6 +272,7 @@ i18next
 						fillAll: "Merci de remplir tous les champs obligatoires",
 						partnerNotFound: "Aucun utilisateur trouvé avec cette adresse mail",
 						default: "Une erreur est survenue. Merci de réessayer",
+						unauthorized: "Action refusée. Assurez vous d'être correctement connecté."
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',
