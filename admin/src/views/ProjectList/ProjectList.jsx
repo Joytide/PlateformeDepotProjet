@@ -98,7 +98,7 @@ class ProjectList extends React.Component {
             style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
         />;
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/projects" + queryParams)
+        AuthService.fetch(api.host + ":" + api.port + "/api/project" + queryParams)
             .then(res => res.json())
             .then(data => {
                 let projectsData = data.map(project => {
