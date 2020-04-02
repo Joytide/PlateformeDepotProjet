@@ -152,7 +152,7 @@ exports.listProjects = ({ user, ...data }) =>
 		if (data.mine === "true") {
 			Specialization
 				.find({ referent: user._id })
-				.then(specializations => findProject(stats, specializations.map(spe => spe._id)))
+				.then(specializations => findProject(status, specializations.map(spe => spe._id)))
 				.then(projects => resolve(projects))
 				.catch(reject);
 
