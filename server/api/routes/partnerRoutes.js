@@ -39,7 +39,7 @@ module.exports = app => {
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized("Administration"),
-			andleRequest(partner.getAll)
+			handleRequest(partner.getAll)
 		)
 		.post(handleRequest(partner.createPartner));
 };
