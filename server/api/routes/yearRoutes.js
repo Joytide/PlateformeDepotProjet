@@ -7,20 +7,22 @@ module.exports = (app) => {
         .get(handleRequest(yearController.findById));
 
     app.route('/api/year')
-        .get(handleRequest(yearController.list))
-        .post(handleRequest(
-            auth.passport.authenticate('jwt'),
-            auth.areAuthorized("EPGE"),
-            yearController.create)
+        .get(
+            handleRequest(yearController.list)
         )
-        .delete(handleRequest(
+        .post(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("EPGE"),
-            yearController.delete)
+            handleRequest(yearController.create)
         )
-        .put(handleRequest(
+        .delete(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("EPGE"),
-            yearController.update)
+            handleRequest(yearController.delete)
+        )
+        .put(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            handleRequest(yearController.update)
         );
 }

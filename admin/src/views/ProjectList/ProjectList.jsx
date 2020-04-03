@@ -24,6 +24,7 @@ import { withUser } from "../../providers/UserProvider/UserProvider"
 import { FormControlLabel } from "@material-ui/core";
 
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 
 const styles = {
@@ -125,10 +126,7 @@ class ProjectList extends React.Component {
 
                 this.setState({ projects: projectsData, loading: false });
             })
-            .catch(err => {
-                console.error(err);
-                this.props.snackbar.notification("danger", "Une erreur est survenue lors du chargemement des statistiques.");
-            });
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     render() {

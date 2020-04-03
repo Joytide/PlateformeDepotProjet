@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Specialization = mongoose.model('Specialization');
+const Project = mongoose.model('Project');
 const Administration = mongoose.model('Administration');
 
 const { isValidType, areValidTypes, ReferentAlreadyRegisteredError, SpecializationNotFoundError, UserNotFoundError } = require('../../helpers/Errors');
@@ -54,12 +55,17 @@ exports.create = ({ ...data }) =>
 exports.delete = ({ id }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
-            .then(() =>
-                Specialization
+            .then(() => {
+                let deleteSpe = Specialization
                     .deleteOne({ _id: id })
-                    .exec()
-            )
-            .then(resolve)
+                    .exec();
+                let updateProjects = Project
+                    .updateMany({ "specializations.specialization": id }, { $pull: { specializations: { specialization: id } } })
+                    .exec();
+
+                return Promise.all([deleteSpe, updateProjects]);
+            })
+            .then(() => resolve({ ok: 1 }))
             .catch(reject);
     });
 

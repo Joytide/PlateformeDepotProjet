@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Year = mongoose.model('Year');
+const Project = mongoose.model('Project');
 const { isValidType, areValidTypes, YearNotFoundError } = require('../../helpers/Errors');
 
 /**
@@ -38,10 +39,7 @@ exports.create = ({ ...data }) =>
                 year.name.fr = data.nameFr;
                 year.abbreviation = data.abbreviation
 
-                return year.save((err, ye) => {
-                    if (err) next(err);
-                    else res.json(ye);
-                });
+                return year.save();
             })
             .then(savedYear => resolve(savedYear))
             .catch(reject);
@@ -54,12 +52,17 @@ exports.create = ({ ...data }) =>
 exports.delete = ({ id }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
-            .then(() =>
-                Year
-                    .deleteOne({ id })
+            .then(() => {
+                let deleteYear = Year
+                    .deleteOne({ _id: id })
+                    .exec();
+                let updateProjects = Project
+                    .updateMany({ study_year: id }, { $pull: { study_year: id } })
                     .exec()
-            )
-            .then(resolve)
+
+                return Promise.all([deleteYear, updateProjects]);
+            })
+            .then(() => resolve({ok :1}))
             .catch(reject);
     });
 
@@ -71,7 +74,7 @@ exports.findById = ({ id }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
             .then(() =>
-                Year.findById({_id: id})
+                Year.findById({ _id: id })
                     .exec()
             )
             .then(year => {
@@ -94,23 +97,17 @@ exports.update = ({ id, ...data }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
             .then(() => {
-                Year
-                    .findOne({ _id: id })
+                let update = {};
+
+                if (data.nameFr != undefined) update['name.fr'] = data.nameFr;
+                if (data.nameEn != undefined) update['name.en'] = data.nameEn;
+                if (data.abbreviation != undefined) update['abbreviation'] = data.abbreviation;
+
+                return Year
+                    .updateOne({ _id: id }, update)
                     .exec()
-            })
-            .then(year => {
-                if (!year) {
-                    throw new YearNotFoundError();
-                } else {
-                    let update = {};
 
-                    if (data.nameFr != undefined) update['name.fr'] = year.nameFr;
-                    if (data.nameEn != undefined) update['name.en'] = year.nameEn;
-                    if (data.abbreviation != undefined) update['abbreviation'] = year.abbreviation;
-
-                    return year.save();
-                }
             })
-            .then(year => resolve(year))
+            .then(resolve)
             .catch(reject);
     });

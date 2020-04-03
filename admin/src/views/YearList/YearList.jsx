@@ -14,13 +14,13 @@ import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-
+import Modal from "components/Modal/Modal.jsx";
 import Button from "components/CustomButtons/Button.jsx";
+
 import AuthService from "../../components/AuthService";
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler"
-
 import { api } from "config.json"
 
 const styles = {
@@ -111,7 +111,7 @@ class YearList extends React.Component {
 
     deleteYear = () => {
         const data = {
-            _id: this.state._id
+            id: this.state._id
         };
 
         AuthService.fetch(api.host + ":" + api.port + "/api/year",
@@ -133,11 +133,20 @@ class YearList extends React.Component {
 
     render() {
         const { classes } = this.props;
-
-        if (this.state.loading) {
-            return (<div></div>);
-        } else {
-            return (
+        return (
+            <div>
+                <Modal
+                    open={this.state.open}
+                    closeModal={this.closeModal}
+                    title="Supprimer cette année ?"
+                    content={(<div>Etes vous sûr de vouloir supprimer cette année ?
+                        <br />
+                            Toute suppression est définitive et aucun retour en arrière n'est possible.
+                    </div>)}
+                    buttonColor="danger"
+                    buttonContent="Supprimer"
+                    validation={this.deleteYear}
+                />
                 <GridContainer>
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
@@ -145,20 +154,20 @@ class YearList extends React.Component {
                                 <h4 className={classes.cardTitleWhite}>Liste des années</h4>
                                 <p className={classes.cardCategoryWhite}>
                                     Liste de toutes les années existantes sur la plateforme
-            </p>
+                                </p>
                             </CardHeader>
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
                                     tableHead={["Abréviation", "Nom (fr)", "Nom (en)", "Actions"]}
-                                    tableData={this.state.years}
+                                    tableData={this.state.loading ? [] : this.state.years}
                                 />
                             </CardBody>
                         </Card>
                     </GridItem>
                 </GridContainer>
-            );
-        }
+            </div>
+        );
     }
 }
 

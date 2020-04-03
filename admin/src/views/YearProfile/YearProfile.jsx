@@ -106,14 +106,14 @@ class YearProfile extends React.Component {
 
     update() {
         let data = {
-            _id: this.state.year._id,
+            id: this.state.year._id,
             nameFr: this.state.year.nameFr,
             nameEn: this.state.year.nameEn,
             abbreviation: this.state.year.abbreviation,
         };
 
         AuthService.fetch(api.host + ":" + api.port + "/api/year", {
-            method: "POST",
+            method: "PUT",
             mode: "cors",
             headers: {
                 "Content-Type": "application/json",
@@ -123,22 +123,14 @@ class YearProfile extends React.Component {
             .then(res => {
                 if (!res.ok)
                     throw res;
-                return res.json();
-            })
-            .then(res => {
-                let year = {
-                    nameFr: res.name.fr,
-                    nameEn: res.name.en,
-                    abbreviation: res.abbreviation,
-                    _id: res._id
+                else {
+                    this.props.snackbar.success("Modifications enregistrées avec succès");
+                    this.setState({
+                        year_old: this.state.year,
+                        loading: false,
+                        modificated: false
+                    });
                 }
-
-                this.setState({
-                    year: year,
-                    year_old: year,
-                    loading: false,
-                    modificated: false
-                });
             })
             .catch(handleXhrError(this.props.snackbar));
     }
