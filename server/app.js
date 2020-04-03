@@ -35,7 +35,10 @@ const config = require('./config.json');
 mongoose.Promise = global.Promise;
 mongoose.connect(
 	`mongodb://${config.db.hostname + ":" + config.db.port}/${config.db.name}`,
-	{ useNewUrlParser: true },
+	{
+		useNewUrlParser: true,
+		useUnifiedTopology: true
+	},
 	(err) => {
 		if (err) {
 			console.error(colors.red(err.message));
