@@ -1,0 +1,70 @@
+{
+    "Dashboard": {
+        "value": ""
+    },
+    "ProjectList": {
+        "value": "",
+        "DownloadPdf": "EGPE",
+        "DownloadCsv": "EGPE",
+        "DownloadZip": "EGPE"
+    },
+    "ProjectProfile": {
+        "value": "",
+        "EditProject": [
+            "Referent",
+            "EGPE"
+        ],
+        "ManageKeywords": [
+            "Referent",
+            "EGPE"
+        ],
+        "ManageFiles": [
+            "Referent",
+            "EGPE"
+        ],
+        "ManageYears": [
+            "Referent",
+            "EGPE"
+        ],
+        "ManageSpe": [
+            "Referent",
+            "EGPE"
+        ]
+    },
+    "UserList": {
+        "value": ""
+    },
+    "UserProfile": {
+        "value": "",
+        "EditUser": "Administrator"
+    },
+    "CreateUser": {
+        "value": "Administrator"
+    },
+    "SpecializationList": {
+        "value": "",
+        "DeleteSpecialization": "EGPE"
+    },
+    "SpecializationProfile": {
+        "value": "",
+        "EditSpecialization": "EGPE",
+        "ManageReferents": "EGPE"
+    },
+    "CreateSpecialization": {
+        "value": "EGPE"
+    },
+    "YearList": {
+        "value": "",
+        "DeleteYear": "EGPE"
+    },
+    "YearProfile": {
+        "value": "",
+        "EditYear": "EGPE"
+    },
+    "CreateYear": {
+        "value": "EGPE"
+    },
+    "Settings": {
+        "value": ""
+    }
+}

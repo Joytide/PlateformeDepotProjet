@@ -30,93 +30,107 @@ import YearProfile from "views/YearProfile/YearProfile.jsx";
 // Others
 import Settings from "views/Settings/Settings.jsx"
 
+import Permissions from "../permissions";
+
 const dashboardRoutes = [
   {
     path: "/dashboard",
     sidebarName: "Accueil",
     navbarName: "Accueil",
     icon: Dashboard,
-    component: DashboardPage
+    component: DashboardPage,
+    permissions: Permissions.Dashboard.value
   },
   {
     path: "/user/:id([a-zA-Z0-9]{24})",
     component: UserProfile,
     invisible: true,
-    exact: true
+    exact: true,
+    permissions: Permissions.UserProfile.value
   },
   {
     path: "/project/:id",
     component: ProjectProfile,
     invisible: true,
-    exact: true
+    exact: true,
+    permissions: Permissions.ProjectProfile.value
   },
   {
     path: "/specialization/:id([a-zA-Z0-9]{24})",
     component: SpecializationProfile,
     invisible: true,
-    exact: true
+    exact: true,
+    permissions: Permissions.SpecializationProfile.value
   },
   {
     path: "/year/:id([a-zA-Z0-9]{24})",
     component: YearProfile,
     invisible: true,
-    exact: true
+    exact: true,
+    permissions: Permissions.YearProfile.value
   },
   {
     path: "/project/",
-    sidebarName: "Liste projets",
+    sidebarName: "Liste des projets",
     navbarName: "Liste des projets",
     icon: Assignment,
     component: ProjectList,
-    exact: true
+    exact: true,
+    permissions: Permissions.ProjectList.value
   },
   {
     path: "/user",
-    sidebarName: "Liste utilisateurs",
+    sidebarName: "Liste des utilisateurs",
     navbarName: "Liste des utilisateurs",
     icon: People,
     component: UserList,
-    exact: true
+    exact: true,
+    permissions: Permissions.UserList.value
   },
   {
     path: "/createUser",
-    sidebarName: "Ajouter utilisateur",
+    sidebarName: "Ajouter un utilisateur",
     navbarName: "Ajouter un utilisateur",
     icon: PersonAdd,
     component: CreateUser,
-    adminOnly: true
+    adminOnly: true,
+    permissions: Permissions.CreateUser.value
   },
   {
     path: "/specialization",
-    sidebarName: "Liste majeures",
+    sidebarName: "Liste des majeures",
     navbarName: "Liste des majeures",
     icon: "list",
     component: SpecializationList,
-    exact: true
+    exact: true,
+    permissions: Permissions.SpecializationList.value
   },
   {
     path: "/createSpecialization",
-    sidebarName: "Créer majeure",
+    sidebarName: "Créer une majeure",
     navbarName: "Créer une majeure",
     icon: "add",
     component: CreateSpecialization,
-    adminOnly: true
+    adminOnly: true,
+    permissions: Permissions.CreateSpecialization.value
   },
   {
     path: "/year",
-    sidebarName: "Liste années",
+    sidebarName: "Liste des années",
     navbarName: "Liste des années",
     icon: DateRange,
     component: YearList,
-    exact: true
+    exact: true,
+    permissions: Permissions.YearList.value
   },
   {
     path: "/createYear",
-    sidebarName: "Créer année",
+    sidebarName: "Créer une année",
     navbarName: "Créer une année",
     icon: "add",
     component: CreateYear,
-    adminOnly: true
+    adminOnly: true,
+    permissions: Permissions.CreateYear.value
   },
   {
     path: "/settings",
@@ -124,7 +138,8 @@ const dashboardRoutes = [
     navbarName: "Réglages",
     icon: "settings",
     component: Settings,
-    adminOnly: false
+    adminOnly: false,
+    permissions: Permissions.Settings.value
   },
 ];
 

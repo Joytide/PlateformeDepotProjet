@@ -19,11 +19,13 @@ import AutoComplete from "components/AutoComplete/AutoComplete.jsx"
 import Button from "components/CustomButtons/Button.jsx";
 
 import AuthService from "components/AuthService";
-import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { hasPermission } from "components/PermissionHandler";
+import { withUser } from "../../providers/UserProvider/UserProvider";
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler"
 
 import { api } from "../../config"
+import { SpecializationProfile as Permissions } from "../../permissions"
 
 const styles = {
     cardCategoryWhite: {
@@ -58,7 +60,9 @@ class SpecializationProfile extends React.Component {
             modificated: false,
             specialization_old: {},
             administration: [],
-            selected: null
+            selected: null,
+            canEdit: false,
+            canManageReferents: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -66,6 +70,21 @@ class SpecializationProfile extends React.Component {
         this.cancel = this.cancel.bind(this);
         this.loadData = this.loadData.bind(this);
         this.addReferent = this.addReferent.bind(this);
+    }
+
+    componentDidMount() {
+        this.loadData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const canEdit = hasPermission(Permissions.EditSpecialization, nextProps.user.user);
+        const canManageReferents = hasPermission(Permissions.ManageReferents, nextProps.user.user);
+
+        if (canEdit !== this.state.canEdit || canManageReferents !== this.state.canManageReferents)
+            this.setState({
+                canEdit,
+                canManageReferents
+            }, this.loadData);
     }
 
     loadData() {
@@ -84,25 +103,23 @@ class SpecializationProfile extends React.Component {
             })
             .catch(handleXhrError(this.props.snackbar));
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/user/administration")
-            .then(res => {
-                if (!res.ok)
-                    throw res;
-                return res.json();
-            })
-            .then(data => {
-                if (data) {
-                    this.setState({
-                        administration: data,
-                        loadingReferent: false
-                    });
-                }
-            })
-            .catch(handleXhrError(this.props.snackbar));
-    }
-
-    componentDidMount() {
-        this.loadData();
+        if (this.state.canManageReferents) {
+            AuthService.fetch(api.host + ":" + api.port + "/api/user/administration")
+                .then(res => {
+                    if (!res.ok)
+                        throw res;
+                    return res.json();
+                })
+                .then(data => {
+                    if (data) {
+                        this.setState({
+                            administration: data,
+                            loadingReferent: false
+                        });
+                    }
+                })
+                .catch(handleXhrError(this.props.snackbar));
+        }
     }
 
     handleChange = event => {
@@ -229,11 +246,11 @@ class SpecializationProfile extends React.Component {
     render() {
         const { classes } = this.props;
 
-        let profile = () => { };
+        let profile;
         let referent;
         let suggestions;
         if (!this.state.loadingProfile) {
-            profile = user => (
+            profile = (
                 <GridContainer>
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
@@ -251,7 +268,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: !user.admin,
+                                                disabled: !this.state.canEdit,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.abbreviation
                                             }}
@@ -267,7 +284,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: !user.admin,
+                                                disabled: !this.state.canEdit,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.name.fr
                                             }}
@@ -281,7 +298,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: !user.admin,
+                                                disabled: !this.state.canEdit,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.name.en
                                             }}
@@ -298,7 +315,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: !user.admin,
+                                                disabled: !this.state.canEdit,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.description.fr
                                             }}
@@ -312,7 +329,7 @@ class SpecializationProfile extends React.Component {
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                disabled: !user.admin,
+                                                disabled: !this.state.canEdit,
                                                 onChange: this.handleChange,
                                                 value: this.state.specialization.description.en
                                             }}
@@ -321,7 +338,7 @@ class SpecializationProfile extends React.Component {
                                 </GridContainer>
                             </CardBody>
                             {
-                                user.admin &&
+                                this.state.canEdit &&
                                 <CardFooter>
                                     <GridContainer >
                                         <GridItem xs={12} sm={12} md={12}>
@@ -333,7 +350,8 @@ class SpecializationProfile extends React.Component {
                             }
                         </Card>
                     </GridItem>
-                </GridContainer>);
+                </GridContainer>
+            );
         }
         if (!this.state.loadingReferent && !this.state.loadingProfile) {
             suggestions = this.state.administration.map(admin => ({
@@ -409,16 +427,12 @@ class SpecializationProfile extends React.Component {
             );
         }
         return (
-            <UserContext.Consumer>
-                {value =>
-                    <div>
-                        {profile(value.user)}
-                        {value.user.admin && referent}
-                    </div>
-                }
-            </UserContext.Consumer>
+            <div>
+                {profile}
+                {this.state.canManageReferents && referent}
+            </div>
         );
     }
 }
 
-export default withSnackbar(withStyles(styles)(SpecializationProfile));
+export default withUser(withSnackbar(withStyles(styles)(SpecializationProfile)));

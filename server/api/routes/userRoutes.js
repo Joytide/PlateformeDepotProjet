@@ -27,7 +27,7 @@ module.exports = (app) => {
     app.route('/api/user')
         .get(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("Administrator"),
+            auth.areAuthorized("Administration"),
             handleRequest(userController.list)
         )
         .post(

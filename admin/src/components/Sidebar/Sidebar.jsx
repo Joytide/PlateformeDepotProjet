@@ -15,6 +15,7 @@ import Icon from "@material-ui/core/Icon";
 import HeaderLinks from "components/Header/HeaderLinks.jsx";
 
 import sidebarStyle from "assets/jss/material-dashboard-react/components/sidebarStyle.jsx";
+import { withUser } from "providers/UserProvider/UserProvider"
 
 const Sidebar = ({ ...props }) => {
 	// verifies if routeName is the one active (in browser input)
@@ -23,12 +24,13 @@ const Sidebar = ({ ...props }) => {
 		//return props.location.pathname.indexOf(routeName) > -1 ? true : false;
 	}
 	const { classes, color, image, routes } = props;
+	
 	var links = (
 		<List className={classes.list}>
 			{routes.map((prop, key) => {
 				if (prop.redirect) return null;
 				if (prop.invisible) return null;
-				if (prop.adminOnly && !props.isAdmin) return null;
+				if (!hasPermission(prop.permissions, props.user.user)) return null;
 				var activePro = " ";
 				var listItemClasses;
 				listItemClasses = classNames({
@@ -128,4 +130,19 @@ Sidebar.propTypes = {
 	classes: PropTypes.object.isRequired
 };
 
-export default withStyles(sidebarStyle)(Sidebar);
+export default withUser(withStyles(sidebarStyle)(Sidebar));
+
+const hasPermission = (authorized, user) => {
+	if (user.admin)
+		return true;
+	if (authorized === "")
+		return true;
+	else if (typeof authorized === "string") {
+		if (authorized === "EGPE" && user.EPGE)
+			return true;
+		return false;
+	} else {
+		console.error("Wrong authorized type", authorized, user);
+		return false;
+	}
+}
