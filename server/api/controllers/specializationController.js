@@ -74,7 +74,7 @@ exports.findById = ({ id }) =>
             .then(() =>
                 Specialization
                     .findOne({ _id: id })
-                    .populate({ path: 'referent', select: "first_name last_name _id" })
+                    .populate({ path: 'referent', select: "first_name last_name _id email" })
                     .exec()
             )
             .then(specialization => resolve(specialization))
@@ -106,7 +106,7 @@ exports.update = ({ id, ...data }) =>
                     .updateOne({ _id: id }, update)
                     .exec();
             })
-            .then(writeOps => resolve(writeOps))
+            .then(resolve)
             .catch(reject)
     });
 

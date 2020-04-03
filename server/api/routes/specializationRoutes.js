@@ -12,20 +12,20 @@ module.exports = (app) => {
         .get(
             handleRequest(specializationController.list)
         )
-        .put(
+        .post(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("EPGE"),
             handleRequest(specializationController.create)
+        )
+        .put(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            handleRequest(specializationController.update)
         )
         .delete(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("EPGE"),
             handleRequest(specializationController.delete)
-        )
-        .post
-        (auth.passport.authenticate('jwt'),
-            auth.areAuthorized("EPGE"),
-            handleRequest(specializationController.update)
         );
 
     app.route('/api/specialization/referent')
