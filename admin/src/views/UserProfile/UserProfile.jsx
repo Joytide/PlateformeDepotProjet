@@ -184,10 +184,10 @@ class UserProfile extends React.Component {
 
 	render() {
 		const { classes } = this.props;
-		const { user } = this.state;
+		const { user, user_old } = this.state;
 
 		if (!this.state.loading) {
-			const title = (user.company ? "[" + user.company.toUpperCase() + "] - " : "") + user.last_name.toUpperCase() + " " + user.first_name
+			const title = (user_old.company ? "[" + user_old.company.toUpperCase() + "] - " : "") + user_old.last_name.toUpperCase() + " " + user_old.first_name
 
 			let company;
 			let administration;

@@ -22,7 +22,6 @@ import CardBody from "components/Card/CardBody.jsx";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
@@ -84,11 +83,8 @@ class CreateUser extends React.Component {
             firstName: "",
             email: "",
             company: "",
-            success: false,
-            error: false,
-            message: "",
+            kind: "",
             redirect: false,
-            kind: ""
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -104,106 +100,79 @@ class CreateUser extends React.Component {
     };
 
     createUser() {
-        this.setState({ error: false, success: false },
-            () => {
-                let err = false;
-                if (this.state.type === "") {
-                    err = true;
-                    this.setState({
-                        error: true,
-                        message: "Veuillez selectionner un type d'utilisateur."
-                    });
-                }
-                else if (this.state.firstName === "") {
-                    err = true;
-                    this.setState({
-                        error: true,
-                        message: "Veuillez remplir le champ prénom de l'utilisateur."
-                    });
-                }
-                else if (this.state.lastName === "") {
-                    err = true;
-                    this.setState({
-                        error: true,
-                        message: "Veuillez remplir le champ nom de l'utilisateur."
-                    });
-                }
-                else if (this.state.type === "partner" && this.state.company === "") {
-                    err = true;
-                    this.setState({
-                        error: true,
-                        message: "Veuillez remplir le champ Entreprise."
-                    });
-                }
-                else if (!validateEmail(this.state.email)) {
-                    err = true;
-                    this.setState({
-                        error: true,
-                        message: "Veuillez saisir une adresse mail valide."
-                    });
-                }
-                else if (this.state.type === "EPGE" || this.state.type === "administration") {
-                    if (!isValidPassword(this.state.password)) {
-                        err = true;
-                        this.setState({
-                            error: true,
-                            message: "Le mot de passe doit à minima être de 8 caractères et comporter une majuscule, une minuscule et un chiffre ou un charactère spécial."
-                        });
+        let err = false;
+        if (this.state.type === "") {
+            err = true;
+            this.props.snackbar.error("Veuillez selectionner un type d'utilisateur.")
+        }
+        else if (this.state.firstName === "") {
+            err = true;
+            this.props.snackbar.error("Veuillez remplir le champ prénom de l'utilisateur.");
+        }
+        else if (this.state.lastName === "") {
+            err = true;
+            this.props.snackbar.error("Veuillez remplir le champ nom de l'utilisateur.");
+        }
+        else if (this.state.type === "partner" && this.state.company === "") {
+            err = true;
+            this.props.snackbar.error("Veuillez remplir le champ Entreprise.");
+        }
+        else if (!validateEmail(this.state.email)) {
+            err = true;
+            this.props.snackbar.error("Veuillez saisir une adresse mail valide.");
+        }
+        else if (this.state.type === "EPGE" || this.state.type === "administration") {
+            if (!isValidPassword(this.state.password)) {
+                err = true;
+                this.props.snackbar.error("Le mot de passe doit à minima être de 8 caractères et comporter une majuscule, une minuscule et un chiffre ou un charactère spécial.");
+            }
+
+            if (this.state.password !== this.state.password_2) {
+                err = true;
+                this.props.snackbar.error("Les deux mots de passe doivent être identiques.");
+            }
+        }
+
+        if (!err) {
+            let data = {
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+                admin: this.state.admin,
+                email: this.state.email,
+                company: this.state.company,
+                type: this.state.type,
+                kind: this.state.kind,
+                password: sha256(this.state.email + this.state.password)
+            }
+
+            AuthService.fetch(api.host + ":" + api.port + "/api/user", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (!res.ok) throw res;
+                    else return res.json()
+                })
+                .then(data => {
+                    if (data._id) {
+                        this.props.snackbar.success("Utilisateur crée avec succès. Vous allez être redirigé vers la liste des utilisateurs.");
+
+                        setTimeout(() => {
+                            this.setState({ redirect: true });
+                        }, 500);
                     }
-
-                    if (this.state.password !== this.state.password_2) {
-                        err = true;
-                        this.setState({
-                            error: true,
-                            message: "Les deux mots de passe doivent être identiques."
-                        });
-                    }
-                }
-
-                if (!err) {
-                    let data = {
-                        first_name: this.state.firstName,
-                        last_name: this.state.lastName,
-                        admin: this.state.admin,
-                        email: this.state.email,
-                        company: this.state.company,
-                        type: this.state.type,
-                        kind: this.state.kind,
-                        password: sha256(this.state.email + this.state.password)
-                    }
-
-                    AuthService.fetch(api.host + ":" + api.port + "/api/user", {
-                        method: "POST",
-                        mode: "cors",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(data)
-                    })
-                        .then(res => {
-                            if (!res.ok) throw res;
-                            else return res.json()
-                        })
-                        .then(data => {
-                            if (data._id) {
-                                this.setState({
-                                    success: true,
-                                    message: "Utilisateur crée avec succès. Vous allez être redirigé vers la liste des utilisateurs."
-                                });
-
-                                setTimeout(() => {
-                                    this.setState({ redirect: true });
-                                }, 500);
-                            }
-                        })
-                        .catch(handleXhrError(this.props.snackbar));
-                }
-            });
+                })
+                .catch(handleXhrError(this.props.snackbar));
+        }
     }
 
     render() {
         const { classes } = this.props;
-        let companyField, adminCheckbox, redirect, passwordField;
+        let companyField, adminCheckbox, passwordField;
         if (this.state.type === "partner") {
             companyField = (
                 <GridContainer>
@@ -304,28 +273,11 @@ class CreateUser extends React.Component {
             );
         }
 
-        if (this.state.redirect) {
-            redirect = <Redirect to="/users" />
-        }
+        if (this.state.redirect) 
+            return <Redirect to="/admin/user" />
+        
         return (
             <GridContainer>
-                {redirect}
-                <Snackbar
-                    place="tc"
-                    color="success"
-                    message={this.state.message}
-                    open={this.state.success}
-                    closeNotification={() => this.setState({ success: false })}
-                    close
-                />
-                <Snackbar
-                    place="tc"
-                    color="danger"
-                    message={this.state.message}
-                    open={this.state.error}
-                    closeNotification={() => this.setState({ error: false })}
-                    close
-                />
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <CardHeader color="primary">
@@ -346,7 +298,6 @@ class CreateUser extends React.Component {
                                             }}
                                         >
                                             <MenuItem value=""><em></em></MenuItem>
-                                            {/*<MenuItem value="student">Elève</MenuItem>*/}
                                             <MenuItem value="partner">Partenaire</MenuItem>
                                             <MenuItem value="administration">Administration</MenuItem>
                                             <MenuItem value="EPGE">EGPE</MenuItem>
