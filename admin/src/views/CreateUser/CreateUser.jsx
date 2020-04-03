@@ -24,8 +24,10 @@ import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 
-
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 import { api } from "config.json"
+import AuthService from "../../components/AuthService";
 
 const styles = theme => ({
     cardCategoryWhite: {
@@ -86,6 +88,7 @@ class CreateUser extends React.Component {
             error: false,
             message: "",
             redirect: false,
+            kind: ""
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -159,17 +162,18 @@ class CreateUser extends React.Component {
 
                 if (!err) {
                     let data = {
-                        firstName: this.state.firstName,
-                        lastName: this.state.lastName,
+                        first_name: this.state.firstName,
+                        last_name: this.state.lastName,
                         admin: this.state.admin,
                         email: this.state.email,
                         company: this.state.company,
                         type: this.state.type,
+                        kind: this.state.kind,
                         password: sha256(this.state.email + this.state.password)
                     }
 
-                    fetch(api.host + ":" + api.port + "/api/user", {
-                        method: "PUT",
+                    AuthService.fetch(api.host + ":" + api.port + "/api/user", {
+                        method: "POST",
                         mode: "cors",
                         headers: {
                             "Content-Type": "application/json",
@@ -192,22 +196,7 @@ class CreateUser extends React.Component {
                                 }, 500);
                             }
                         })
-                        .catch(err => {
-                            err.json().then(errMsg => {
-                                if (errMsg.name === "EmailUsed") {
-                                    this.setState({
-                                        error: true,
-                                        message: "Cette adresse mail est déjà associée à autre un utilisateur."
-                                    });
-                                } else {
-                                    console.error(errMsg);
-                                    this.setState({
-                                        error: true,
-                                        message: "Une erreur est survenue lors de la création de l'utilisateur."
-                                    });
-                                }
-                            })
-                        });
+                        .catch(handleXhrError(this.props.snackbar));
                 }
             });
     }
@@ -231,6 +220,26 @@ class CreateUser extends React.Component {
                                     fullWidth: true
                                 }}
                             />
+                        </FormControl>
+                    </GridItem>
+
+                    <GridItem xs={12} sm={12} md={3}>
+                        <FormControl className={classes.formControl} fullWidth={true}>
+                            <InputLabel htmlFor="kind">Type de partenaire</InputLabel>
+                            <Select
+                                value={this.state.kind}
+                                onChange={this.handleChange}
+                                inputProps={{
+                                    name: 'kind',
+                                    id: 'kind',
+                                }}
+                            >
+                                <MenuItem value=""><em></em></MenuItem>
+                                <MenuItem value="company">Entreprise</MenuItem>
+                                <MenuItem value="association">Association</MenuItem>
+                                <MenuItem value="school">Ecole</MenuItem>
+                                <MenuItem value="other">Autre</MenuItem>
+                            </Select>
                         </FormControl>
                     </GridItem>
                 </GridContainer>);
@@ -411,7 +420,7 @@ class CreateUser extends React.Component {
     }
 }
 
-export default withStyles(styles)(CreateUser);
+export default withSnackbar(withStyles(styles)(CreateUser));
 
 function validateEmail(email) {
     // eslint-disable-next-line

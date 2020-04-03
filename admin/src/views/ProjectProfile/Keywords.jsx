@@ -23,6 +23,8 @@ import Button from "components/CustomButtons/Button.jsx";
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
 import { api } from "../../config"
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
     cardCategoryWhite: {
@@ -72,12 +74,18 @@ class Keywords extends React.Component {
         AuthService.fetch(api.host + ":" + api.port + "/api/keyword", {
             method: "GET",
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 this.setState({
                     keywords: data
                 });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     // Create a new keyword entry in database and at it in keywords state list
@@ -90,14 +98,20 @@ class Keywords extends React.Component {
             method: "POST",
             body: JSON.stringify(body)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 if (data.name !== "Error")
                     this.setState({
                         newKeyword: "",
                         keywords: [...this.state.keywords, data]
                     });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     // Add a keyword to a project
@@ -111,12 +125,18 @@ class Keywords extends React.Component {
             method: "POST",
             body: JSON.stringify(body)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 this.setState({
-                    projectKeywords: data.keywords
+                    projectKeywords: [id, ...this.state.projectKeywords]
                 });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     // Remove a keyword from a project
@@ -130,12 +150,18 @@ class Keywords extends React.Component {
             method: "DELETE",
             body: JSON.stringify(body)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 this.setState({
-                    projectKeywords: data.keywords
+                    projectKeywords: this.state.projectKeywords.filter(keyword => keyword !== id)
                 });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     // Handle changes on the new keyword's textbox
@@ -217,4 +243,4 @@ Keywords.propTypes = {
     projectId: PropTypes.string.isRequired,
 }
 
-export default withUser(withStyles(styles)(Keywords));
+export default withSnackbar(withUser(withStyles(styles)(Keywords)));

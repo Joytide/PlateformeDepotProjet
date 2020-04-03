@@ -67,11 +67,11 @@ exports.delete = ({ id }) =>
  * Find a year given his id
  * @param {ObjectId} id Id of the year to delete
  */
-exports.findById = ({ ...id }) =>
+exports.findById = ({ id }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
             .then(() =>
-                Year.findById(data._id)
+                Year.findById({_id: id})
                     .exec()
             )
             .then(year => {

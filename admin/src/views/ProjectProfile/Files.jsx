@@ -20,6 +20,8 @@ import Modal from "components/Modal/Modal.jsx";
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
 import { api } from "../../config"
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
     cardCategoryWhite: {
@@ -56,13 +58,19 @@ class Files extends React.Component {
 
     // Loads only files associated to the project
     loadProjectFiles() {
-        fetch(api.host + ":" + api.port + "/api/project/" + this.props.projectId + "/files")
-            .then(res => res.json())
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/" + this.props.projectId + "/files")
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 this.setState({
                     projectFiles: data.files
                 });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     // Asks user if he really wants to delete the file
@@ -84,20 +92,26 @@ class Files extends React.Component {
     // Deletes a file
     deleteFile = () => {
         const data = {
-            fileID: this.state.toDelete
+            id: this.state.toDelete
         };
 
         AuthService.fetch(api.host + ":" + api.port + "/api/project/file", {
             method: "DELETE",
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 if (data.ok) {
                     this.loadProjectFiles();
                     this.closeFileModal();
                 }
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     // Uploads a new file
@@ -115,10 +129,16 @@ class Files extends React.Component {
             },
             body: formData
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
-                 this.loadProjectFiles();
-            });
+                this.loadProjectFiles();
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     render() {
@@ -130,7 +150,7 @@ class Files extends React.Component {
                     closeModal={this.closeFileModal}
                     title="Supprimer ce fichier ?"
                     content={(<div>Etes vous sûr de vouloir supprimer ce fichier ?
-                    <br />
+                        <br />
                         Toute suppression est définitive et aucun retour en arrière n'est possible.
                     </div>)}
                     buttonColor="danger"
@@ -149,7 +169,7 @@ class Files extends React.Component {
                                 this.state.projectFiles.map(file => {
                                     if (file != null)
                                         return (
-                                            <GridItem xs={12} sm={12} md={6} key={file._id}>
+                                            <GridItem xs={12} sm={12} md={6} lg={3} key={file._id}>
                                                 <Card style={{ width: "20rem" }}>
                                                     <CardBody>
                                                         <h4>{file.originalName}</h4>
@@ -201,4 +221,4 @@ Files.propTypes = {
     partnerId: PropTypes.string.isRequired,
 }
 
-export default withUser(withStyles(styles)(Files));
+export default withSnackbar(withUser(withStyles(styles)(Files)));

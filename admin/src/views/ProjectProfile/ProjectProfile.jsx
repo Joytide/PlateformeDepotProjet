@@ -18,6 +18,8 @@ import Button from "components/CustomButtons/Button.jsx";
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
 import { api } from "../../config"
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 import PartnerInfo from "./PartnerInfo";
 import ProjectInfo from "./ProjectInfo";
@@ -84,7 +86,7 @@ class ProjectProfile extends React.Component {
                     color: color
                 });
             })
-            .catch(err => console.error(err));
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     /* handleProjectStatus = action => () => {
@@ -134,21 +136,10 @@ class ProjectProfile extends React.Component {
                 if (!res.ok) throw res;
                 else return res.json();
             })
-            .then(data => {
-                this.setState({
-                    success: true,
-                    message: "Votre demande a bien été traité."
-                });
-
-                setTimeout(() => this.loadProjectData(), 2500);
+            .then(data => {                
+                this.props.snackbar.notification("danger", "Votre demande a bien été traité.");
             })
-            .catch(err => {
-                console.error(err)
-                this.setState({
-                    error: true,
-                    message: "Une erreur est survenue lors de la regénération du PDF. Merci de réessayer."
-                })
-            });
+            .catch(handleXhrError(this.props.snackbar));
 
     }
 
@@ -230,23 +221,6 @@ class ProjectProfile extends React.Component {
 
         return (
             <GridContainer>
-                <Snackbar
-                    place="tc"
-                    color="success"
-                    message={this.state.message}
-                    open={this.state.success}
-                    closeNotification={() => this.setState({ success: false })}
-                    close
-                />
-                <Snackbar
-                    place="tc"
-                    color="danger"
-                    message={this.state.message}
-                    open={this.state.error}
-                    closeNotification={() => this.setState({ error: false })}
-                    close
-                />
-
                 <GridItem xs={12} sm={12} md={12}>
                     {partnerInfo}
 
@@ -266,4 +240,4 @@ class ProjectProfile extends React.Component {
     }
 }
 
-export default withUser(withStyles(styles)(ProjectProfile));
+export default withSnackbar(withUser(withStyles(styles)(ProjectProfile)));

@@ -103,7 +103,7 @@ exports.deleteFile = ({ id, user }) =>
 				else
 					throw new FileNotFoundError();
 			})
-			.then(() => resolve())
+			.then(() => resolve({ok: 1}))
 			.catch(reject);
 
 		/* Ensure that the partner is allowed to delete that file */
@@ -265,17 +265,12 @@ exports.findByIdSelectFiles = ({ id }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() => Project
-				.findById(id, 'files')
+				.findOne({ _id: id}, 'files')
 				.populate({
 					path: 'files',
 					select: 'originalName'
 				})
-				.exec((err, projectFiles) => {
-					if (err)
-						reject(err);
-					else
-						resolve(projectFiles);
-				})
+				.exec()
 			)
 			.then(project => resolve(project))
 			.catch(reject);
@@ -411,7 +406,7 @@ exports.projectValidation = ({ ...data }) =>
 					emitter.emit("projectValidated", { partnerId: project.partner, projectId: project._id });
 				else if (project.status === "rejected")
 					emitter.emit("projectRejeted", project.partner);
-				resolve(savedProject)
+				resolve(project)
 			})
 			.catch(reject);
 	});
@@ -425,13 +420,13 @@ exports.addSpecialization = ({ projectId, specializationId }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
 			[projectId, specializationId],
-			["projectId", "specializationId"]
+			["projectId", "specializationId"],
 			["ObjectId", "ObjectId"]
 		)
 			.then(() =>
 				Project
 					.updateOne(
-						{ _id: data.projectId, "specializations.specialization": { "$ne": data.speId }, status: "pending" },
+						{ _id: projectId, "specializations.specialization": { "$ne": specializationId }, status: "pending" },
 						{ $push: { specializations: { specialization: specializationId } } }
 					)
 					.exec()
@@ -449,7 +444,7 @@ exports.addKeyword = ({ keywordId, projectId }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
 			[projectId, keywordId],
-			["projectId", "keywordId"]
+			["projectId", "keywordId"],
 			["ObjectId", "ObjectId"]
 		)
 			.then(() =>
@@ -470,7 +465,7 @@ exports.removeKeyword = ({ keywordId, projectId }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
 			[projectId, keywordId],
-			["projectId", "keywordId"]
+			["projectId", "keywordId"],
 			["ObjectId", "ObjectId"]
 		)
 			.then(() =>

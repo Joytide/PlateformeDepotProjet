@@ -14,8 +14,10 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
-import AuthService from "components/AuthService"
-import { api } from "../../config"
+import AuthService from "components/AuthService";
+import { api } from "../../config";
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
     cardCategoryWhite: {
@@ -46,7 +48,8 @@ class Years extends React.Component {
         this.state = {
             years: [],
             checkedYears: [],
-            loadingYear: true
+            loadingYear: true,
+            studyYears: this.props.studyYears.map(year => year._id),
         }
     }
 
@@ -54,9 +57,14 @@ class Years extends React.Component {
         this.loadStaticData();
     }
 
+    // Load all years informations
     loadStaticData() {
         fetch(api.host + ":" + api.port + "/api/year")
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(years => {
                 let checkedYears = {};
 
@@ -68,19 +76,18 @@ class Years extends React.Component {
                     years: years,
                     checkedYears: checkedYears,
                     loadingYear: false,
-                    studyYears: this.props.studyYears,
                 }, this.checkboxMapping);
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
+    // Check or uncheck checkboxes depending on the state
     checkboxMapping() {
         if (!this.state.loadingYear) {
             let checkedYears = {};
 
-            let yearsConcerned = this.state.studyYears.map(year => year._id);
-
             this.state.years.forEach(year => {
-                if (yearsConcerned.indexOf(year._id) !== -1) checkedYears[year._id] = true;
+                if (this.state.studyYears.indexOf(year._id) !== -1) checkedYears[year._id] = true;
                 else checkedYears[year._id] = false;
             });
 
@@ -110,12 +117,12 @@ class Years extends React.Component {
                     yearList.push(yearId);
 
             const data = {
-                _id: this.props.projectId,
+                id: this.props.projectId,
                 study_year: yearList
             }
 
-            AuthService.fetch(api.host + ":" + api.port + "/api/projects", {
-                method: "POST",
+            AuthService.fetch(api.host + ":" + api.port + "/api/project", {
+                method: "PUT",
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
@@ -132,25 +139,10 @@ class Years extends React.Component {
                     });
                     this.checkboxMapping();
                 })
-                .catch(err => {
-                    this.setState({
-                        error: true,
-                        message: "Une erreur est survenue lors de la sauvegarde des données."
-                    });
-                    console.error(err);
-                });
-        } else {
-            this.setState({
-                error: true,
-                message: "Le projet doit à minima concerner à une année."
-            }, () => {
-                setTimeout(() => {
-                    this.setState({
-                        error: false
-                    });
-                }, 2500);
-            });
-        }
+                .catch(handleXhrError(this.props.snackbar));
+
+        } else
+            this.props.snackbar.error("Le projet doit à minima concerner à une année.")
     }
 
     render() {
@@ -199,4 +191,4 @@ Years.propTypes = {
     studyYears: PropTypes.array.isRequired,
 }
 
-export default withStyles(styles)(Years);
+export default withSnackbar(withStyles(styles)(Years));

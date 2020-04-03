@@ -20,6 +20,8 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import AuthService from "components/AuthService";
 import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler"
 
 import { api } from "../../config"
 
@@ -67,7 +69,11 @@ class SpecializationProfile extends React.Component {
 
     loadData() {
         AuthService.fetch(api.host + ":" + api.port + "/api/specialization/" + this.props.match.params.id)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 if (data) {
                     let spe = {
@@ -98,10 +104,15 @@ class SpecializationProfile extends React.Component {
                         loadingProfile: false
                     });
                 }
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
 
         AuthService.fetch(api.host + ":" + api.port + "/api/user/administration")
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 if (data) {
                     this.setState({
@@ -109,7 +120,8 @@ class SpecializationProfile extends React.Component {
                         loadingReferent: false
                     });
                 }
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     componentDidMount() {
@@ -137,7 +149,7 @@ class SpecializationProfile extends React.Component {
 
     update() {
         let data = {
-            _id: this.state.specialization._id,
+            id: this.state.specialization._id,
             abbreviation: this.state.specialization.abbreviation,
             nameFr: this.state.specialization.nameFr,
             nameEn: this.state.specialization.nameEn,
@@ -146,14 +158,18 @@ class SpecializationProfile extends React.Component {
         }
 
         AuthService.fetch(api.host + ":" + api.port + "/api/specialization", {
-            method: "POST",
+            method: "PUT",
             mode: "cors",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(res => {
                 let spe = {
                     _id: res._id,
@@ -182,28 +198,35 @@ class SpecializationProfile extends React.Component {
                     specialization_old: spe,
                     modificated: false
                 });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     addReferent() {
         if (this.state.selectedItem) {
             const data = {
-                _id: this.props.match.params.id,
-                referent: this.state.selectedItem.value
+                specializationId: this.props.match.params.id,
+                referentId: this.state.selectedItem.value
             };
 
             AuthService.fetch(api.host + ":" + api.port + "/api/specialization/referent", {
                 mode: "cors",
-                method: "PUT",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data)
-            }).then(res => res.json())
+            })
+                .then(res => {
+                    if (!res.ok)
+                        throw res;
+                    return res.json();
+                })
                 .then(data => {
                     this.loadData();
                     this.setState({ selectedItem: "" });
-                });
+                })
+                .catch(handleXhrError(this.props.snackbar));
         }
         else {
             console.error("No selected item");
@@ -223,10 +246,16 @@ class SpecializationProfile extends React.Component {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
-        }).then(res => res.json())
+        })
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 this.loadData();
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     render() {
@@ -291,7 +320,7 @@ class SpecializationProfile extends React.Component {
                                         />
                                     </GridItem>
                                 </GridContainer>
-                                
+
                                 <GridContainer>
                                     <GridItem xs={12} sm={12} md={6}>
                                         <CustomInput
@@ -410,4 +439,4 @@ class SpecializationProfile extends React.Component {
     }
 }
 
-export default withStyles(styles)(SpecializationProfile);
+export default withSnackbar(withStyles(styles)(SpecializationProfile));

@@ -165,7 +165,6 @@ const isValidType = (variable, varName, typeExpected) =>
         }
         else
             reject(new MissingParameterError([varName]));
-
     });
 
 /**

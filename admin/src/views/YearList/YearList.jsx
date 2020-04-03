@@ -18,6 +18,8 @@ import CardBody from "components/Card/CardBody.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import AuthService from "../../components/AuthService";
 import { withUser } from "../../providers/UserProvider/UserProvider"
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler"
 
 import { api } from "config.json"
 
@@ -69,7 +71,11 @@ class YearList extends React.Component {
 
     loadData = () => {
         fetch(api.host + ":" + api.port + "/api/year", { crossDomain: true })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 let yearData = data.map(year => [
                     year.abbreviation,
@@ -80,18 +86,19 @@ class YearList extends React.Component {
                             <Link to={"/year/" + year._id}>
                                 <Button size="sm" type="button" color="info">
                                     <Visibility /> Voir l'année
-                </Button>
+                                </Button>
                             </Link>
                             {this.props.user.user.admin &&
                                 <Button size="sm" type="button" color="danger" onClick={this.showModal(year._id)}>
                                     <Delete /> Supprimer l'année
-                    </Button>
-                            }   
+                                </Button>
+                            }
                         </div>)
-                ]);
+                ])
 
                 this.setState({ years: yearData, loading: false });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     showModal = _id => () => {
@@ -112,11 +119,16 @@ class YearList extends React.Component {
                 method: "DELETE",
                 body: JSON.stringify(data)
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 this.closeModal();
                 this.loadData();
-            }).catch(console.error);
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     render() {
@@ -150,4 +162,4 @@ class YearList extends React.Component {
     }
 }
 
-export default withUser(withStyles(styles)(YearList));
+export default withSnackbar(withUser(withStyles(styles)(YearList)));

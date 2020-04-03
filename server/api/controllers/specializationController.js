@@ -124,15 +124,15 @@ exports.addReferent = ({ specializationId, referentId }) =>
         )
             .then(() => {
                 let findSpecialization = Specialization.findOne({ _id: specializationId }).exec();
-                let administrationExists = Administration.exists({ _id: referentId });
+                let administrationExists = Administration.estimatedDocumentCount({ _id: referentId });
 
                 return Promise.all([findSpecialization, administrationExists]);
             })
-            .then(([specialization, administrationExists]) => {
-                if (specialization && administrationExists) {
+            .then(([specialization, administrationCount]) => {
+                if (specialization && administrationCount > 0) {
                     if (specialization.referent.indexOf(referentId) === -1) {
                         specialization.referent.push(referentId);
-                        return spe.save();
+                        return specialization.save();
                     }
                     else
                         throw new ReferentAlreadyRegisteredError();

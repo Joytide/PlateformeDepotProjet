@@ -17,6 +17,8 @@ import Button from "components/CustomButtons/Button.jsx";
 
 import AuthService from "components/AuthService"
 import { api } from "../../config"
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
     cardCategoryWhite: {
@@ -72,7 +74,7 @@ class ProjectInfo extends React.Component {
 
     saveChanges = () => {
         const data = {
-            _id: this.state.modifiedProject._id,
+            id: this.state.modifiedProject._id,
             title: this.state.modifiedProject.title,
             description: this.state.modifiedProject.description,
             skills: this.state.modifiedProject.skills,
@@ -80,14 +82,20 @@ class ProjectInfo extends React.Component {
             maxTeams: this.state.modifiedProject.maxTeams,
         }
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/projects", {
-            method: "POST",
+        AuthService.fetch(api.host + ":" + api.port + "/api/project", {
+            method: "PUT",
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
                 this.setState({ edit: false, project: this.state.modifiedProject });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     cancelChanges = () => {
@@ -250,4 +258,4 @@ ProjectInfo.propTypes = {
     project: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(ProjectInfo);
+export default withSnackbar(withStyles(styles)(ProjectInfo));

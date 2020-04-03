@@ -13,6 +13,7 @@ import CardBody from "components/Card/CardBody.jsx";
 // internal components
 import { api } from "config.json"
 import AuthService from "../../components/AuthService";
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 // chartjs
 import { Doughnut } from 'react-chartjs-2';
 
@@ -47,17 +48,21 @@ const styles = {
 };
 
 class Dashboard extends React.Component {
-	state = {
-		value: 0,
-		stats: {
-			count: 0,
-			general: [],
-			byYear: [],
-			bySpe: [],
-			byYearSubSpe: []
-		},
-		statsLoaded: false
-	};
+	constructor(props) {
+		super(props)
+
+		this.state = {
+			value: 0,
+			stats: {
+				count: 0,
+				general: [],
+				byYear: [],
+				bySpe: [],
+				byYearSubSpe: []
+			},
+			statsLoaded: false
+		};
+	}
 	handleChange = (event, value) => {
 		this.setState({ value });
 	};
@@ -72,9 +77,18 @@ class Dashboard extends React.Component {
 
 	loadStats() {
 		AuthService.fetch(api.host + ":" + api.port + "/api/project/stats")
-			.then(res => res.json())
+			.then(res => {
+				if (res.ok)
+					return res.json()
+				else
+					throw res;
+			})
 			.then(data => {
 				this.setState({ stats: data, statsLoaded: true });
+			})
+			.catch(err => {
+				console.error(err);
+				this.props.snackbar.notification("danger", "Une erreur est survenue lors du chargemement des statistiques.");
 			});
 	}
 	render() {
@@ -185,7 +199,7 @@ Dashboard.propTypes = {
 	classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Dashboard);
+export default withSnackbar(withStyles(styles)(Dashboard));
 
 function formatStats(stats) {
 	let status = ["validated", "pending", "rejected"];

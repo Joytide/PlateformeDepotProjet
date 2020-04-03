@@ -3,7 +3,7 @@ const auth = require('../controllers/authController');
 const { handleRequest } = require('../../helpers/Request');
 
 module.exports = (app) => {
-    app.route('/api/year/:_id([a-zA-Z0-9]{24})')
+    app.route('/api/year/:id([a-zA-Z0-9]{24})')
         .get(handleRequest(yearController.findById));
 
     app.route('/api/year')

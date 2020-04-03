@@ -16,6 +16,8 @@ import Button from "components/CustomButtons/Button.jsx";
 import AuthService from "components/AuthService";
 import { api } from "../../config";
 import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler"
 
 const styles = {
     cardCategoryWhite: {
@@ -54,8 +56,12 @@ class YearProfile extends React.Component {
     }
 
     loadData() {
-        fetch(api.host + ":" + api.port + "/api/year/" + this.props.match.params.id)
-            .then(res => res.json())
+        AuthService.fetch(api.host + ":" + api.port + "/api/year/" + this.props.match.params.id)
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 if (data) {
                     let year = {
@@ -71,7 +77,8 @@ class YearProfile extends React.Component {
                         loading: false
                     });
                 }
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     componentDidMount() {
@@ -113,7 +120,11 @@ class YearProfile extends React.Component {
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(res => {
                 let year = {
                     nameFr: res.name.fr,
@@ -128,7 +139,8 @@ class YearProfile extends React.Component {
                     loading: false,
                     modificated: false
                 });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     render() {
@@ -220,4 +232,4 @@ class YearProfile extends React.Component {
     }
 }
 
-export default withStyles(styles)(YearProfile);
+export default withSnackbar(withStyles(styles)(YearProfile));

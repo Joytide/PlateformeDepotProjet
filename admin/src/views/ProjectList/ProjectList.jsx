@@ -23,6 +23,9 @@ import AuthService from "../../components/AuthService";
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import { FormControlLabel } from "@material-ui/core";
 
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+
+
 const styles = {
     cardCategoryWhite: {
         "&,& a,& a:hover,& a:focus": {
@@ -99,7 +102,11 @@ class ProjectList extends React.Component {
         />;
 
         AuthService.fetch(api.host + ":" + api.port + "/api/project" + queryParams)
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else throw res;
+            })
             .then(data => {
                 let projectsData = data.map(project => {
                     return [
@@ -117,6 +124,10 @@ class ProjectList extends React.Component {
                 });
 
                 this.setState({ projects: projectsData, loading: false });
+            })
+            .catch(err => {
+                console.error(err);
+                this.props.snackbar.notification("danger", "Une erreur est survenue lors du chargemement des statistiques.");
             });
     }
 
@@ -244,4 +255,4 @@ class ProjectList extends React.Component {
 
 
 
-export default withUser(withStyles(styles)(ProjectList));
+export default withSnackbar(withUser(withStyles(styles)(ProjectList)));

@@ -138,23 +138,23 @@ exports.create = ({ ...data }) =>
 * @param {string} user.email User's email
 * @param {string} [user.admin] If the user is administration's or EGPE's member : is (s)he an admin ?
 */
-exports.update = ({ user, id, ...data }) =>
+exports.update = ({ id, ...data }) =>
     new Promise((resolve, reject) => {
-            isValidType(id, "id", "ObjectId")
-                .then(() => {
-                    let update = {};
+        isValidType(id, "id", "ObjectId")
+            .then(() => {
+                let update = {};
 
-                    if (data.admin !== undefined) update.admin = data.admin;
-                    if (data.EPGE !== undefined) update.EPGE = data.EPGE;
-                    if (data.firstName !== undefined) update.first_name = data.first_name;
-                    if (data.lastName !== undefined) update.last_name = data.last_name;
-
-                    return Administration
-                        .updateOne({ _id: id }, update)
-                        .exec()
-                })
-                .then(writeOps => resolve(writeOps))
-                .catch(reject);
+                if (data.admin !== undefined) update.admin = data.admin;
+                if (data.EPGE !== undefined) update.EPGE = data.EPGE;
+                if (data.first_name !== undefined) update.first_name = data.first_name;
+                if (data.last_name !== undefined) update.last_name = data.last_name;
+                console.log(data,update,id)
+                return Administration
+                    .updateOne({ _id: id }, update)
+                    .exec()
+            })
+            .then(writeOps => resolve(writeOps))
+            .catch(reject);
     });
 
 /**
@@ -165,19 +165,26 @@ exports.findById = ({ id }) =>
     new Promise((resolve, reject) => {
         isValidType(id, "id", "ObjectId")
             .then(() => {
-                let findPerson = Person.findOne({ _id: id });
-                let findPartner = Partner.findOne({ _id: id });
+                let findAdministration = Administration.findOne({ _id: id }).exec();
+                let findPartner = Partner
+                    .findOne({ _id: id })
+                    .populate({
+                        path: "projects",
+                        populate: { path: "specializations.specialization study_year files" }
+                    })
+                    .exec();
 
-                return Promise.all([findPerson, findPartner]);
+                return Promise.all([findAdministration, findPartner]);
             })
-            .then(([person, partner]) => {
-                if (person)
-                    resolve(person)
+            .then(([administration, partner]) => {
+                if (administration)
+                    resolve(administration)
                 else if (partner)
                     resolve(partner);
                 else
                     throw new UserNotFoundError();
             })
+            .then(user => resolve(user))
             .catch(reject);
     });
 

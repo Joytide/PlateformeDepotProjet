@@ -19,14 +19,15 @@ import Button from "components/CustomButtons/Button.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import ChangePassword from "components/ChangePassword/ChangePassword.jsx";
 import Table from "components/Table/Table.jsx";
 
 import AuthService from "components/AuthService"
 import { withUser } from "../../providers/UserProvider/UserProvider"
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider"
 import { api } from "../../config"
+import { handleXhrError } from "../../components/ErrorHandler"
 
 const styles = {
 	cardCategoryWhite: {
@@ -57,21 +58,20 @@ class UserProfile extends React.Component {
 			loading: true,
 			adminCheckboxDisabled: false,
 			EPGECheckboxDisabled: false,
-			modified: false,
-			error: false,
-			success: false,
-			message: ""
+			modified: false
 		}
 
 		this.update = this.update.bind(this);
 		this.cancel = this.cancel.bind(this);
-		this.error = this.error.bind(this);
-		this.success = this.success.bind(this);
 	}
 
 	componentDidMount() {
 		AuthService.fetch(api.host + ":" + api.port + "/api/user/" + this.props.match.params.id)
-			.then(res => res.json())
+			.then(res => {
+				if (!res.ok)
+					throw res;
+				return res.json();
+			})
 			.then(data => {
 				if (data) {
 					this.setState({
@@ -81,7 +81,8 @@ class UserProfile extends React.Component {
 						inputDisabled: true
 					});
 				}
-			});
+			})
+			.catch(handleXhrError(this.props.snackbar));
 	}
 
 	handleChange = e => {
@@ -108,13 +109,13 @@ class UserProfile extends React.Component {
 			id: this.state.user._id,
 			company: this.state.user.company,
 			first_name: this.state.user.first_name,
-			lasrt_name: this.state.user.last_name,
+			last_name: this.state.user.last_name,
 			email: this.state.user.email,
 			__t: this.state.user.__t
 		}
 
 		let url = api.host + ":" + api.port + "/api/user";
-		if(this.state.user.__t == "Partner") 
+		if (this.state.user.__t === "Partner")
 			url = api.host + ":" + api.port + "/api/partner"
 
 		AuthService.fetch(url, {
@@ -136,11 +137,9 @@ class UserProfile extends React.Component {
 					modified: false
 				});
 
-				this.success("Utilisateur mis à jour avec succès");
+				this.props.snackbar.success("Utilisateur mis à jour avec succès");
 			})
-			.catch(err => {
-				console.error(err);
-			});
+			.catch(handleXhrError(this.props.snackbar));
 	}
 
 	handleCheckboxChange = name => event => {
@@ -167,7 +166,11 @@ class UserProfile extends React.Component {
 			},
 			body: JSON.stringify(data)
 		})
-			.then(res => res.json())
+			.then(res => {
+				if (!res.ok)
+					throw res;
+				return res.json();
+			})
 			.then(result => {
 				if (result)
 					this.setState({ user: result });
@@ -176,30 +179,8 @@ class UserProfile extends React.Component {
 				else if (name === "epge")
 					this.setState({ EPGECheckboxDisabled: false });
 			})
-			.catch(err => console.err(err));
+			.catch(handleXhrError(this.props.snackbar));
 	};
-
-	error = msg => {
-		this.setState({
-			error: true,
-			message: msg
-		}, () => {
-			setTimeout(() => {
-				this.setState({ error: false });
-			}, 3000);
-		});
-	}
-
-	success = msg => {
-		this.setState({
-			success: true,
-			message: msg
-		}, () => {
-			setTimeout(() => {
-				this.setState({ success: false });
-			}, 3000);
-		});
-	}
 
 	render() {
 		const { classes } = this.props;
@@ -272,22 +253,6 @@ class UserProfile extends React.Component {
 
 			return (
 				<div>
-					<Snackbar
-						place="tc"
-						color="success"
-						message={this.state.message}
-						open={this.state.success}
-						closeNotification={() => this.setState({ success: false })}
-						close
-					/>
-					<Snackbar
-						place="tc"
-						color="danger"
-						message={this.state.message}
-						open={this.state.error}
-						closeNotification={() => this.setState({ error: false })}
-						close
-					/>
 					<GridContainer>
 						<GridItem xs={12} sm={12} md={12}>
 							<Card>
@@ -391,7 +356,7 @@ class UserProfile extends React.Component {
 						</GridItem>
 
 						<GridItem xs={12}>
-							<ChangePassword user={this.state.user} errorHandler={this.error} successHandler={this.success}></ChangePassword>
+							<ChangePassword user={this.state.user} errorHandler={this.props.snackbar.error} successHandler={this.props.snackbar.success}></ChangePassword>
 						</GridItem>
 					</GridContainer>
 				</div>
@@ -403,4 +368,4 @@ class UserProfile extends React.Component {
 	}
 }
 
-export default withUser(withStyles(styles)(UserProfile));
+export default withSnackbar(withUser(withStyles(styles)(UserProfile)));

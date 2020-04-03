@@ -7,7 +7,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Chip from '@material-ui/core/Chip';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import Add from "@material-ui/icons/Add"
+import Add from "@material-ui/icons/Add";
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -20,9 +20,11 @@ import Button from "components/CustomButtons/Button.jsx";
 import Table from "components/Table/Table.jsx";
 import Modal from "components/Modal/Modal.jsx";
 
-import { withUser } from "../../providers/UserProvider/UserProvider"
-import AuthService from "components/AuthService"
-import { api } from "../../config"
+import { withUser } from "../../providers/UserProvider/UserProvider";
+import AuthService from "components/AuthService";
+import { api } from "../../config";
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
     cardCategoryWhite: {
@@ -64,25 +66,34 @@ class Specializations extends React.Component {
     }
 
     loadProjectSpecializations() {
-        fetch(api.host + ":" + api.port + "/api/project/" + this.props.projectId + "/specializations")
-            .then(res => res.json())
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/" + this.props.projectId + "/specializations")
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
-                console.log(data)
                 this.setState({
                     projectSpecializations: data.specializations
                 });
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     loadSpecializations() {
         fetch(api.host + ":" + api.port + "/api/specialization")
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 this.setState({
                     specializations: data,
                     loadingSpecialization: false,
                 })
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     openValidationModal = _id => () => {
@@ -100,7 +111,7 @@ class Specializations extends React.Component {
     specializationValidation = (status, speId) => () => {
         function sendValidation() {
             let data = {
-                speId,
+                specializationId: speId,
                 status,
                 projectId: this.props.projectId
             };
@@ -109,11 +120,16 @@ class Specializations extends React.Component {
                 method: "POST",
                 body: JSON.stringify(data)
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok)
+                        throw res;
+                    return res.json();
+                })
                 .then(data => {
                     this.setState({ openValidationModal: false });
                     this.loadProjectSpecializations();
-                });
+                })
+                .catch(handleXhrError(this.props.snackbar));
         }
 
         let pendingProject = this.state.projectSpecializations.filter(spe => spe.status === "pending").length + (status === "pending" ? 1 : -1);
@@ -131,7 +147,7 @@ class Specializations extends React.Component {
 
     addSpecialization = id => () => {
         let data = {
-            speId: id,
+            specializationId: id,
             projectId: this.props.projectId
         };
 
@@ -139,10 +155,15 @@ class Specializations extends React.Component {
             method: "PUT",
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
             .then(data => {
                 this.loadProjectSpecializations();
-            });
+            })
+            .catch(handleXhrError(this.props.snackbar));
     }
 
     render() {
@@ -284,4 +305,4 @@ Specializations.propTypes = {
     projectId: PropTypes.string.isRequired,
 }
 
-export default withUser(withStyles(styles)(Specializations));
+export default withSnackbar(withUser(withStyles(styles)(Specializations)));

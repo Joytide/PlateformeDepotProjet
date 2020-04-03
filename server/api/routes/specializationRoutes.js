@@ -3,7 +3,7 @@ const auth = require('../controllers/authController');
 const { handleRequest } = require('../../helpers/Request');
 
 module.exports = (app) => {
-    app.route('/api/specialization/:_id([a-zA-Z0-9]{24})')
+    app.route('/api/specialization/:id([a-zA-Z0-9]{24})')
         .get(
             handleRequest(specializationController.findById)
         );
@@ -29,7 +29,7 @@ module.exports = (app) => {
         );
 
     app.route('/api/specialization/referent')
-        .put(
+        .post(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("EPGE"),
             handleRequest(specializationController.addReferent)
