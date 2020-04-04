@@ -75,6 +75,10 @@ const PDFUtils = {
                 HTMLpath,
                 PDFpath]
             );
+            
+            wkhtmltopdf.on('error', err => {
+                reject(err);
+            })
 
             wkhtmltopdf.on('close', exitCode => {
                 if (exitCode === 0) {
@@ -134,8 +138,8 @@ const PDFUtils = {
                     fs.unlink(path, err => {
                         if (err) reject(err);
                         else {
-                            File.deleteOne({path}, (err) => {
-                                if(err)reject(err);
+                            File.deleteOne({ path }, (err) => {
+                                if (err) reject(err);
                                 else resolve(PDFUtils);
                             });
                         };
@@ -150,7 +154,7 @@ const PDFUtils = {
 emitter.on('projectValidated', data => {
     PDFUtils
         .generate(data.projectId)
-        .catch(console.error)
+        .catch(err => console.error(err))
 });
 
 exports.regeneratePDF = (req, res, next) => {
