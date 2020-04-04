@@ -19,6 +19,7 @@ import Button from "components/CustomButtons/Button.jsx";
 import AuthService from "components/AuthService"
 import { api } from "../../config"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { withUser } from "../../providers/UserProvider/UserProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
@@ -100,7 +101,17 @@ class ProjectInfo extends React.Component {
                     throw res;
             })
             .then(data => {
-                this.setState({ edit: false, project: this.state.modifiedProject });
+                this.setState({
+                    edit: false,
+                    project: {
+                        ...this.state.modifiedProject,
+                        lastUpdate: {
+                            at: Date.now(),
+                            by: this.props.user.user
+                        }
+                    }
+
+                });
             })
             .catch(handleXhrError(this.props.snackbar));
     }
@@ -276,4 +287,4 @@ ProjectInfo.propTypes = {
     project: PropTypes.object.isRequired,
 }
 
-export default withSnackbar(withStyles(styles)(ProjectInfo));
+export default withUser(withSnackbar(withStyles(styles)(ProjectInfo)));
