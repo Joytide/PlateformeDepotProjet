@@ -83,6 +83,7 @@ class Keywords extends React.Component {
             .then(data => {
                 this.setState({
                     keywords: data
+                        .sort((ka, kb) => ka.displayName > kb.displayName)
                 });
             })
             .catch(handleXhrError(this.props.snackbar));
@@ -176,19 +177,22 @@ class Keywords extends React.Component {
             nonAddedKeywords = [];
 
         // Puts keywords already associated to the project and the other ones in two different lists
-        this.state.keywords.forEach(keyword => {
-            if (this.state.projectKeywords.indexOf(keyword._id) !== -1) {
-                addedKeywords.push(
-                    <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.removeKeyword(keyword._id)}><Remove />{keyword.displayName}</Button>
-                );
+        this.state.keywords
+            .forEach(keyword => {
+                if (this.state.projectKeywords.indexOf(keyword._id) !== -1) {
+                    addedKeywords.push(
+                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.removeKeyword(keyword._id)}><Remove />{keyword.displayName}</Button>
+                    );
 
-            }
-            else {
-                nonAddedKeywords.push(
-                    <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.addKeyword(keyword._id)}><Add />{keyword.displayName}</Button>
-                );
-            }
-        });
+                }
+                else {
+                    nonAddedKeywords.push(
+                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.addKeyword(keyword._id)}><Add />{keyword.displayName}</Button>
+                    );
+                }
+            });
+
+        console.log(addedKeywords);
 
         return (
             <Card>
