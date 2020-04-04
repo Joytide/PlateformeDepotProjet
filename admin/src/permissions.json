@@ -26,10 +26,11 @@
             "Referent",
             "EGPE"
         ],
-        "ManageSpe": [
+        "ManageSpecializations": [
             "Referent",
             "EGPE"
-        ]
+        ],
+        "RegeneratePDF": "EGPE"
     },
     "UserList": {
         "value": ""
