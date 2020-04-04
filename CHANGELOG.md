@@ -1,3 +1,7 @@
+## 2.1.0 ()
+* Les mots clefs sont rangés dans l'ordre croissant
+*
+
 ## 2.0.0 (3 avril 2020)
 * L'API  respecte l'architecture [REST](https://fr.wikipedia.org/wiki/Representational_state_transfer)
 * L'API renvoie des messages d'erreurs plus clairs et de manière plus consistante selon les points de l'API appelés
