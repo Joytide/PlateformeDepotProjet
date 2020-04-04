@@ -73,55 +73,64 @@ exports.uploadDone = (req, res, next) => {
 }
 
 /**
- * Delete a file
+ * Delete a file. A partner can delete a file only if it has not been associated to a project
  * @param {ObjectId} id Id of the file to delete
  */
 exports.deleteFile = ({ id, user }) =>
 	new Promise((resolve, reject) => {
-		let deleteFileProcess = () => isValidType(id, "id", "ObjectId")
-			.then(() =>
-				File.
-					findOne({ _id: id })
-					.lean()
-					.exec()
+		isValidType(id, "id", "ObjectId")
+			.then(() => {
+				if (user.__t === "Partner")
+					return File
+						.aggregate([
+							{
+								"$match": {
+									"_id": mongoose.Types.ObjectId(id)
+								}
+							},
+							{
+								"$lookup": {
+									"localField": "_id",
+									"foreignField": "files",
+									"as": "project",
+									"from": "projects"
+								}
+							}
+						])
+						.exec()
+				else
+					return File
+						.findOne({ _id: id })
+						.lean()
+						.exec()
+			}
 			)
 			.then(file => {
+				if (file instanceof Array)
+					file = file[0]
 				if (file) {
-					let filePath = path.join(process.cwd(), ".uploads", file._id + path.extname(file.originalName));
-					console.log(filePath);
-					let deleteFileDb = File
-						.deleteOne({ _id: id })
-						.exec();
-					let updateProject = Project
-						.updateOne({ files: id }, { $pull: { files: id } })
-						.exec();
-					let deleteFile = fs.promises
-						.unlink(filePath);
+					if (user.__t === "Partner" && file.project.length > 0)
+						throw new ForbiddenError();
+					else {
+						let filePath = path.join(process.cwd(), ".uploads", file._id + path.extname(file.originalName));
 
-					return Promise.all([deleteFileDb, updateProject, deleteFile])
+						let deleteFileDb = File
+							.deleteOne({ _id: id })
+							.exec();
+						let updateProject = Project
+							.updateOne({ files: id }, { $pull: { files: id } })
+							.exec();
+						let deleteFile = fs.promises
+							.unlink(filePath);
+
+						return Promise.all([deleteFileDb, updateProject, deleteFile])
+					}
 				}
 				else
 					throw new FileNotFoundError();
 			})
-			.then(() => resolve({ok: 1}))
+			.then(() => resolve({ ok: 1 }))
 			.catch(reject);
-
-		/* Ensure that the partner is allowed to delete that file */
-		/* He can only delete a file that's not associated to a project yet */
-		if (user.__t == "Partner") {
-			Project
-				.estimatedDocumentCount({ files: id })
-				.exec()
-				.then(count => {
-					if (count > 0)
-						reject(new ForbiddenError());
-					else
-						deleteFileProcess();
-				})
-				.catch(reject);
-		}
-		else
-			deleteFileProcess();
 	});
 
 
@@ -265,7 +274,7 @@ exports.findByIdSelectFiles = ({ id }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() => Project
-				.findOne({ _id: id}, 'files')
+				.findOne({ _id: id }, 'files')
 				.populate({
 					path: 'files',
 					select: 'originalName'
