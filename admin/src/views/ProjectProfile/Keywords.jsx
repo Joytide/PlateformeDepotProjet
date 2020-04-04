@@ -20,11 +20,11 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
-import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
-import { api } from "../../config"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
+
+import { api } from "../../config"
 
 const styles = {
     cardCategoryWhite: {
@@ -55,7 +55,8 @@ class Keywords extends React.Component {
         this.state = {
             keywords: [],
             newKeyword: "",
-            projectKeywords: this.props.projectKeywords
+            projectKeywords: this.props.projectKeywords,
+            editable: false
         }
 
         this.loadKeywords = this.loadKeywords.bind(this);
@@ -67,6 +68,11 @@ class Keywords extends React.Component {
 
     componentWillMount() {
         this.loadKeywords();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.state.editable !== nextProps.editable)
+            this.setState({ editable: nextProps.editable });
     }
 
     // Loads keywords from database and put it in keywords state
@@ -117,52 +123,60 @@ class Keywords extends React.Component {
 
     // Add a keyword to a project
     addKeyword = id => () => {
-        const body = {
-            projectId: this.props.projectId,
-            keywordId: id
-        };
+        if (this.state.editable) {
+            const body = {
+                projectId: this.props.projectId,
+                keywordId: id
+            };
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
-            method: "POST",
-            body: JSON.stringify(body)
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-                else
-                    throw res;
+            AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
+                method: "POST",
+                body: JSON.stringify(body)
             })
-            .then(data => {
-                this.setState({
-                    projectKeywords: [id, ...this.state.projectKeywords]
-                });
-            })
-            .catch(handleXhrError(this.props.snackbar));
+                .then(res => {
+                    if (res.ok)
+                        return res.json();
+                    else
+                        throw res;
+                })
+                .then(data => {
+                    this.setState({
+                        projectKeywords: [id, ...this.state.projectKeywords]
+                    });
+                })
+                .catch(handleXhrError(this.props.snackbar));
+        }
+        else
+            this.props.snackbar.error("Vous n'avez pas les droits pour modifier ce projet");
     }
 
     // Remove a keyword from a project
     removeKeyword = id => () => {
-        const body = {
-            projectId: this.props.projectId,
-            keywordId: id
-        };
+        if (this.state.editable) {
+            const body = {
+                projectId: this.props.projectId,
+                keywordId: id
+            };
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
-            method: "DELETE",
-            body: JSON.stringify(body)
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-                else
-                    throw res;
+            AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
+                method: "DELETE",
+                body: JSON.stringify(body)
             })
-            .then(data => {
-                this.setState({
-                    projectKeywords: this.state.projectKeywords.filter(keyword => keyword !== id)
-                });
-            })
-            .catch(handleXhrError(this.props.snackbar));
+                .then(res => {
+                    if (res.ok)
+                        return res.json();
+                    else
+                        throw res;
+                })
+                .then(data => {
+                    this.setState({
+                        projectKeywords: this.state.projectKeywords.filter(keyword => keyword !== id)
+                    });
+                })
+                .catch(handleXhrError(this.props.snackbar));
+        }
+        else
+            this.props.snackbar.error("Vous n'avez pas les droits nécessaires pour modifier ce projet");
     }
 
     // Handle changes on the new keyword's textbox
@@ -192,8 +206,6 @@ class Keywords extends React.Component {
                 }
             });
 
-        console.log(addedKeywords);
-
         return (
             <Card>
                 <CardHeader color={color}>
@@ -214,7 +226,7 @@ class Keywords extends React.Component {
                         </GridItem>
                     </GridContainer>
                 </CardBody>
-                {(this.props.user.user.EPGE || this.props.user.user.admin) &&
+                {this.state.editable &&
                     <CardFooter>
                         <GridContainer >
                             <GridItem xs={12}>
@@ -247,4 +259,4 @@ Keywords.propTypes = {
     projectId: PropTypes.string.isRequired,
 }
 
-export default withSnackbar(withUser(withStyles(styles)(Keywords)));
+export default withSnackbar(withStyles(styles)(Keywords));

@@ -15,9 +15,10 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
 import AuthService from "components/AuthService";
-import { api } from "../../config";
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
+
+import { api } from "../../config";
 
 const styles = {
     cardCategoryWhite: {
@@ -50,11 +51,17 @@ class Years extends React.Component {
             checkedYears: [],
             loadingYear: true,
             studyYears: this.props.studyYears.map(year => year._id),
+            editable: false
         }
     }
 
     componentWillMount() {
         this.loadStaticData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.state.editable !== nextProps.editable)
+            this.setState({ editable: nextProps.editable });
     }
 
     // Load all years informations
@@ -147,6 +154,7 @@ class Years extends React.Component {
 
     render() {
         const { classes, color } = this.props;
+        
         return (
             <Card>
                 <CardHeader color={color}>
@@ -165,7 +173,7 @@ class Years extends React.Component {
                                                     onChange={this.handleCheckboxChange}
                                                     checked={this.state.checkedYears[year._id]}
                                                     id={year._id}
-                                                    disabled={this.props.projectStatus !== "pending"}
+                                                    disabled={this.props.projectStatus !== "pending" || !this.state.editable}
                                                     color="primary"
                                                 />
                                             }

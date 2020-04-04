@@ -17,11 +17,11 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Modal from "components/Modal/Modal.jsx";
 
-import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
-import { api } from "../../config"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
+
+import { api } from "../../config";
 
 const styles = {
     cardCategoryWhite: {
@@ -53,7 +53,13 @@ class Files extends React.Component {
             projectFiles: this.props.projectFiles,
             openFileModal: false,
             toDelete: "",
+            editable: false
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.state.editable !== nextProps.editable)
+            this.setState({ editable: nextProps.editable });
     }
 
     // Loads only files associated to the project
@@ -176,7 +182,7 @@ class Files extends React.Component {
                                                         <a download href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
                                                             <Button size="sm" color="info">Télécharger</Button>
                                                         </a>
-                                                        {(this.props.user.user.EPGE || this.props.user.user.admin) &&
+                                                        {this.state.editable &&
                                                             <Button size="sm" color="danger" onClick={this.openFileModal(file._id)}>Supprimer</Button>
                                                         }
                                                     </CardBody>
@@ -189,7 +195,7 @@ class Files extends React.Component {
 
                         </GridContainer>
                     </CardBody>
-                    {(this.props.user.user.EPGE || this.props.user.user.admin) && projectStatus === "pending" &&
+                    {this.state.editable && projectStatus === "pending" &&
                         <CardFooter>
                             <GridContainer >
                                 <GridItem xs={12} sm={12} md={12}>
@@ -221,4 +227,4 @@ Files.propTypes = {
     partnerId: PropTypes.string.isRequired,
 }
 
-export default withSnackbar(withUser(withStyles(styles)(Files)));
+export default withSnackbar(withStyles(styles)(Files));

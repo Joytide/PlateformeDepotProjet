@@ -73,12 +73,19 @@ class SpecializationProfile extends React.Component {
     }
 
     componentDidMount() {
-        this.loadData();
+        this.setPermissions();
     }
 
     componentWillReceiveProps(nextProps) {
-        const canEdit = hasPermission(Permissions.EditSpecialization, nextProps.user.user);
-        const canManageReferents = hasPermission(Permissions.ManageReferents, nextProps.user.user);
+        this.setPermissions(nextProps);
+    }
+
+    setPermissions(nextProps) {
+        let user = this.props.user.user;
+        if (nextProps) user = nextProps.user.user;
+
+        const canEdit = hasPermission(Permissions.EditSpecialization, user);
+        const canManageReferents = hasPermission(Permissions.ManageReferents, user);
 
         if (canEdit !== this.state.canEdit || canManageReferents !== this.state.canManageReferents)
             this.setState({

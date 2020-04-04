@@ -14,11 +14,14 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
-import { withUser } from "../../providers/UserProvider/UserProvider"
 import AuthService from "components/AuthService"
-import { api } from "../../config"
+import { hasPermission } from "components/PermissionHandler";
+import { withUser } from "../../providers/UserProvider/UserProvider"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
+
+import { ProjectProfile as Permissions } from "../../permissions"
+import { api } from "../../config"
 
 import PartnerInfo from "./PartnerInfo";
 import ProjectInfo from "./ProjectInfo";
@@ -60,6 +63,12 @@ class ProjectProfile extends React.Component {
             loadingProject: true,
             project: {},
             color: "primary",
+            canEditProject: false,
+            canManageKeywords: false,
+            canManageFiles: false,
+            canManageYears: false,
+            canManageSpecializations: false,
+            canRegeneratePDF: false
         }
 
         this.loadProjectData = this.loadProjectData.bind(this);
@@ -67,6 +76,34 @@ class ProjectProfile extends React.Component {
 
     componentWillMount() {
         this.loadProjectData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (!this.state.loadingProject)
+            this.setPermissions(nextProps);
+    }
+
+    setPermissions(nextProps) {
+        let specializations = this.state.project.specializations.map(spe => spe.specialization);
+        let user = this.props.user.user;
+        if (nextProps)
+            user = nextProps.user.user;
+
+        const canEditProject = hasPermission(Permissions.EditProject, user, specializations);
+        const canManageKeywords = hasPermission(Permissions.ManageKeywords, user, specializations);
+        const canManageFiles = hasPermission(Permissions.ManageFiles, user, specializations);
+        const canManageYears = hasPermission(Permissions.ManageYears, user, specializations);
+        const canManageSpecializations = hasPermission(Permissions.ManageSpecializations, user, specializations);
+        const canRegeneratePDF = hasPermission(Permissions.RegeneratePDF, user, specializations);
+
+        this.setState({
+            canEditProject,
+            canManageKeywords,
+            canManageFiles,
+            canManageYears,
+            canManageSpecializations,
+            canRegeneratePDF
+        }, this.loadData);
     }
 
     loadProjectData() {
@@ -84,43 +121,10 @@ class ProjectProfile extends React.Component {
                     loadingProject: false,
                     color: color
                 });
+                this.setPermissions();
             })
             .catch(handleXhrError(this.props.snackbar));
     }
-
-    /* handleProjectStatus = action => () => {
-         const data = {
-             _id: this.state.project._id,
-             status: action
-         }
- 
-         fetch(api.host + ":" + api.port + "/api/projects", {
-             method: "POST",
-             mode: "cors",
-             headers: {
-                 "Content-Type": "application/json",
-             },
-             body: JSON.stringify(data)
-         })
-             .then(res => {
-                 if (!res.ok) throw res;
-                 else return res.json()
-             })
-             .then(data => {
-                 let color = data.status === "pending" ? "warning" : (data.status === "validated" ? "success" : "danger");
-                 this.setState({
-                     project: data,
-                     color: color
-                 });
-             })
-             .catch(err => {
-                 this.setState({
-                     error: true,
-                     message: "Une erreur est survenue lors de la sauvegarde des données."
-                 });
-                 console.error(err);
-             });
-     }*/
 
     regeneratePDF = () => {
         let data = {
@@ -135,7 +139,7 @@ class ProjectProfile extends React.Component {
                 if (!res.ok) throw res;
                 else return res.json();
             })
-            .then(data => {                
+            .then(data => {
                 this.props.snackbar.notification("danger", "Votre demande a bien été traité.");
             })
             .catch(handleXhrError(this.props.snackbar));
@@ -159,6 +163,7 @@ class ProjectProfile extends React.Component {
                 <ProjectInfo
                     color={this.state.color}
                     project={this.state.project}
+                    editable={this.state.canEditProject && this.state.project.status === "pending"}
                 />
             );
 
@@ -167,6 +172,7 @@ class ProjectProfile extends React.Component {
                     color={this.state.color}
                     projectKeywords={this.state.project.keywords}
                     projectId={this.props.match.params.id}
+                    editable={this.state.canManageKeywords}
                 />
             );
 
@@ -177,6 +183,7 @@ class ProjectProfile extends React.Component {
                     projectStatus={this.state.project.status}
                     projectId={this.props.match.params.id}
                     partnerId={this.state.project.partner._id}
+                    editable={this.state.canManageFiles && this.state.project.status === "pending"}
                 />
             );
 
@@ -186,6 +193,7 @@ class ProjectProfile extends React.Component {
                     projectStatus={this.state.project.status}
                     projectId={this.props.match.params.id}
                     studyYears={this.state.project.study_year}
+                    editable={this.state.canManageYears && this.state.project.status === "pending"}
                 />
             );
 
@@ -195,28 +203,30 @@ class ProjectProfile extends React.Component {
                     projectStatus={this.state.project.status}
                     projectId={this.props.match.params.id}
                     projectSpecializations={this.state.project.specializations}
+                    reloadProject={this.loadProjectData}
                 />
             );
         }
 
-        other = <Card>
-            <CardHeader color={this.state.color}>
-                <h4 className={classes.cardTitleWhite}>Autre options</h4>
-                <p className={classes.cardCategoryWhite}></p>
-            </CardHeader>
-            <CardBody>
-                {this.state.project.pdf &&
-                    <a href={api.host + ":" + api.port + "/api/project/file/" + this.state.project.pdf}>
-                        <Button size="sm" color="info">
-                            <Add />Exporter au format PDF
+        if (this.state.canRegeneratePDF)
+            other = <Card>
+                <CardHeader color={this.state.color}>
+                    <h4 className={classes.cardTitleWhite}>Autre options</h4>
+                    <p className={classes.cardCategoryWhite}></p>
+                </CardHeader>
+                <CardBody>
+                    {this.state.project.pdf &&
+                        <a href={api.host + ":" + api.port + "/api/project/file/" + this.state.project.pdf}>
+                            <Button size="sm" color="info">
+                                <Add />Exporter au format PDF
                         </Button>
-                    </a>
-                }
-                <Button size="sm" color="info" onClick={this.regeneratePDF}>
-                    <Cached />(re)Générer le PDF
+                        </a>
+                    }
+                    <Button size="sm" color="info" onClick={this.regeneratePDF}>
+                        <Cached />(re)Générer le PDF
                         </Button>
-            </CardBody>
-        </Card>
+                </CardBody>
+            </Card>
 
         return (
             <GridContainer>

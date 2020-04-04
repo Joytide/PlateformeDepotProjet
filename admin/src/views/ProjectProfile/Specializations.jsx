@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Chip from '@material-ui/core/Chip';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import Add from "@material-ui/icons/Add";
 
@@ -20,11 +19,14 @@ import Button from "components/CustomButtons/Button.jsx";
 import Table from "components/Table/Table.jsx";
 import Modal from "components/Modal/Modal.jsx";
 
-import { withUser } from "../../providers/UserProvider/UserProvider";
 import AuthService from "components/AuthService";
-import { api } from "../../config";
+import { withUser } from "../../providers/UserProvider/UserProvider";
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
+import { hasPermission } from "../../components/PermissionHandler";
+
+import {ProjectProfile as Permissions} from "../../permissions"
+import { api } from "../../config";
 
 const styles = {
     cardCategoryWhite: {
@@ -127,6 +129,7 @@ class Specializations extends React.Component {
                 })
                 .then(data => {
                     this.setState({ openValidationModal: false });
+                    this.props.reloadProject();
                     this.loadProjectSpecializations();
                 })
                 .catch(handleXhrError(this.props.snackbar));
@@ -161,6 +164,7 @@ class Specializations extends React.Component {
                 return res.json();
             })
             .then(data => {
+                this.props.reloadProject();
                 this.loadProjectSpecializations();
             })
             .catch(handleXhrError(this.props.snackbar));
@@ -198,9 +202,7 @@ class Specializations extends React.Component {
                             />;
                         arr[2] = "";
                         if (this.props.projectStatus === "pending") {
-                            if (this.props.user.user.admin
-                                || this.props.user.user.EPGE
-                                || spe.referent.map(r => r._id).indexOf(this.props.user.user._id) !== -1)
+                            if (hasPermission(Permissions.ManageSpecializations, this.props.user.user, [spe]))
                                 arr[3] = (
                                     <div>
                                         <Button
@@ -233,11 +235,10 @@ class Specializations extends React.Component {
                         break;
                     } else {
                         arr[1] = "Non concerné";
-                        if (this.props.projectStatus === "pending")
+                        if (this.props.projectStatus === "pending" && hasPermission(Permissions.ManageSpecializations, this.props.user.user, [spe]))
                             arr[2] = (
-                                <Tooltip title="Ajouter la majeure comme concernée par le projet" placement="top">
                                     <Button component="span" size="sm" color="info" onClick={this.addSpecialization(spe._id)}><Add />Ajouter</Button>
-                                </Tooltip>);
+                            );
                     }
                     i++
                 } while (i < this.state.projectSpecializations.length);

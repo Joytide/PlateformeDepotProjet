@@ -18,9 +18,12 @@ import Modal from "components/Modal/Modal.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
 import AuthService from "../../components/AuthService";
+import { hasPermission } from "components/PermissionHandler";
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler"
+
+import { YearList as Permissions } from "../../permissions"
 import { api } from "config.json"
 
 const styles = {
@@ -69,6 +72,15 @@ class YearList extends React.Component {
         this.loadData()
     }
 
+    componentWillReceiveProps(nextProps) {
+        const canDeleteYear = hasPermission(Permissions.DeleteYear, nextProps.user.user);
+
+        if (canDeleteYear !== this.state.canDeleteYear)
+            this.setState({
+                canDeleteYear,
+            }, this.loadData);
+    }
+
     loadData = () => {
         fetch(api.host + ":" + api.port + "/api/year", { crossDomain: true })
             .then(res => {
@@ -88,7 +100,7 @@ class YearList extends React.Component {
                                     <Visibility /> Voir l'année
                                 </Button>
                             </Link>
-                            {this.props.user.user.admin &&
+                            {this.state.canDeleteYear &&
                                 <Button size="sm" type="button" color="danger" onClick={this.showModal(year._id)}>
                                     <Delete /> Supprimer l'année
                                 </Button>

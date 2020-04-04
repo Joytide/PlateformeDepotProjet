@@ -17,11 +17,14 @@ import CardBody from "components/Card/CardBody.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import Modal from "components/Modal/Modal.jsx";
 
-import { api } from "config.json"
+import AuthService from "../../components/AuthService";
+import { hasPermission } from "components/PermissionHandler";
 import { withUser } from "../../providers/UserProvider/UserProvider"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
-import AuthService from "../../components/AuthService";
+
+import { SpecializationList as Permissions } from "../../permissions"
+import { api } from "config.json"
 
 const styles = {
     cardCategoryWhite: {
@@ -61,12 +64,22 @@ class SpecializationList extends React.Component {
             loading: true,
             specializations: [],
             open: false,
-            _id: ""
+            _id: "",
+            canDeleteSpecialization: false
         };
     }
 
     componentWillMount() {
         this.loadData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const canDeleteSpecialization = hasPermission(Permissions.DeleteSpecialization, nextProps.user.user);
+
+        if (canDeleteSpecialization !== this.state.canDeleteSpecialization)
+            this.setState({
+                canDeleteSpecialization,
+            }, this.loadData);
     }
 
     loadData = () => {
@@ -88,7 +101,7 @@ class SpecializationList extends React.Component {
                                     <Visibility /> Voir la majeure
                         </Button>
                             </Link>
-                            {this.props.user.user.admin &&
+                            {this.state.canDeleteSpecialization &&
                                 <Button size="sm" type="button" color="danger" onClick={this.showModal(specialization._id)}>
                                     <Delete /> Supprimer la majeure
                         </Button>

@@ -31,6 +31,7 @@ const Sidebar = ({ ...props }) => {
 				if (prop.redirect) return null;
 				if (prop.invisible) return null;
 				if (!hasPermission(prop.permissions, props.user.user)) return null;
+				
 				var activePro = " ";
 				var listItemClasses;
 				listItemClasses = classNames({

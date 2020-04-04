@@ -93,7 +93,6 @@ const dashboardRoutes = [
     navbarName: "Ajouter un utilisateur",
     icon: PersonAdd,
     component: CreateUser,
-    adminOnly: true,
     permissions: Permissions.CreateUser.value
   },
   {
@@ -111,7 +110,6 @@ const dashboardRoutes = [
     navbarName: "Créer une majeure",
     icon: "add",
     component: CreateSpecialization,
-    adminOnly: true,
     permissions: Permissions.CreateSpecialization.value
   },
   {
@@ -129,7 +127,6 @@ const dashboardRoutes = [
     navbarName: "Créer une année",
     icon: "add",
     component: CreateYear,
-    adminOnly: true,
     permissions: Permissions.CreateYear.value
   },
   {
@@ -138,7 +135,6 @@ const dashboardRoutes = [
     navbarName: "Réglages",
     icon: "settings",
     component: Settings,
-    adminOnly: false,
     permissions: Permissions.Settings.value
   },
 ];

@@ -79,10 +79,6 @@ class App extends React.Component {
 		const switchRoutes = dashboardRoutes.map((prop, key) => {
 			if (prop.redirect)
 				return <Redirect from={prop.path} to={prop.to} key={key} />;
-			if (prop.adminOnly) {
-				if (this.state.isAdmin)
-					return <Route path={prop.path} exact={prop.exact} component={prop.component} key={key} />;
-			}
 			else
 				return <Route path={prop.path} exact={prop.exact} component={prop.component} key={key} />;
 		});

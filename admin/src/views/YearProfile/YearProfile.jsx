@@ -14,10 +14,13 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 
 import AuthService from "components/AuthService";
-import { api } from "../../config";
-import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { hasPermission } from "components/PermissionHandler";
+import { withUser } from "../../providers/UserProvider/UserProvider";
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
-import { handleXhrError } from "../../components/ErrorHandler"
+import { handleXhrError } from "../../components/ErrorHandler";
+
+import { YearProfile as Permissions } from "../../permissions"
+import { api } from "config.json"
 
 const styles = {
     cardCategoryWhite: {
@@ -47,6 +50,7 @@ class YearProfile extends React.Component {
             year_old: {},
             loading: true,
             modificated: false,
+            canEditYear: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -83,6 +87,15 @@ class YearProfile extends React.Component {
 
     componentDidMount() {
         this.loadData();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const canEditYear = hasPermission(Permissions.EditYear, nextProps.user.user);
+
+        if (canEditYear !== this.state.canEditYear)
+            this.setState({
+                canEditYear,
+            }, this.loadData);
     }
 
     handleChange = event => {
@@ -141,80 +154,77 @@ class YearProfile extends React.Component {
         let profile;
         if (!this.state.loading) {
             profile = (
-                <UserContext.Consumer>
-                    {value =>
-                        <GridContainer>
-                            <GridItem xs={12} sm={12} md={12}>
-                                <Card>
-                                    <CardHeader color="primary">
-                                        <h4 className={classes.cardTitleWhite}>Année</h4>
-                                        <p className={classes.cardCategoryWhite}>Informations sur l'année</p>
-                                    </CardHeader>
-                                    <CardBody>
-                                        <GridContainer>
-                                            <GridItem xs={12} sm={12} md={4}>
-                                                <CustomInput
-                                                    labelText="Abréviation"
-                                                    id="abbreviation"
-                                                    formControlProps={{
-                                                        fullWidth: true
-                                                    }}
-                                                    inputProps={{
-                                                        disabled: !value.user.admin,
-                                                        onChange: this.handleChange,
-                                                        value: this.state.year.abbreviation
-                                                    }}
-                                                />
-                                            </GridItem>
-                                        </GridContainer>
+                <GridContainer>
+                    <GridItem xs={12} sm={12} md={12}>
+                        <Card>
+                            <CardHeader color="primary">
+                                <h4 className={classes.cardTitleWhite}>Année</h4>
+                                <p className={classes.cardCategoryWhite}>Informations sur l'année</p>
+                            </CardHeader>
+                            <CardBody>
+                                <GridContainer>
+                                    <GridItem xs={12} sm={12} md={4}>
+                                        <CustomInput
+                                            labelText="Abréviation"
+                                            id="abbreviation"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                disabled: !this.state.canEditYear,
+                                                onChange: this.handleChange,
+                                                value: this.state.year.abbreviation
+                                            }}
+                                        />
+                                    </GridItem>
+                                </GridContainer>
 
-                                        <GridContainer>
-                                            <GridItem xs={12} sm={12} md={6}>
-                                                <CustomInput
-                                                    labelText="Nom (fr)"
-                                                    id="nameFr"
-                                                    formControlProps={{
-                                                        fullWidth: true
-                                                    }}
-                                                    inputProps={{
-                                                        disabled: !value.user.admin,
-                                                        onChange: this.handleChange,
-                                                        value: this.state.year.nameFr
-                                                    }}
-                                                />
-                                            </GridItem>
-                                            <GridItem xs={12} sm={12} md={6}>
-                                                <CustomInput
-                                                    labelText="Nom (en)"
-                                                    id="nameEn"
-                                                    formControlProps={{
-                                                        fullWidth: true
-                                                    }}
-                                                    inputProps={{
-                                                        disabled: !value.user.admin,
-                                                        onChange: this.handleChange,
-                                                        value: this.state.year.nameEn
-                                                    }}
-                                                />
-                                            </GridItem>
-                                        </GridContainer>
-                                    </CardBody>
-                                    {
-                                        value.user.admin &&
-                                        <CardFooter>
-                                            <GridContainer >
-                                                <GridItem xs={12} sm={12} md={12}>
-                                                    <Button disabled={!this.state.modificated} color="success" onClick={this.update}>Sauvegarder</Button>
-                                                    <Button disabled={!this.state.modificated} color="danger" onClick={this.cancel}>Annuler</Button>
-                                                </GridItem>
-                                            </GridContainer>
-                                        </CardFooter>
-                                    }
-                                </Card>
-                            </GridItem>
-                        </GridContainer>
-                    }
-                </UserContext.Consumer>);
+                                <GridContainer>
+                                    <GridItem xs={12} sm={12} md={6}>
+                                        <CustomInput
+                                            labelText="Nom (fr)"
+                                            id="nameFr"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                disabled: !this.state.canEditYear,
+                                                onChange: this.handleChange,
+                                                value: this.state.year.nameFr
+                                            }}
+                                        />
+                                    </GridItem>
+                                    <GridItem xs={12} sm={12} md={6}>
+                                        <CustomInput
+                                            labelText="Nom (en)"
+                                            id="nameEn"
+                                            formControlProps={{
+                                                fullWidth: true
+                                            }}
+                                            inputProps={{
+                                                disabled: !this.state.canEditYear,
+                                                onChange: this.handleChange,
+                                                value: this.state.year.nameEn
+                                            }}
+                                        />
+                                    </GridItem>
+                                </GridContainer>
+                            </CardBody>
+                            {
+                                this.state.canEditYear &&
+                                <CardFooter>
+                                    <GridContainer >
+                                        <GridItem xs={12} sm={12} md={12}>
+                                            <Button disabled={!this.state.modificated} color="success" onClick={this.update}>Sauvegarder</Button>
+                                            <Button disabled={!this.state.modificated} color="danger" onClick={this.cancel}>Annuler</Button>
+                                        </GridItem>
+                                    </GridContainer>
+                                </CardFooter>
+                            }
+                        </Card>
+                    </GridItem>
+                </GridContainer>
+            );
         }
         return (
             <div>
@@ -224,4 +234,4 @@ class YearProfile extends React.Component {
     }
 }
 
-export default withSnackbar(withStyles(styles)(YearProfile));
+export default withUser(withSnackbar(withStyles(styles)(YearProfile)));

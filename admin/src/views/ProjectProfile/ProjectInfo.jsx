@@ -52,8 +52,14 @@ class ProjectInfo extends React.Component {
         this.state = {
             edit: false,
             project: this.props.project,
-            modifiedProject: this.props.project
+            modifiedProject: this.props.project,
+            editable: false
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.state.editable !== nextProps.editable)
+            this.setState({ editable: nextProps.editable });
     }
 
     // Handle changes on the new keyword's textbox
@@ -240,12 +246,14 @@ class ProjectInfo extends React.Component {
                             {this.state.project.maxTeams}
                         </Typography>
 
-                        <Button
-                            size="sm"
-                            color="warning"
-                            onClick={this.startEditing}>
-                            Editer les informations
+                        {this.props.editable &&
+                            <Button
+                                size="sm"
+                                color="warning"
+                                onClick={this.startEditing}>
+                                Editer les informations
                                 </Button>
+                        }
                     </CardBody>
                 </Card>
             );

@@ -15,7 +15,6 @@ import CardBody from "components/Card/CardBody.jsx";
 import CustomInput from "components/CustomInput/CustomInput.jsx";
 import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import Snackbar from "components/Snackbar/Snackbar.jsx";
 
 import AuthService from "../../components/AuthService";
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
@@ -72,9 +71,7 @@ class CreateYear extends React.Component {
             nameEn: "",
             nameFr: "",
             abbreviation: "",
-            success: false,
-            error: false,
-            message: ""
+            redirect: false
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -132,30 +129,12 @@ class CreateYear extends React.Component {
 
     render() {
         const { classes } = this.props;
-        let redirect;
 
-        if (this.state.redirect) {
-            redirect = <Redirect to="/years" />
-        }
+        if (this.state.redirect) 
+            return <Redirect to="/years" />
+        
         return (
             <GridContainer>
-                {redirect}
-                <Snackbar
-                    place="tc"
-                    color="success"
-                    message={this.state.message}
-                    open={this.state.success}
-                    closeNotification={() => this.setState({ success: false })}
-                    close
-                />
-                <Snackbar
-                    place="tc"
-                    color="danger"
-                    message={this.state.message}
-                    open={this.state.error}
-                    closeNotification={() => this.setState({ error: false })}
-                    close
-                />
                 <GridItem xs={12} sm={12} md={12}>
                     <Card>
                         <CardHeader color="primary">
