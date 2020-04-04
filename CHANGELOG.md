@@ -1,6 +1,6 @@
-## 2.1.0 ()
+## 2.1.0 (4 avril 2020)
 * Les mots clefs sont rangés dans l'ordre croissant
-*
+* Les permissions pour l'interface admin sont gérées dans le fichier permissions.json
 
 ## 2.0.0 (3 avril 2020)
 * L'API  respecte l'architecture [REST](https://fr.wikipedia.org/wiki/Representational_state_transfer)
