@@ -128,7 +128,7 @@ class ProjectPage extends React.Component {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Typography variant="subtitle1">
-                                            {i18n.t('partner.label', { lng })} {new Date(project.edit_date).toLocaleDateString()}
+                                            {i18n.t('partner.label', { lng })} {new Date(project.submissionDate).toLocaleDateString()}
                                         </Typography>
 
                                         {/*<Tooltip title="Like">

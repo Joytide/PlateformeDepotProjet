@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 // @material-ui/core components
 import Typography from "@material-ui/core/Typography";
@@ -245,6 +246,15 @@ class ProjectInfo extends React.Component {
                         <Typography>
                             {this.state.project.maxTeams}
                         </Typography>
+                        <br />
+                        <Typography >
+                            Déposé le {new Date(this.state.project.submissionDate).toLocaleDateString()}
+                        </Typography>
+                        {this.state.project.lastUpdate &&
+                            <Typography>
+                                Dernière mise à jour le {new Date(this.state.project.lastUpdate.at).toLocaleDateString()} par <Link to={"/user/" + this.state.project.lastUpdate.by._id} >{this.state.project.lastUpdate.by.first_name + " " + this.state.project.lastUpdate.by.last_name}</Link>
+                            </Typography>
+                        }
 
                         {this.props.editable &&
                             <Button

@@ -25,6 +25,17 @@ const SpecializationSchema = new Schema({
     }
 });
 
+const LastUpdateSchema = new Schema({
+    by: {
+        type: Schema.Types.ObjectId,
+        ref: "Person",
+        required: true
+    },
+    at: {
+        type: Date
+    }
+})
+
 const ProjectSchema = new Schema({
     title: {
         type: String,
@@ -45,21 +56,18 @@ const ProjectSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Keyword'
         }
-    ], 
+    ],
     status: {
         type: String,
         enum: ["validated", "rejected", "pending"],
         required: true,
         default: "pending"
     },
-    sub_date: {
+    submissionDate: {
         type: Date,
         default: Date.now
     },
-    edit_date: {
-        type: Date,
-        default: Date.now
-    },
+    lastUpdate: LastUpdateSchema,
     skills: String,
     infos: String,
     likes: [

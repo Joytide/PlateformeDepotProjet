@@ -202,7 +202,8 @@ exports.createProject = ({ user, ...data }) =>
 					study_year: data.study_year,
 					description: data.description,
 					partner: user._id,
-					maxTeams: parseInt(data.maxNumber, 10)
+					maxTeams: parseInt(data.maxNumber, 10),
+					submissionDate: Date.now()
 				});
 
 				if (data.files) newProject.files = data.files;
@@ -250,6 +251,7 @@ exports.findById = ({ id, user }) =>
 					.populate('partner')
 					.populate('specializations.specialization')
 					.populate('study_year')
+					.populate('lastUpdate.by')
 					.populate({
 						path: 'files',
 						select: 'originalName'
@@ -306,7 +308,7 @@ exports.findByIdSelectSpecializations = ({ id }) =>
  * Update a project
  * @param {ObjectId} id Id of the project to update
  */
-exports.update = ({ id, ...data }) =>
+exports.update = ({ user, id, ...data }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() =>
@@ -324,9 +326,10 @@ exports.update = ({ id, ...data }) =>
 				if (data.description) update.description = data.description;
 				//if (data.majors_concerned) update.specializations = data.majors_concerned.map(spe => ({ specialization: spe }));
 				if (data.study_year) update.study_year = data.study_year;
-				//if (data.keywords) update.keywords = data.keywords;
-				//if (data.status) update.status = data.status;
-				update.edit_date = Date.now();
+				update.lastUpdate = {
+					at: Date.now(),
+					by: user._id
+				}
 
 				project.set(update);
 				return project.save();

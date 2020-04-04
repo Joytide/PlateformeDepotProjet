@@ -1,3 +1,6 @@
+## 2.2.0
+* Affichage de la date de dépot et de la date de la dernière modification effectuée sur la page projet
+
 ## 2.1.0 (4 avril 2020)
 * Les mots clefs sont rangés dans l'ordre croissant
 * Les permissions pour l'interface admin sont gérées dans le fichier permissions.json
