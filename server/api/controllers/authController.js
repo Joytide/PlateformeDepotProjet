@@ -12,7 +12,7 @@ const Person = mongoose.model('Person');
 const Partner = mongoose.model('Partner');
 
 const config = require('../../config.json');
-const { UserNotFoundError, ForbiddenError, PartnerNotFoundError, MissingParameterError } = require('../../helpers/Errors');
+const { isValidType, UserNotFoundError, ForbiddenError, PartnerNotFoundError, MissingParameterError } = require('../../helpers/Errors');
 
 // Strategy pour log l'utilisateur avec son nom d'utilisateur & mot de passe.
 // Si les identifiants sont bon. Alors on lui renvoie son token jwt pour
@@ -85,36 +85,40 @@ passport.serializeUser(function (token, done) {
 });
 
 passport.deserializeUser(function (id, done) {
-    User.findById({ _id: id }, function (err, user) {
-        done(err, user);
-    });
+    User.findById({ _id: id })
+        .lean()
+        .exec(function (err, user) {
+            done(err, user);
+        });
 });
 
 exports.passport = passport;
 
-exports.logPartner = (req, res, next) => {
-    if (req.body.key) {
-        Partner.findOne({ key: req.body.key }, (err, partner) => {
-            if (err)
-                next(err);
-            if (!partner)
-                next(new PartnerNotFoundError());
-            else {
-                let userToken = jwt.sign(
-                    { id: partner._id },
-                    config.jwt.secret,
-                    {
-                        expiresIn: 60 * 60 * 24
-                    }
-                );
+exports.logPartner = ({ key }) =>
+    new Promise((resolve, reject) => {
+        isValidType(key, "key", "string")
+            .then(() =>
+                Partner
+                    .findOne({ key })
+                    .lean.exec()
+            )
+            .then(partner => {
+                if (!partner)
+                    next(new PartnerNotFoundError());
+                else {
+                    let userToken = jwt.sign(
+                        { id: partner._id },
+                        config.jwt.secret,
+                        {
+                            expiresIn: 60 * 60 * 24
+                        }
+                    );
 
-                res.json({ token: userToken });
-            }
-        });
-    } else {
-        next(new MissingParameterError("key"))
-    }
-}
+                    res.json({ token: userToken });
+                }
+            })
+            .catch(reject);
+    });
 
 exports.areAuthorized = authorized => (req, res, next) => {
     if (!req.user) {

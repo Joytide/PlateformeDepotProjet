@@ -1,12 +1,14 @@
 'use strict';
 
 const auth = require('../controllers/authController');
+const { handleRequest } = require('../../helpers/Request');
 
 module.exports = function (app) {
     /**
      * Return token partner depending on his key
      */
-    app.post('/api/login/partner/', auth.logPartner);
+    app.route('/api/login/partner/')
+        .post(handleRequest(auth.logPartner));
 
     /**
      * Connect user using email + password
