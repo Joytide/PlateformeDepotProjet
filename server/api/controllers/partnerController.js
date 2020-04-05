@@ -12,26 +12,20 @@ const config = require('../../config');
  * List all partners
  */
 exports.getAll = () =>
-	new Promise((resolve, reject) => {
-		Partner.find()
-			.populate('projects')
-			.exec()
-			.then(resolve)
-			.catch(reject);
-	});
+	Partner.find()
+		.populate('projects')
+		.lean()
+		.exec();
 
 exports.myself = ({ user }) =>
-	new Promise((resolve, reject) => {
-		Partner
-			.findOne({ _id: user._id })
-			.populate({
-				path: "projects",
-				populate: { path: "specializations.specialization study_year files" }
-			})
-			.exec()
-			.then(resolve)
-			.catch(reject);
-	});
+	Partner
+		.findOne({ _id: user._id })
+		.populate({
+			path: "projects",
+			populate: { path: "specializations.specialization study_year files" }
+		})
+		.lean()
+		.exec();
 
 /**
  * Create a new partner
@@ -54,11 +48,11 @@ exports.createPartner = ({ ...data }) =>
 		)
 			.then(() =>
 				Partner
-					.findOne({ email: data.email })
+					.estimatedDocumentCount({ email: data.email })
 					.exec()
 			)
-			.then(partner => {
-				if (partner) {
+			.then(partnerCount => {
+				if (partnerCount > 0) {
 					throw new ExistingEmailError();
 				} else {
 					let newPartner = new Partner({
@@ -109,6 +103,7 @@ exports.findByMail = ({ email }) =>
 				Partner
 					.findOne({ email })
 					.populate('projects')
+					.lean()
 					.exec()
 			)
 			.then(partner => {
@@ -129,8 +124,10 @@ exports.findById = ({ id }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() =>
-				Partner.findOne({ _id: id })
+				Partner
+					.findOne({ _id: id })
 					.populate('projects')
+					.lean()
 					.exec()
 			)
 			.then(partner => {
@@ -151,8 +148,10 @@ exports.findByKey = ({ key }) =>
 	new Promise((resolve, reject) => {
 		isValidType(key, "key", "string")
 			.then(() =>
-				Partner.findOne({ key })
+				Partner
+					.findOne({ key })
 					.populate('projects')
+					.lean()
 					.exec()
 			)
 			.then(partner => {
@@ -184,8 +183,8 @@ exports.updatePartner = ({ id, ...data }) =>
 				let keysList = ["company", "first_name", "last_name", "phone", "address", "kind", "alreadyPartner"]
 
 				keysList.forEach(key => {
-					if (data[key]) 
-					updateData[key] = data[key];
+					if (data[key])
+						updateData[key] = data[key];
 				});
 
 				return Partner

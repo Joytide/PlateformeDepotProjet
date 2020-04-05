@@ -30,14 +30,10 @@ exports.create = ({ name }) =>
  * Returns all existing keywords
  */
 exports.getAll = () =>
-    new Promise((resolve, reject) => {
-        Keyword.find({}, (err, res) => {
-            if (err)
-                reject(new MongoError(err));
-            else
-                resolve(res);
-        });
-    });
+    Keyword
+        .find({})
+        .lean()
+        .exec();
 
 /**
  * Update a keyword name

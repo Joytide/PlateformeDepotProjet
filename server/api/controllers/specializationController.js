@@ -15,6 +15,7 @@ exports.list = () =>
         Specialization.find({})
             .populate({ path: 'referent', select: "first_name last_name _id" })
             .exec()
+            .lean()
             .then(specializations => resolve(specializations || []))
             .catch(reject);
     });
@@ -81,6 +82,7 @@ exports.findById = ({ id }) =>
                 Specialization
                     .findOne({ _id: id })
                     .populate({ path: 'referent', select: "first_name last_name _id email" })
+                    .lean()
                     .exec()
             )
             .then(specialization => resolve(specialization))

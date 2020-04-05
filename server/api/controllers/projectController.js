@@ -151,6 +151,7 @@ exports.listProjects = ({ user, ...data }) =>
 				.populate('partner')
 				.populate('specializations.specialization')
 				.populate('study_year')
+				.lean()
 				.exec();
 		};
 		let status = [];
@@ -161,6 +162,7 @@ exports.listProjects = ({ user, ...data }) =>
 		if (data.mine === "true") {
 			Specialization
 				.find({ referent: user._id })
+				.lean()
 				.then(specializations => findProject(status, specializations.map(spe => spe._id)))
 				.then(projects => resolve(projects))
 				.catch(reject);
@@ -281,6 +283,7 @@ exports.findByIdSelectFiles = ({ id }) =>
 					path: 'files',
 					select: 'originalName'
 				})
+				.lean()
 				.exec()
 			)
 			.then(project => resolve(project))
@@ -298,6 +301,7 @@ exports.findByIdSelectSpecializations = ({ id }) =>
 				Project
 					.findById(id, 'specializations')
 					.populate('specializations.specialization')
+					.lean()
 					.exec()
 			)
 			.then(project => resolve(project))
@@ -347,6 +351,7 @@ exports.download_file = ({ id }) =>
 		isValidType(id, "id", "ObjectId")
 			.then(() =>
 				File.findById(id)
+					.lean()
 					.exec()
 			)
 			.then(file => {
@@ -498,11 +503,13 @@ exports.removeKeyword = ({ keywordId, projectId }) =>
  */
 exports.getCSV = (find = {}) => () =>
 	new Promise((resolve, reject) => {
-		let findProject = Project.find(find)
+		let findProject = Project
+			.find(find)
 			.populate("partner specializations.specialization study_year")
+			.lean()
 			.exec();
-		let findYear = Year.find({}).exec();
-		let findSpecializations = Specialization.find({}).exec();
+		let findYear = Year.find({}).lean().exec();
+		let findSpecializations = Specialization.find({}).lean().exec();
 
 		Promise.all([findProject, findYear, findSpecializations])
 			.then(([projects, years, specializations]) => {
@@ -618,11 +625,12 @@ exports.studentFolder = () =>
 		let date = Date.now();
 		let baseDirectory = process.cwd() + "/exports/" + date;
 
-		let findYears = Year.find({}).exec();
-		let findSpecializations = Specialization.find({}).exec();
+		let findYears = Year.find({}).lean().exec();
+		let findSpecializations = Specialization.find({}).lean().exec();
 		let findProjects = Project
 			.find({ status: "validated" })
 			.populate("files pdf specializations.specialization study_year")
+			.lean()
 			.exec();
 
 		Promise

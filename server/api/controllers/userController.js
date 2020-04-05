@@ -27,8 +27,8 @@ const {
  */
 exports.list = () =>
     new Promise((resolve, reject) => {
-        let personFind = Person.find({}).exec();
-        let partnerFind = Partner.find({}).exec();
+        let personFind = Person.find({}).lean().exec();
+        let partnerFind = Partner.find({}).lean().exec();
 
         Promise
             .all([personFind, partnerFind])
@@ -47,6 +47,7 @@ exports.listAdministration = (filters = {}) => () =>
     new Promise((resolve, reject) => {
         Administration
             .find(filters)
+            .lean()
             .exec()
             .then(admins => resolve(admins))
             .catch(reject);
@@ -172,6 +173,7 @@ exports.findById = ({ id }) =>
                         path: "projects",
                         populate: { path: "specializations.specialization study_year files" }
                     })
+                    .lean()
                     .exec();
 
                 return Promise.all([findAdministration, findPartner]);

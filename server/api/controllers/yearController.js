@@ -8,8 +8,10 @@ const { isValidType, areValidTypes, YearNotFoundError } = require('../../helpers
  */
 exports.list = () =>
     new Promise((resolve, reject) => {
-        Year.find({})
+        Year
+            .find({})
             .sort({ abbreviation: 1 })
+            .lean()
             .exec()
             .then(years => {
                 if (years)
@@ -62,7 +64,7 @@ exports.delete = ({ id }) =>
 
                 return Promise.all([deleteYear, updateProjects]);
             })
-            .then(() => resolve({ok :1}))
+            .then(() => resolve({ ok: 1 }))
             .catch(reject);
     });
 
@@ -75,6 +77,7 @@ exports.findById = ({ id }) =>
         isValidType(id, "id", "ObjectId")
             .then(() =>
                 Year.findById({ _id: id })
+                    .lean()
                     .exec()
             )
             .then(year => {

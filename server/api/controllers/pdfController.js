@@ -6,6 +6,8 @@ const fs = require('fs');
 const Project = mongoose.model('Project');
 const File = mongoose.model('File');
 
+const { ProjectNotFoundError } = require('../../helpers/Errors');
+
 const PDFUtils = {
     /**
      * Generate PDF for a project
@@ -13,14 +15,14 @@ const PDFUtils = {
      * @see generateHTML for how HTML file is generated
      * @see generatePDF for how HTML file is converted to PDF
      */
-    generate: (projectID) => {
+    generate: projectID => {
         return new Promise((resolve, reject) => {
             PDFUtils.generateHTML(projectID)
-                .then(output => {
-                    PDFUtils.generatePDF(output.project, output.path)
-                        .then(resolve)
-                        .catch(reject);
-                })
+                .then(output =>
+                    PDFUtils
+                        .generatePDF(output.project, output.path)
+                )
+                .then(resolve)
                 .catch(reject);
         });
     },
@@ -29,20 +31,23 @@ const PDFUtils = {
      * Generate a HTML file for project
      * @param {ObjectId} projectID Project for which you want to generate a HTML file
      */
-    generateHTML: (projectID) => {
+    generateHTML: projectID => {
         return new Promise((resolve, reject) => {
             Project
                 .findById(projectID)
                 .populate("study_year files partner")
                 .populate("specializations.specialization")
-                .exec((err, project) => {
-                    if (err)
-                        throw err;
-                    else if (project) {
-                        ejs.renderFile(process.cwd() + "/api/models/PDF_template.ejs", {
-                            imagePath: process.cwd() + "/PDF/logo-esilv.jpg",
-                            project: project
-                        },
+                .lean()
+                .exec()
+                .then(project => {
+                    if (project) {
+                        // No promises with ejs :(
+                        ejs.renderFile(
+                            process.cwd() + "/api/models/PDF_template.ejs",
+                            {
+                                imagePath: process.cwd() + "/PDF/logo-esilv.jpg",
+                                project: project
+                            },
                             (err, html) => {
                                 if (err)
                                     reject(err);
@@ -57,7 +62,10 @@ const PDFUtils = {
                                 }
                             });
                     }
-                });
+                    else
+                        throw new ProjectNotFoundError();
+                })
+                .catch(reject);
         });
     },
 
@@ -75,7 +83,7 @@ const PDFUtils = {
                 HTMLpath,
                 PDFpath]
             );
-            
+
             wkhtmltopdf.on('error', err => {
                 reject(err);
             })
@@ -119,6 +127,8 @@ const PDFUtils = {
                 ...files,
                 "./PDF/AllProjects.pdf"]
             );
+
+            pdfunite.on('error', reject);
 
             pdfunite.on('close', exitCode => {
                 if (exitCode != 0)
