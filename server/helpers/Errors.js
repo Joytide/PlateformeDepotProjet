@@ -141,7 +141,7 @@ const handleError = (error, req, res, next) => {
  */
 const isValidType = (variable, varName, typeExpected) =>
     new Promise((resolve, reject) => {
-        if (variable) {
+        if (variable !== undefined) {
             if (typeof (variable) == typeExpected)
                 return resolve();
 
