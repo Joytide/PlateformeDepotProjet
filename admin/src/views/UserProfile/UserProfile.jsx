@@ -111,7 +111,8 @@ class UserProfile extends React.Component {
 			first_name: this.state.user.first_name,
 			last_name: this.state.user.last_name,
 			email: this.state.user.email,
-			__t: this.state.user.__t
+			phone: this.state.user.phone,
+			address: this.state.user.address,
 		}
 
 		let url = api.host + ":" + api.port + "/api/user";
@@ -189,27 +190,57 @@ class UserProfile extends React.Component {
 		if (!this.state.loading) {
 			const title = (user_old.company ? "[" + user_old.company.toUpperCase() + "] - " : "") + user_old.last_name.toUpperCase() + " " + user_old.first_name
 
-			let company;
+			let company, phone, address;
 			let administration;
 
 			if (user.__t === "Partner") {
 				company = (
-					<GridContainer>
-						<GridItem xs={12} sm={12} md={4}>
-							<CustomInput
-								labelText="Entreprise"
-								id="company"
-								formControlProps={{
-									fullWidth: true
-								}}
-								inputProps={{
-									value: user.company,
-									onChange: this.handleChange,
-									disabled: !this.props.user.user.admin
-								}}
-							/>
-						</GridItem>
-					</GridContainer>);
+					<GridItem xs={12} sm={12} md={6}>
+						<CustomInput
+							labelText="Entreprise"
+							id="company"
+							formControlProps={{
+								fullWidth: true
+							}}
+							inputProps={{
+								value: user.company,
+								onChange: this.handleChange,
+								disabled: !this.props.user.user.admin
+							}}
+						/>
+					</GridItem>);
+
+				phone = (
+					<GridItem xs={12} sm={12} md={6}>
+						<CustomInput
+							labelText="Numéro de téléphone"
+							id="phone"
+							formControlProps={{
+								fullWidth: true
+							}}
+							inputProps={{
+								value: user.phone,
+								onChange: this.handleChange,
+								disabled: !this.props.user.user.admin
+							}}
+						/>
+					</GridItem>);
+
+				address = (
+					<GridItem xs={12} sm={12} md={6}>
+						<CustomInput
+							labelText="Adresse"
+							id="address"
+							formControlProps={{
+								fullWidth: true
+							}}
+							inputProps={{
+								value: user.address,
+								onChange: this.handleChange,
+								disabled: !this.props.user.user.admin
+							}}
+						/>
+					</GridItem>);
 			}
 
 			if (user.__t === "Administration") {
@@ -262,7 +293,7 @@ class UserProfile extends React.Component {
 								</CardHeader>
 								<CardBody>
 									<GridContainer>
-										<GridItem xs={12} sm={12} md={4}>
+										<GridItem xs={12} sm={12} md={6}>
 											<CustomInput
 												labelText="Type"
 												id="Type"
@@ -275,8 +306,9 @@ class UserProfile extends React.Component {
 												}}
 											/>
 										</GridItem>
+										{company}
+										{address}
 									</GridContainer>
-									{company}
 									<GridContainer>
 										<GridItem xs={12} sm={12} md={6}>
 											<CustomInput
@@ -294,7 +326,7 @@ class UserProfile extends React.Component {
 										</GridItem>
 										<GridItem xs={12} sm={12} md={6}>
 											<CustomInput
-												labelText="Last Name"
+												labelText="Nom"
 												id="last_name"
 												formControlProps={{
 													fullWidth: true
@@ -308,7 +340,7 @@ class UserProfile extends React.Component {
 										</GridItem>
 									</GridContainer>
 									<GridContainer>
-										<GridItem xs={12} sm={12} md={12}>
+										<GridItem xs={12} sm={12} md={6}>
 											<CustomInput
 												labelText="Email"
 												id="email"
@@ -321,6 +353,7 @@ class UserProfile extends React.Component {
 												}}
 											/>
 										</GridItem>
+										{phone}
 									</GridContainer>
 									{administration}
 								</CardBody>

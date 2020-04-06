@@ -187,6 +187,8 @@ exports.updatePartner = ({ id, ...data }) =>
 						updateData[key] = data[key];
 				});
 
+				console.log(updateData);
+
 				return Partner
 					.updateOne({ _id: id }, updateData)
 					.exec();
