@@ -51,6 +51,7 @@ const storage = multer.diskStorage({
 								})
 							.exec();
 					}
+					File.updateOne({ _id: fileSaved._id }, { path: path.join(process.cwd(), ".uploads", fileSaved._id + path.extname(file.originalname)) }).exec();
 					req.fileDocument = fileSaved;
 					cb(null, fileSaved._id + path.extname(file.originalname))
 				});
@@ -348,7 +349,7 @@ exports.update = ({ user, id, ...data }) =>
  * Get a file given his id
  * @param {ObjectId} id Id of the file to download
  */
-exports.download_file = ({ id }) =>
+exports.download_file = ({ id, user }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
 			.then(() =>
@@ -357,11 +358,17 @@ exports.download_file = ({ id }) =>
 					.exec()
 			)
 			.then(file => {
-				if (file)
-					resolve({
+				if (file) {
+					if (user.__t === "Partner" && file.owner.toString() != user._id)
+						throw new ForbiddenError();
+
+					let data = {
 						path: file.path,
 						filename: file.originalName.replace('/', ' ')
-					})
+					}
+					console.log(data);
+					resolve(data)
+				}
 				else
 					throw new FileNotFoundError();
 			})
@@ -613,7 +620,7 @@ exports.getCSV = (find = {}) => () =>
 					if (err)
 						throw err;
 					else
-						resolve(process.cwd() + "/" + date + ".csv");
+						resolve({ path: process.cwd() + "/" + date + ".csv", filename: "Projets.csv" });
 				})
 			})
 			.catch(reject);

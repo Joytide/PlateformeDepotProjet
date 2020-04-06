@@ -60,7 +60,7 @@ passport.use('jwt', new JWTstrategy({
     secretOrKey: config.jwt.secret,
     //we expect the user to send the token as a query paramater with the name 'token'
     jwtFromRequest: req => {
-        return req.headers.authorization;
+        return req.headers.authorization || req.query.token;
     }
 }, (token, done) => {
     let findPerson = Person.findOne({ _id: token.id }).lean().exec();

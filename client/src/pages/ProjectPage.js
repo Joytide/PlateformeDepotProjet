@@ -90,6 +90,8 @@ class ProjectPage extends React.Component {
             });
     }
 
+    downloadFile = fileId => api.host + ":" + api.port + "/api/project/file/" + fileId + "?token=" + AuthService.getToken()
+
     render() {
         const project = this.state.project
         const lng = this.props.lng;
@@ -183,7 +185,7 @@ class ProjectPage extends React.Component {
                                                     <Typography style={{ wordBreak: "break-word" }}>
                                                         {file.originalName}
                                                     </Typography>
-                                                    <IconButton href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
+                                                    <IconButton href={this.downloadFile(file._id)}>
                                                         <VerticalAlignBottom />
                                                     </IconButton>
                                                 </Grid>

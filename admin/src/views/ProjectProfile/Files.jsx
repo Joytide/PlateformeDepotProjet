@@ -147,6 +147,8 @@ class Files extends React.Component {
             .catch(handleXhrError(this.props.snackbar));
     }
 
+    downloadFile = fileId => api.host + ":" + api.port + "/api/project/file/" + fileId + "?token=" + AuthService.getToken()
+
     render() {
         const { classes, color, projectStatus } = this.props;
         return (
@@ -179,7 +181,7 @@ class Files extends React.Component {
                                                 <Card style={{ width: "20rem" }}>
                                                     <CardBody>
                                                         <h4>{file.originalName}</h4>
-                                                        <a download href={api.host + ":" + api.port + "/api/project/file/" + file._id}>
+                                                        <a download href={this.downloadFile(file._id)}>
                                                             <Button size="sm" color="info">Télécharger</Button>
                                                         </a>
                                                         {this.state.editable &&

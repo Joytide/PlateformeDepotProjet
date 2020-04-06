@@ -4,7 +4,7 @@ const project = require('../controllers/projectController');
 const auth = require('../controllers/authController');
 
 const { MissingParameterError } = require('../../helpers/Errors');
-const { handleRequest } = require('../../helpers/Request');
+const { handleRequest, handleDownloadRequest } = require('../../helpers/Request');
 
 module.exports = function (app) {
 	app.route('/api/project/file')
@@ -27,7 +27,7 @@ module.exports = function (app) {
 			auth.passport.authenticate('jwt'),
 			// Partner download own files only
 			auth.areAuthorized(["Partner", "Administration", "EPGE"]),
-			handleRequest(project.download_file)
+			handleDownloadRequest(project.download_file)
 		);
 
 	app.route('/api/project/keyword')
@@ -114,21 +114,21 @@ module.exports = function (app) {
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized("EPGE"),
-			handleRequest(project.getCSV({ status: "validated" }))
+			handleDownloadRequest(project.getCSV({ status: "validated" }))
 		);
 
 	app.route('/api/project/csv/full')
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized("EPGE"),
-			handleRequest(project.getCSV())
+			handleDownloadRequest(project.getCSV())
 		);
 
 	app.route('/api/project/student')
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized("EPGE"),
-			handleRequest(project.studentFolder)
+			handleDownloadRequest(project.studentFolder)
 		);
 };
 

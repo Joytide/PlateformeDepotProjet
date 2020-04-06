@@ -241,22 +241,22 @@ class ProjectList extends React.Component {
                             </p>
                         </CardHeader>
                         <CardBody>
-                            <a href={api.host + ":" + api.port + "/api/pdf/all"}>
+                            <a href={api.host + ":" + api.port + "/api/pdf/all?token=" + AuthService.getToken()}>
                                 <Button size="sm" color="info">
                                     Télécharger les projets validés au format PDF
                                 </Button>
                             </a>
-                            <a href={api.host + ":" + api.port + "/api/project/csv"}>
+                            <a href={api.host + ":" + api.port + "/api/project/csv?token=" + AuthService.getToken()}>
                                 <Button size="sm" color="info">
                                     Télécharger les projets validés au format CSV
                                 </Button>
                             </a>
-                            <a href={api.host + ":" + api.port + "/api/project/csv/full"}>
+                            <a href={api.host + ":" + api.port + "/api/project/csv/full?token=" + AuthService.getToken()}>
                                 <Button size="sm" color="info">
                                     Télécharger tous les projets au format CSV
                                 </Button>
                             </a>
-                            <a href={api.host + ":" + api.port + "/api/project/student"}>
+                            <a href={api.host + ":" + api.port + "/api/project/student?token=" + AuthService.getToken()}>
                                 <Button size="sm" color="info">
                                     Télécharger les projets zippés
                                 </Button>
