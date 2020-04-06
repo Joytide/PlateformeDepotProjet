@@ -188,9 +188,9 @@ exports.listProjects = ({ user, ...data }) =>
 exports.createProject = ({ user, ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber],
-			["title", "description", "majors_concerned", "study_year", "maxNumber"],
-			["string", "string", "Array", "Array", "number"]
+			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber, data.confidential],
+			["title", "description", "majors_concerned", "study_year", "maxNumber", "confidential"],
+			["string", "string", "Array", "Array", "number", "boolean"]
 		)
 			.then(() =>
 				Project
@@ -204,6 +204,7 @@ exports.createProject = ({ user, ...data }) =>
 					study_year: data.study_year,
 					description: data.description,
 					partner: user._id,
+					confidential: data.confidential,
 					maxTeams: parseInt(data.maxNumber, 10),
 					submissionDate: Date.now()
 				});
@@ -328,8 +329,9 @@ exports.update = ({ user, id, ...data }) =>
 				if (data.maxTeams) update.maxTeams = data.maxTeams;
 				if (data.skills) update.skills = data.skills;
 				if (data.description) update.description = data.description;
-				//if (data.majors_concerned) update.specializations = data.majors_concerned.map(spe => ({ specialization: spe }));
+				if (data.confidential !== undefined) update.confidential = data.confidential;
 				if (data.study_year) update.study_year = data.study_year;
+
 				update.lastUpdate = {
 					at: Date.now(),
 					by: user._id

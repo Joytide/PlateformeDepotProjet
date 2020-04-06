@@ -6,7 +6,11 @@
         "value": "",
         "DownloadPdf": "EGPE",
         "DownloadCsv": "EGPE",
-        "DownloadZip": "EGPE"
+        "DownloadZip": "EGPE",
+        "SeeConfidential": [
+            "EGPE",
+            "Referent"
+        ]
     },
     "ProjectProfile": {
         "value": "",
@@ -30,7 +34,11 @@
             "Referent",
             "EGPE"
         ],
-        "RegeneratePDF": "EGPE"
+        "RegeneratePDF": "EGPE",
+        "ChangeConfidentiality": [
+            "Referent",
+            "EGPE"
+        ]
     },
     "UserList": {
         "value": ""

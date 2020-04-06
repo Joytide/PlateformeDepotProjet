@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
+import { FormControlLabel } from "@material-ui/core";
 
 import Visibility from "@material-ui/icons/Visibility"
 
@@ -15,16 +16,16 @@ import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-
 import Button from "components/CustomButtons/Button.jsx";
 
-import { api } from "config.json"
 import AuthService from "../../components/AuthService";
 import { withUser } from "../../providers/UserProvider/UserProvider"
-import { FormControlLabel } from "@material-ui/core";
-
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { hasPermission } from "components/PermissionHandler";
 import { handleXhrError } from "../../components/ErrorHandler";
+
+import { ProjectList as Permissions } from "../../permissions"
+import { api } from "config.json"
 
 
 const styles = {
@@ -64,24 +65,29 @@ class ProjectList extends React.Component {
         this.state = {
             loading: true,
             projects: [],
+            confidentialMapping: [],
             rejectedProjects: false,
             validatedProjects: false,
             pendingProjects: true,
-            myProject: true
+            myProject: true,
+            canDownloadPdf: false,
+            canDownloadCsv: false,
+            canDownloadZip: false
         };
 
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange = name => event => {
-        this.setState(
-            { [name]: event.target.checked },
-            this.loadProjects
-        );
-    }
-
     componentWillMount() {
         this.loadProjects();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let canDownloadPdf = hasPermission(Permissions.DownloadPdf, nextProps.user.user);
+        let canDownloadCsv = hasPermission(Permissions.DownloadCsv, nextProps.user.user);
+        let canDownloadZip = hasPermission(Permissions.DownloadZip, nextProps.user.user);
+
+        this.setState({ canDownloadPdf, canDownloadCsv, canDownloadZip });
     }
 
     loadProjects() {
@@ -110,11 +116,13 @@ class ProjectList extends React.Component {
             })
             .then(data => {
                 let projectsData = data.map(project => {
+                    if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
+                        return undefined;
                     return [
                         <p>{project.title}</p>,
                         <p>{project.partner.company}</p>,
                         <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
-                        <p>{new Date(project.sub_date).toLocaleDateString()}</p>,
+                        <p>{new Date(project.submissionDate).toLocaleDateString()}</p>,
                         project.study_year.map(year => year.abbreviation).sort().join(', '),
                         project.specializations
                             .map(spe => spe.specialization.abbreviation + (spe.status === "pending" ? " (En attente)" : (spe.status === "validated" ? " (Validé)" : "(Refusé)")))
@@ -122,11 +130,20 @@ class ProjectList extends React.Component {
                             .join(', '),
                         (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
                     ];
-                });
+                }).filter(p => p !== undefined);
 
-                this.setState({ projects: projectsData, loading: false });
+                let confidentialMapping = data.map(p => p.confidential);
+
+                this.setState({ projects: projectsData, loading: false, confidentialMapping });
             })
             .catch(handleXhrError(this.props.snackbar));
+    }
+
+    handleChange = name => event => {
+        this.setState(
+            { [name]: event.target.checked },
+            this.loadProjects
+        );
     }
 
     render() {
@@ -138,6 +155,7 @@ class ProjectList extends React.Component {
                     tableHeaderColor="primary"
                     tableHead={["Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
                     tableData={this.state.projects}
+                    confidential={this.state.confidentialMapping}
                 />
             );
         }

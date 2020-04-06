@@ -48,11 +48,11 @@ exports.createPartner = ({ ...data }) =>
 		)
 			.then(() =>
 				Partner
-					.estimatedDocumentCount({ email: data.email })
+					.findOne({ email: data.email })
 					.exec()
 			)
-			.then(partnerCount => {
-				if (partnerCount > 0) {
+			.then(partner => {
+				if (partner) {
 					throw new ExistingEmailError();
 				} else {
 					let newPartner = new Partner({

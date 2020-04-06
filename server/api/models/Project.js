@@ -102,6 +102,11 @@ const ProjectSchema = new Schema({
         type: Number,
         default: 1,
         required: true
+    },
+    confidential: {
+        type: Boolean,
+        default: false,
+        required: true
     }
 });
 

@@ -104,7 +104,8 @@ i18next
 						infos: "Further informations",
 						multipleTeams: "Do you accept that several teams work if the project ?",
 						maxNumber: "If so, how many teams do you accept ?",
-						RandD: "Is it a research and development project ?"
+						RandD: "Is it a research and development project ?",
+						confidential: "Is your project confidential ?"
 					},
 					home: {
 						title: 'Industrial Innovation Projects',
@@ -262,7 +263,8 @@ i18next
 						infos: "Informations complémentaires",
 						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?",
 						maxNumber: "Dans ce cas combien d'équipes maximum acceptez-vous ?",
-						RandD: "Est-ce un projet de recherche et développement ?"
+						RandD: "Est-ce un projet de recherche et développement ?",
+						confidential: "Votre projet est-il confidentiel ?"
 					},
 					errors: {
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",

@@ -14,8 +14,8 @@ exports.list = () =>
     new Promise((resolve, reject) => {
         Specialization.find({})
             .populate({ path: 'referent', select: "first_name last_name _id" })
-            .exec()
             .lean()
+            .exec()
             .then(specializations => resolve(specializations || []))
             .catch(reject);
     });
