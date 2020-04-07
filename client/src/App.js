@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 import Home from './pages/Home';
 import Projects from './pages/Projects';
@@ -43,12 +44,12 @@ class App extends Component {
 		fetch("/api/open")
 			.then(res => res.json())
 			.then(data => {
-				this.setState({ isOpen: data.open });
+				this.setState({ isOpen: data.open, description: data.description });
 			});
 	}
 
 	render() {
-		const lng = this.state.lng
+		const lng = this.state.lng;
 		if (this.state.isOpen) {
 			return (
 				<SnackbarProvider>
@@ -84,12 +85,11 @@ class App extends Component {
 					<Grid container justify="center">
 						<Grid item xs={6}>
 							<Paper elevation={1}>
-								<Typography variant="h1" align="center">
-									La plateforme est actuellement fermée !
-						</Typography>
-								<Typography variant="h4" align="center">
-									<span role="img" aria-labelledby="jsx-a11y/accessible-emoji" ></span>
-								</Typography>
+								<Grid container justify="center">
+									<Grid item xs={11}>
+										<ReactMarkdown source={this.state.description} />
+									</Grid>
+								</Grid>
 							</Paper>
 						</Grid>
 					</Grid>

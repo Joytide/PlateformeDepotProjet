@@ -1,19 +1,24 @@
 import React from "react";
+import ReactMarkdown from "react-markdown";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
+import TextField from '@material-ui/core/TextField';
+import Typography from "@material-ui/core/Typography";
+
 import ChangePassword from "../../components/ChangePassword/ChangePassword"
-import { UserContext } from "../../providers/UserProvider/UserProvider"
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import Button from "components/CustomButtons/Button.jsx";
-import Typography from "@material-ui/core/Typography";
 import GridContainer from "components/Grid/GridContainer.jsx";
 
-import { api } from "config.json"
-import AuthService from "../../components/AuthService";
+import AuthService from "components/AuthService"
+import { api } from "../../config"
+import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
+import { UserContext } from "../../providers/UserProvider/UserProvider";
+import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
     cardCategoryWhite: {
@@ -50,7 +55,9 @@ class Settings extends React.Component {
         super(props);
 
         this.state = {
-            platformOpen: true
+            platformOpen: true,
+            description: "",
+            description_old: "",
         };
 
         this.loadPlatformState = this.loadPlatformState.bind(this);
@@ -60,16 +67,28 @@ class Settings extends React.Component {
         this.loadPlatformState();
     }
 
+    handleChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    };
+
     loadPlatformState() {
         AuthService.fetch(api.host + ":" + api.port + "/api/open")
-            .then(res => res.json())
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+                else
+                    throw res;
+            })
             .then(data => {
-                this.setState({ platformOpen: data.open });
-            });
+                this.setState({ platformOpen: data.open, description: data.description, description_old: data.description });
+            })
+            .catch(handleXhrError(this.props.snackbar));;
     }
 
-    changePlatformState = state => () => {
-        let data = { newState: state };
+    changePlatformState = open => () => {
+        let data = { open };
         AuthService.fetch(api.host + ":" + api.port + "/api/open", {
             method: "POST",
             headers: {
@@ -77,10 +96,35 @@ class Settings extends React.Component {
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
-            .then(data => {
-                this.loadPlatformState();
-            });
+            .then(res => {
+                if (res.ok)
+                    this.setState({ platformOpen: open })
+                else
+                    throw res;
+            })
+            .catch(handleXhrError(this.props.snackbar));
+    }
+
+    saveText = () => {
+        let data = { description: this.state.description_old };
+        AuthService.fetch(api.host + ":" + api.port + "/api/open", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                if (res.ok)
+                    this.setState({ description: this.state.description_old })
+                else
+                    throw res;
+            })
+            .catch(handleXhrError(this.props.snackbar));
+    }
+
+    cancelChanges = () => {
+        this.setState({ description_old: this.state.description });
     }
 
     render() {
@@ -107,9 +151,24 @@ class Settings extends React.Component {
                                     <Typography>
                                         La plateforme est actuellement {this.state.platformOpen ? "ouverte" : "fermée"}
                                     </Typography>
-                                    <Button disabled={false} color="success" onClick={this.changePlatformState("open")}>Ouvrir la plateforme</Button>
-                                    <Button disabled={false} color="danger" onClick={this.changePlatformState("lock")}>Fermer la plateforme</Button>
+                                    <Button disabled={false} size="sm" color="success" onClick={this.changePlatformState(true)}>Ouvrir la plateforme</Button>
+                                    <Button disabled={false} size="sm" color="danger" onClick={this.changePlatformState(false)}>Fermer la plateforme</Button>
                                 </GridItem>
+                                <GridItem xs={12} md={6}>
+                                    <TextField
+                                        id="description_old"
+                                        label="Texte d'accueil lorsque la plateforme est fermée (rédaction en Markdown)"
+                                        fullWidth={true}
+                                        multiline={true}
+                                        value={this.state.description_old}
+                                        onChange={this.handleChange}
+                                    />
+                                </GridItem>
+                                <GridItem xs={12} md={6}>
+                                    <ReactMarkdown source={this.state.description_old} />
+                                </GridItem>
+                                <Button disabled={false} size="sm" color="success" onClick={this.saveText}>Sauvegarder les changements</Button>
+                                <Button disabled={false} size="sm" color="warning" onClick={this.cancelChanges}>Annuler les changements</Button>
                             </GridContainer>
                         </CardFooter>
                     </Card>
@@ -119,4 +178,4 @@ class Settings extends React.Component {
     }
 }
 
-export default withStyles(styles)(Settings);
+export default withSnackbar(withStyles(styles)(Settings));

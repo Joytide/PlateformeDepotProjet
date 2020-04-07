@@ -1,39 +1,53 @@
-const fs = require('fs');
-const path = require('path')
-const lockPath = path.resolve(path.dirname(require.main.filename), "lock");
-let isOpen = true;
+const redis = require("redis");
+const client = redis.createClient();
+const { isValidType } = require('../../helpers/Errors');
 
-fs.readFile(lockPath, 'UTF-8', (err, data) => {
-    if (err && err.code == "ENOENT") {
-        fs.writeFileSync(lockPath, "false");
-        startWatchingFile();
-    } else if (err) throw err;
-    else {
-        isOpen = data == "true" ? false : true;
-        startWatchingFile();
-    }
+client.on("error", function (err) {
+    console.error(err);
 });
 
 /**
  * Change the state of the platform (open /close)
- * @param {string} newState Acceots lock or unlock. Defaults unlock
+ * @param {boolean} open State of the platform
  */
-exports.changeState = newState =>
+exports.changeState = ({ open }) =>
     new Promise((resolve, reject) => {
-        fs.writeFile(lockPath, newState == "lock" ? "true" : "false", err => {
-            if (err)
-                reject(err);
-            else
+        isValidType(open, "open", "boolean")
+            .then(() => {
+                client.set("open", open);
                 resolve();
-        });
+            })
+            .catch(reject);
     });
 
-exports.getState = () => isOpen;
+exports.changeText = ({ description }) =>
+    new Promise((resolve, reject) => {
+        console.log("desc : ",description);
+        isValidType(description, "description", "string")
+            .then(() => {
+                console.log(description);
+                client.set("description", description, (err, reply) => {
+                    if (err) return reject(err);
+                    resolve();
+                });
+            })
+            .catch(reject);
+    });
 
-function startWatchingFile() {
-    fs.watch(lockPath, (curr, prev) => {
-        fs.readFile(lockPath, "UTF-8", (err, data) => {
-            isOpen = data == "true" ? false : true;
+exports.getState = () =>
+    new Promise((resolve, reject) => {
+        client.mget("open", "description", (err, values) => {
+            if (err)
+                return reject(err);
+
+            if (values[0] === null) {
+                client.set("open", true);
+                resolve({ open: true })
+            }
+            else
+                resolve({
+                    open: JSON.parse(values[0]),
+                    description: values[1]
+                });
         });
     });
-}

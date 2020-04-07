@@ -12,6 +12,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.7.0",
     "react-files": "^2.4.8",
+    "react-markdown": "^4.3.1",
     "react-material-ui-form-validator": "^2.0.3",
     "react-newline-to-break": "^1.0.6",
     "react-router-dom": "^4.2.2",
