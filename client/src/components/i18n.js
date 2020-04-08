@@ -105,12 +105,18 @@ i18next
 						multipleTeams: "Do you accept that several teams work if the project ?",
 						maxNumber: "If so, how many teams do you accept ?",
 						RandD: "Is it a research and development project ?",
-						confidential: "Is your project confidential ?"
+						confidential: "Is your project confidential ?",
+						descriptionHelper: `Indicate, if possible, in particular the following elements:
+						context (project stakeholders),
+						prerequisites that may be necessary (e.g. required skills, knowledge in the use of software, etc.),
+						project objectives,
+						possible constraints,
+						 "deliverables" expected at the end of the project`
 					},
 					home: {
 						title: 'Industrial Innovation Projects',
 						title_p1: 'You are a company, a laboratory, a student? You want to test an idea, create a prototype, decipher and / or explore a field of innovation, ...?',
-						title_p2: 'Discover <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4th year\'s projects</a> and <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5th year\'s projects</a>',						
+						title_p2: 'Discover <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4th year\'s projects</a> and <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5th year\'s projects</a>',
 						p1: 'Submit a project to our students!',
 						p1_l1: 'Proposing a project will allow you to cooperate with a team of motivated and innovative engineering students and to contribute to their training by involving them in current issues.',
 						p1_l2: 'Companies or laboratories, it is also a way to make yourself known to those who will respond in the coming years to your internship and job offers.',
@@ -242,7 +248,7 @@ i18next
 						submit: 'Envoyer',
 						desc: 'Lors de la soumission de votre premier projet, un mail vous a été envoyé avec le lien de connexion.\nS\'il n\'est pas dans votre boite de spam, nous pouvons vous le renvoyer. Il suffit de remplir votre adresse mail ci-dessous.',
 						textfield: "Votre adresse mail",
-						mailSent:"Un mail vous a été envoyé avec votre nouveau lien de connexion"
+						mailSent: "Un mail vous a été envoyé avec votre nouveau lien de connexion"
 					},
 					createPartner: {
 						phone: 'Numéro de téléphone',
@@ -264,7 +270,13 @@ i18next
 						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?",
 						maxNumber: "Dans ce cas combien d'équipes maximum acceptez-vous ?",
 						RandD: "Est-ce un projet de recherche et développement ?",
-						confidential: "Votre projet est-il confidentiel ?"
+						confidential: "Votre projet est-il confidentiel ?",
+						descriptionHelper: `Indiquer, si possible ,  en particulier les éléments suivants :
+						contexte (parties prenantes au projet),
+						prérequis éventuellement nécessaires (ex : compétences requises , connaissances dans l’utilisation de logiciels…),
+						objectifs du projet,
+						contraintes éventuelles,
+						 « livrables »  attendus à la fin du projet`
 					},
 					errors: {
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
@@ -279,7 +291,7 @@ i18next
 					home: {
 						title: 'Projets Innovation Industrielle',
 						title_p1: 'Vous êtes une entreprise, un laboratoire, un étudiant ? Vous souhaitez tester une idée, créer un prototype, déchiffrer et/ou explorer un terrain d\'innovation, ... ?',
-						title_p2: 'Découvrir les projets de <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4eme année</a> et de <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5eme année</a>',						
+						title_p2: 'Découvrir les projets de <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4eme année</a> et de <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5eme année</a>',
 						p1: 'Proposez un projet à nos élèves !',
 						p1_l1: 'Proposer un projet vous permettra de coopérer avec une équipe d\'élèves ingénieurs motivés et innovants et de contribuer à leur formation en les impliquant dans des problématiques actuelles.',
 						p1_l2: 'Entreprises ou laboratoires, c\'est aussi un moyen de vous faire connaître auprès de ceux qui répondront dans les années futures à vos offres de stages et d\'emplois.',

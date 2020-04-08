@@ -4,6 +4,7 @@
 * Identification des utilisateurs pour autoriser le téléchargement d'un fichier
 * Affichage de l'adresse et du numéro du téléphone du partenaire sur sa page de profil
 * Possibilité d'éditer en markdown la page qui s'affiche lorsque la plateforme est fermée
+* Detail de la description demandée au partenaire lors du dépôt d'un projet
 
 ## 2.1.0 (4 avril 2020)
 * Les mots clefs sont rangés dans l'ordre croissant

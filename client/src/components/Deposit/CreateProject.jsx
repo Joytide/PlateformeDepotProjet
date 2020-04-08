@@ -311,6 +311,7 @@ class CreateProject extends React.Component {
                             onChange={this.handleChange}
                             fullWidth={true}
                             variant="outlined"
+                            helperText={i18n.t('createProject.descriptionHelper', { lng })}
                         />
                     </Grid>
 
