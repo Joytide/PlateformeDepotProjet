@@ -29,8 +29,9 @@ import Keywords from "./Keywords";
 import Files from "./Files";
 import Years from "./Years";
 import Specializations from "./Specializations";
+import Comments from "./Comments";
 
-const styles = {
+const styles = theme => ({
     cardCategoryWhite: {
         color: "rgba(255,255,255,.62)",
         margin: "0",
@@ -52,8 +53,26 @@ const styles = {
     },
     confidential: {
         backgroundColor: "red"
+    },
+    fab: {
+        margin: theme.spacing.unit,
+        position: "fixed",
+        bottom: 2 * theme.spacing.unit,
+        right: 2 * theme.spacing.unit,
+        zIndex: 9999
+    },
+    extendedIcon: {
+        marginRight: theme.spacing.unit,
+    },
+    bottomGrid: {
+        margin: theme.spacing.unit,
+        position: "fixed",
+        bottom: 2 * theme.spacing.unit,
+        right: 2 * theme.spacing.unit,
+        zIndex: 9999,
+        width: "200px"
     }
-};
+});
 
 class ProjectProfile extends React.Component {
     constructor(props) {
@@ -172,7 +191,6 @@ class ProjectProfile extends React.Component {
 
     render() {
         const { classes } = this.props;
-        console.log(classes)
 
         let partnerInfo, projectInfo, years, files, specializations, other, keywords;
 
@@ -261,36 +279,40 @@ class ProjectProfile extends React.Component {
         </Card>
 
         return (
-            <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                    {this.state.project.confidential &&
-                        <Card>
-                            <CardHeader color="danger">
-                                <h4 className={classes.cardTitleWhite}>Ce projet est confidentiel</h4>
-                                <p className={classes.cardCategoryWhite}></p>
-                            </CardHeader>
-                            <CardBody>
-                                <Button size="sm" color="danger" onClick={this.changeConfidentiality(false)}>
-                                    Retirer le status confidentiel
+            <div>
+                <Comments projectId={this.props.match.params.id} />
+                <GridContainer>
+                    <GridItem xs={12} sm={12} md={12}>
+                        {this.state.project.confidential &&
+                            <Card>
+                                <CardHeader color="danger">
+                                    <h4 className={classes.cardTitleWhite}>Ce projet est confidentiel</h4>
+                                    <p className={classes.cardCategoryWhite}></p>
+                                </CardHeader>
+                                <CardBody>
+                                    <Button size="sm" color="danger" onClick={this.changeConfidentiality(false)}>
+                                        Retirer le status confidentiel
                                 </Button>
-                            </CardBody>
-                        </Card>
-                    }
-                    {partnerInfo}
+                                </CardBody>
+                            </Card>
+                        }
+                        {partnerInfo}
 
-                    {projectInfo}
+                        {projectInfo}
 
-                    {keywords}
+                        {keywords}
 
-                    {files}
+                        {files}
 
-                    {years}
+                        {years}
 
-                    {specializations}
+                        {specializations}
 
-                    {other}
-                </GridItem>
-            </GridContainer >);
+                        {other}
+                    </GridItem>
+                </GridContainer >
+            </div >
+        );
     }
 }
 

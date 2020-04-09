@@ -1,10 +1,12 @@
-## 2.2.0
+## 2.2.0 (9 avril 2019)
 * Affichage de la date de dépot et de la date de la dernière modification effectuée sur la page projet
 * Il est maintenant possible de déposer un projet confidentiel qui est uniquement visible par l'EGPE et les responsables des majeures concernnées
 * Identification des utilisateurs pour autoriser le téléchargement d'un fichier
 * Affichage de l'adresse et du numéro du téléphone du partenaire sur sa page de profil
 * Possibilité d'éditer en markdown la page qui s'affiche lorsque la plateforme est fermée
 * Detail de la description demandée au partenaire lors du dépôt d'un projet
+* Ajouter des commentaires sur un projet
+* Affichage du numéro de la version sur le bas de la page
 
 ## 2.1.0 (4 avril 2020)
 * Les mots clefs sont rangés dans l'ordre croissant

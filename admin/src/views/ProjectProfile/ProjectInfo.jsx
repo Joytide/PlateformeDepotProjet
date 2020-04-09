@@ -22,7 +22,7 @@ import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider"
 import { withUser } from "../../providers/UserProvider/UserProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
 
-const styles = {
+const styles = theme => ({
     cardCategoryWhite: {
         color: "rgba(255,255,255,.62)",
         margin: "0",
@@ -45,7 +45,7 @@ const styles = {
     separation: {
         marginTop: "35px"
     }
-};
+});
 
 class ProjectInfo extends React.Component {
     constructor(props) {

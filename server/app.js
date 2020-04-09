@@ -105,6 +105,9 @@ keywordRoutes(app);
 var settingRoutes = require('./api/routes/settingRoutes');
 settingRoutes(app);
 
+var commentRoutes = require('./api/routes/commentRoutes');
+commentRoutes(app);
+
 // 404 handler
 app.use(function (req, res, next) {
 	res.status(404).json({ message: "Ressource not found", code: "NotFound" })

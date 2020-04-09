@@ -1,50 +1,52 @@
-const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const Project = mongoose.model('Project');
 const Comment = mongoose.model('Comment');
+const Administration = mongoose.model('Administration');
+const { isValidType, areValidTypes, ProjectNotFoundError, UserNotFoundError } = require('../../helpers/Errors');
 
-exports.findProjectComment = (req, res, next) => {
-    const data = req.params;
-
-    Project.findById(data.id, (err, project) => {
-        if (err)
-            next(err);
-        else if (project) {
-            Comment
-                .find({ _id: project.comments })
-                .populate('author')
-                .exec((err, comments) => {
-                    if (err) next(err);
-                    else res.send(comments);
-                });
-        } else {
-            next(new Error("Project not found"));
-        }
+exports.findProjectComment = ({ id }) =>
+    new Promise((resolve, reject) => {
+        isValidType(id, "id", "ObjectId")
+            .then(() =>
+                Comment
+                    .find({ projectId: id })
+                    .populate({
+                        path: 'author',
+                        select: "first_name last_name"
+                    })
+                    .sort('date')
+                    .lean()
+                    .exec()
+            )
+            .then(comments => resolve({ comments }))
+            .catch(reject);
     });
-}
 
-// Changer le comportement de la fonction. Verifier que le project id correspond à un projet existant
-// Puis créer le comment puis mettre à jour le projet
-exports.createComment = (req, res, next) => {
-    const data = req.body;
+exports.createComment = ({ id, content, author }) =>
+    new Promise((resolve, reject) => {
+        areValidTypes([id, content, author],
+            ["id", "content", "author"],
+            ["ObjectId", "string", "ObjectId"]
+        )
+            .then(() => {
+                let projectCount = Project.estimatedDocumentCount({ _id: id }).exec();
+                let authorCount = Administration.estimatedDocumentCount({ _id: author }).exec();
 
-    if (data.id && data.author && data.content) {
-        let comment = new Comment();
-        comment.author = req.user._id;
-        comment.content = data.content;
-        comment.projectID = data.id;
+                return Promise.all([projectCount, authorCount])
+            })
+            .then(([projectCount, authorCount]) => {
+                if (projectCount == 0)
+                    throw new ProjectNotFoundError();
+                if (authorCount == 0)
+                    throw new UserNotFoundError();
 
-        comment.save((err, savedComment) => {
-            if (err) next(err);
-            else {
-                Project.update({ _id: savedComment.projectID }, { $push: { comments: savedComment._id } }, (err, project) => {
-                    if (err) next(err);
-                    else res.send(savedComment);
-                });
-            }
-        });
-    }
-    else {
-        next(new Error("MissingParameter"));
-    }
-}
+                let comment = new Comment();
+                comment.content = content;
+                comment.author = author;
+                comment.projectId = id;
+
+                return comment.save();
+            })
+            .then(resolve)
+            .catch(reject);
+    });

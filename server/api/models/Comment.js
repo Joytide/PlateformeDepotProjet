@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 //Comment Class
 const CommentSchema = new Schema({
-	projectID: {
+	projectId: {
 		type: Schema.Types.ObjectId,
 		ref: 'Project',
 		required: true
