@@ -50,7 +50,7 @@ ESILV's projects management team`;
         recipient: data.partner.email,
         subject: "Création de votre compte | Account creation",
         content: mailContent
-    }).catch(console.error);
+    }).catch(e => console.error(e));
 });
 
 emitter.on("projectSubmitted", data => {
@@ -75,7 +75,7 @@ ESILV's projects management team`;
         recipient: data.partner.email,
         subject: `Soumission du projet réussie | Project successfuly submitted`,
         content: mailContent
-    }).catch(console.error);
+    }).catch(e => console.error(e));
 });
 
 emitter.on("projectValidated", data => {
@@ -103,7 +103,7 @@ ESILV's projects management team`;
                 recipient: partner.email,
                 subject: `Projet accepté | Project accepted`,
                 content: mailContent
-            }).catch(console.error);
+            }).catch(e => console.error(e));
         }
     });
 });
@@ -133,7 +133,7 @@ ESILV's projects management team`;
                 recipient: partner.email,
                 subject: `Projet non accepté | Project not accepted`,
                 content: mailContent
-            }).catch(console.error);
+            }).catch(e => console.error(e));
         }
     });
 });
@@ -161,7 +161,7 @@ ESILV's projects management team`;
         recipient: data.partner.email,
         subject: "Nouveau lien de connexion | New log in link",
         content: mailContent
-    });
+    }).catch(e => console.error(e));
 });
 
 const sendMail = data => {
