@@ -1,3 +1,8 @@
+## 2.2.2 (14 avril 2019)
+* Affichage du numéro de version sur la partie client
+* Affichage du numéro de projet sur le profil projet
+* Affichage du numéro de projet dans la liste des projets
+
 ## 2.2.1 (9 avril 2020)
 * Compilation avec les bons fichiers de config
 

@@ -225,7 +225,7 @@ class ProjectInfo extends React.Component {
                     </CardHeader>
                     <CardBody>
                         <Typography variant="display2" align="center">
-                            {this.state.project.title}
+                            {this.state.project.number + " - " + this.state.project.title}
                         </Typography>
                         <br />
                         <Typography>

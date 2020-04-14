@@ -119,6 +119,7 @@ class ProjectList extends React.Component {
                     if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
                         return undefined;
                     return [
+                        <p>{project.number}</p>,
                         <p>{project.title}</p>,
                         <p>{project.partner.company}</p>,
                         <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
@@ -153,7 +154,7 @@ class ProjectList extends React.Component {
             loadedContent = (
                 <Table
                     tableHeaderColor="primary"
-                    tableHead={["Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
+                    tableHead={["Numéro", "Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
                     tableData={this.state.projects}
                     confidential={this.state.confidentialMapping}
                 />

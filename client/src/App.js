@@ -73,6 +73,14 @@ class App extends Component {
 										<Route component={NoMatch} />
 									</Switch>
 								</Grid>
+								<div style={{
+									color: "#F3F3F3",
+									position: "fixed",
+									bottom: "15px",
+									right: "15px"
+								}}>
+									v2.2.2
+								</div>
 							</div>
 						</BrowserRouter>
 					</UserProvider>
