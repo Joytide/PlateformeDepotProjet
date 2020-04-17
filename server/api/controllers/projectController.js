@@ -3,10 +3,10 @@
 const multer = require('multer');
 var path = require('path');
 var mongoose = require('mongoose');
-const { emitter } = require('../../eventsCommon');
 const { Parser } = require('json2csv');
 const fs = require('fs');
 const { exec } = require('child_process');
+const mailController = require('./mailController');
 
 const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
@@ -14,7 +14,6 @@ const User = mongoose.model('Person');
 const File = mongoose.model('File');
 const Specialization = mongoose.model('Specialization');
 const Year = mongoose.model('Year');
-const partnerController = require('./partnerController');
 
 const { isValidType, areValidTypes, ProjectNotFoundError, FileNotFoundError, ForbiddenError, InvalidParameterError } = require('../../helpers/Errors');
 
@@ -235,7 +234,7 @@ exports.createProject = ({ user, ...data }) =>
 
 				return Promise.all(promises)
 					.then(() => {
-						emitter.emit("projectSubmitted", { partner: project.partner });
+						mailController.projectSubmitted(user);
 						resolve();
 					})
 					.catch(reject);
@@ -429,9 +428,9 @@ exports.projectValidation = ({ ...data }) =>
 			})
 			.then(project => {
 				if (project.status === "validated")
-					emitter.emit("projectValidated", { partnerId: project.partner, projectId: project._id });
+					mailController.projectValidated(project.partner);
 				else if (project.status === "rejected")
-					emitter.emit("projectRejeted", project.partner);
+					mailController.projectRefused(project.partner);
 				resolve(project)
 			})
 			.catch(reject);

@@ -1,4 +1,3 @@
-const { emitter } = require('../../eventsCommon');
 const mongoose = require('mongoose');
 const { spawn } = require('child_process');
 const ejs = require('ejs');
@@ -161,11 +160,11 @@ const PDFUtils = {
     }
 }
 
-emitter.on('projectValidated', data => {
+/*emitter.on('projectValidated', data => {
     PDFUtils
         .generate(data.projectId)
         .catch(err => console.error(err))
-});
+});*/
 
 exports.regeneratePDF = (req, res, next) => {
     const data = req.body;

@@ -100,7 +100,8 @@ exports.logPartner = ({ key }) =>
             .then(() =>
                 Partner
                     .findOne({ key })
-                    .lean.exec()
+                    .lean()
+                    .exec()
             )
             .then(partner => {
                 if (!partner)
@@ -114,7 +115,7 @@ exports.logPartner = ({ key }) =>
                         }
                     );
 
-                    res.json({ token: userToken });
+                    resolve({ token: userToken });
                 }
             })
             .catch(reject);
