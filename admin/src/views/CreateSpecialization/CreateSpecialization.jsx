@@ -129,7 +129,7 @@ class CreateSpecialization extends React.Component {
             };
 
             AuthService.fetch(api.host + ":" + api.port + "/api/specialization", {
-                method: "PUT",
+                method: "POST",
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
