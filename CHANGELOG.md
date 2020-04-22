@@ -1,8 +1,11 @@
-## 2.2.3 (17 avril 2019)
+## 2.2.4 (22 avril 2020)
+* Correction de bug (mauvaise méthode utilisée pour créer une année)
+
+## 2.2.3 (17 avril 2020)
 * Plus d'usage des évènements pour gérer les projets
 * Possibilité de choisir l'interface sur laquelle le serveur écoute
 
-## 2.2.2 (14 avril 2019)
+## 2.2.2 (14 avril 2020)
 * Affichage du numéro de version sur la partie client
 * Affichage du numéro de projet sur le profil projet
 * Affichage du numéro de projet dans la liste des projets
