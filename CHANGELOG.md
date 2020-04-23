@@ -1,3 +1,7 @@
+## 2.2.5 ()
+* Correction d'un bug empêchant parfois l'admin de voir le bouton pour supprimer une année / une majeure
+* Correction d'un bug lors du chargement du message affiché lorsque la plateforme est fermée
+
 ## 2.2.4 (22 avril 2020)
 * Correction de bug (mauvaise méthode utilisée pour créer une année)
 

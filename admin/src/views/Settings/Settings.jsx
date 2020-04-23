@@ -62,6 +62,7 @@ class Settings extends React.Component {
 
         this.loadPlatformState = this.loadPlatformState.bind(this);
         this.changePlatformState = this.changePlatformState.bind(this);
+        this.saveText = this.saveText.bind(this);
     }
     componentWillMount() {
         this.loadPlatformState();
@@ -82,7 +83,7 @@ class Settings extends React.Component {
                     throw res;
             })
             .then(data => {
-                this.setState({ platformOpen: data.open, description: data.description, description_old: data.description });
+                this.setState({ platformOpen: data.open, description: data.description || "", description_old: data.description || "" });
             })
             .catch(handleXhrError(this.props.snackbar));;
     }
@@ -107,12 +108,13 @@ class Settings extends React.Component {
 
     saveText = () => {
         let data = { description: this.state.description_old };
+        console.log("data : ", data)
         AuthService.fetch(api.host + ":" + api.port + "/api/open", {
             method: "PUT",
+            body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
         })
             .then(res => {
                 if (res.ok)
@@ -129,7 +131,7 @@ class Settings extends React.Component {
 
     render() {
         const { classes } = this.props;
-
+        console.log(this.state);
         return (
             <GridContainer>
                 <GridItem xs={12}>

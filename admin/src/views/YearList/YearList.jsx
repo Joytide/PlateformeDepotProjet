@@ -64,7 +64,8 @@ class YearList extends React.Component {
             loading: true,
             years: [],
             open: false,
-            _id: ""
+            _id: "",
+            canDeleteYear: hasPermission(Permissions.DeleteYear, props.user.user)
         };
     }
 

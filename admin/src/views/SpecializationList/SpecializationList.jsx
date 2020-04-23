@@ -65,7 +65,7 @@ class SpecializationList extends React.Component {
             specializations: [],
             open: false,
             _id: "",
-            canDeleteSpecialization: false
+            canDeleteSpecialization: hasPermission(Permissions.DeleteSpecialization, props.user.user)
         };
     }
 
