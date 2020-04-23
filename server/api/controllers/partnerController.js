@@ -3,9 +3,9 @@ const crypto = require('crypto');
 const sha256 = require('js-sha256')
 const jwt = require('jsonwebtoken');
 const { isValidType, areValidTypes, PartnerNotFoundError, ExistingEmailError } = require('../../helpers/Errors');
+const mailController = require('./mailController');
 
 const Partner = mongoose.model('Partner');
-const { emitter } = require('../../eventsCommon');
 const config = require('../../config');
 
 /**
@@ -70,6 +70,7 @@ exports.createPartner = ({ ...data }) =>
 					generatePassword(16)
 						.then(keyData => {
 							newPartner.key = keyData.hash;
+							mailController.partnerCreated(newPartner, keyData.key);
 
 							return newPartner.save();
 						})
@@ -82,8 +83,8 @@ exports.createPartner = ({ ...data }) =>
 								}
 							);
 
+
 							resolve({ partner: dataSaved, token: userToken });
-							emitter.emit("partnerCreated", { partner: dataSaved, key: keyData.key });
 						})
 						.catch(reject);
 				}
@@ -221,7 +222,7 @@ exports.resetPassword = ({ email }) =>
 			})
 			.then(pass => {
 				partner.key = pass.hash;
-				emitter.emit("resetLink", { key: pass.key, partner: partner });
+				mailController.resetLink(partner, pass.key);
 				return partner.save();
 			})
 			.then(dataSaved => {

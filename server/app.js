@@ -44,6 +44,7 @@ mongoose.connect(
 			console.error(colors.red(err.message));
 			process.exit(-1);
 		} else {
+			console.log("Connected to database".green)
 			initDB();
 		}
 	});
@@ -115,8 +116,8 @@ app.use(function (req, res, next) {
 
 app.use(handleError);
 
-app.listen(config.api.port, () => {
-	console.log(`Server running on port ${config.api.port}`.green);
+app.listen(config.api.port, config.api.interface, () => {
+	console.log(`Server running on port http://${config.api.interface}:${config.api.port}`.green);
 });
 
 // Used in first start of db

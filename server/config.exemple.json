@@ -21,5 +21,9 @@
     },
     "bcrypt": {
         "saltRounds": 12
+    },
+    "api": {
+        "port": 3000,
+        "interface": "127.0.0.1"
     }
 }

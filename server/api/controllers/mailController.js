@@ -2,25 +2,29 @@
 
 const mongoose = require('mongoose');
 const Partner = mongoose.model('Partner');
-const { emitter } = require('../../eventsCommon');
 
 const config = require('../../config');
 
-const mailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 
-const smtpTransporter = mailer.createTransport({
-    host: config.mail.host,
-    port: config.mail.port,
-    secure: false,
-    auth: {
-        user: config.mail.user,
-        pass: config.mail.pass
-    }
+const transporter = nodemailer.createTransport({
+	host: config.mail.host,
+	port: config.mail.port,
+	secure: false,
+	auth: {
+		user: config.mail.user,
+		pass: config.mail.pass
+	}
 });
 
-emitter.on("partnerCreated", data => {
-    const connectUrl = config.client.protocol + "://" + config.client.host + ":" + config.client.port + "/login/partner/" + data.key;
-    const mailContent = `Bienvenue sur la plateforme de dépôts de projets ESILV,
+/**
+ * Send a mail to a partner with his connect URL
+ * @param {Object} partner Partner's data containing his email
+ * @param {string} key Key to connect 
+ */
+exports.partnerCreated = (partner, key) => {
+	const connectUrl = config.client.protocol + "://" + config.client.host + ":" + config.client.port + "/login/partner/" + key;
+	const mailContent = `Bienvenue sur la plateforme de dépôts de projets ESILV,
 
 La création de votre compte a bien été prise en compte et vous pouvez dorénavant déposer un projet sur la plateforme.
 
@@ -45,16 +49,23 @@ If you encounter a problem, you can contact us at projetesilv@devinci.fr
 
 Sincerely yours,
 ESILV's projects management team`;
+	console.log("Sending partner link " + connectUrl)
+	transporter.sendMail({
+		from: config.mail.from,
+		to: partner.email,
+		subject: "Création de votre compte | Account creation",
+		text: mailContent
+	})
+		.then(infos => console.log(infos))
+		.catch(e => console.error(e));
+};
 
-    sendMail({
-        recipient: data.partner.email,
-        subject: "Création de votre compte | Account creation",
-        content: mailContent
-    }).catch(e => console.error(e));
-});
-
-emitter.on("projectSubmitted", data => {
-    const mailContent = `
+/**
+ * Inform partner that his project has been correctly submitted
+ * @param {Object} partner Partner datas
+ */
+exports.projectSubmitted = partner => {
+	const mailContent = `
 Bonjour,
 
 Votre projet a bien été déposé sur la plateforme. Vous pouvez a tout moment vous connecter sur la plateforme pour suivre l'état de votre projet.
@@ -71,18 +82,25 @@ Your project has been successfuly submitted on the platform. You can check the s
 Sincerely yours,
 ESILV's projects management team`;
 
-    sendMail({
-        recipient: data.partner.email,
-        subject: `Soumission du projet réussie | Project successfuly submitted`,
-        content: mailContent
-    }).catch(e => console.error(e));
-});
+	transporter.sendMail({
+		from: config.mail.from,
+		to: partner.email,
+		subject: "Soumission du projet réussie | Project successfuly submitted",
+		text: mailContent
+	})
+		.then(infos => console.log(infos))
+		.catch(e => console.error(e));
+};
 
-emitter.on("projectValidated", data => {
-    Partner.findById(data.partnerId, (err, partner) => {
-        if (err) console.error(err);
-        else {
-            const mailContent = `
+/**
+ * Inform partner that his project has been accepted
+ * @param {ObjectId} partnerId
+ */
+exports.projectValidated =  partnerId => {
+	Partner.findById(partnerId, (err, partner) => {
+		if (err) console.error(err);
+		else {
+			const mailContent = `
 Bonjour,
 
 Nous avons le plaisir de vous informer que votre projet a été retenu et sera donc proposé aux étudiants.
@@ -99,20 +117,28 @@ We are pleased to tell you that your project has been accepted and will therefor
 Sincerely yours,
 ESILV's projects management team`;
 
-            sendMail({
-                recipient: partner.email,
-                subject: `Projet accepté | Project accepted`,
-                content: mailContent
-            }).catch(e => console.error(e));
-        }
-    });
-});
 
-emitter.on("projectRejeted", partnerId => {
-    Partner.findById(partnerId, (err, partner) => {
-        if (err) console.error(err);
-        else {
-            const mailContent = `
+			transporter.sendMail({
+				from: config.mail.from,
+				to: partner.email,
+				subject: "Projet accepté | Project accepted",
+				text: mailContent
+			})
+				.then(infos => console.log(infos))
+				.catch(e => console.error(e));
+		}
+	});
+};
+
+/**
+ * Inform partner that his project has been accepted
+ * @param {ObjectId} partnerId
+ */
+exports.projectRefused = partnerId => {
+	Partner.findById(partnerId, (err, partner) => {
+		if (err) console.error(err);
+		else {
+			const mailContent = `
 Bonjour,
 
 Malheureusement, votre projet n'a pas été retenu.
@@ -129,18 +155,26 @@ Sadly, your project hasn't been retained.
 Sincerely yours,
 ESILV's projects management team`;
 
-            sendMail({
-                recipient: partner.email,
-                subject: `Projet non accepté | Project not accepted`,
-                content: mailContent
-            }).catch(e => console.error(e));
-        }
-    });
-});
+			transporter.sendMail({
+				from: config.mail.from,
+				to: partner.email,
+				subject: "Projet non accepté | Project not accepted",
+				text: mailContent
+			})
+				.then(infos => console.log(infos))
+				.catch(e => console.error(e));
+		}
+	});
+};
 
-emitter.on("resetLink", data => {
-    const connectUrl = config.client.protocol + "://" + config.client.host + ":" + config.client.port + "/login/partner/" + data.key;
-    const mailContent = `
+/**
+ * Send a new connection link to partner
+ * @param {Object} partner Partner data containing email
+ * @param {string} key New connection key
+ */
+exports.resetLink = (partner, key) => {
+	const connectUrl = config.client.protocol + "://" + config.client.host + ":" + config.client.port + "/login/partner/" + key;
+	const mailContent = `
 Bonjour,
 
 Voici le nouveau lien vous permettant de vous connecter à la plateforme de dépôt de projet de l'ESILV : ${connectUrl}
@@ -157,33 +191,36 @@ This is the new link to log in to the project's submission platform of ESILV : $
 Sincerely yours,
 ESILV's projects management team`;
 
-    sendMail({
-        recipient: data.partner.email,
-        subject: "Nouveau lien de connexion | New log in link",
-        content: mailContent
-    }).catch(e => console.error(e));
-});
+	transporter.sendMail({
+		from: config.mail.from,
+		to: partner.email,
+		subject: "Nouveau lien de connexion | New log in link",
+		text: mailContent
+	})
+		.then(infos => console.log(infos))
+		.catch(e => console.error(e));
+};
 
 const sendMail = data => {
-    return new Promise((resolve, reject) => {
-        if (data.recipient && data.subject && data.content) {
-            let mail = {
-                from: config.mail.from,
-                to: data.recipient,
-                subject: data.subject,
-                text: data.content // html content possible. ;)
-            }
-            smtpTransporter.sendMail(mail, (err, res) => {
-                smtpTransporter.close();
-                if (err)
-                    reject(err);
-                else
-                    resolve('MailSent');
-            });
-        } else {
-            reject(new Error("MissingParameters"));
-        }
-    });
+	return new Promise((resolve, reject) => {
+		if (data.recipient && data.subject && data.content) {
+			let mail = {
+				from: config.mail.from,
+				to: data.recipient,
+				subject: data.subject,
+				text: data.content // html content possible. ;)
+			}
+			smtpTransporter.sendMail(mail, (err, res) => {
+				smtpTransporter.close();
+				if (err)
+					reject(err);
+				else
+					resolve('MailSent');
+			});
+		} else {
+			reject(new Error("MissingParameters"));
+		}
+	});
 }
 
 exports.sendMail = sendMail;
