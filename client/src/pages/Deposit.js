@@ -35,24 +35,8 @@ const styles = theme => ({
 });
 
 const DEFAULT_STATE = {
-	years: [],
-	majors: [],
-	//années et majeures sélectionnées
-	study_year: [],
-	majors_concerned: [],
-
 	stepIndex: 1,
-	title: "",
-	description: "",
-	keyWords: [],
-	files: [],
-	urls: [],
-	email: "",
-	company: "",
-	first_name: "",
-	last_name: "",
 	finished: false,
-	submited: false
 }
 
 class Deposit extends React.Component {
@@ -61,6 +45,13 @@ class Deposit extends React.Component {
 
 		this.state = { ...DEFAULT_STATE }
 
+	}
+
+	componentWillReceiveProps(props) {
+		if(props.location.state && props.location.state.reset) 
+			this.setState({
+				...DEFAULT_STATE
+			});
 	}
 
 	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
