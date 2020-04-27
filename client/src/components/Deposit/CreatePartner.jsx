@@ -45,6 +45,7 @@ class CreatePartner extends React.Component {
         window.scroll(0, 0);
 
         ValidatorForm.addValidationRule('isPhone', value => {
+            if(value == "") return true;
             let phoneRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
 
             return phoneRegex.test(value);
