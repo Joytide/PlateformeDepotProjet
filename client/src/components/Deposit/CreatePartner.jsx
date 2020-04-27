@@ -43,6 +43,12 @@ class CreatePartner extends React.Component {
 
     componentDidMount() {
         window.scroll(0, 0);
+
+        ValidatorForm.addValidationRule('isPhone', value => {
+            let phoneRegex = /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/
+
+            return phoneRegex.test(value);
+        })
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -195,8 +201,8 @@ class CreatePartner extends React.Component {
 
                     <Grid item>
                         <TextValidator
-                            validators={['maxStringLength:30']}
-                            errorMessages={[i18n.t('field_length.label', { lng })]}
+                            validators={['maxStringLength:15', 'isPhone']}
+                            errorMessages={[i18n.t('field_length.label', { lng }), i18n.t('createPartner.invalidPhone', { lng })]}
                             label={i18n.t('createPartner.phone', { lng })}
                             placeholder={i18n.t('createPartner.phone', { lng })}
                             onChange={this.handleChange} fullWidth={true}
@@ -207,7 +213,7 @@ class CreatePartner extends React.Component {
 
                     <Grid item>
                         <TextValidator
-                            validators={['maxStringLength:100']}
+                            validators={['maxStringLength:300']}
                             errorMessages={[i18n.t('field_length.label', { lng })]}
                             label={i18n.t('createPartner.address', { lng })}
                             placeholder={i18n.t('createPartner.address', { lng })}

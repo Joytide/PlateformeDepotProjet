@@ -88,6 +88,7 @@ i18next
 						no: "No",
 						created: "Your account has been successfuly created. An email has been sent.",
 						isExisting: "You are already logged in. Clic on next to submit your project",
+						invalidPhone: "Invalid phone number"
 					},
 					errors: {
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
@@ -263,6 +264,7 @@ i18next
 						no: "Non",
 						created: "Votre compte a bien été créé. Un mail vous a été envoyé.",
 						isExisting: "Vous êtes déjà connecté. Cliquez sur suivant pour déposer votre projet",
+						invalidPhone: "Numéro de téléphone invalide"
 					},
 					createProject: {
 						skills: "Compétences développées",
