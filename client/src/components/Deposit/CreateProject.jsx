@@ -319,7 +319,7 @@ class CreateProject extends React.Component {
                         <TextValidator
                             label={i18n.t('createProject.skills', { lng })}
                             value={this.state.skills}
-                            validators={['maxStringLength:250']}
+                            validators={['maxStringLength:1000']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
                             name="skills"
                             onChange={this.handleChange}
@@ -333,7 +333,7 @@ class CreateProject extends React.Component {
                         <TextValidator
                             label={i18n.t('createProject.infos', { lng })}
                             value={this.state.infos}
-                            validators={['maxStringLength:250']}
+                            validators={['maxStringLength:1000']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
                             name="infos"
                             multiline
