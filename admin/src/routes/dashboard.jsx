@@ -27,6 +27,10 @@ import YearList from "views/YearList/YearList.jsx";
 import CreateYear from "views/CreateYear/CreateYear.jsx";
 import YearProfile from "views/YearProfile/YearProfile.jsx";
 
+// PRM
+import PRMList from "views/PRMList/PRMList";
+import CreatePRM from "views/CreatePRM/CreatePRM";
+
 // Others
 import Settings from "views/Settings/Settings.jsx"
 
@@ -136,6 +140,22 @@ const dashboardRoutes = [
     icon: "settings",
     component: Settings,
     permissions: Permissions.Settings.value
+  },
+  {
+    path: "/createPrm",
+    sidebarName: "Créer PRM",
+    navbarName: "Créer PRM",
+    icon: "settings",
+    component: CreatePRM,
+    permissions: Permissions.CreatePRM.value
+  },
+  {
+    path: "/prm",
+    sidebarName: "Liste des PRM",
+    navbarName: "Liste des PRM",
+    icon: "settings",
+    component: PRMList,
+    permissions: Permissions.PRMList.value
   },
 ];
 

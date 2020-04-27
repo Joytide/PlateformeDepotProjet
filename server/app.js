@@ -25,6 +25,7 @@ const Year = require('./api/models/Year');
 const Task = require('./api/models/Task');
 const File = require('./api/models/File');
 const Keyword = require('./api/models/Keyword');
+const PRM = require('./api/models/PRM');
 
 /* ================================================= */
 
@@ -108,6 +109,9 @@ settingRoutes(app);
 
 var commentRoutes = require('./api/routes/commentRoutes');
 commentRoutes(app);
+
+var prmRoutes = require('./api/routes/prmRoutes');
+prmRoutes(app);
 
 // 404 handler
 app.use(function (req, res, next) {

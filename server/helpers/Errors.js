@@ -70,6 +70,12 @@ class InvalidTypeError extends ErrorHandler {
     }
 }
 
+class KeywordNotFoundError extends ErrorHandler {
+    constructor(infos) {
+        super(400, "KeywordNotFound", infos || "The id you specified for this keyword has not been found");
+    }
+}
+
 class MissingParameterError extends ErrorHandler {
     constructor(parameters) {
         console.log(typeof (parameters))
@@ -129,7 +135,7 @@ const handleError = (error, req, res, next) => {
     console.error(error);
     if (error instanceof ErrorHandler)
         res.status(error.code).json({ code: error.message, message: error.infos });
-    else 
+    else
         res.status(500).json({});
 }
 
@@ -195,6 +201,7 @@ module.exports = {
     InvalidParameterError,
     InvalidPasswordError,
     InvalidTypeError,
+    KeywordNotFoundError,
     MissingParameterError,
     MongoError,
     PartnerNotFoundError,

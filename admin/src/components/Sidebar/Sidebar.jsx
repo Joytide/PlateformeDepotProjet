@@ -16,6 +16,7 @@ import HeaderLinks from "components/Header/HeaderLinks.jsx";
 
 import sidebarStyle from "assets/jss/material-dashboard-react/components/sidebarStyle.jsx";
 import { withUser } from "providers/UserProvider/UserProvider"
+import { Divider } from "@material-ui/core";
 
 const Sidebar = ({ ...props }) => {
 	// verifies if routeName is the one active (in browser input)
@@ -24,14 +25,14 @@ const Sidebar = ({ ...props }) => {
 		//return props.location.pathname.indexOf(routeName) > -1 ? true : false;
 	}
 	const { classes, color, image, routes } = props;
-	
+
 	var links = (
 		<List className={classes.list}>
 			{routes.map((prop, key) => {
 				if (prop.redirect) return null;
 				if (prop.invisible) return null;
 				if (!hasPermission(prop.permissions, props.user.user)) return null;
-				
+
 				var activePro = " ";
 				var listItemClasses;
 				listItemClasses = classNames({
@@ -40,6 +41,7 @@ const Sidebar = ({ ...props }) => {
 				const whiteFontClasses = classNames({
 					[" " + classes.whiteFont]: activeRoute(prop.path)
 				});
+
 				return (
 					<NavLink
 						to={prop.path}

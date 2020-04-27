@@ -75,5 +75,11 @@
     },
     "Settings": {
         "value": ""
+    },
+    "CreatePRM": {
+        "value": "Administrator"
+    },
+    "PRMList": {
+        "value": "Administrator"
     }
 }
