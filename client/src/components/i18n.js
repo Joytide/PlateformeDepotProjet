@@ -99,7 +99,11 @@ i18next
 						partnerNotFound: "No user found with that email",
 						default: "Something wrong happened. Please retry later",
 						unauthorized: "Action denied. Please ensure that you are correctly logged in.",
-						invalidFile: "Merci de déposer uniquement des PDF, des jpeg ou des png"
+						invalidFile: "Merci de déposer uniquement des PDF, des jpeg ou des png",
+						fillTitle: "Please fill the title field",
+						fillYear: "Please select at least one year concerned by that project",
+						fillSpecialization: "Please select at least one specialiaztion concerned by that project",
+						fillDescription: "Please fill the description field"
 					},
 					createProject: {
 						skills: "Skills developped",
@@ -290,7 +294,11 @@ i18next
 						partnerNotFound: "Aucun utilisateur trouvé avec cette adresse mail",
 						default: "Une erreur est survenue. Merci de réessayer",
 						unauthorized: "Action refusée. Assurez vous d'être correctement connecté.",
-						invalidFile: "Please only deposit PDF, jpeg or png file"
+						invalidFile: "Please only deposit PDF, jpeg or png file",
+						fillTitle: "Merci de remplir le champ titre du projet",
+						fillYear: "Merci de sélectionner au moins une année concernée par ce projet",
+						fillSpecialization: "Merci de sélectionner au moins une majeure concernée par ce projet",
+						fillDescription: "Merci de remplir le champ description du projet"
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',

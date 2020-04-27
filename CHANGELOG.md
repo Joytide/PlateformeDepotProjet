@@ -9,6 +9,7 @@
 * Message d'erreur lorsqu'un fichier est déposé et qu'il n'est pas accepté (mauvais type)
 * Correction d'une erreur d'affichage de la date de dépôt d'un projet
 * Longeur maximale des champs Compétences et Informations complémentaires lors du dépôt d'un projet passés à 1000 caractères
+* Affichage d'un message plus explicite quant aux chanmps manquants lors de la saisie d'un projet
 
 ## 2.2.4 (22 avril 2020)
 * Correction de bug (mauvaise méthode utilisée pour créer une année)

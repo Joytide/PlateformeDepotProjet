@@ -124,7 +124,7 @@ class CreateProject extends React.Component {
     }
 
     handleNext = e => {
-        if (this.state.title && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description) {
+        if (this.state.title != "" && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description != "") {
             let data = {
                 title: this.state.title,
                 study_year: this.state.study_year,
@@ -152,9 +152,16 @@ class CreateProject extends React.Component {
                     console.error(err);
                     this.props.snackbar.notification("error", i18n.t("errors.createProject", { lng }));
                 });
-        } else {
-            this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }));
         }
+        else if (this.state.study_year.length === 0)
+            this.props.snackbar.notification("error", i18n.t("errors.fillYear", { lng: this.props.lng }));
+
+        else if (this.state.majors_concerned.length === 0)
+            this.props.snackbar.notification("error", i18n.t("errors.fillSpecialization", { lng: this.props.lng }));
+
+        else
+            this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }));
+
     }
 
     renderSelect(e) {
