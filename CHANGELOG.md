@@ -1,3 +1,7 @@
+## 2.2.6 (28 avril 2020)
+* Bugfix: le numéro de téléphone était devenu un champ requis
+* Bugfix: le formulaire de soumission d'un projet était remis à zéro de manière inopinée
+
 ## 2.2.5 (28 avril 2020)
 * Correction d'un bug empêchant parfois l'admin de voir le bouton pour supprimer une année / une majeure
 * Correction d'un bug lors du chargement du message affiché lorsque la plateforme est fermée
