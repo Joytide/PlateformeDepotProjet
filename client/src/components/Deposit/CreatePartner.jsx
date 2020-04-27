@@ -144,7 +144,7 @@ class CreatePartner extends React.Component {
                         <TextValidator
                             label={i18n.t('email.label', { lng }) + " *"}
                             placeholder={i18n.t('email.label', { lng })}
-                            validators={['required', 'isEmail', 'maxStringLength:40']}
+                            validators={['required', 'isEmail', 'maxStringLength:254']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('notvalid.label', { lng }), i18n.t('field_length.label', { lng })]}
                             onChange={this.handleChange}
                             name="email"
