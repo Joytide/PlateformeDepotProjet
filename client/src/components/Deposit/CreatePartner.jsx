@@ -196,7 +196,7 @@ class CreatePartner extends React.Component {
                     <Grid item>
                         <TextValidator
                             validators={['maxStringLength:30']}
-                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            errorMessages={[i18n.t('field_length.label', { lng })]}
                             label={i18n.t('createPartner.phone', { lng })}
                             placeholder={i18n.t('createPartner.phone', { lng })}
                             onChange={this.handleChange} fullWidth={true}
@@ -208,7 +208,7 @@ class CreatePartner extends React.Component {
                     <Grid item>
                         <TextValidator
                             validators={['maxStringLength:100']}
-                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
+                            errorMessages={[i18n.t('field_length.label', { lng })]}
                             label={i18n.t('createPartner.address', { lng })}
                             placeholder={i18n.t('createPartner.address', { lng })}
                             onChange={this.handleChange} fullWidth={true}
