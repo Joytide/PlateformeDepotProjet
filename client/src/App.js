@@ -79,7 +79,7 @@ class App extends Component {
 									bottom: "15px",
 									right: "15px"
 								}}>
-									v2.2.5
+									v2.2.6
 								</div>
 							</div>
 						</BrowserRouter>
