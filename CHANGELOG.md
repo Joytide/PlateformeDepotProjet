@@ -6,6 +6,7 @@
 * Bouton pour commencer le dépôt de projet mieux mis en avant
 * Validation du numéro de téléphone lors de la création d'un partenaire
 * Longueur maximale d'une adresse augmentée à 500 caractères
+* Message d'erreur lorsqu'un fichier est déposé et qu'il n'est pas accepté (mauvais type)
 
 ## 2.2.4 (22 avril 2020)
 * Correction de bug (mauvaise méthode utilisée pour créer une année)
