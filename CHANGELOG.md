@@ -1,4 +1,4 @@
-## 2.2.5 ()
+## 2.2.5 (28 avril 2020)
 * Correction d'un bug empêchant parfois l'admin de voir le bouton pour supprimer une année / une majeure
 * Correction d'un bug lors du chargement du message affiché lorsque la plateforme est fermée
 * La taille maximale d'une adresse mail est maintenant de 254 caractères ([cf stackoverflow](https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address))
