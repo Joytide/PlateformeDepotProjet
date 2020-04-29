@@ -1,5 +1,6 @@
 ## 2.2.7 ()
-* Meilleure gestion des permissions lors de l'affichage du profil d'un utilisateur
+* :art: Meilleure gestion des permissions lors de l'affichage du profil d'un utilisateur et sur le menu des réglages
+* :bug: Bugfix: User cannot change his password
 
 
 ## 2.2.6 (28 avril 2020)
