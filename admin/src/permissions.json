@@ -81,6 +81,7 @@
         "value": "EGPE"
     },
     "Settings": {
-        "value": ""
+        "value": "",
+        "EditPlatform": ["EGPE", "Administrator"]
     }
 }

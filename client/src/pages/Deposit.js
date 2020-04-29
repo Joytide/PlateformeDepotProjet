@@ -48,7 +48,8 @@ class Deposit extends React.Component {
 	}
 
 	componentWillReceiveProps(props) {
-		if(props.location.state && props.location.state.reset) 
+		console.log(props.location);
+		if(props.location.state && props.location.state.reset && this.state.finished) 
 			this.setState({
 				...DEFAULT_STATE
 			});
