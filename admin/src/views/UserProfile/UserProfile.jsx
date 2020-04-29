@@ -28,6 +28,8 @@ import { withUser } from "../../providers/UserProvider/UserProvider"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider"
 import { api } from "../../config"
 import { handleXhrError } from "../../components/ErrorHandler"
+import { hasPermission } from "components/PermissionHandler";
+import { UserProfile as Permissions } from "../../permissions"
 
 const styles = {
 	cardCategoryWhite: {
@@ -58,11 +60,26 @@ class UserProfile extends React.Component {
 			loading: true,
 			adminCheckboxDisabled: false,
 			EPGECheckboxDisabled: false,
-			modified: false
+			modified: false,
+			canEditUser: hasPermission(Permissions.EditUser, props.user.user),
+			canChangePassword: hasPermission(Permissions.ChangePassword, props.user.user)
 		}
+
+		console.log(Permissions, this.state)
 
 		this.update = this.update.bind(this);
 		this.cancel = this.cancel.bind(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		const canChangePassword = hasPermission(Permissions.ChangePassword, nextProps.user.user);
+		const canEditUser = hasPermission(Permissions.EditUser, nextProps.user.user);
+
+		if (canChangePassword !== this.state.canChangePassword || canEditUser !== this.state.canEditUser)
+			this.setState({
+				canChangePassword,
+				canEditUser
+			});
 	}
 
 	componentDidMount() {
@@ -147,7 +164,7 @@ class UserProfile extends React.Component {
 		const checked = event.target.checked;
 
 		let data = {
-			_id: this.state.user._id
+			id: this.state.user._id
 		};
 		if (name === "admin") {
 			data.admin = checked;
@@ -159,8 +176,8 @@ class UserProfile extends React.Component {
 		}
 
 
-		fetch(api.host + ':' + api.port + "/api/user", {
-			method: "POST",
+		AuthService.fetch(api.host + ':' + api.port + "/api/user", {
+			method: "PUT",
 			mode: "cors",
 			headers: {
 				"Content-Type": "application/json",
@@ -170,7 +187,13 @@ class UserProfile extends React.Component {
 			.then(res => {
 				if (!res.ok)
 					throw res;
-				return res.json();
+				else {
+					if (name === "admin")
+						this.setState({ user: { ...this.state.user, admin: data.admin } })
+					else if (name === "epge")
+						this.setState({ user: { ...this.state.user, EPGE: data.EPGE } })
+
+				}
 			})
 			.then(result => {
 				if (result)
@@ -205,7 +228,7 @@ class UserProfile extends React.Component {
 							inputProps={{
 								value: user.company,
 								onChange: this.handleChange,
-								disabled: !this.props.user.user.admin
+								disabled: !this.state.canEditUser
 							}}
 						/>
 					</GridItem>);
@@ -221,7 +244,7 @@ class UserProfile extends React.Component {
 							inputProps={{
 								value: user.phone,
 								onChange: this.handleChange,
-								disabled: !this.props.user.user.admin
+								disabled: !this.state.canEditUser
 							}}
 						/>
 					</GridItem>);
@@ -237,7 +260,7 @@ class UserProfile extends React.Component {
 							inputProps={{
 								value: user.address,
 								onChange: this.handleChange,
-								disabled: !this.props.user.user.admin
+								disabled: !this.state.canEditUser
 							}}
 						/>
 					</GridItem>);
@@ -251,7 +274,7 @@ class UserProfile extends React.Component {
 								<FormControlLabel
 									control={
 										<Checkbox
-											disabled={this.state.adminCheckboxDisabled || !this.props.user.user.admin}
+											disabled={this.state.adminCheckboxDisabled || !this.state.canEditUser}
 											onChange={this.handleCheckboxChange('admin')}
 											checked={user.admin}
 											value="admin"
@@ -267,7 +290,7 @@ class UserProfile extends React.Component {
 								<FormControlLabel
 									control={
 										<Checkbox
-											disabled={this.state.EPGECheckboxDisabled || !this.props.user.user.admin}
+											disabled={this.state.EPGECheckboxDisabled || !this.state.canEditUser}
 											onChange={this.handleCheckboxChange('epge')}
 											checked={user.EPGE}
 											value="epge"
@@ -302,7 +325,7 @@ class UserProfile extends React.Component {
 												}}
 												inputProps={{
 													value: user.__t,
-													disabled: this.state.inputDisabled
+													disabled: true
 												}}
 											/>
 										</GridItem>
@@ -320,7 +343,7 @@ class UserProfile extends React.Component {
 												inputProps={{
 													value: user.first_name,
 													onChange: this.handleChange,
-													disabled: !this.props.user.user.admin
+													disabled: !this.state.canEditUser
 												}}
 											/>
 										</GridItem>
@@ -334,7 +357,7 @@ class UserProfile extends React.Component {
 												inputProps={{
 													value: user.last_name,
 													onChange: this.handleChange,
-													disabled: !this.props.user.user.admin
+													disabled: !this.state.canEditUser
 												}}
 											/>
 										</GridItem>
@@ -389,7 +412,9 @@ class UserProfile extends React.Component {
 						</GridItem>
 
 						<GridItem xs={12}>
-							<ChangePassword user={this.state.user} errorHandler={this.props.snackbar.error} successHandler={this.props.snackbar.success}></ChangePassword>
+							{this.state.canChangePassword &&
+								<ChangePassword user={this.state.user} errorHandler={this.props.snackbar.error} successHandler={this.props.snackbar.success}></ChangePassword>
+							}
 						</GridItem>
 					</GridContainer>
 				</div>

@@ -1,3 +1,6 @@
+## 2.2.6 ()
+* Meilleure gestion des permissions lors de l'affichage du profil d'un utilisateur
+
 ## 2.2.5 (28 avril 2020)
 * Correction d'un bug empêchant parfois l'admin de voir le bouton pour supprimer une année / une majeure
 * Correction d'un bug lors du chargement du message affiché lorsque la plateforme est fermée

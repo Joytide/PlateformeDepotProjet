@@ -45,13 +45,17 @@
     },
     "UserProfile": {
         "value": "",
-        "EditUser": "Administrator"
+        "EditUser": "Administrator",
+        "ChangePassword": "Administrator"
     },
     "CreateUser": {
         "value": "Administrator"
     },
     "SpecializationList": {
-        "value": "",
+        "value": [
+            "EGPE",
+            "Administrator"
+        ],
         "DeleteSpecialization": "EGPE"
     },
     "SpecializationProfile": {
@@ -63,7 +67,10 @@
         "value": "EGPE"
     },
     "YearList": {
-        "value": "",
+        "value": [
+            "EGPE",
+            "Administrator"
+        ],
         "DeleteYear": "EGPE"
     },
     "YearProfile": {
