@@ -1,4 +1,5 @@
-## 2.2.7 ()
+## 2.2.7 (29 avril 2020)
+* :lipstick: Affichage de l'adresse et le numéro de téléphone du partenaire
 * :art: Meilleure gestion des permissions lors de l'affichage du profil d'un utilisateur et sur le menu des réglages
 * :bug: Bugfix: User cannot change his password
 
