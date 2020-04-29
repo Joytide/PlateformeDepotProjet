@@ -54,9 +54,9 @@ module.exports = (app) => {
         );
 
     app.route('/api/user/password')
-        .post(
+        .put(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("Administraton"),
+            auth.areAuthorized("Administration"),
             handleRequest(userController.changePassword)
         );
 }

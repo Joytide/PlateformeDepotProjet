@@ -242,7 +242,7 @@ exports.changePassword = ({ user, id, oldPassword, newPassword }) =>
                         let hash;
 
                         try {
-                            valid = await bcrypt.hash(newPassword, bcryptConf.saltRounds);
+                            hash = await bcrypt.hash(newPassword, bcryptConf.saltRounds);
                         } catch (e) {
                             throw new BCryptError(e);
                         }
