@@ -66,21 +66,23 @@ class CreatePRM extends React.Component {
         super(props);
 
         this.state = {
-            prmData: ""
+            prmData: "",
+            existingEmails: []
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.formatPRM = this.formatPRM.bind(this);
         this.createPrm = this.createPrm.bind(this);
+        this.removeExisting = this.removeExisting.bind(this);
     }
 
     handleChange = event => {
-        this.setState({ [event.target.id]: event.target.value });
+        this.setState({ [event.target.id]: event.target.value.trim() });
     };
 
     createPrm() {
         let data = { prms: this.formatPRM("request") };
-        console.log(data)
+
         if (data !== []) {
             AuthService.fetch(api.host + ":" + api.port + "/api/prm", {
                 method: "POST",
@@ -88,14 +90,30 @@ class CreatePRM extends React.Component {
             })
                 .then(res => {
                     if (!res.ok)
-                        throw res;
+                        throw res.json();
                     else {
                         this.props.snackbar.success("PRMs créés avec succès");
-                        this.setState({prmData: ""})
+                        this.setState({ prmData: "" })
                     }
                 })
-                .catch(handleXhrError(this.props.snackbar));
+                .catch(err => {
+                    err.then(msg => {
+                        this.props.snackbar.error("Certaines adresses mails ont déjà été utilisées. Cliquer sur le bouton pour les retirer");
+                        this.setState({ existingEmails: msg.message })
+                    })
+                });
         }
+    }
+
+    removeExisting() {
+        let data = this.formatPRM("request");
+
+        console.log("data", data, "existing", this.state.existingEmails);
+        let filtered = data.filter(e => this.state.existingEmails.indexOf(e.email) === -1);
+
+        let newData = filtered.map(e => `${e.first_name}\t${e.last_name}\t${e.email}\t${e.projectNumber}\t${e.status}\t${e.infos}\t${e.characteristics}`).join('\n');
+
+        this.setState({ prmData: newData });
     }
 
     formatPRM(type) {
@@ -152,6 +170,7 @@ class CreatePRM extends React.Component {
                                         margin="normal"
                                         fullWidth={true}
                                         onChange={this.handleChange}
+                                        value={this.state.prmData}
                                     />
                                 </GridItem>
                             </GridContainer>
@@ -174,6 +193,9 @@ class CreatePRM extends React.Component {
                             </CardBody>
                             <CardFooter>
                                 <Button color="primary" size="sm" onClick={this.createPrm}>Confirmer l'importation</Button>
+                                {this.state.existingEmails.length > 0 &&
+                                    <Button color="danger" size="sm" onClick={this.removeExisting}>Supprimer les PRMs existants de la liste</Button>
+                                }
                             </CardFooter>
                         </Card>
                     </GridItem>

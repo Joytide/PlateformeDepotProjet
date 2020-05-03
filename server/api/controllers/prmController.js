@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { isValidType, areValidTypes, KeywordNotFoundError } = require('../../helpers/Errors');
+const { isValidType, areValidTypes, KeywordNotFoundError, ExistingEmailError } = require('../../helpers/Errors');
 
 const PRM = mongoose.model('PRM');
 const Keyword = mongoose.model('Keyword');
@@ -11,23 +11,36 @@ exports.create = ({ prms }) =>
         console.log(prms instanceof Array)
         isValidType(prms, 'prms', 'Array')
             .then(() => {
-                let prmList = [];
+                let prmEmails = prms.map(p => p.email);
 
-                for (let i = 0; i < prms.length; i++) {
-                    let prm = {
-                        first_name: prms[i].first_name,
-                        last_name: prms[i].last_name,
-                        email: prms[i].email,
-                        projectNumber: prms[i].projectNumber,
-                        status: prms[i].status,
-                        infos: prms[i].infos,
-                        characteristics: prms[i].characteristics
+                return PRM
+                    .find({ email: prmEmails })
+                    .select("email")
+                    .lean()
+                    .exec()
+            })
+            .then(prmsExisting => {
+                if (prmsExisting.length > 0) {
+                    throw new ExistingEmailError(prmsExisting.map(p => p.email));
+                } else {
+                    let prmList = [];
+
+                    for (let i = 0; i < prms.length; i++) {
+                        let prm = {
+                            first_name: prms[i].first_name,
+                            last_name: prms[i].last_name,
+                            email: prms[i].email,
+                            projectNumber: prms[i].projectNumber,
+                            status: prms[i].status,
+                            infos: prms[i].infos,
+                            characteristics: prms[i].characteristics
+                        }
+
+                        prmList.push(prm);
                     }
 
-                    prmList.push(prm);
+                    return PRM.insertMany(prmList)
                 }
-
-                return PRM.insertMany(prmList)
             })
             .then(resolve)
             .catch(reject);
