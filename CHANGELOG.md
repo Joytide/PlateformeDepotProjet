@@ -1,4 +1,4 @@
-## 2.2.8 ()
+## 2.2.8 (5 mai 2020)
 * :art: Redirection automatique vers la page de dépôt de projet lorsque l'utilisateur est déjà connecté
 * :lipstick: Affichage des majeures en colonnes
 * :sparkles: Les partenaires peuvent suggérer des mots clefs 
