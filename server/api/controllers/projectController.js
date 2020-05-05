@@ -15,7 +15,7 @@ const File = mongoose.model('File');
 const Specialization = mongoose.model('Specialization');
 const Year = mongoose.model('Year');
 
-const { isValidType, areValidTypes, ProjectNotFoundError, FileNotFoundError, ForbiddenError, InvalidParameterError } = require('../../helpers/Errors');
+const { isValidType, areValidTypes, ProjectNotFoundError, FileNotFoundError, ForbiddenError, InvalidParameterError, MissingKeywordsError } = require('../../helpers/Errors');
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -417,6 +417,8 @@ exports.projectValidation = ({ ...data }) =>
 					}
 
 					if (count == project.specializations.length) {
+						if (project.keywords.length < 2)
+							throw new MissingKeywordsError();
 						if (rejected)
 							project.status = "rejected";
 						else

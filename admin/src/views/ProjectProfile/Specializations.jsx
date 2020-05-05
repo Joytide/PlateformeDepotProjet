@@ -132,7 +132,12 @@ class Specializations extends React.Component {
                     this.props.reloadProject();
                     this.loadProjectSpecializations();
                 })
-                .catch(handleXhrError(this.props.snackbar));
+                .catch(err => {
+                    if(err.status === 409)
+                        this.props.snackbar.error("Veuillez saisir à minima 2 mots clefs")
+                    else 
+                        handleXhrError(this.props.snackbar)(err);
+                });
         }
 
         let pendingProject = this.state.projectSpecializations.filter(spe => spe.status === "pending").length + (status === "pending" ? 1 : -1);
