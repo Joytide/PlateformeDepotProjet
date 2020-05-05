@@ -229,9 +229,9 @@ class CreateProject extends React.Component {
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('majors.label', { lng })}
                         </Typography>
-                        <Grid container direction="row" justify='center'>
+                        <Grid container direction="row">
                             {this.state.specializations.map(spe =>
-                                <Grid item key={spe._id}>
+                                <Grid item key={spe._id} xs={12} md={6} lg={4} xl={3}>
                                     <Tooltip placement="bottom" title={lng === "fr" ? spe.description.fr : spe.description.en}>
                                         <FormControlLabel
                                             control={
