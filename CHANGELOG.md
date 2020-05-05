@@ -1,6 +1,7 @@
 ## 2.2.8 ()
 * :art: Redirection automatique vers la page de dépôt de projet lorsque l'utilisateur est déjà connecté
 * :lipstick: Affichage des majeures en colonnes
+* :sparkles: Les partenaires peuvent suggérer des mots clefs 
 
 ## 2.2.7 (29 avril 2020)
 * :lipstick: Affichage de l'adresse et le numéro de téléphone du partenaire

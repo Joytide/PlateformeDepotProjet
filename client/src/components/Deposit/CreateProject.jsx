@@ -39,6 +39,7 @@ class CreateProject extends React.Component {
             multipleTeams: false,
             RandD: false,
             maxNumber: 1,
+            keywords:  ""
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -133,7 +134,8 @@ class CreateProject extends React.Component {
                 skills: this.state.skills,
                 infos: this.state.infos,
                 maxNumber: this.state.maxNumber,
-                confidential: this.state.confidential
+                confidential: this.state.confidential,
+                keywords: this.state.keywords
             };
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
@@ -319,6 +321,19 @@ class CreateProject extends React.Component {
                             fullWidth={true}
                             variant="outlined"
                             helperText={i18n.t('createProject.descriptionHelper', { lng })}
+                        />
+                    </Grid>
+
+                    <Grid item>
+                        <TextValidator
+                            label={i18n.t('createProject.keywords', { lng })}
+                            value={this.state.keywords}
+                            validators={['maxStringLength:250']}
+                            errorMessages={[i18n.t('field_length.label', { lng })]}
+                            name="keywords"
+                            onChange={this.handleChange}
+                            fullWidth={true}
+                            variant="outlined"
                         />
                     </Grid>
 

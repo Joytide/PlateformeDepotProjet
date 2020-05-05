@@ -206,6 +206,7 @@ exports.createProject = ({ user, ...data }) =>
 					partner: user._id,
 					confidential: data.confidential,
 					maxTeams: parseInt(data.maxNumber, 10),
+					suggestedKeywords: data.keywords,
 					submissionDate: Date.now()
 				});
 
@@ -331,6 +332,7 @@ exports.update = ({ user, id, ...data }) =>
 				if (data.description) update.description = data.description;
 				if (data.confidential !== undefined) update.confidential = data.confidential;
 				if (data.study_year) update.study_year = data.study_year;
+				if (data.suggestedKeywords) update.suggestedKeywords = data.suggestedKeywords;
 
 				update.lastUpdate = {
 					at: Date.now(),
