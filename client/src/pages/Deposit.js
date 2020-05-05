@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
+import { withUser } from "../providers/UserProvider/UserProvider";
 import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 import i18n from '../components/i18n';
 /**
@@ -43,16 +44,21 @@ class Deposit extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { ...DEFAULT_STATE }
+		this.state = {
+			...DEFAULT_STATE,
+			stepIndex: this.props.user ? 2 : 1
+		}
 
 	}
 
 	componentWillReceiveProps(props) {
-		console.log(props.location);
-		if(props.location.state && props.location.state.reset && this.state.finished) 
+		if (props.location.state && props.location.state.reset && this.state.finished)
 			this.setState({
 				...DEFAULT_STATE
 			});
+
+		if(!this.props.user && props.user)
+			this.setState({stepIndex: 2});
 	}
 
 	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
@@ -183,4 +189,4 @@ class Deposit extends React.Component {
 	}
 }
 
-export default withSnackbar(withStyles(styles, { withTheme: true })(Deposit));
+export default withUser(withSnackbar(withStyles(styles, { withTheme: true })(Deposit)));
