@@ -46,9 +46,8 @@ class Deposit extends React.Component {
 
 		this.state = {
 			...DEFAULT_STATE,
-			stepIndex: this.props.user ? 2 : 1
+			stepIndex: Object.keys(this.props.user.user).length > 0 ? 2 : 1
 		}
-
 	}
 
 	componentWillReceiveProps(props) {
@@ -57,8 +56,8 @@ class Deposit extends React.Component {
 				...DEFAULT_STATE
 			});
 
-		if(!this.props.user && props.user)
-			this.setState({stepIndex: 2});
+		if (Object.keys(this.props.user.user).length === 0 && Object.keys(props.user.user).length > 0)
+			this.setState({ stepIndex: 2 });
 	}
 
 	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
