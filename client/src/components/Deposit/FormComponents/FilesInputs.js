@@ -26,41 +26,45 @@ class FilesInputs extends React.Component {
     onChange(event) {
         const file = event[event.length - 1];
 
-        var formData = new FormData();
-        formData.append("file", new Blob([file], { type: file.type }), file.name || 'file');
+        if (file) {
+            var formData = new FormData();
+            formData.append("file", new Blob([file], { type: file.type }), file.name || 'file');
 
-        fetch(api.host + ":" + api.port + '/api/project/file', {
-            method: "POST",
-            headers: {
-                "Authorization": AuthService.getToken()
-            },
-            body: formData
-        })
-            .then(res => {
-                if (!res.ok)
-                    throw res;
-                else
-                    return res.json();
+            fetch(api.host + ":" + api.port + '/api/project/file', {
+                method: "POST",
+                headers: {
+                    "Authorization": AuthService.getToken()
+                },
+                body: formData
             })
-            .then(data => {
-                this.setState(state => {
-                    file._id = data._id;
-                    const list = [...state.files, {
-                        name: file.name,
-                        type: file.type,
-                        _id: data._id
-                    }];
+                .then(res => {
+                    if (!res.ok)
+                        throw res;
+                    else
+                        return res.json();
+                })
+                .then(data => {
+                    this.setState(state => {
+                        file._id = data._id;
+                        const list = [...state.files, {
+                            name: file.name,
+                            type: file.type,
+                            _id: data._id
+                        }];
 
-                    this.setFiles(list);
-                    return { files: list };
+                        this.setFiles(list);
+                        return { files: list };
+                    });
+                })
+                .catch(err => {
+                    const { lng } = this.props;
+                    console.error(err);
+                    this.props.snackbar.notification("error", i18n.t('errors.default', { lng }), 10000);
                 });
-            })
-            .catch(err => {
-                const { lng } = this.props;
-                console.error(err);
-                this.props.snackbar.notification("error", i18n.t('errors.default', { lng }), 10000);
-            });
-
+        }
+        else {
+            this.props.snackbar.notification("error", i18n.t('errors.invalidFile', { lng: this.props.lng }), 10000)
+        }
     }
 
     deleteFile = fileID => () => {

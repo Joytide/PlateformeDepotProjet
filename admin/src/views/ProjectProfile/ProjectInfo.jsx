@@ -88,6 +88,7 @@ class ProjectInfo extends React.Component {
             skills: this.state.modifiedProject.skills,
             infos: this.state.modifiedProject.infos,
             maxTeams: this.state.modifiedProject.maxTeams,
+            suggestedKeywords: this.state.modifiedProject.suggestedKeywords
         }
 
         AuthService.fetch(api.host + ":" + api.port + "/api/project", {
@@ -190,6 +191,17 @@ class ProjectInfo extends React.Component {
                                     onChange={this.handleChange}
                                 />
                             </GridItem>
+
+                            <GridItem xs={12} >
+                                <TextField
+                                    id="suggestedKeywords"
+                                    label="Mots clefs suggérés par le partenaire"
+                                    className={classes.separation}
+                                    value={this.state.modifiedProject.suggestedKeywords}
+                                    onChange={this.handleChange}
+                                    fullWidth={true}
+                                />
+                            </GridItem>
                         </GridContainer>
                         <GridContainer>
                             <GridItem xs={12} md={4} lg={2}>
@@ -256,6 +268,13 @@ class ProjectInfo extends React.Component {
                          </Typography>
                         <Typography>
                             {this.state.project.maxTeams}
+                        </Typography>
+                        <br />
+                        <Typography >
+                            Mots clefs suggérés par le partenaire :
+                         </Typography>
+                        <Typography>
+                            {this.state.project.suggestedKeywords}
                         </Typography>
                         <br />
                         <Typography >

@@ -68,6 +68,7 @@ const ProjectSchema = new Schema({
         default: Date.now
     },
     lastUpdate: LastUpdateSchema,
+    suggestedKeywords: String,
     skills: String,
     infos: String,
     likes: [

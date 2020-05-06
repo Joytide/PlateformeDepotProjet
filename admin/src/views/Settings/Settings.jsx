@@ -15,10 +15,12 @@ import Button from "components/CustomButtons/Button.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 
 import AuthService from "components/AuthService"
+import { withUser } from "../../providers/UserProvider/UserProvider"
 import { api } from "../../config"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
-import { UserContext } from "../../providers/UserProvider/UserProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
+import { hasPermission } from "components/PermissionHandler";
+import { Settings as Permissions } from "../../permissions"
 
 const styles = {
     cardCategoryWhite: {
@@ -58,14 +60,25 @@ class Settings extends React.Component {
             platformOpen: true,
             description: "",
             description_old: "",
+            canEditPlatform: hasPermission(Permissions.EditPlatform, props.user.user)
         };
 
         this.loadPlatformState = this.loadPlatformState.bind(this);
         this.changePlatformState = this.changePlatformState.bind(this);
         this.saveText = this.saveText.bind(this);
     }
+
     componentWillMount() {
         this.loadPlatformState();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const canEditPlatform = hasPermission(Permissions.EditPlatform, nextProps.user.user);
+
+        if (canEditPlatform !== this.state.canEditPlatform)
+            this.setState({
+                canEditPlatform
+            });
     }
 
     handleChange = event => {
@@ -131,53 +144,53 @@ class Settings extends React.Component {
 
     render() {
         const { classes } = this.props;
-        console.log(this.state);
+        
         return (
             <GridContainer>
                 <GridItem xs={12}>
-                    <UserContext.Consumer>
-                        {value => <ChangePassword user={value.user}></ChangePassword>}
-                    </UserContext.Consumer>
+                    <ChangePassword user={this.props.user.user}></ChangePassword>
                 </GridItem>
-                <GridItem xs={12}>
-                    <Card>
-                        <CardHeader color="primary">
-                            <h4 className={classes.cardTitleWhite}>Ouverture de la plateforme</h4>
-                        </CardHeader>
-                        <CardBody>
+                {this.state.canEditPlatform &&
+                    <GridItem xs={12}>
+                        <Card>
+                            <CardHeader color="primary">
+                                <h4 className={classes.cardTitleWhite}>Ouverture de la plateforme</h4>
+                            </CardHeader>
+                            <CardBody>
 
-                        </CardBody>
-                        <CardFooter>
-                            <GridContainer >
-                                <GridItem xs={12} sm={12} md={12}>
-                                    <Typography>
-                                        La plateforme est actuellement {this.state.platformOpen ? "ouverte" : "fermée"}
-                                    </Typography>
-                                    <Button disabled={false} size="sm" color="success" onClick={this.changePlatformState(true)}>Ouvrir la plateforme</Button>
-                                    <Button disabled={false} size="sm" color="danger" onClick={this.changePlatformState(false)}>Fermer la plateforme</Button>
-                                </GridItem>
-                                <GridItem xs={12} md={6}>
-                                    <TextField
-                                        id="description_old"
-                                        label="Texte d'accueil lorsque la plateforme est fermée (rédaction en Markdown)"
-                                        fullWidth={true}
-                                        multiline={true}
-                                        value={this.state.description_old}
-                                        onChange={this.handleChange}
-                                    />
-                                </GridItem>
-                                <GridItem xs={12} md={6}>
-                                    <ReactMarkdown source={this.state.description_old} />
-                                </GridItem>
-                                <Button disabled={false} size="sm" color="success" onClick={this.saveText}>Sauvegarder les changements</Button>
-                                <Button disabled={false} size="sm" color="warning" onClick={this.cancelChanges}>Annuler les changements</Button>
-                            </GridContainer>
-                        </CardFooter>
-                    </Card>
-                </GridItem>
+                            </CardBody>
+                            <CardFooter>
+                                <GridContainer >
+                                    <GridItem xs={12} sm={12} md={12}>
+                                        <Typography>
+                                            La plateforme est actuellement {this.state.platformOpen ? "ouverte" : "fermée"}
+                                        </Typography>
+                                        <Button disabled={false} size="sm" color="success" onClick={this.changePlatformState(true)}>Ouvrir la plateforme</Button>
+                                        <Button disabled={false} size="sm" color="danger" onClick={this.changePlatformState(false)}>Fermer la plateforme</Button>
+                                    </GridItem>
+                                    <GridItem xs={12} md={6}>
+                                        <TextField
+                                            id="description_old"
+                                            label="Texte d'accueil lorsque la plateforme est fermée (rédaction en Markdown)"
+                                            fullWidth={true}
+                                            multiline={true}
+                                            value={this.state.description_old}
+                                            onChange={this.handleChange}
+                                        />
+                                    </GridItem>
+                                    <GridItem xs={12} md={6}>
+                                        <ReactMarkdown source={this.state.description_old} />
+                                    </GridItem>
+                                    <Button disabled={false} size="sm" color="success" onClick={this.saveText}>Sauvegarder les changements</Button>
+                                    <Button disabled={false} size="sm" color="warning" onClick={this.cancelChanges}>Annuler les changements</Button>
+                                </GridContainer>
+                            </CardFooter>
+                        </Card>
+                    </GridItem>
+                }
             </GridContainer>
         );
     }
 }
 
-export default withSnackbar(withStyles(styles)(Settings));
+export default withUser(withSnackbar(withStyles(styles)(Settings)));

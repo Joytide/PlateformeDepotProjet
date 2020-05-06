@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
+import { withUser } from "../providers/UserProvider/UserProvider";
 import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 import i18n from '../components/i18n';
 /**
@@ -35,32 +36,28 @@ const styles = theme => ({
 });
 
 const DEFAULT_STATE = {
-	years: [],
-	majors: [],
-	//années et majeures sélectionnées
-	study_year: [],
-	majors_concerned: [],
-
 	stepIndex: 1,
-	title: "",
-	description: "",
-	keyWords: [],
-	files: [],
-	urls: [],
-	email: "",
-	company: "",
-	first_name: "",
-	last_name: "",
 	finished: false,
-	submited: false
 }
 
 class Deposit extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { ...DEFAULT_STATE }
+		this.state = {
+			...DEFAULT_STATE,
+			stepIndex: Object.keys(this.props.user.user).length > 0 ? 2 : 1
+		}
+	}
 
+	componentWillReceiveProps(props) {
+		if (props.location.state && props.location.state.reset && this.state.finished)
+			this.setState({
+				...DEFAULT_STATE
+			});
+
+		if (Object.keys(this.props.user.user).length === 0 && Object.keys(props.user.user).length > 0)
+			this.setState({ stepIndex: 2 });
 	}
 
 	// Revoir le fonctionnement de la variable finished. Est-elle vraiment nécessaire ?
@@ -191,4 +188,4 @@ class Deposit extends React.Component {
 	}
 }
 
-export default withSnackbar(withStyles(styles, { withTheme: true })(Deposit));
+export default withUser(withSnackbar(withStyles(styles, { withTheme: true })(Deposit)));

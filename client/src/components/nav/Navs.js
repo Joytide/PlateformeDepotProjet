@@ -154,7 +154,7 @@ class Navs extends React.Component {
 						</MenuItem>
 					</Link>
 				}
-				<Link to="/deposit">
+				<Link to="/deposit" to={{ pathname: "/deposit", state: { reset: true } }}>
 					<MenuItem color="inherit">
 						<div>{i18n.t('navs.submit', { lng })}</div>
 					</MenuItem>
@@ -211,7 +211,7 @@ class Navs extends React.Component {
 									</Button>
 								</Link>
 							}
-							<Link to="/deposit" style={{ textDecoration: "none" }}>
+							<Link to={{ pathname: "/deposit", state: { reset: true } }} style={{ textDecoration: "none" }}>
 								<Button color="inherit" className={classes.button}>
 									<div>{i18n.t('navs.submit', { lng })}</div>
 								</Button>

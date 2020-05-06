@@ -88,16 +88,22 @@ i18next
 						no: "No",
 						created: "Your account has been successfuly created. An email has been sent.",
 						isExisting: "You are already logged in. Clic on next to submit your project",
+						invalidPhone: "Invalid phone number"
 					},
 					errors: {
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
 						createPartner: "An error happened while trying to create your account. Please retry.",
 						createProject: "An error happened while trying to create your project. Please retry.",
 						NaN: "Please input a number",
-						fillAll: "Please fill all required fields",
+						fillAll: "Please fill correctly all required fields",
 						partnerNotFound: "No user found with that email",
 						default: "Something wrong happened. Please retry later",
-						unauthorized: "Action denied. Please ensure that you are correctly logged in."
+						unauthorized: "Action denied. Please ensure that you are correctly logged in.",
+						invalidFile: "Please only deposit PDF, jpeg or png file",
+						fillTitle: "Please fill the title field",
+						fillYear: "Please select at least one year concerned by that project",
+						fillSpecialization: "Please select at least one specialiaztion concerned by that project",
+						fillDescription: "Please fill the description field"
 					},
 					createProject: {
 						skills: "Skills developped",
@@ -106,6 +112,7 @@ i18next
 						maxNumber: "If so, how many teams do you accept ?",
 						RandD: "Is it a research and development project ?",
 						confidential: "Is your project confidential ?",
+						keywords: "Keywords describing the project",
 						descriptionHelper: `Indicate, if possible, in particular the following elements:
 						context (project stakeholders),
 						prerequisites that may be necessary (e.g. required skills, knowledge in the use of software, etc.),
@@ -263,6 +270,7 @@ i18next
 						no: "Non",
 						created: "Votre compte a bien été créé. Un mail vous a été envoyé.",
 						isExisting: "Vous êtes déjà connecté. Cliquez sur suivant pour déposer votre projet",
+						invalidPhone: "Numéro de téléphone invalide"
 					},
 					createProject: {
 						skills: "Compétences développées",
@@ -270,6 +278,7 @@ i18next
 						multipleTeams: "Acceptez vous que plusieurs équipes travaillent sur le projet ?",
 						maxNumber: "Dans ce cas combien d'équipes maximum acceptez-vous ?",
 						RandD: "Est-ce un projet de recherche et développement ?",
+						keywords: "Mots-clefs décrivant le projet",
 						confidential: "Votre projet est-il confidentiel ?",
 						descriptionHelper: `Indiquer, si possible ,  en particulier les éléments suivants :
 						contexte (parties prenantes au projet),
@@ -283,10 +292,15 @@ i18next
 						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer.",
 						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
 						NaN: "Merci de saisir un nombre",
-						fillAll: "Merci de remplir tous les champs obligatoires",
+						fillAll: "Merci de remplir correctement tous les champs obligatoires",
 						partnerNotFound: "Aucun utilisateur trouvé avec cette adresse mail",
 						default: "Une erreur est survenue. Merci de réessayer",
-						unauthorized: "Action refusée. Assurez vous d'être correctement connecté."
+						unauthorized: "Action refusée. Assurez vous d'être correctement connecté.",
+						invalidFile: "Merci de déposer uniquement des PDF, des jpeg ou des png",
+						fillTitle: "Merci de remplir le champ titre du projet",
+						fillYear: "Merci de sélectionner au moins une année concernée par ce projet",
+						fillSpecialization: "Merci de sélectionner au moins une majeure concernée par ce projet",
+						fillDescription: "Merci de remplir le champ description du projet"
 					},
 					home: {
 						title: 'Projets Innovation Industrielle',

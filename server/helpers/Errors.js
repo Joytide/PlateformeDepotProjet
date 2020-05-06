@@ -76,9 +76,14 @@ class KeywordNotFoundError extends ErrorHandler {
     }
 }
 
+class MissingKeywordsError extends ErrorHandler {
+    constructor(parameters) {
+        super(409, "MissingKeyword", "The project keywords requierements are not met");
+    }
+}
+
 class MissingParameterError extends ErrorHandler {
     constructor(parameters) {
-        console.log(typeof (parameters))
         if (parameters && parameters instanceof Array)
             super(400, "MissingParameter", "One or many parameters are missing from the request. Expected parameters : " + parameters.join(' ,'));
         else
@@ -202,6 +207,7 @@ module.exports = {
     InvalidPasswordError,
     InvalidTypeError,
     KeywordNotFoundError,
+    MissingKeywordsError,
     MissingParameterError,
     MongoError,
     PartnerNotFoundError,

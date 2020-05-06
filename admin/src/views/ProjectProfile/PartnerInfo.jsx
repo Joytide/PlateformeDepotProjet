@@ -82,6 +82,22 @@ class PartnerInfo extends React.Component {
                                 {partner.first_name}
                             </Typography>
                         </GridItem>
+                        <GridItem xs={12} sm={12} md={6}>
+                            <Typography variant="body2" gutterBottom>
+                                Téléphone :
+                        </Typography>
+                            <Typography gutterBottom>
+                                {partner.phone ? <a href={"tel:" + partner.phone}>{partner.phone}</a> : "N/A"}
+                            </Typography>
+                        </GridItem>
+                        <GridItem xs={12} sm={12} md={6}>
+                            <Typography variant="body2" gutterBottom>
+                                Adresse :
+                        </Typography>
+                            <Typography gutterBottom>
+                                {partner.address || "N/A"}
+                            </Typography>
+                        </GridItem>
                     </GridContainer>
                 </CardBody>
                 <CardFooter>
@@ -93,7 +109,7 @@ class PartnerInfo extends React.Component {
                         </GridItem>
                     </GridContainer>
                 </CardFooter>
-            </Card>
+            </Card >
         );
     }
 }

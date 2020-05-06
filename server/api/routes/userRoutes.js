@@ -20,7 +20,7 @@ module.exports = (app) => {
     app.route('/api/user/:id([a-fA-F0-9]{24})')
         .get(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("EPGE"),
+            auth.areAuthorized(["Administration", "EPGE"]),
             handleRequest(userController.findById)
         );
 
@@ -54,9 +54,9 @@ module.exports = (app) => {
         );
 
     app.route('/api/user/password')
-        .post(
+        .put(
             auth.passport.authenticate('jwt'),
-            auth.areAuthorized("Administraton"),
+            auth.areAuthorized("Administration"),
             handleRequest(userController.changePassword)
         );
 }

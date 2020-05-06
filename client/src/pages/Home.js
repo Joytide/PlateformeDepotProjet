@@ -7,6 +7,7 @@ import i18n from '../components/i18n';
 import Carousel from '../components/Carousel.js';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
 	root: {
@@ -91,8 +92,12 @@ class HomePage extends React.Component {
 							</Grid>
 							<Grid item>
 								<Typography variant="h5">{i18n.t('home.p4', { lng })}</Typography>
+								<br />
 								<Typography align="justify">
-									<Link to="/deposit">{i18n.t('home.p4_l1', { lng })}</Link><br />
+									<Link to="/deposit" style={{ textDecoration: "none" }} >
+										<Button variant="contained" color="primary">{i18n.t('home.p4_l1', { lng })}</Button>
+									</Link>
+									<br /><br />
 									<a dangerouslySetInnerHTML={{ __html: i18n.t('home.p4_l2', { lng }) }}></a><br />
 									<a dangerouslySetInnerHTML={{ __html: i18n.t('home.p4_l3', { lng }) }}></a><br />
 									<a dangerouslySetInnerHTML={{ __html: i18n.t('home.p4_l4', { lng }) }}></a><br />

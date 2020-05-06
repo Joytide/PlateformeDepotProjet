@@ -88,7 +88,7 @@ class ProjectCard extends React.Component {
 									<Grid item xs={4}>
 										{partner}
 										<Typography color="textSecondary" gutterBottom>
-											{new Date(project.sub_date).toLocaleDateString()}
+											{new Date(project.submissionDate).toLocaleDateString()}
 										</Typography>
 									</Grid>
 									{!this.props.showPartner &&

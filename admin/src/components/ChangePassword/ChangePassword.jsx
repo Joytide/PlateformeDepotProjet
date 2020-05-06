@@ -66,13 +66,13 @@ class ChangePassword extends React.Component {
         }
         else {
             const data = {
-                userID: this.props.user._id,
+                id: this.props.user._id,
                 newPassword: sha256(this.props.user.email + this.state.newPassword),
                 oldPassword: sha256(this.props.user.email + this.state.oldPassword)
             }
 
             AuthService.fetch(api.host + ":" + api.port + "/api/user/password", {
-                method: "POST",
+                method: "PUT",
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",

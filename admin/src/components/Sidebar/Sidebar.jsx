@@ -145,7 +145,6 @@ const hasPermission = (authorized, user) => {
 			return true;
 		return false;
 	} else {
-		console.error("Wrong authorized type", authorized, user);
 		return false;
 	}
 }

@@ -1,6 +1,32 @@
-## 2.2.5 ()
+## 2.2.8 (5 mai 2020)
+* :art: Redirection automatique vers la page de dépôt de projet lorsque l'utilisateur est déjà connecté
+* :lipstick: Affichage des majeures en colonnes
+* :sparkles: Les partenaires peuvent suggérer des mots clefs 
+* :sparkles: Au moins deux mots clefs doivent être saisis pour qu'un projet puisse être validé
+
+## 2.2.7 (29 avril 2020)
+* :lipstick: Affichage de l'adresse et le numéro de téléphone du partenaire
+* :art: Meilleure gestion des permissions lors de l'affichage du profil d'un utilisateur et sur le menu des réglages
+* :bug: Bugfix: User cannot change his password
+
+
+## 2.2.6 (28 avril 2020)
+* Bugfix: le numéro de téléphone était devenu un champ requis
+* Bugfix: le formulaire de soumission d'un projet était remis à zéro de manière inopinée
+
+## 2.2.5 (28 avril 2020)
 * Correction d'un bug empêchant parfois l'admin de voir le bouton pour supprimer une année / une majeure
 * Correction d'un bug lors du chargement du message affiché lorsque la plateforme est fermée
+* La taille maximale d'une adresse mail est maintenant de 254 caractères ([cf stackoverflow](https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address))
+* Correction des messages d'erreurs qui étaient incorrectes lors de la saisie d'une adresse ou d'un numéro de téléphone trop longs
+* Bouton pour commencer le dépôt de projet mieux mis en avant
+* Validation du numéro de téléphone lors de la création d'un partenaire
+* Longueur maximale d'une adresse augmentée à 500 caractères
+* Message d'erreur lorsqu'un fichier est déposé et qu'il n'est pas accepté (mauvais type)
+* Correction d'une erreur d'affichage de la date de dépôt d'un projet
+* Longeur maximale des champs Compétences et Informations complémentaires lors du dépôt d'un projet passés à 1000 caractères
+* Affichage d'un message plus explicite quant aux chanmps manquants lors de la saisie d'un projet
+* Bugfix: Il est maintenant possible de cliquer sur Soumettre un projet pour soumettre un nouveau projet
 
 ## 2.2.4 (22 avril 2020)
 * Correction de bug (mauvaise méthode utilisée pour créer une année)
