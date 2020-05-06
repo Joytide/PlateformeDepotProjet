@@ -89,7 +89,7 @@ class Keywords extends React.Component {
             .then(data => {
                 this.setState({
                     keywords: data
-                        .sort((ka, kb) => ka.displayName > kb.displayName)
+                        .sort((ka, kb) => ka.lcName > kb.lcName ? 1 : -1)
                 });
             })
             .catch(handleXhrError(this.props.snackbar));

@@ -417,12 +417,13 @@ exports.projectValidation = ({ ...data }) =>
 					}
 
 					if (count == project.specializations.length) {
-						if (project.keywords.length < 2)
-							throw new MissingKeywordsError();
 						if (rejected)
 							project.status = "rejected";
 						else
-							project.status = "validated";
+							if (project.keywords.length < 2)
+								throw new MissingKeywordsError();
+							else
+								project.status = "validated";
 					}
 
 					return project.save();
