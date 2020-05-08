@@ -31,6 +31,10 @@ import YearProfile from "views/YearProfile/YearProfile.jsx";
 import PRMList from "views/PRMList/PRMList";
 import CreatePRM from "views/CreatePRM/CreatePRM";
 
+// Team
+import CreateTeam from "views/CreateTeam/CreateTeam";
+import TeamList from "views/TeamList/TeamList";
+
 // Others
 import Settings from "views/Settings/Settings.jsx"
 
@@ -156,6 +160,22 @@ const dashboardRoutes = [
     icon: "settings",
     component: PRMList,
     permissions: Permissions.PRMList.value
+  },
+  {
+    path: "/createTeam",
+    sidebarName: "Créer équipes",
+    navbarName: "Créer équipes",
+    icon: "settings",
+    component: CreateTeam,
+    permissions: Permissions.CreateTeam.value
+  },
+  {
+    path: "/team",
+    sidebarName: "Liste des équipes",
+    navbarName: "Liste des équipes",
+    icon: "settings",
+    component: TeamList,
+    permissions: Permissions.TeamList.value
   },
 ];
 

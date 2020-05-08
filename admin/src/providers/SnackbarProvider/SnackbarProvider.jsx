@@ -126,6 +126,7 @@ class SnackbarProvider extends React.Component {
 			},
 			error: msg => this.state.notification("error", msg),
 			success: msg => this.state.notification("success", msg),
+			warning: msg => this.state.notification("warning", msg),
 			duration: DEFAULT_DURATION,
 			message: "",
 			variant: "error",

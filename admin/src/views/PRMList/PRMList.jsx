@@ -81,7 +81,11 @@ class PRMList extends React.Component {
         AuthService.fetch(api.host + ":" + api.port + "/api/keyword")
             .then(res => res.json())
             .then(data => {
-                this.setState({ keywords: data, loadingKeywords: false });
+                this.setState({
+                    keywords: data
+                        .sort((ka, kb) => ka.lcName > kb.lcName ? 1 : -1),
+                    loadingKeywords: false
+                });
             });
     }
 

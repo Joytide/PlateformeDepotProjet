@@ -90,17 +90,21 @@ class CreatePRM extends React.Component {
             })
                 .then(res => {
                     if (!res.ok)
-                        throw res.json();
+                        throw res;
                     else {
                         this.props.snackbar.success("PRMs créés avec succès");
-                        this.setState({ prmData: "" })
+                        this.setState({ prmData: "", existingEmails: [] })
                     }
                 })
                 .catch(err => {
-                    err.then(msg => {
-                        this.props.snackbar.error("Certaines adresses mails ont déjà été utilisées. Cliquer sur le bouton pour les retirer");
-                        this.setState({ existingEmails: msg.message })
-                    })
+                    if (err.status === 500)
+                        handleXhrError(this.props.snackbar)(err);
+                    else
+                        err.json().then(msg => {
+                            console.log(err, msg);
+                            this.props.snackbar.error("Certaines adresses mails ont déjà été utilisées. Cliquer sur le bouton pour les retirer");
+                            this.setState({ existingEmails: msg.message })
+                        })
                 });
         }
     }

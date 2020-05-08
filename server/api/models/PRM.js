@@ -45,4 +45,4 @@ const PRMSchema = new Schema({
 });
 const PRM = mongoose.model('PRM', PRMSchema);
 
-module.exports = { PRM };
+module.exports = PRM;

@@ -31,6 +31,12 @@ class ExistingNameError extends ErrorHandler {
     }
 }
 
+class ExistingTeamError extends ErrorHandler {
+    constructor(infos) {
+        super(409, "ExistingTeam", infos || "The team specified is already used");
+    }
+}
+
 class FileNotFoundError extends ErrorHandler {
     constructor(infos) {
         super(400, "FileNotFound", infos || "The id you specified for this file has not been found");
@@ -124,6 +130,12 @@ class SpecializationNotFoundError extends ErrorHandler {
     }
 }
 
+class TooManyTeamsError extends ErrorHandler {
+    constructor(project) {
+        super(409, "TooManyTeams", "Max number of teams on the project " + project +  " is already reached");
+    }
+}
+
 class UserNotFoundError extends ErrorHandler {
     constructor(infos) {
         super(400, "UserNotFound", infos || "The id you specified for this user has not been found");
@@ -200,6 +212,7 @@ module.exports = {
     BCryptError,
     ExistingEmailError,
     ExistingNameError,
+    ExistingTeamError,
     FileNotFoundError,
     ForbiddenError,
     InvalidCredentialsError,
@@ -214,6 +227,7 @@ module.exports = {
     ProjectNotFoundError,
     ReferentAlreadyRegisteredError,
     SpecializationNotFoundError,
+    TooManyTeamsError,
     UserNotFoundError,
     YearNotFoundError,
     handleError,

@@ -226,7 +226,8 @@ class PRMItem extends React.Component {
                             aria-label="Show more"
                         >
                             <ExpandMoreIcon />
-                        </IconButton></GridItem>
+                        </IconButton>
+                    </GridItem>
                 </GridContainer>
                 <Divider />
                 <GridContainer className={this.props.gray ? classes.grayBg : classes.empty}>

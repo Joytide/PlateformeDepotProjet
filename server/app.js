@@ -26,6 +26,7 @@ const Task = require('./api/models/Task');
 const File = require('./api/models/File');
 const Keyword = require('./api/models/Keyword');
 const PRM = require('./api/models/PRM');
+const Team = require('./api/models/Team');
 
 /* ================================================= */
 
@@ -112,6 +113,9 @@ commentRoutes(app);
 
 var prmRoutes = require('./api/routes/prmRoutes');
 prmRoutes(app);
+
+var teamRoutes = require('./api/routes/teamRoutes');
+teamRoutes(app);
 
 // 404 handler
 app.use(function (req, res, next) {

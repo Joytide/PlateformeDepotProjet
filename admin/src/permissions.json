@@ -89,5 +89,11 @@
     },
     "PRMList": {
         "value": "Administrator"
+    },
+    "CreateTeam": {
+        "value": "Administrator"
+    },
+    "TeamList": {
+        "value": "Administrator"
     }
 }
