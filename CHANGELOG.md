@@ -1,3 +1,6 @@
+## 2.3.1 ()
+* :bug: Fix react warnings
+
 ## 2.3.0 (14 mai 2020)
 * :sparkles: Intégration du module de gestion des PRMs
 

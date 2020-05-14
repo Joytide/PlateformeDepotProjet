@@ -12,14 +12,12 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-import Table from "components/Table/Table.jsx";
 
 import Button from "components/CustomButtons/Button.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import AuthService from "components/AuthService"
 
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
-import { handleXhrError } from "../../components/ErrorHandler";
 import { api } from "config.json"
 
 import TeamItem from './TeamItem';
@@ -94,7 +92,7 @@ class CreateTeam extends React.Component {
 
         for (let i = 0; i < teamList.length; i++) {
             try {
-                let res = await this.createTeam(teamList[i]);
+                await this.createTeam(teamList[i]);
 
                 let teams = [...this.state.teams];
                 teams[i] = { status: "done" };

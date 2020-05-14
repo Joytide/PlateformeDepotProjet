@@ -284,4 +284,4 @@ class TeamList extends React.Component {
     }
 }
 
-export default withStyles(styles)(TeamList);
+export default withSnackbar(withStyles(styles)(TeamList));
