@@ -1,3 +1,6 @@
+## 2.3.0 (14 mai 2020)
+* :sparkles: Intégration du module de gestion des PRMs
+
 ## 2.2.8 (5 mai 2020)
 * :art: Redirection automatique vers la page de dépôt de projet lorsque l'utilisateur est déjà connecté
 * :lipstick: Affichage des majeures en colonnes
