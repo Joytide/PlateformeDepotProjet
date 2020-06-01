@@ -1,5 +1,6 @@
 ## 2.3.1 ()
-* :bug: Fix react warnings
+* :bug: Correction des warnings react
+* :bug: Cliquer sur un lien sur la page d'accueil ouvrait 2 fenêtres
 
 ## 2.3.0 (14 mai 2020)
 * :sparkles: Intégration du module de gestion des PRMs

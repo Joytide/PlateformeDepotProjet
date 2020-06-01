@@ -140,11 +140,11 @@ class Carousel extends React.Component {
 		return (
 			<Grid container className={classes.root}>
 				<Grid item xs={12}>
-					<Paper square elevation={0} className={classes.header} onClick={() => window.open(this.tutorialSteps[this.state.actualStep].link, "_blank")} >
+					<Paper square elevation={0} className={classes.header} >
 						<a dangerouslySetInnerHTML={{ __html: i18n.t('home.title_p2', { lng }) }}></a>
 					</Paper>
 				</Grid>
-				<Grid item xs={12}>
+				<Grid item xs={12} onClick={() => window.open(this.tutorialSteps[this.state.actualStep].link, "_blank")} >
 					<img className={classes.img} src={this.tutorialSteps[this.state.actualStep].imgPath} alt={"Projet ESILV"} />
 				</Grid>
 			</Grid>
