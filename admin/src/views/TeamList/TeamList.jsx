@@ -215,7 +215,19 @@ class TeamList extends React.Component {
         this.setState({ teams: orderedTeams });
     }
 
+    orderByYear = () =>
+        this.setState({
+            teams: this.state.teams.sort((a, b) => a.year - b.year || a.teamNumber - b.teamNumber)
+        })
+
+    orderByProjectNumber = () =>
+        this.setState({
+            teams: this.state.teams.sort((a, b) => a.project.number - b.project.number)
+        })
+
     findPRMById = prmId => this.state.prms.filter(p => p._id === prmId)[0];
+
+
 
 
     render() {
@@ -258,13 +270,13 @@ class TeamList extends React.Component {
                             <CardBody>
                                 <GridContainer >
                                     <GridItem xs={2}>
-                                        <Typography className={classes.title}>Année</Typography>
+                                        <Typography className={classes.title} onClick={this.orderByYear}>Année</Typography>
                                     </GridItem>
                                     <GridItem xs={2}>
-                                        <Typography className={classes.title}>Numéro d'équipe</Typography>
+                                        <Typography className={classes.title} onClick={this.orderByYear}>Numéro d'équipe</Typography>
                                     </GridItem>
                                     <GridItem xs={2}>
-                                        <Typography className={classes.title}>Numéro de projet</Typography>
+                                        <Typography className={classes.title} onClick={this.orderByProjectNumber}>Numéro de projet</Typography>
                                     </GridItem>
                                     <GridItem xs={3}>
                                         <Typography className={classes.title}>PRM</Typography>

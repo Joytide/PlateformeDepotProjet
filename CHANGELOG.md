@@ -2,6 +2,7 @@
 * :bug: Correction des warnings react
 * :bug: Cliquer sur un lien sur la page d'accueil ouvrait 2 fenêtres
 * :lipstick: Affiche des notifications d'état lors du changement du mot de passe
+* :art: Possibilité de trier la liste des équipes par année et numéro d'équipe ou par numéro de projet
 
 ## 2.3.0 (14 mai 2020)
 * :sparkles: Intégration du module de gestion des PRMs
