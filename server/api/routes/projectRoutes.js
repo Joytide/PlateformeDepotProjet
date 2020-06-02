@@ -83,6 +83,13 @@ module.exports = function (app) {
 			handleRequest(project.update)
 		);
 
+	app.route('/api/project/all')
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized(['Administration']),
+			handleRequest(project.listAllProjects)
+		)
+
 	app.route('/api/project/:id([a-fA-F0-9]{24})/files')
 		.get(
 			auth.passport.authenticate('jwt'),

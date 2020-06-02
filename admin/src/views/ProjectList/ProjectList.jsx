@@ -65,11 +65,13 @@ class ProjectList extends React.Component {
         this.state = {
             loading: true,
             projects: [],
+            filters: [],
             confidentialMapping: [],
-            rejectedProjects: false,
-            validatedProjects: false,
+            rejectedProjects: true,
+            validatedProjects: true,
             pendingProjects: true,
-            myProject: true,
+            mySpecialization: false,
+            notWaitingForMe: true,
             canDownloadPdf: false,
             canDownloadCsv: false,
             canDownloadZip: false
@@ -80,6 +82,7 @@ class ProjectList extends React.Component {
 
     componentWillMount() {
         this.loadProjects();
+        this.updateFilters();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -91,51 +94,17 @@ class ProjectList extends React.Component {
     }
 
     loadProjects() {
-        let queryParams = `?validated=${this.state.validatedProjects}&rejected=${this.state.rejectedProjects}&pending=${this.state.pendingProjects}&mine=${this.state.myProject}`
-
-        const validatedChip = <Chip
-            label="Validé"
-            style={{ backgroundColor: "#4caf50", color: "white" }}
-        />;
-
-        const refusedChip = <Chip
-            label="Refusé"
-            style={{ backgroundColor: "rgb(244, 67, 54)", color: "white" }}
-        />;
-
-        const pendingChip = <Chip
-            label="En attente de validation"
-            style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
-        />;
-
-        AuthService.fetch(api.host + ":" + api.port + "/api/project" + queryParams)
+        AuthService.fetch(api.host + ":" + api.port + "/api/project/all")
             .then(res => {
                 if (res.ok)
                     return res.json();
                 else throw res;
             })
             .then(data => {
-                let projectsData = data.map(project => {
-                    if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
-                        return undefined;
-                    return [
-                        <p>{project.number}</p>,
-                        <p>{project.title}</p>,
-                        <p>{project.partner.company}</p>,
-                        <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
-                        <p>{new Date(project.submissionDate).toLocaleDateString()}</p>,
-                        project.study_year.map(year => year.abbreviation).sort().join(', '),
-                        project.specializations
-                            .map(spe => spe.specialization.abbreviation + (spe.status === "pending" ? " (En attente)" : (spe.status === "validated" ? " (Validé)" : "(Refusé)")))
-                            .sort()
-                            .join(', '),
-                        (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
-                    ];
-                }).filter(p => p !== undefined);
-
-                let confidentialMapping = data.map(p => p.confidential);
-
-                this.setState({ projects: projectsData, loading: false, confidentialMapping });
+                this.setState({
+                    projects: data,
+                    loading: false
+                });
             })
             .catch(handleXhrError(this.props.snackbar));
     }
@@ -143,20 +112,78 @@ class ProjectList extends React.Component {
     handleChange = name => event => {
         this.setState(
             { [name]: event.target.checked },
-            this.loadProjects
+            this.updateFilters
         );
+    }
+
+    updateFilters = () => {
+        let filters = [];
+        let status = [];
+
+        if (this.state.rejectedProjects)
+            status.push("rejected")
+        if (this.state.validatedProjects)
+            status.push("validated")
+        if (this.state.pendingProjects)
+            status.push("pending")
+
+        filters.push(p => status.indexOf(p.status) !== -1);
+
+        if (this.state.mySpecialization)
+            filters.push(p => p.specializations.map(spe => spe.specialization.referent).flat().indexOf(this.props.user.user._id) !== -1);
+
+        if (this.state.notWaitingForMe)
+            filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)));
+
+        this.setState({ filters })
     }
 
     render() {
         const { classes } = this.props;
         let loadedContent;
+
         if (!this.state.loading) {
+            const validatedChip = <Chip
+                label="Validé"
+                style={{ backgroundColor: "#4caf50", color: "white" }}
+            />;
+
+            const refusedChip = <Chip
+                label="Refusé"
+                style={{ backgroundColor: "rgb(244, 67, 54)", color: "white" }}
+            />;
+
+            const pendingChip = <Chip
+                label="En attente de validation"
+                style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
+            />;
+
+            let projectsData = applyFilters(this.state.filters, this.state.projects).map(project => {
+                if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
+                    return undefined;
+                return [
+                    <p>{project.number}</p>,
+                    <p>{project.title}</p>,
+                    <p>{project.partner.company}</p>,
+                    <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
+                    <p>{new Date(project.submissionDate).toLocaleDateString()}</p>,
+                    project.study_year.map(year => year.abbreviation).sort().join(', '),
+                    project.specializations
+                        .map(spe => spe.specialization.abbreviation + (spe.status === "pending" ? " (En attente)" : (spe.status === "validated" ? " (Validé)" : "(Refusé)")))
+                        .sort()
+                        .join(', '),
+                    (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
+                ];
+            }).filter(p => p !== undefined);
+
+            let confidentialMapping = this.state.projects.map(p => p.confidential);
+
             loadedContent = (
                 <Table
                     tableHeaderColor="primary"
                     tableHead={["Numéro", "Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
-                    tableData={this.state.projects}
-                    confidential={this.state.confidentialMapping}
+                    tableData={projectsData}
+                    confidential={confidentialMapping}
                 />
             );
         }
@@ -218,13 +245,27 @@ class ProjectList extends React.Component {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={this.state.myProject}
-                                            onChange={this.handleChange('myProject')}
-                                            value="myProject"
+                                            checked={this.state.mySpecialization}
+                                            onChange={this.handleChange('mySpecialization')}
+                                            value="mySpecialization"
                                             color="primary"
                                         />
                                     }
                                     label="Afficher uniquement les projets de ma majeure"
+                                />
+                            </GridItem>
+
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={this.state.notWaitingForMe}
+                                            onChange={this.handleChange('notWaitingForMe')}
+                                            value="notWaitingForMe"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Afficher uniquement les projets que je n'ai pas encore traité"
                                 />
                             </GridItem>
                         </GridContainer>
@@ -270,6 +311,9 @@ class ProjectList extends React.Component {
     }
 }
 
-
-
 export default withSnackbar(withUser(withStyles(styles)(ProjectList)));
+
+const applyFilters = (filters, datas) => {
+    console.log(filters, datas)
+    return filters.reduce((acc, f) => acc.filter(f), datas)
+}
