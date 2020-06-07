@@ -1,4 +1,4 @@
-## 2.3.1 ()
+## 2.3.1 (7 juin 2020)
 * :bug: Correction des warnings react
 * :bug: Cliquer sur un lien sur la page d'accueil ouvrait 2 fenêtres
 * :lipstick: Affiche des notifications d'état lors du changement du mot de passe
