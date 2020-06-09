@@ -1,3 +1,6 @@
+## 2.3.2 (9 juin 2020)
+* :art: Changement du titre de la page de l'interface d'administration
+
 ## 2.3.1 (7 juin 2020)
 * :bug: Correction des warnings react
 * :bug: Cliquer sur un lien sur la page d'accueil ouvrait 2 fenêtres
