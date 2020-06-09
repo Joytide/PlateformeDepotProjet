@@ -1,4 +1,4 @@
-## 2.3.3 ()
+## 2.3.3 (9 juin 2020)
 * :bug: Affichage incorrect des projets qui sont confidentiels ou non
 
 ## 2.3.2 (9 juin 2020)
