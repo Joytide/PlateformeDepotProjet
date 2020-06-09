@@ -67,10 +67,10 @@ class ProjectList extends React.Component {
             projects: [],
             filters: [],
             confidentialMapping: [],
-            rejectedProjects: true,
-            validatedProjects: true,
+            rejectedProjects: false,
+            validatedProjects: false,
             pendingProjects: true,
-            mySpecialization: false,
+            mySpecialization: true,
             notWaitingForMe: true,
             canDownloadPdf: false,
             canDownloadCsv: false,
@@ -176,7 +176,9 @@ class ProjectList extends React.Component {
                 ];
             }).filter(p => p !== undefined);
 
-            let confidentialMapping = this.state.projects.map(p => p.confidential);
+            let confidentialMapping = applyFilters(this.state.filters, this.state.projects).map(project =>
+                (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization))) ? undefined : project.confidential
+            ).filter(p => p !== undefined);
 
             loadedContent = (
                 <Table
