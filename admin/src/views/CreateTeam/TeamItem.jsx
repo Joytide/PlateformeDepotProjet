@@ -2,23 +2,14 @@ import React from "react";
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { Typography, Divider, Collapse, IconButton, TextField } from "@material-ui/core";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Remove from '@material-ui/icons/Remove';
-import Add from '@material-ui/icons/Add';
+import { Typography, Divider } from "@material-ui/core";
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 
-import Button from "components/CustomButtons/Button.jsx";
-
-import { api } from "config.json"
-import AuthService from "components/AuthService"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
-import { handleXhrError } from "../../components/ErrorHandler";
 
 const styles = {
     cardCategoryWhite: {

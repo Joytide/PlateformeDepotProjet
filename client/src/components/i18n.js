@@ -123,7 +123,7 @@ i18next
 					home: {
 						title: 'Industrial Innovation Projects',
 						title_p1: 'You are a company, a laboratory, a student? You want to test an idea, create a prototype, decipher and / or explore a field of innovation, ...?',
-						title_p2: 'Discover <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4th year\'s projects</a> and <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5th year\'s projects</a>',
+						title_p2: 'Discover <a target="_blank" href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4th year\'s projects</a> and <a target="_blank" href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5th year\'s projects</a>',
 						p1: 'Submit a project to our students!',
 						p1_l1: 'Proposing a project will allow you to cooperate with a team of motivated and innovative engineering students and to contribute to their training by involving them in current issues.',
 						p1_l2: 'Companies or laboratories, it is also a way to make yourself known to those who will respond in the coming years to your internship and job offers.',
@@ -305,7 +305,7 @@ i18next
 					home: {
 						title: 'Projets Innovation Industrielle',
 						title_p1: 'Vous êtes une entreprise, un laboratoire, un étudiant ? Vous souhaitez tester une idée, créer un prototype, déchiffrer et/ou explorer un terrain d\'innovation, ... ?',
-						title_p2: 'Découvrir les projets de <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4eme année</a> et de <a href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5eme année</a>',
+						title_p2: 'Découvrir les projets de <a target="_blank" href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-4/">4eme année</a> et de <a target="_blank" href="https://www.esilv.fr/portfoliosets/projet-innovation-industrielle-5/">5eme année</a>',
 						p1: 'Proposez un projet à nos élèves !',
 						p1_l1: 'Proposer un projet vous permettra de coopérer avec une équipe d\'élèves ingénieurs motivés et innovants et de contribuer à leur formation en les impliquant dans des problématiques actuelles.',
 						p1_l2: 'Entreprises ou laboratoires, c\'est aussi un moyen de vous faire connaître auprès de ceux qui répondront dans les années futures à vos offres de stages et d\'emplois.',

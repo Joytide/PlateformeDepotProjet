@@ -175,6 +175,32 @@ exports.listProjects = ({ user, ...data }) =>
 	});
 
 /**
+ * List all existing projects
+ */
+exports.listAllProjects = () =>
+	new Promise((resolve, reject) => {
+		Project
+			.find()
+			.populate({
+				path: 'partner',
+				select: "company"
+			})
+			.populate({
+				path: 'specializations.specialization',
+				select: "abbreviation referent"
+			})
+			.populate({
+				path: 'study_year',
+				select: "abbreviation"
+			})
+			.select('title number status confidential submissionDate specializations.status')
+			.lean()
+			.exec()
+			.then(resolve)
+			.catch(reject);
+	});
+
+/**
  * Create a new project
  * @param {string} title Title of the new project
  * @param {string} description Description of the new project

@@ -3,10 +3,8 @@ import React from "react";
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 
-import { Typography, Divider, Collapse, IconButton, TextField, InputLabel, FormControl, Select } from "@material-ui/core";
+import { Typography, Divider, Collapse, IconButton, InputLabel, FormControl, Select } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Remove from '@material-ui/icons/Remove';
-import Add from '@material-ui/icons/Add';
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";

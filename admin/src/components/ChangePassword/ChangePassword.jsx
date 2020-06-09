@@ -21,6 +21,7 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import AuthService from "components/AuthService"
 
 import { api } from "../../config"
+import { withSnackbar } from "providers/SnackbarProvider/SnackbarProvider"
 
 const styles = {
     cardCategoryWhite: {
@@ -53,16 +54,14 @@ class ChangePassword extends React.Component {
             newPassword_2: "",
             oldPassword: ""
         }
-
-        this.changePassword = this.changePassword.bind(this);
     }
 
     changePassword = () => {
         if (this.state.newPassword !== this.state.newPassword_2) {
-            if (this.props.errorHandler) this.props.errorHandler('Les deux mots de passes doivent être identiques.');
+            this.props.snackbar.error('Les deux mots de passes doivent être identiques.');
         }
         else if (!isValidPassword(this.state.newPassword)) {
-            if (this.props.errorHandler) this.props.errorHandler('Le mot de passe doit à minima être de 8 caractères et comporter une majuscule, une minuscule et un chiffre ou un charactère spécial.');
+            this.props.snackbar.error('Le mot de passe doit à minima être de 8 caractères et comporter une majuscule, une minuscule et un chiffre ou un charactère spécial.');
         }
         else {
             const data = {
@@ -84,29 +83,16 @@ class ChangePassword extends React.Component {
                     else return res.json()
                 })
                 .then(data => {
-                    if (data.name === "PasswordChanged") {
-                        if (this.props.successHandler) this.props.successHandler("Mot de passe mis à jour avec succès.");
+                    this.props.snackbar.success("Mot de passe mis à jour avec succès.");
 
-                        this.setState({
-                            newPassword: "",
-                            newPassword_2: ""
-                        });
-                    }
+                    this.setState({
+                        newPassword: "",
+                        newPassword_2: ""
+                    });
                 })
                 .catch(err => {
                     err.json().then(errMsg => {
-                        if (errMsg.name === "EmailUsed") {
-                            this.setState({
-                                error: true,
-                                message: "Cette adresse mail est déjà associée à autre un utilisateur."
-                            });
-                        } else {
-                            console.error(errMsg);
-                            this.setState({
-                                error: true,
-                                message: "Une erreur est survenue lors de la création de l'utilisateur."
-                            });
-                        }
+                        this.props.snackbar.error("Une erreur est survenue. Merci de réessayer")
                     })
                 });
         }
@@ -206,7 +192,7 @@ CustomInput.propTypes = {
     successHandler: PropTypes.func
 };
 
-export default withStyles(styles)(ChangePassword);
+export default withSnackbar(withStyles(styles)(ChangePassword));
 
 function isValidPassword(password) {
     if (password.length < 8) return false;

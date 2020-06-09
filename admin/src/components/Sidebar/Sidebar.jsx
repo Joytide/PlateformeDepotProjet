@@ -16,7 +16,6 @@ import HeaderLinks from "components/Header/HeaderLinks.jsx";
 
 import sidebarStyle from "assets/jss/material-dashboard-react/components/sidebarStyle.jsx";
 import { withUser } from "providers/UserProvider/UserProvider"
-import { Divider } from "@material-ui/core";
 
 const Sidebar = ({ ...props }) => {
 	// verifies if routeName is the one active (in browser input)

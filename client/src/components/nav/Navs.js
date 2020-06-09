@@ -154,7 +154,7 @@ class Navs extends React.Component {
 						</MenuItem>
 					</Link>
 				}
-				<Link to="/deposit" to={{ pathname: "/deposit", state: { reset: true } }}>
+				<Link to={{ pathname: "/deposit", state: { reset: true } }}>
 					<MenuItem color="inherit">
 						<div>{i18n.t('navs.submit', { lng })}</div>
 					</MenuItem>
