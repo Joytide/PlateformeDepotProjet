@@ -1,0 +1,19 @@
+[Unit]
+Description=Redis database
+After=network-online.target
+ 
+[Service]
+User=redis
+Group=redis
+UMask=007
+ 
+ExecStart=/usr/local/bin/redis-server /etc/redis/redis.conf
+ExecStop=/usr/local/bin/redis-cli shutdown
+ 
+Restart=on-failure
+
+TimeoutStartSec=10 
+TimeoutStopSec=300
+ 
+[Install]
+WantedBy=multi-user.target
