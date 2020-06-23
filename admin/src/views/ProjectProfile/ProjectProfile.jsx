@@ -259,7 +259,7 @@ class ProjectProfile extends React.Component {
             </CardHeader>
             <CardBody>
                 {this.state.project.pdf && this.state.project.status === "validated" &&
-                    <a href={api.host + ":" + api.port + "/api/project/file/" + this.state.project.pdf}>
+                    <a href={api.host + ":" + api.port + "/api/project/file/" + this.state.project.pdf + "?token=" + this.props.user.getToken()}>
                         <Button size="sm" color="info">
                             <Add />Exporter au format PDF
                         </Button>

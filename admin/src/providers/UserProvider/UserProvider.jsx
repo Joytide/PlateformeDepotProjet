@@ -30,6 +30,7 @@ class UserProvider extends React.Component {
 				localStorage.setItem("adminToken", adminToken);
 				this.refreshUser();
 			},
+			getToken: () => localStorage.getItem("adminToken"),
 			disconnect: () => {
 				localStorage.removeItem("adminToken");
 				this.setState({ user: {} });

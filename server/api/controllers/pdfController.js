@@ -120,7 +120,7 @@ const PDFUtils = {
      */
     chainPDF: async (projects) => {
         return new Promise((resolve, reject) => {
-            let files = projects.map(p => p.pdf.path)
+            let files = projects.map(p => p.pdf ? p.pdf.path : undefined).filter(p => p !== undefined)
 
             let pdfunite = spawn("pdfunite", [
                 ...files,
@@ -186,7 +186,7 @@ exports.regeneratePDF = (req, res, next) => {
     }
 }
 
-exports.generateAllProjectsPDf = (req, res, next) => {
+exports.generateAllProjectsPDF = (req, res, next) => {
     Project.find({ status: "validated" })
         .populate("pdf")
         .exec((err, projects) => {

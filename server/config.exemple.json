@@ -12,9 +12,9 @@
         "name": "DVP"
     },
     "client": {
-        "host": "localhost",
-        "port": 3001,
-        "protocol": "http"
+        "host": "",
+        "port": 443,
+        "protocol": "https"
     },
     "jwt": {
         "secret": ""
