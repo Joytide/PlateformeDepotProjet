@@ -13,4 +13,8 @@ module.exports = app => {
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("Administrator"),
             handleRequest(setting.changeText));
+
+    app.route('/api/settings/home')
+        .get(handleRequest(setting.getHomeText))
+        .post(handleRequest(setting.changeHomeText));
 }
