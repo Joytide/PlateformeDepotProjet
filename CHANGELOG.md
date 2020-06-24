@@ -1,3 +1,6 @@
+## 2.4.0 (24 juin 2020)
+* Possibilité d'éditer la page d'accueil depuis l'interface d'administration
+
 ## 2.3.3 (9 juin 2020)
 * :bug: Affichage incorrect des projets qui sont confidentiels ou non
 
