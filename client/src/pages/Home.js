@@ -20,7 +20,7 @@ const styles = theme => ({
 		margin: 'auto',
 		padding: theme.spacing.unit * 4,
 		textAlign: 'left',
-		color: theme.palette.text.secondary,
+		color: "rgba(0, 0, 0, 0.80)",
 		maxWidth: 1150,
 		flexGrow: 1,
 	},
@@ -70,7 +70,11 @@ class HomePage extends React.Component {
 			<div>
 				<Grid className={classes.root}>
 					<Paper className={classes.paper}>
-						<ReactMarkdown source={this.props.lng === "fr" ? this.state.homeTextFr : this.state.homeTextEn} escapeHtml={false}/>
+						<Grid container>
+							<Grid item xs={12}>
+								<ReactMarkdown source={this.props.lng === "fr" ? this.state.homeTextFr : this.state.homeTextEn} escapeHtml={false} />
+							</Grid>
+						</Grid>
 					</Paper>
 				</Grid>
 			</div>
