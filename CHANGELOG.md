@@ -1,5 +1,6 @@
-## 2.4.1 ()
-* Changement du titre du bandeau sur la page listant les PRMs
+## 2.4.1 (26 juin 2020)
+* :sparkles: Possibilité d'insérer du html dans le markdown
+* :lipstick: Changement du titre du bandeau sur la page listant les PRMs
 
 ## 2.4.0 (24 juin 2020)
 * Possibilité d'éditer la page d'accueil depuis l'interface d'administration

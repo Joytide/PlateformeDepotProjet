@@ -8,7 +8,8 @@ import Carousel from '../components/Carousel.js';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import ReactMarkdown from "react-markdown";
+
+import ReactMarkdown from "react-markdown/with-html";
 
 
 const styles = theme => ({
@@ -72,7 +73,10 @@ class HomePage extends React.Component {
 					<Paper className={classes.paper}>
 						<Grid container>
 							<Grid item xs={12}>
-								<ReactMarkdown source={this.props.lng === "fr" ? this.state.homeTextFr : this.state.homeTextEn} escapeHtml={false} />
+								<ReactMarkdown
+									source={this.props.lng === "fr" ? this.state.homeTextFr : this.state.homeTextEn}
+									escapeHtml={false}
+								/>
 							</Grid>
 						</Grid>
 					</Paper>
