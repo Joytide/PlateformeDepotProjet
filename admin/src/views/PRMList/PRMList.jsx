@@ -101,9 +101,9 @@ class PRMList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Liste des utilisateurs</h4>
+                                <h4 className={classes.cardTitleWhite}>Liste des PRMs</h4>
                                 <p className={classes.cardCategoryWhite}>
-                                    Liste de tous les utilisateurs existants sur la plateforme
+                                    Liste de tous les PRMs existants sur la plateforme
                                 </p>
                             </CardHeader>
                             <CardBody>
