@@ -10,14 +10,15 @@
 * Pdfunite (testé avec la version )
 
 # Table des matières
+
 - [Pré-requis](#Pré-requis)
 - [NodeJS](#NodeJS)
 - [MongoDB](#MongoDB)
-- [Nginx](#Nginx)
 - [Redis](#Redis)
 - [Wkhtmltopdf](#Wkhtmltopdf)
 - [Pdfunite](#Pdfunite)
 - [Plateforme](#Plateforme)
+- [Nginx](#Nginx)
 
 ## Pré-requis 
 
@@ -67,28 +68,6 @@ Pour le faire démarrer automatiquement lorsque le serveur démarre :
 ```
 systemctl enable mongod.service
 ```
-
-## Nginx
-
-1. Installation
-
-```
-sudo apt update
-sudo apt upgrade
-sudo apt install nginx -y
-```
-
-2. Vérification
-
-Vérifier que Nginx est bien installé :
-```
-nginx -v
-```
-Vous devriez voir la version de Nginx s'afficher.
-
-3. Configuration 
-
-TODO
 
 ## Redis
 
@@ -203,3 +182,59 @@ cp config.exemple.json config.json
 nano config.json # puis éditer la configuration
 ```
 
+3. Installation de pm2
+
+PM2 permet de garder la plateforme en ligne. Il la redémarre si elle plante et la démarre automatiquement au démarrage du serveur.
+
+``` 
+sudo npm i -g pm2
+cd /var/www/PING/server
+sudo -u node pm2 start app.js
+sudo -u node pm2 save
+sudo -u node pm2 startup
+# copier la commande donnée pour que le service soit créé
+```
+
+Pour vérifier que l'installation s'est déroulée correctement, redémarrer le serveur puis vérifier que l'application est toujours lancée.
+
+```
+sudo -u node pm2 list
+```
+
+## Nginx
+
+1. Installation
+
+```
+sudo apt update
+sudo apt upgrade
+sudo apt install nginx -y
+```
+
+2. Vérification
+
+Vérifier que Nginx est bien installé :
+```
+nginx -v
+```
+Vous devriez voir la version de Nginx s'afficher.
+
+3. Génération des ceritifcats SSL
+
+cf [Certbot](https://certbot.eff.org/lets-encrypt/debianbuster-nginx)
+
+4. Configuration 
+
+
+```
+cd /etc/nginx/sites-available
+wget https://github.com/tbornon/PING/blob/master/doc/config/dvp.conf # mettre à jour l'emplacement des certificats SSL si besoin
+ln -s /etc/nginx/sites-available/dvp.conf /etc/nginx/sites-enabled
+nginx -t # si nginx ne détecte aucun problème, poursuivre. Sinon il faut régler le problème
+service nginx start
+```
+
+
+
+# Tester
+Vérfier que la plateforme fonctionne correctement
