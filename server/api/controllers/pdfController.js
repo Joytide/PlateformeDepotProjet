@@ -34,7 +34,7 @@ const PDFUtils = {
         return new Promise((resolve, reject) => {
             Project
                 .findById(projectID)
-                .populate("study_year files partner")
+                .populate("study_year files partner keywords")
                 .populate("specializations.specialization")
                 .lean()
                 .exec()
@@ -44,7 +44,7 @@ const PDFUtils = {
                         ejs.renderFile(
                             process.cwd() + "/api/models/PDF_template.ejs",
                             {
-                                imagePath: process.cwd() + "/PDF/logo-esilv.jpg",
+                                imagePath: process.cwd() + "/PDF/logo-esilv.png",
                                 project: project
                             },
                             (err, html) => {

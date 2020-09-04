@@ -93,7 +93,7 @@
     <div class="body">
         <div class="description">
             <p><span style="font-weight:bold">Mots clefs : </span>
-                <%= project.keywords.join(", ") %>
+                <%= project.keywords.map(k => k.displayName).join(", ") %>
             </p>
             <p><span style="font-weight:bold">Compétences développées : </span>
                 <%- project.skills %>

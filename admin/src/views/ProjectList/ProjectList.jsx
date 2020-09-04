@@ -305,6 +305,11 @@ class ProjectList extends React.Component {
                                     Télécharger les projets zippés
                                 </Button>
                             </a>
+                            <a href={api.host + ":" + api.port + "/api/pdf/regenerateAll?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Regénérer tous les pdfs (attention, ne cliquer qu'une fois)
+                                </Button>
+                            </a>
                         </CardBody>
                     </Card>
                 }
