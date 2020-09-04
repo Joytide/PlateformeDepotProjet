@@ -6,7 +6,15 @@ module.exports = (app) => {
         .post(
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("EPGE"),
-            pdfController.regeneratePDF);
+            pdfController.regeneratePDF
+        );
+
+    app.route('/api/pdf/regenerateAll')
+        .get(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            pdfController.regenerateAllPDF
+        );
 
     app.route('/api/pdf/all')
         .get(

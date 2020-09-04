@@ -186,6 +186,22 @@ exports.regeneratePDF = (req, res, next) => {
     }
 }
 
+exports.regenerateAllPDF = (req, res, next) => {
+    Project
+        .find({ status: "validated" })
+        .exec((err, projects) => {
+            if (err) next(err);
+            else if (projects.length > 0) {
+                Promise
+                    .all(projects.map(p => PDFUtils.generate(p._id)))
+                    .then(res.json({ ok: 1 }))
+                    .catch(next);
+            }
+            else
+                next(new Error("NoValidatedProject"));
+        });
+}
+
 exports.generateAllProjectsPDF = (req, res, next) => {
     Project.find({ status: "validated" })
         .populate("pdf")
