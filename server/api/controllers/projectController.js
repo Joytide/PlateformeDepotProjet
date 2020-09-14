@@ -544,7 +544,7 @@ exports.getCSV = (find = {}) => () =>
 	new Promise((resolve, reject) => {
 		let findProject = Project
 			.find(find)
-			.populate("partner specializations.specialization study_year")
+			.populate("partner specializations.specialization study_year keywords")
 			.lean()
 			.exec();
 		let findYear = Year.find({}).lean().exec();
@@ -625,7 +625,7 @@ exports.getCSV = (find = {}) => () =>
 					},
 					{
 						label: "Mots clefs",
-						value: row => row.keywords.join(", ")
+						value: row => row.keywords.map(k => k.displayName).join(", ")
 					},
 					{
 						label: "Plusieurs groupes ?",

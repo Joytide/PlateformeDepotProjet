@@ -1,3 +1,6 @@
+## 2.4.2 (14 septembre 2020)
+* :bug: Affichage du nom des mots clefs au lieu de leur identifiant dans le csv
+
 ## 2.4.1 (26 juin 2020)
 * :sparkles: Possibilité d'insérer du html dans le markdown
 * :lipstick: Changement du titre du bandeau sur la page listant les PRMs
