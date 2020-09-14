@@ -1,5 +1,6 @@
 ## 2.4.2 (14 septembre 2020)
 * :bug: Affichage du nom des mots clefs au lieu de leur identifiant dans le csv
+* :bug: Il était impossible de télécharger le fichier zip contenant tous les projets au format pdf
 
 ## 2.4.1 (26 juin 2020)
 * :sparkles: Possibilité d'insérer du html dans le markdown

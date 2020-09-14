@@ -717,7 +717,7 @@ exports.studentFolder = () =>
 						if (err)
 							throw err;
 						else {
-							resolve(baseDirectory + ".zip");
+							resolve({path: baseDirectory + ".zip", filename: "ProjectsPI2.zip"});
 						}
 					});
 				} else
