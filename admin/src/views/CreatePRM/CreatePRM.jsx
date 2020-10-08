@@ -19,6 +19,7 @@ import AuthService from "components/AuthService"
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
 import { api } from "config.json"
+import { Typography } from "@material-ui/core";
 
 const styles = theme => ({
     cardCategoryWhite: {
@@ -133,12 +134,12 @@ class CreatePRM extends React.Component {
                 }
                 else if (type === "request") {
                     let prm = {
-                        first_name: splittedData[0],
-                        last_name: splittedData[1],
-                        email: splittedData[2],
-                        projectNumber: splittedData[3],
-                        status: splittedData[4],
-                        infos: splittedData[5],
+                        first_name: splittedData[3],
+                        last_name: splittedData[2],
+                        email: splittedData[4],
+                        projectNumber: splittedData[5],
+                        status: splittedData[0],
+                        infos: splittedData[1],
                         characteristics: splittedData[6],
                     }
 
@@ -163,6 +164,9 @@ class CreatePRM extends React.Component {
                             <p className={classes.cardCategoryWhite}></p>
                         </CardHeader>
                         <CardBody>
+                            <Typography>Copier / coller la liste des PRMS depuis Excel avec les colonnes dans cet ordre : statut, info, nom, prénom, email, nbProjet, caractéristique.
+                                Vous pouvez ensuite vérfier les informations avant qu'elles soient sauvegardées en base de données dans le tableau qui apparait sous la textbox.
+                                Pour finaliser l'importation, vous devez cliquer sur "confirmer l'importation"</Typography>
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={12}>
                                     <TextField
@@ -191,7 +195,7 @@ class CreatePRM extends React.Component {
                             <CardBody>
                                 <Table
                                     tableHeaderColor="primary"
-                                    tableHead={["Prénom", "Nom", "Email", "nbProjet", "Status", "Infos", "Caractéristiques"]}
+                                    tableHead={["Statut", "Infos", "Nom", "Prénom", "Email", "nbProjet", "Caractéristiques"]}
                                     tableData={formatedData}
                                 />
                             </CardBody>

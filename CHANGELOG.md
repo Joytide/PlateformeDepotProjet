@@ -1,3 +1,7 @@
+# 2.5.0 ()
+* :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
+* :lipstick: Message d'information sur la manière d'importer les PRMs
+
 ## 2.4.2 (14 septembre 2020)
 * :bug: Affichage du nom des mots clefs au lieu de leur identifiant dans le csv
 * :bug: Il était impossible de télécharger le fichier zip contenant tous les projets au format pdf
