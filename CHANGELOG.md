@@ -1,6 +1,7 @@
 # 2.5.0 ()
 * :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
 * :lipstick: Message d'information sur la manière d'importer les PRMs
+* :lipstick: Affichage des mots clefs associés aux PRMs directement dans la liste des PRMs
 
 ## 2.4.2 (14 septembre 2020)
 * :bug: Affichage du nom des mots clefs au lieu de leur identifiant dans le csv

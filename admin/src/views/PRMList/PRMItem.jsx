@@ -213,11 +213,14 @@ class PRMItem extends React.Component {
                     <GridItem xs={2}>
                         <Typography className={classes.textField}>{this.state.prm.first_name}</Typography>
                     </GridItem>
-                    <GridItem xs={4}>
+                    <GridItem xs={2}>
                         <Typography className={classes.textField}>{this.state.prm.email}</Typography>
                     </GridItem>
                     <GridItem xs={2}>
                         <Typography className={classes.textField}>{this.state.prm.projectNumber}</Typography>
+                    </GridItem>
+                    <GridItem xs={2}>
+                        <Typography className={classes.textField}>{this.props.keywords.filter(k => this.state.prm.keywords.indexOf(k._id) !== -1).map(k => k.displayName + ", ")}</Typography>
                     </GridItem>
                     <GridItem xs={2}>
                         <IconButton

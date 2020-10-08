@@ -114,11 +114,14 @@ class PRMList extends React.Component {
                                     <GridItem xs={2}>
                                         <Typography className={classes.title}>Prénom</Typography>
                                     </GridItem>
-                                    <GridItem xs={4}>
+                                    <GridItem xs={2}>
                                         <Typography className={classes.title}>Email</Typography>
                                     </GridItem>
                                     <GridItem xs={2}>
                                         <Typography className={classes.title}>Nombre de projets</Typography>
+                                    </GridItem>
+                                    <GridItem xs={2}>
+                                        <Typography className={classes.title}>Mots-clefs</Typography>
                                     </GridItem>
                                     <GridItem xs={2}></GridItem>
                                 </GridContainer>
