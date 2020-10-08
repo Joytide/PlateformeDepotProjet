@@ -236,10 +236,13 @@ class TeamList extends React.Component {
         if (this.state.loadingTeams || this.state.loadingPrms || this.state.loadingCorrespondence) {
             return (<div></div>);
         } else {
+            console.log("correspondences: ", this.state.correspondences)
+            console.log("team count : ", this.state.teamCount)
             let data = this.state.teams.map((team, i) =>
                 <TeamItem
                     correspondence={this.state.correspondences[team.project._id]}
                     team={team}
+                    teamCount={this.state.teamCount}
                     updateTeamCount={this.updateTeamCount}
                     updateCorrespondences={this.updateCorrespondences}
                     findPRMById={this.findPRMById}

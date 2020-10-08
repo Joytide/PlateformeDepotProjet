@@ -141,7 +141,7 @@ class TeamItem extends React.Component {
                 key={this.props.team._id + e.prm._id}
                 value={e.prm._id}
             >
-                {e.prm.last_name + " " + e.prm.first_name + " " + Math.round(e.compatibility * 100).toString() + "% de compatibilité"}
+                {e.prm.last_name + " " + e.prm.first_name + " " + Math.round(e.compatibility * 100).toString() + "% de compatibilité (" + (e.prm.projectNumber - (this.props.teamCount[e.prm._id] || 0)) + "projet(s) restant(s))"}
             </option>
         )
             

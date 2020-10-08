@@ -2,6 +2,7 @@
 * :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
 * :lipstick: Message d'information sur la manière d'importer les PRMs
 * :lipstick: Affichage des mots clefs associés aux PRMs directement dans la liste des PRMs
+* :sparkles: Affichage du nombre de projets restants pour un PRM lors de l'assignation des PRMs aux équipes
 
 ## 2.4.2 (14 septembre 2020)
 * :bug: Affichage du nom des mots clefs au lieu de leur identifiant dans le csv
