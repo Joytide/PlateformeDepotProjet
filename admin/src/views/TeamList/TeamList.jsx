@@ -11,6 +11,7 @@ import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
+import Button from "components/CustomButtons/Button.jsx";
 
 import { api } from "config.json"
 import AuthService from "components/AuthService"
@@ -255,9 +256,16 @@ class TeamList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Filtres</h4>
+                                <h4 className={classes.cardTitleWhite}>Informations</h4>
                             </CardHeader>
                             <CardBody>
+                                <Typography>Attention : lorsqu'un PRM est retiré ou remplacé par un autre sur un projet, il est fortement conseillé de recharger la page</Typography>
+
+                                <a href={api.host + ":" + api.port + "/api/team/csv?token=" + AuthService.getToken()}>
+                                    <Button size="sm" color="info">
+                                        Télécharger les associations PRM / équipes
+                                </Button>
+                                </a>
                             </CardBody>
                         </Card>
                     </GridItem>

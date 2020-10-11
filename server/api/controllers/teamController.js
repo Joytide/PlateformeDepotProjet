@@ -1,5 +1,7 @@
 'use strict';
 
+const { Parser } = require('json2csv');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const { isValidType, areValidTypes, ExistingTeamError, ProjectNotFoundError, TooManyTeamsError } = require('../../helpers/Errors');
 
@@ -118,6 +120,50 @@ exports.correspondance = () =>
                 }
 
                 resolve(correspondances);
+            })
+            .catch(reject);
+    });
+
+exports.exportCSV = () =>
+    new Promise((resolve, reject) => {
+        Team
+            .find()
+            .populate({
+                path: "prm",
+                select: "first_name last_name email"
+            })
+            .populate({
+                path: "project",
+                select: "title number"
+            })
+            .exec()
+            .then(data => {
+                const fields = [
+                    {
+                        label: "Numéro d'équipe",
+                        value: "teamNumber"
+                    }, {
+                        label: "Numéro du projet",
+                        value: "project.number"
+                    }, {
+                        label: "PRM",
+                        value: "prm.last_name"
+                    }, {
+                        label: "Adresse mail",
+                        value: "prm.email"
+                    }
+                ];
+                const json2csvParser = new Parser({ fields });
+                const csv = json2csvParser.parse(data);
+
+				const filename = "prms_" + Date.now() + ".csv";
+
+				fs.writeFile(filename, csv, err => {
+					if (err)
+						throw err;
+					else
+						resolve({ path: process.cwd() + "/" + filename, filename: "PRMS.csv" });
+				});
             })
             .catch(reject);
     });
