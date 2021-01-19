@@ -1,5 +1,15 @@
+/* LOADING ENVIRONMENT VARIABLES */
+const REDIS_HOSTNAME = process.env.REDIS_HOSTNAME || "redis"
+const REDIS_PORT = process.env.REDIS_HOSTNAME || 6379
+const REDIS_USERNAME = process.env.REDIS_USERNAME || ""
+const REDIS_PASSWORD = process.env.REDIS_HOSTNAME || ""
+const REIDS_URI = REDIS_USERNAME == "" ?
+    `redis://${REDIS_HOSTNAME}:${REDIS_PORT}` :
+    `redis://${REDIS_USERNAME}:${REDIS_PASSWORD}@${REDIS_HOSTNAME}:${REDIS_PORT}`;
+
+
 const redis = require("redis");
-const client = redis.createClient();
+const client = redis.createClient(REIDS_URI);
 const { isValidType, areValidTypes } = require('../../helpers/Errors');
 
 client.on("error", function (err) {

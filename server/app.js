@@ -1,5 +1,35 @@
 'use strict';
 
+/* ========== DEFAULT CONFIG VARIABLES ========== */
+const MAIL_FROM = process.env.MAIL_FROM || "";
+const MAIL_PORT = process.env.MAIL_PORT || 587;
+const MAIL_HOST = process.env.MAIL_HOST || "";
+const MAIL_USER = process.env.MAIL_USER || "";
+const MAIL_PASSWORD = process.env.MAIL_PASSWORD || "";
+
+/*const MONGO_HOSTNAME = process.env.MONGO_HOSTNAME || "mongo";
+const MONGO_PORT = process.env.MONGO_PORT || 27017;
+const MONGO_DB_NAME = process.env.MONGO_DB_NAME || "esilv-projects-server";
+const MONGO_USER = process.env.MONGO_USER || "";
+const MONGO_PASSWORD = process.env.MONGO_PASSWORD || "";
+// Construct MONGO connection URI depending on wether or not an username is passed to environment variables
+const MONGO_URI = MONGO_USER == "" ?
+	`mongodb://${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB_NAME}` :
+	`mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}:${MONGO_PORT}/${MONGO_DB_NAME}`;*/
+
+const REDIS_HOSTNAME = process.env.REDIS_HOSTNAME || "redis"
+const REDIS_PORT = process.env.REDIS_HOSTNAME || 6379
+const REDIS_USER = process.env.REDIS_HOSTNAME || ""
+const REDIS_PASSWORD = process.env.REDIS_HOSTNAME || ""
+
+const JWT_SECRET = process.env.JWT_SECRET || Date.now().toString();
+
+const BCRYPT_SALT_ROUNDS = process.env.BCRYPT_SALT_ROUNDS || 12;
+
+const API_PORT = process.env.API_PORT || 3000
+const API_LISTEN_IP = process.env.API_LISTEN_IP || "127.0.0.1"
+
+
 /* ========== LOAD MODULE ========== */
 
 const express = require('express');
@@ -16,7 +46,7 @@ const { handleError } = require('./helpers/Errors');
 
 /* ========== LOAD ALL MONGOOSE MODELS ========== */
 
-const mongoose = require('mongoose');
+const mongoose = require('./api/helpers/mongo');
 const Comment = require('./api/models/Comment');
 const { Person, Administration } = require('./api/models/Person');
 const Project = require('./api/models/Project');
@@ -28,38 +58,19 @@ const Keyword = require('./api/models/Keyword');
 const PRM = require('./api/models/PRM');
 const Team = require('./api/models/Team');
 
-/* ================================================= */
+/* ========== CONNECT TO MONGO ========== */
 
-const config = require('./config.json');
-
-/* ========== CONNECT TO DB ========== */
-
-mongoose.Promise = global.Promise;
-mongoose.connect(
-	`mongodb://${config.db.hostname + ":" + config.db.port}/${config.db.name}`,
-	{
-		useNewUrlParser: true,
-		useUnifiedTopology: true
-	},
-	(err) => {
-		if (err) {
-			console.error(colors.red(err.message));
-			process.exit(-1);
-		} else {
-			console.log("Connected to database".green)
-			initDB();
-		}
-	});
-
-/* ========== STARTUP CHECK ========== */
-
-fs.exists("./.uploads", exists => {
-	if (!exists)
-		fs.mkdirSync("./.uploads");
+mongoose.connection.once('connected', () => {
+	console.log("Connected to database".green)
+	initDB();
 });
 
-/* ========== EXPRESS CONFIG ========== */
+/* ========== STARTUP CHECK ========== */
+// Calling fs.mkdir() when path is a directory that exists results in an error only when recursive is false.
+// https://nodejs.org/api/fs.html#fs_fs_mkdir_path_options_callback
+fs.mkdirSync("./.uploads", { recursive: true });
 
+/* ========== EXPRESS CONFIG ========== */
 const app = express();
 const auth = require('./api/controllers/authController');
 
@@ -124,14 +135,14 @@ app.use(function (req, res, next) {
 
 app.use(handleError);
 
-app.listen(config.api.port, config.api.interface, () => {
-	console.log(`Server running on port http://${config.api.interface}:${config.api.port}`.green);
+app.listen(API_PORT, API_LISTEN_IP, () => {
+	console.log(`Server running on address http://${API_LISTEN_IP}:${API_PORT}`.green);
 });
 
 // Used in first start of db
 function initDB() {
 	if (process.env.NODE_ENV != "test") {
-		Specialization
+		/*Specialization
 			.find()
 			.estimatedDocumentCount((err, count) => {
 				if (err) throw err;
@@ -191,7 +202,7 @@ function initDB() {
 					A5.name.en = "5th Year";
 					A5.save();
 				}
-			});
+			});*/
 
 		Administration
 			.find()
@@ -206,7 +217,7 @@ function initDB() {
 					root.first_name = "Root";
 					root.last_name = "User";
 
-					bcrypt.hash(sha256(root.email + "azerT1234"), config.bcrypt.saltRounds, (err, hash) => {
+					bcrypt.hash(sha256(root.email + "azerT1234"), BCRYPT_SALT_ROUNDS, (err, hash) => {
 						if (err) next(err);
 						else {
 							root.password = hash;

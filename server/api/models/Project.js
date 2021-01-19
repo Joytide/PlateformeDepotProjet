@@ -1,6 +1,6 @@
 'use strict';
 
-const mongoose = require('mongoose');
+const mongoose = require('../helpers/mongo');
 const Schema = mongoose.Schema;
 
 const SpecializationSchema = new Schema({
