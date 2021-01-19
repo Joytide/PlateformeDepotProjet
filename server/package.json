@@ -12,7 +12,7 @@
   "author": "Thomas Denneulin - Sofian Amirou - Cyrine Bouzayene - Sajeevan Puvikaran - Vidushan Chooriyakumaran",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.2",
     "colors": "^1.4.0",
     "ejs": "^2.6.1",
