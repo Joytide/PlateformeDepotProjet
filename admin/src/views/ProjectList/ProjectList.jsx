@@ -117,7 +117,10 @@ class ProjectList extends React.Component {
     }
 
     updateFilters = () => {
+        // List of filters that should be applied to project list
         let filters = [];
+
+        // Filter projects depending of their status
         let status = [];
 
         if (this.state.rejectedProjects)
@@ -129,9 +132,11 @@ class ProjectList extends React.Component {
 
         filters.push(p => status.indexOf(p.status) !== -1);
 
+        // Filter project that have the same specialization as the current user
         if (this.state.mySpecialization)
             filters.push(p => p.specializations.map(spe => spe.specialization.referent).flat().indexOf(this.props.user.user._id) !== -1);
 
+        // Filter projects that are not waiting for any input for the current user
         if (this.state.notWaitingForMe)
             filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)));
 

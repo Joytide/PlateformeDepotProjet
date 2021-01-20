@@ -63,5 +63,6 @@
     "babel-plugin-transform-react-jsx": "6.24.1",
     "babel-preset-es2015": "6.24.1"
   },
+  "proxy": "http://admin:3000",
   "homepage": "https://projets-esilv.devinci.fr/admin"
 }

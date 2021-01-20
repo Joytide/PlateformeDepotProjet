@@ -204,7 +204,6 @@ exports.listAllProjects = () =>
  * Create a new project
  * @param {string} title Title of the new project
  * @param {string} description Description of the new project
- * @param {Array} majors_concerned Array containing list of specializations' objectid
  * @param {Array} study_year Array containing list of years' objectid
  * @param {number} maxNumber Max number of teams allowed to work on the project
  * @param {Array} [files] Optional - Array of files' id attached to project
@@ -214,20 +213,23 @@ exports.listAllProjects = () =>
 exports.createProject = ({ user, ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber, data.confidential],
-			["title", "description", "majors_concerned", "study_year", "maxNumber", "confidential"],
-			["string", "string", "Array", "Array", "number", "boolean"]
+			[data.title, data.description, data.study_year, data.maxNumber, data.confidential],
+			["title", "description", "study_year", "maxNumber", "confidential"],
+			["string", "string", "Array", "number", "boolean"]
 		)
-			.then(() =>
-				Project
+			.then(() => {
+				let projectCount = Project
 					.estimatedDocumentCount({})
 					.exec()
-			)
-			.then(count => {
+				let specializationList = Specialization.find({}).exec();
+
+				return Promise.all([projectCount, specializationList])
+			})
+			.then(([count, specializationList]) => {
 				let newProject = new Project({
 					title: data.title,
-					specializations: data.majors_concerned.map(spe => ({ specialization: spe })),
 					study_year: data.study_year,
+					specializations: specializationList.map(spe => ({ specialization: spe })),
 					description: data.description,
 					partner: user._id,
 					confidential: data.confidential,
@@ -429,6 +431,9 @@ exports.projectValidation = ({ ...data }) =>
 			})
 			.then(project => {
 				if (project) {
+					if (project.keywords.length < 2)
+						throw new MissingKeywordsError();
+						
 					let rejected = true;
 					let count = 0;
 					for (let i = 0; i < project.specializations.length; i++) {
@@ -446,10 +451,7 @@ exports.projectValidation = ({ ...data }) =>
 						if (rejected)
 							project.status = "rejected";
 						else
-							if (project.keywords.length < 2)
-								throw new MissingKeywordsError();
-							else
-								project.status = "validated";
+							project.status = "validated";
 					}
 
 					return project.save();
@@ -717,7 +719,7 @@ exports.studentFolder = () =>
 						if (err)
 							throw err;
 						else {
-							resolve({path: baseDirectory + ".zip", filename: "ProjectsPI2.zip"});
+							resolve({ path: baseDirectory + ".zip", filename: "ProjectsPI2.zip" });
 						}
 					});
 				} else

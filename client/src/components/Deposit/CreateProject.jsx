@@ -10,7 +10,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
@@ -31,7 +30,6 @@ class CreateProject extends React.Component {
             specializations: [],
             description: "",
             study_year: [],
-            majors_concerned: [],
             files: [],
             infos: "",
             skills: "",
@@ -44,19 +42,11 @@ class CreateProject extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleNext = this.handleNext.bind(this);
-        this.handleSpecializations = this.handleSpecializations.bind(this);
         this.setFiles = this.setFiles.bind(this);
-        this.renderSelect = this.renderSelect.bind(this);
     }
 
     componentWillMount() {
         window.scroll(0, 0);
-        AuthService.fetch('/api/specialization')
-            .then(res => res.json())
-            .then(specializations => {
-                this.setState({ specializations: specializations });
-            })
-            .catch(console.error.bind(console));
 
         AuthService.fetch('/api/year')
             .then(res => res.json())
@@ -71,10 +61,6 @@ class CreateProject extends React.Component {
             files
         });
     }
-
-    handleSpecializations = event => {
-        this.setState({ majors_concerned: event.target.value });
-    };
 
     handleChange = e => {
         let temp;
@@ -91,20 +77,6 @@ class CreateProject extends React.Component {
                     }
                 }
                 this.setState({ study_year: temp });
-                break;
-
-            case "spe":
-                temp = this.state.majors_concerned;
-                if (e.target.checked) {
-                    temp.push(e.target.value);
-                }
-                else {
-                    let index = temp.indexOf(e.target.value)
-                    if (index > -1) {
-                        temp.splice(index, 1);
-                    }
-                }
-                this.setState({ majors_concerned: temp });
                 break;
             case "multipleTeams":
                 this.setState({
@@ -125,11 +97,10 @@ class CreateProject extends React.Component {
     }
 
     handleNext = e => {
-        if (this.state.title !== "" && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description !== "") {
+        if (this.state.title !== "" && this.state.study_year.length > 0 && this.state.description !== "") {
             let data = {
                 title: this.state.title,
                 study_year: this.state.study_year,
-                majors_concerned: this.state.majors_concerned,
                 description: this.state.description,
                 skills: this.state.skills,
                 infos: this.state.infos,
@@ -157,29 +128,9 @@ class CreateProject extends React.Component {
         }
         else if (this.state.study_year.length === 0)
             this.props.snackbar.notification("error", i18n.t("errors.fillYear", { lng: this.props.lng }));
-
-        else if (this.state.majors_concerned.length === 0)
-            this.props.snackbar.notification("error", i18n.t("errors.fillSpecialization", { lng: this.props.lng }));
-
         else
             this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }));
 
-    }
-
-    renderSelect(e) {
-        return this.state.specializations
-            // Filtre les majeures qui n'ont pas été selectionnée 
-            .filter(spe => {
-                if (e.indexOf(spe._id) !== -1)
-                    return true;
-                return false;
-            })
-            // Association des majeures selectionnées à leur nom
-            .map(spe => {
-                return this.props.lng === "fr" ? spe.name.fr : spe.name.en
-            })
-            // Jointure
-            .join(", ");
     }
 
     render() {
@@ -221,31 +172,6 @@ class CreateProject extends React.Component {
                                         }
                                         label={lng === "fr" ? year.name.fr : year.name.en}
                                     />
-                                </Grid>
-                            )}
-                        </Grid>
-                    </Grid>
-                    <br />
-
-                    <Grid item>
-                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
-                            {i18n.t('majors.label', { lng })}
-                        </Typography>
-                        <Grid container direction="row">
-                            {this.state.specializations.map(spe =>
-                                <Grid item key={spe._id} xs={12} md={6} lg={4} xl={3}>
-                                    <Tooltip placement="bottom" title={lng === "fr" ? spe.description.fr : spe.description.en}>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    onChange={this.handleChange}
-                                                    value={spe._id}
-                                                    name="spe"
-                                                />
-                                            }
-                                            label={lng === "fr" ? spe.name.fr : spe.name.en}
-                                        />
-                                    </Tooltip>
                                 </Grid>
                             )}
                         </Grid>
