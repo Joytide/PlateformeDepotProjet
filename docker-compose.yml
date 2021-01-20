@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+    api: 
+        build: ./server
+        ports:
+            - 3000:3000
+        environment:
+            MONGO_USERNAME: root
+            MONGO_PASSWORD: example
+            API_LISTEN_IP: "0.0.0.0"
+        depends_on:
+            - mongo
+            - redis
+
+    admin:
+        build: ./admin
+        volumes:
+            - './admin:/app'
+            - '/app/node_modules'
+        ports:
+            - 3001:3000
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+
+    client:
+        build: ./client
+        volumes:
+            - './client:/app'
+            - '/app/node_modules'
+        ports:
+            - 3002:3000
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+
+    redis:
+        image: redis
+
+    mongo:    
+        image: mongo
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: example
+
+    mongo-express:
+        image: mongo-express
+        restart: always
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: root
+            ME_CONFIG_MONGODB_ADMINPASSWORD: example

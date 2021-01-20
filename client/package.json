@@ -25,6 +25,6 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3001",
+  "proxy": "http://admin:3000",
   "homepage": "https://projets-esilv.devinci.fr/"
 }
