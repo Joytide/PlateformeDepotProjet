@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import queryString from 'query-string';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -58,20 +59,43 @@ const styles = {
     }
 };
 
+const FILTERS = {
+    validatedProjects: 1,
+    rejectedProjects: 2,
+    pendingProjects: 3,
+    mySpecialization: 4,
+    notWaitingForMe: 5
+}
+
 class ProjectList extends React.Component {
     constructor(props) {
         super(props);
+
+        /**
+         * Filter 1 : Show validated projects
+         * Filter 2 : Show rejected projects
+         * Filter 3 : Show pending projects
+         * Filter 4 : Show only project concerned by my specialization
+         * Filter 5 : Show only project waiting for me
+         */
+        let filters = queryString.parse(props.location.search, { arrayFormat: 'comma' }).filters;
+
+        // Set default filters if none are provided
+        if (!filters)
+            filters = [FILTERS.pendingProjects, FILTERS.mySpecialization, FILTERS.notWaitingForMe]
+        // check if filter is enabled in url parameters.
+        let isFilterEnabled = filterNumber => filters.indexOf(filterNumber) !== -1
 
         this.state = {
             loading: true,
             projects: [],
             filters: [],
             confidentialMapping: [],
-            rejectedProjects: false,
-            validatedProjects: false,
-            pendingProjects: true,
-            mySpecialization: true,
-            notWaitingForMe: true,
+            validatedProjects: isFilterEnabled(FILTERS.validatedProjects),
+            rejectedProjects: isFilterEnabled(FILTERS.rejectedProjects),
+            pendingProjects: isFilterEnabled(FILTERS.pendingProjects),
+            mySpecialization: isFilterEnabled(FILTERS.mySpecialization),
+            notWaitingForMe: isFilterEnabled(FILTERS.notWaitingForMe),
             canDownloadPdf: false,
             canDownloadCsv: false,
             canDownloadZip: false
@@ -123,23 +147,46 @@ class ProjectList extends React.Component {
         // Filter projects depending of their status
         let status = [];
 
-        if (this.state.rejectedProjects)
-            status.push("rejected")
-        if (this.state.validatedProjects)
-            status.push("validated")
-        if (this.state.pendingProjects)
-            status.push("pending")
+        let filtersId = [];
+
+        if (this.state.rejectedProjects) {
+            status.push("rejected");
+            filtersId.push(FILTERS.rejectedProjects);
+        }
+        if (this.state.validatedProjects) {
+            status.push("validated");
+            filtersId.push(FILTERS.validatedProjects);
+        }
+        if (this.state.pendingProjects) {
+            status.push("pending");
+            filtersId.push(FILTERS.pendingProjects);
+        }
 
         filters.push(p => status.indexOf(p.status) !== -1);
 
         // Filter project that have the same specialization as the current user
-        if (this.state.mySpecialization)
-            filters.push(p => p.specializations.map(spe => spe.specialization.referent).flat().indexOf(this.props.user.user._id) !== -1);
+        if (this.state.mySpecialization) {
+            filters.push(
+                project => project.specializations
+                    .map(spe => spe.specialization.referent)
+                    .flat()
+                    .indexOf(this.props.user.user._id) !== -1
+            );
+            filtersId.push(FILTERS.mySpecialization);
+        }
 
         // Filter projects that are not waiting for any input for the current user
-        if (this.state.notWaitingForMe)
-            filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)));
+        if (this.state.notWaitingForMe) {
+            filters.push(
+                p => p.specializations
+                    .every(
+                        spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)
+                    )
+            );
+            filtersId.push(FILTERS.notWaitingForMe);
+        }
 
+        this.props.history.push("project?filters=" + filtersId.sort().join(','))
         this.setState({ filters })
     }
 
@@ -326,6 +373,5 @@ class ProjectList extends React.Component {
 export default withSnackbar(withUser(withStyles(styles)(ProjectList)));
 
 const applyFilters = (filters, datas) => {
-    console.log(filters, datas)
     return filters.reduce((acc, f) => acc.filter(f), datas)
 }

@@ -63,7 +63,7 @@ const dashboardRoutes = [
 				permissions: Permissions.ProjectProfile.value
 			},
 			{
-				path: "/project/",
+				path: "/project",
 				sidebarName: "Lister",
 				navbarName: "Lister",
 				icon: Assignment,
