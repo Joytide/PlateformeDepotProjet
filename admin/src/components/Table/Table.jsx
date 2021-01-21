@@ -10,65 +10,103 @@ import TableCell from "@material-ui/core/TableCell";
 // core components
 import tableStyle from "assets/jss/material-dashboard-react/components/tableStyle.jsx";
 
-function CustomTable({ ...props }) {
-  const { classes, tableHead, tableData, tableHeaderColor, confidential = []} = props;
-  
-  return (
-    <div className={classes.tableResponsive}>
-      <Table className={classes.table}>
-        {tableHead !== undefined ? (
-          <TableHead className={classes[tableHeaderColor + "TableHeader"]}>
-            <TableRow>
-              {tableHead.map((prop, key) => {
-                return (
-                  <TableCell
-                    className={classes.tableCell + " " + classes.tableHeadCell}
-                    key={key}
-                  >
-                    {prop}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-        ) : null}
-        <TableBody>
-          {tableData.map((prop, rowKey) => {
-            return (
-              <TableRow style={confidential[rowKey] ? { backgroundColor: "#ff6961" } : {}} key={rowKey}>
-                {prop.map((prop, key) => {
-                  return (
-                    <TableCell style={confidential[rowKey] ? { color: "white" }: {}} className={classes.tableCell} key={key}>
-                      {prop}
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
-  );
+class CustomTable extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			tableData: props.tableData,
+			sortedRow: 0
+		}
+
+		this.sortBy = this.sortBy.bind(this);
+	}
+
+	sortBy = rowIndex => () => {
+		let tableData = [...this.state.tableData];
+
+		let ascending = true
+		if (this.state.sortedRow == rowIndex && this.state.ascending)
+			ascending = false
+
+		tableData.sort((a, b) =>
+			('' + a[rowIndex]).localeCompare(b[rowIndex]) ? -1 : 1
+		);
+
+		this.setState({
+			sortedRow: rowIndex,
+			tableData
+		});
+
+	}
+
+
+	componentWillReceiveProps(nextProps) {
+
+		this.setState({ tableData: nextProps.tableData });
+	}
+
+	render() {
+		const { classes, tableHead, tableHeaderColor, confidential = [] } = this.props;
+
+		return (
+			<div className={classes.tableResponsive}>
+				<Table className={classes.table}>
+					{tableHead !== undefined ? (
+						<TableHead className={classes[tableHeaderColor + "TableHeader"]} >
+							<TableRow>
+								{tableHead.map((prop, key) => {
+									return (
+										<TableCell
+											className={classes.tableCell + " " + classes.tableHeadCell}
+											key={key}
+											onClick={this.sortBy(key)}
+										>
+											{prop}
+										</TableCell>
+									);
+								})}
+							</TableRow>
+						</TableHead>
+					) : null}
+					<TableBody>
+						{this.state.tableData.map((prop, rowKey) => {
+							return (
+								<TableRow style={confidential[rowKey] ? { backgroundColor: "#ff6961" } : {}} key={rowKey}>
+									{prop.map((prop, key) => {
+										return (
+											<TableCell style={confidential[rowKey] ? { color: "white" } : {}} className={classes.tableCell} key={key}>
+												{prop}
+											</TableCell>
+										);
+									})}
+								</TableRow>
+							);
+						})}
+					</TableBody>
+				</Table>
+			</div>
+		);
+	}
 }
 
 CustomTable.defaultProps = {
-  tableHeaderColor: "gray"
+	tableHeaderColor: "gray"
 };
 
 CustomTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-  tableHeaderColor: PropTypes.oneOf([
-    "warning",
-    "primary",
-    "danger",
-    "success",
-    "info",
-    "rose",
-    "gray"
-  ]),
-  tableHead: PropTypes.arrayOf(PropTypes.string),
-  tableData: PropTypes.arrayOf(PropTypes.array)
+	classes: PropTypes.object.isRequired,
+	tableHeaderColor: PropTypes.oneOf([
+		"warning",
+		"primary",
+		"danger",
+		"success",
+		"info",
+		"rose",
+		"gray"
+	]),
+	tableHead: PropTypes.arrayOf(PropTypes.string),
+	tableData: PropTypes.arrayOf(PropTypes.array)
 };
 
 export default withStyles(tableStyle)(CustomTable);

@@ -42,7 +42,9 @@ const tableStyle = theme => ({
   tableHeadCell: {
     color: "inherit",
     ...defaultFont,
-    fontSize: "1em"
+    fontSize: "1em",
+    cursor: "pointer",
+    userSelect: "none"
   },
   tableCell: {
     ...defaultFont,

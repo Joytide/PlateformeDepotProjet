@@ -214,11 +214,11 @@ class ProjectList extends React.Component {
                 if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
                     return undefined;
                 return [
-                    <p>{project.number}</p>,
-                    <p>{project.title}</p>,
-                    <p>{project.partner.company}</p>,
+                    project.number,
+                    project.title,
+                    project.partner.company,
                     <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
-                    <p>{new Date(project.submissionDate).toLocaleDateString()}</p>,
+                    new Date(project.submissionDate).toLocaleDateString(),
                     project.study_year.map(year => year.abbreviation).sort().join(', '),
                     project.specializations
                         .map(spe => spe.specialization.abbreviation + (spe.status === "pending" ? " (En attente)" : (spe.status === "validated" ? " (Validé)" : "(Refusé)")))
