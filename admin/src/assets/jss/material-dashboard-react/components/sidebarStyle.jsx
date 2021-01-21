@@ -157,8 +157,18 @@ const sidebarStyle = theme => ({
     fontSize: "14px",
     color: "#FFFFFF"
   },
+  itemTitle: {
+    ...defaultFont,
+    margin: "-15px",
+    lineHeight: "30px",
+    fontSize: "14px",
+    color: "#FFFFFF"
+  },
   whiteFont: {
     color: "#FFFFFF"
+  },
+  whiteBackground: {
+    backgroundColor: "#444444"
   },
   purple: {
     backgroundColor: primaryColor,

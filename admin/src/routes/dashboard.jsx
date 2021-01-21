@@ -3,7 +3,6 @@ import Dashboard from "@material-ui/icons/Dashboard";
 import People from "@material-ui/icons/People";
 import PersonAdd from "@material-ui/icons/PersonAdd";
 import Assignment from "@material-ui/icons/Assignment";
-import DateRange from "@material-ui/icons/DateRange";
 // core components/views
 
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
@@ -41,142 +40,181 @@ import Settings from "views/Settings/Settings.jsx"
 import Permissions from "../permissions";
 
 const dashboardRoutes = [
-  {
-    path: "/dashboard",
-    sidebarName: "Accueil",
-    navbarName: "Accueil",
-    icon: Dashboard,
-    component: DashboardPage,
-    permissions: Permissions.Dashboard.value
-  },
-  {
-    path: "/user/:id([a-zA-Z0-9]{24})",
-    component: UserProfile,
-    invisible: true,
-    exact: true,
-    permissions: Permissions.UserProfile.value
-  },
-  {
-    path: "/project/:id",
-    component: ProjectProfile,
-    invisible: true,
-    exact: true,
-    permissions: Permissions.ProjectProfile.value
-  },
-  {
-    path: "/specialization/:id([a-zA-Z0-9]{24})",
-    component: SpecializationProfile,
-    invisible: true,
-    exact: true,
-    permissions: Permissions.SpecializationProfile.value
-  },
-  {
-    path: "/year/:id([a-zA-Z0-9]{24})",
-    component: YearProfile,
-    invisible: true,
-    exact: true,
-    permissions: Permissions.YearProfile.value
-  },
-  {
-    path: "/project/",
-    sidebarName: "Liste des projets",
-    navbarName: "Liste des projets",
-    icon: Assignment,
-    component: ProjectList,
-    exact: true,
-    permissions: Permissions.ProjectList.value
-  },
-  {
-    path: "/user",
-    sidebarName: "Liste des utilisateurs",
-    navbarName: "Liste des utilisateurs",
-    icon: People,
-    component: UserList,
-    exact: true,
-    permissions: Permissions.UserList.value
-  },
-  {
-    path: "/createUser",
-    sidebarName: "Ajouter un utilisateur",
-    navbarName: "Ajouter un utilisateur",
-    icon: PersonAdd,
-    component: CreateUser,
-    permissions: Permissions.CreateUser.value
-  },
-  {
-    path: "/specialization",
-    sidebarName: "Liste des majeures",
-    navbarName: "Liste des majeures",
-    icon: "list",
-    component: SpecializationList,
-    exact: true,
-    permissions: Permissions.SpecializationList.value
-  },
-  {
-    path: "/createSpecialization",
-    sidebarName: "Créer une majeure",
-    navbarName: "Créer une majeure",
-    icon: "add",
-    component: CreateSpecialization,
-    permissions: Permissions.CreateSpecialization.value
-  },
-  {
-    path: "/year",
-    sidebarName: "Liste des années",
-    navbarName: "Liste des années",
-    icon: DateRange,
-    component: YearList,
-    exact: true,
-    permissions: Permissions.YearList.value
-  },
-  {
-    path: "/createYear",
-    sidebarName: "Créer une année",
-    navbarName: "Créer une année",
-    icon: "add",
-    component: CreateYear,
-    permissions: Permissions.CreateYear.value
-  },
-  {
-    path: "/settings",
-    sidebarName: "Réglages",
-    navbarName: "Réglages",
-    icon: "settings",
-    component: Settings,
-    permissions: Permissions.Settings.value
-  },
-  {
-    path: "/createPrm",
-    sidebarName: "Créer PRM",
-    navbarName: "Créer PRM",
-    icon: "settings",
-    component: CreatePRM,
-    permissions: Permissions.CreatePRM.value
-  },
-  {
-    path: "/prm",
-    sidebarName: "Liste des PRM",
-    navbarName: "Liste des PRM",
-    icon: "settings",
-    component: PRMList,
-    permissions: Permissions.PRMList.value
-  },
-  {
-    path: "/createTeam",
-    sidebarName: "Créer équipes",
-    navbarName: "Créer équipes",
-    icon: "settings",
-    component: CreateTeam,
-    permissions: Permissions.CreateTeam.value
-  },
-  {
-    path: "/team",
-    sidebarName: "Liste des équipes",
-    navbarName: "Liste des équipes",
-    icon: "settings",
-    component: TeamList,
-    permissions: Permissions.TeamList.value
-  },
+	{
+		children: [
+			{
+				path: "/dashboard",
+				sidebarName: "Accueil",
+				navbarName: "Accueil",
+				icon: Dashboard,
+				component: DashboardPage,
+				permissions: Permissions.Dashboard.value
+			}
+		]
+	},
+	{
+		name: "Projets",
+		children: [
+			{
+				path: "/project/:id",
+				component: ProjectProfile,
+				invisible: true,
+				exact: true,
+				permissions: Permissions.ProjectProfile.value
+			},
+			{
+				path: "/project/",
+				sidebarName: "Lister",
+				navbarName: "Lister",
+				icon: Assignment,
+				component: ProjectList,
+				exact: true,
+				permissions: Permissions.ProjectList.value
+			},
+		]
+	},
+	{
+		name: "Utilisateurs",
+		children: [
+			{
+				path: "/user/:id([a-zA-Z0-9]{24})",
+				component: UserProfile,
+				invisible: true,
+				exact: true,
+				permissions: Permissions.UserProfile.value
+			},
+			{
+				path: "/user",
+				sidebarName: "Lister",
+				navbarName: "Lister",
+				icon: People,
+				component: UserList,
+				exact: true,
+				permissions: Permissions.UserList.value
+			},
+			{
+				path: "/createUser",
+				sidebarName: "Créer",
+				navbarName: "Créer",
+				icon: PersonAdd,
+				component: CreateUser,
+				permissions: Permissions.CreateUser.value
+			},
+		]
+	},
+	{
+		name: "Majeures",
+		children: [
+			{
+				path: "/specialization/:id([a-zA-Z0-9]{24})",
+				component: SpecializationProfile,
+				invisible: true,
+				exact: true,
+				permissions: Permissions.SpecializationProfile.value
+			},
+			{
+				path: "/specialization",
+				sidebarName: "Lister",
+				navbarName: "Lister",
+				icon: "list",
+				component: SpecializationList,
+				exact: true,
+				permissions: Permissions.SpecializationList.value
+			},
+			{
+				path: "/createSpecialization",
+				sidebarName: "Créer",
+				navbarName: "Créer",
+				icon: "add",
+				component: CreateSpecialization,
+				permissions: Permissions.CreateSpecialization.value
+			},
+		]
+	},
+	{
+		name: "Années",
+		children: [
+			{
+				path: "/year/:id([a-zA-Z0-9]{24})",
+				component: YearProfile,
+				invisible: true,
+				exact: true,
+				permissions: Permissions.YearProfile.value
+			},
+			{
+				path: "/year",
+				sidebarName: "Lister",
+				navbarName: "Lister",
+				icon: "list",
+				component: YearList,
+				exact: true,
+				permissions: Permissions.YearList.value
+			},
+			{
+				path: "/createYear",
+				sidebarName: "Créer",
+				navbarName: "Créer",
+				icon: "add",
+				component: CreateYear,
+				permissions: Permissions.CreateYear.value
+			}
+		]
+	},
+	{
+		name: "PRMs",
+		children: [
+			{
+				path: "/prm",
+				sidebarName: "Lister",
+				navbarName: "Lister",
+				icon: "list",
+				component: PRMList,
+				permissions: Permissions.PRMList.value
+			},
+			{
+				path: "/createPrm",
+				sidebarName: "Créer",
+				navbarName: "Créer",
+				icon: "add",
+				component: CreatePRM,
+				permissions: Permissions.CreatePRM.value
+			}
+		]
+	},
+	{
+		name: "Équipes",
+		children: [
+			{
+				path: "/team",
+				sidebarName: "Lister",
+				navbarName: "Lister",
+				icon: "list",
+				component: TeamList,
+				permissions: Permissions.TeamList.value
+			},
+			{
+				path: "/createTeam",
+				sidebarName: "Créer",
+				navbarName: "Créer",
+				icon: "add",
+				component: CreateTeam,
+				permissions: Permissions.CreateTeam.value
+			}
+		]
+	},
+	{
+		name: "Réglagles",
+		children: [
+			{
+				path: "/settings",
+				sidebarName: "Compte",
+				navbarName: "Compte",
+				icon: "settings",
+				component: Settings,
+				permissions: Permissions.Settings.value
+			},
+		]
+	}
 ];
 
 export default dashboardRoutes;

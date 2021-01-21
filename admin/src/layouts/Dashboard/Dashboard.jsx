@@ -76,12 +76,14 @@ class App extends React.Component {
 	render() {
 		const { classes, ...rest } = this.props;
 
-		const switchRoutes = dashboardRoutes.map((prop, key) => {
-			if (prop.redirect)
-				return <Redirect from={prop.path} to={prop.to} key={key} />;
-			else
-				return <Route path={prop.path} exact={prop.exact} component={prop.component} key={key} />;
-		});
+		const switchRoutes = dashboardRoutes.map(section => {
+			return section.children.map((prop, key) => {
+				if (prop.redirect)
+					return <Redirect from={prop.path} to={prop.to} key={prop.path} />;
+				else
+					return <Route path={prop.path} exact={prop.exact} component={prop.component} key={prop.path} />;
+			});
+		}).flat();
 
 		return (
 			<div className={classes.wrapper}>

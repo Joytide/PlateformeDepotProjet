@@ -1,5 +1,6 @@
 # 3.0.0 ()
 * :sparkles: Changement de la façon dont les projets sont déposés. Anciennement les partenaires choisissaient les majeures auxquelles s'adressaient les projets. Désormais, ils ne le font plus et les projets sont automatiquement proposés pour toutes les majeures. Les responsables de majeure doivent ensuite faire le tri entre les projets qui sont adaptés ou non à leur majeure.
+* :lipstick: Nouvelle esthétique pour la barre de navigation. Les menus sont découpés en catégories pour faciliter la navigation
 
 # 2.5.0 (11 octobre 2021)
 * :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
