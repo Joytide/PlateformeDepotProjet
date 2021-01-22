@@ -4,6 +4,8 @@
 * :sparkles: Sur la page listant les projets, les filtres selectionnés sont maintenant sauvegardés dans l'historique de navigation. Ainsi, si on va sur la page d'un projet puis que l'on revient en arrière, les filtres ne sont pas perdus
 * :sparkles: Il est maintenant possible de trier les tableaux en cliquant sur l'entête de la colonne
 * :sparkles: Possibilité de supprimer un PRM
+* :lipstick: Favicon changée pour celle du PULV
+* :lipstick: Logo PULV changer pour le nouveau
 
 ## 2.5.0 (11 octobre 2021)
 * :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
