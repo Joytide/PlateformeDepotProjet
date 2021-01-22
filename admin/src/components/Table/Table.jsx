@@ -25,10 +25,6 @@ class CustomTable extends React.Component {
 	sortBy = rowIndex => () => {
 		let tableData = [...this.state.tableData];
 
-		let ascending = true
-		if (this.state.sortedRow == rowIndex && this.state.ascending)
-			ascending = false
-
 		tableData.sort((a, b) =>
 			('' + a[rowIndex]).localeCompare(b[rowIndex]) ? -1 : 1
 		);

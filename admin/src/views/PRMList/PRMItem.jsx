@@ -13,6 +13,7 @@ import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 
 import Button from "components/CustomButtons/Button.jsx";
+import DialogButton from "components/DialogButton/DialogButton.jsx";
 
 import { api } from "config.json"
 import AuthService from "components/AuthService"
@@ -206,20 +207,20 @@ class PRMItem extends React.Component {
 
         return (
             <React.Fragment >
-                <GridContainer className={this.props.gray ? classes.grayBg : classes.empty} onClick={this.handleExpand}>
-                    <GridItem xs={2}>
+                <GridContainer className={this.props.gray ? classes.grayBg : classes.empty}>
+                    <GridItem xs={2} onClick={this.handleExpand}>
                         <Typography className={classes.textField}>{this.state.prm.last_name}</Typography>
                     </GridItem>
-                    <GridItem xs={2}>
+                    <GridItem xs={2} onClick={this.handleExpand}>
                         <Typography className={classes.textField}>{this.state.prm.first_name}</Typography>
                     </GridItem>
-                    <GridItem xs={2}>
+                    <GridItem xs={2} onClick={this.handleExpand}>
                         <Typography className={classes.textField}>{this.state.prm.email}</Typography>
                     </GridItem>
-                    <GridItem xs={2}>
+                    <GridItem xs={2} onClick={this.handleExpand}>
                         <Typography className={classes.textField}>{this.state.prm.projectNumber}</Typography>
                     </GridItem>
-                    <GridItem xs={2}>
+                    <GridItem xs={2} onClick={this.handleExpand}>
                         <Typography className={classes.textField}>{this.props.keywords.filter(k => this.state.prm.keywords.indexOf(k._id) !== -1).map(k => k.displayName + ", ")}</Typography>
                     </GridItem>
                     <GridItem xs={2}>
@@ -230,6 +231,16 @@ class PRMItem extends React.Component {
                         >
                             <ExpandMoreIcon />
                         </IconButton>
+
+                        <DialogButton
+                            color="danger"
+                            size="sm"
+                            title="Supprimer cette année ?"
+                            content="Êtes-vous sûr de vouloir supprimer ce PRM ? Cette action est définitive et ne pourra pas être annulée"
+                            onValidation={this.props.removePRM}
+                        >
+                            Supprimer
+                        </DialogButton>
                     </GridItem>
                 </GridContainer>
                 <Divider />

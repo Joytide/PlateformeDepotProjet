@@ -21,6 +21,11 @@ module.exports = function (app) {
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized("Administrator"),
 			handleRequest(prm.update)
+		)
+		.delete(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("Administrator"),
+			handleRequest(prm.delete)
 		);
 
 	app.route('/api/prm/keyword')
@@ -36,4 +41,3 @@ module.exports = function (app) {
 		);
 
 };
-

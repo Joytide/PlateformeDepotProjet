@@ -1,10 +1,11 @@
-# 3.0.0 ()
+## 3.0.0 ()
 * :sparkles: Changement de la façon dont les projets sont déposés. Anciennement les partenaires choisissaient les majeures auxquelles s'adressaient les projets. Désormais, ils ne le font plus et les projets sont automatiquement proposés pour toutes les majeures. Les responsables de majeure doivent ensuite faire le tri entre les projets qui sont adaptés ou non à leur majeure.
 * :lipstick: Nouvelle esthétique pour la barre de navigation. Les menus sont découpés en catégories pour faciliter la navigation
 * :sparkles: Sur la page listant les projets, les filtres selectionnés sont maintenant sauvegardés dans l'historique de navigation. Ainsi, si on va sur la page d'un projet puis que l'on revient en arrière, les filtres ne sont pas perdus
 * :sparkles: Il est maintenant possible de trier les tableaux en cliquant sur l'entête de la colonne
+* :sparkles: Possibilité de supprimer un PRM
 
-# 2.5.0 (11 octobre 2021)
+## 2.5.0 (11 octobre 2021)
 * :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
 * :lipstick: Message d'information sur la manière d'importer les PRMs
 * :lipstick: Affichage des mots clefs associés aux PRMs directement dans la liste des PRMs
