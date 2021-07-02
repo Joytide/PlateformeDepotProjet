@@ -112,6 +112,7 @@ i18next
 						maxNumber: "If so, how many teams do you accept ?",
 						RandD: "Is it a research and development project ?",
 						confidential: "Is your project confidential ?",
+						international: "Do you agree to have international students working on your project? (full english project for monitoring, deliverables, etc...)",
 						keywords: "Keywords describing the project",
 						descriptionHelper: `Indicate, if possible, in particular the following elements:
 						context (project stakeholders),
@@ -280,6 +281,7 @@ i18next
 						RandD: "Est-ce un projet de recherche et développement ?",
 						keywords: "Mots-clefs décrivant le projet",
 						confidential: "Votre projet est-il confidentiel ?",
+						international: "Acceptez-vous d'avoir des étudiants internationaux sur votre projet? (projet, suivi et livrables en anglais)",
 						descriptionHelper: `Indiquer, si possible ,  en particulier les éléments suivants :
 						contexte (parties prenantes au projet),
 						prérequis éventuellement nécessaires (ex : compétences requises , connaissances dans l’utilisation de logiciels…),

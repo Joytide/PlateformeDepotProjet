@@ -214,9 +214,9 @@ exports.listAllProjects = () =>
 exports.createProject = ({ user, ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber, data.confidential],
-			["title", "description", "majors_concerned", "study_year", "maxNumber", "confidential"],
-			["string", "string", "Array", "Array", "number", "boolean"]
+			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber, data.confidential, data.international],
+			["title", "description", "majors_concerned", "study_year", "maxNumber", "confidential","international"],
+			["string", "string", "Array", "Array", "number", "boolean", "boolean"]
 		)
 			.then(() =>
 				Project
@@ -231,6 +231,7 @@ exports.createProject = ({ user, ...data }) =>
 					description: data.description,
 					partner: user._id,
 					confidential: data.confidential,
+					international: data.international,
 					maxTeams: parseInt(data.maxNumber, 10),
 					suggestedKeywords: data.keywords,
 					submissionDate: Date.now()
@@ -357,6 +358,7 @@ exports.update = ({ user, id, ...data }) =>
 				if (data.skills) update.skills = data.skills;
 				if (data.description) update.description = data.description;
 				if (data.confidential !== undefined) update.confidential = data.confidential;
+				if (data.international !== undefined) update.international = data.international;
 				if (data.study_year) update.study_year = data.study_year;
 				if (data.suggestedKeywords) update.suggestedKeywords = data.suggestedKeywords;
 

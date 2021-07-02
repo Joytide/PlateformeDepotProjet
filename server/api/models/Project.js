@@ -108,6 +108,11 @@ const ProjectSchema = new Schema({
         type: Boolean,
         default: false,
         required: true
+    },
+    international: {
+        type: Boolean,
+        default: false,
+        required: true
     }
 });
 

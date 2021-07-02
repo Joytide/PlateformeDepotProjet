@@ -36,6 +36,7 @@ class CreateProject extends React.Component {
             infos: "",
             skills: "",
             confidential: false,
+            international: false,
             multipleTeams: false,
             RandD: false,
             maxNumber: 1,
@@ -116,6 +117,11 @@ class CreateProject extends React.Component {
                     [e.target.name]: e.target.checked
                 });
                 break;
+            case "international":
+                this.setState({
+                    [e.target.name]: e.target.checked
+                });
+                break;
             default:
                 this.setState({
                     [e.target.name]: e.target.value
@@ -135,6 +141,7 @@ class CreateProject extends React.Component {
                 infos: this.state.infos,
                 maxNumber: this.state.maxNumber,
                 confidential: this.state.confidential,
+                international: this.state.international,
                 keywords: this.state.keywords
             };
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
@@ -251,6 +258,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
+                    
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.multipleTeams', { lng })}
@@ -298,6 +306,26 @@ class CreateProject extends React.Component {
                                     checked={this.state.confidential}
                                     onChange={this.handleChange}
                                     name="confidential"
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                                {i18n.t("createPartner.yes", { lng })}
+                            </Grid>
+                        </Grid>
+                        
+                    </Grid>
+
+
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                            {i18n.t('createProject.international', { lng })}
+                        </Typography>
+                        <Grid container direction="row" justify='center'>
+                            <Grid item xs={4} md={3} lg={2}>
+                                {i18n.t("createPartner.no", { lng })}
+                                <Switch
+                                    checked={this.state.international}
+                                    onChange={this.handleChange}
+                                    name="international"
                                     inputProps={{ 'aria-label': 'secondary checkbox' }}
                                 />
                                 {i18n.t("createPartner.yes", { lng })}
