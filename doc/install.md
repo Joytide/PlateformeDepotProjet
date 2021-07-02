@@ -1,4 +1,49 @@
-# Procédure d'installation de la plateforme sur Debian 10
+# Procédure d'installation de la plateforme sur Debian 10 avec Docker
+
+## Liste des logiciels nécessaires pour le fonctionnement de la plateforme
+
+* Docker (testé avec la version 20.10.7)
+* Docker-compose (testé avec la version 1.29.2)
+
+## Installation
+
+1. Dans les dossiers admin et client, faire les modifications nécessaires dans la config et ensuite:
+
+```
+mv config.example.json config.json
+```
+
+2. Compiler et lancer la plateforme
+
+```
+docker-compose up
+```
+
+3. Relancer la plateforme après un ```docker-compose up```
+
+```
+docker-compose start
+```
+
+4. Lancer la plateforme en recompilant
+
+```
+docker-compose up --build
+```
+
+api: http://localhost:3000
+
+front admin: http://localhost:3001
+
+front client http://localhost:3002
+
+mongo-express: http://localhost:8081
+
+
+
+
+
+# Procédure d'installation de la plateforme sur Debian 10 avec les services
 
 ## Liste des logiciels nécessaires pour le fonctionnement de la plateforme
 
