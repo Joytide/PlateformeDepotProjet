@@ -40,17 +40,20 @@ class CreateProject extends React.Component {
             multipleTeams: false,
             RandD: false,
             maxNumber: 1,
-            keywords:  ""
+            keywords:  [],
+            selected_keywords: []
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.handleNext = this.handleNext.bind(this);
         this.handleSpecializations = this.handleSpecializations.bind(this);
+        this.handleKeywords = this.handleKeywords.bind(this);
         this.setFiles = this.setFiles.bind(this);
         this.renderSelect = this.renderSelect.bind(this);
-    }
 
-    componentWillMount() {
+    }
+    
+    componentWillMount() { //Deprecated, move in constructor() apparently?
         window.scroll(0, 0);
         AuthService.fetch('/api/specialization')
             .then(res => res.json())
@@ -65,12 +68,24 @@ class CreateProject extends React.Component {
                 this.setState({ years: years })
             })
             .catch(console.error.bind(console));
+
+        AuthService.fetch('/api/keyword')
+            .then(res => res.json())
+            .then(keywords => {
+                this.setState({ keywords: keywords })
+            })
+            .catch(console.error.bind(console));
+        
     }
 
     setFiles = files => {
         this.setState({
             files
         });
+    }
+
+    handleKeywords = event =>{
+        this.setState({selected_keywords: event.target.value})
     }
 
     handleSpecializations = event => {
@@ -93,9 +108,24 @@ class CreateProject extends React.Component {
                 }
                 this.setState({ study_year: temp });
                 break;
-
+            
             case "spe":
                 temp = this.state.majors_concerned;
+                if (e.target.checked) {
+                    temp.push(e.target.value);
+                    console.log("adding",e.target.value,"to",temp,this.specializations)
+                }
+                else {
+                    let index = temp.indexOf(e.target.value)
+                    if (index > -1) {
+                        temp.splice(index, 1);
+                    }
+                }
+                this.setState({ majors_concerned: temp });
+                break;
+            
+            case "keywords":
+                temp = this.state.selected_keywords;
                 if (e.target.checked) {
                     temp.push(e.target.value);
                 }
@@ -105,7 +135,7 @@ class CreateProject extends React.Component {
                         temp.splice(index, 1);
                     }
                 }
-                this.setState({ majors_concerned: temp });
+                this.setState({ selected_keywords: temp });
                 break;
             case "multipleTeams":
                 this.setState({
@@ -128,10 +158,11 @@ class CreateProject extends React.Component {
                 });
                 break;
         }
+        
     }
 
     handleNext = e => {
-        if (this.state.title !== "" && this.state.study_year.length > 0 && this.state.majors_concerned.length > 0 && this.state.description !== "") {
+        if (this.state.title !== "" && this.state.study_year.length > 0 && this.state.selected_keywords.length > 0 && this.state.majors_concerned.length > 0 && this.state.description !== "") {
             let data = {
                 title: this.state.title,
                 study_year: this.state.study_year,
@@ -142,7 +173,7 @@ class CreateProject extends React.Component {
                 maxNumber: this.state.maxNumber,
                 confidential: this.state.confidential,
                 international: this.state.international,
-                keywords: this.state.keywords
+                selected_keywords: this.state.keywords,
             };
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
@@ -168,9 +199,11 @@ class CreateProject extends React.Component {
         else if (this.state.majors_concerned.length === 0)
             this.props.snackbar.notification("error", i18n.t("errors.fillSpecialization", { lng: this.props.lng }));
 
+        else if (this.state.selected_keywords.length === 0)
+            this.props.snackbar.notification("error", i18n.t("errors.fillKeywords", { lng: this.props.lng }));
+
         else
             this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }));
-
     }
 
     renderSelect(e) {
@@ -188,6 +221,7 @@ class CreateProject extends React.Component {
             // Jointure
             .join(", ");
     }
+
 
     render() {
         const { lng, classes } = this.props;
@@ -253,6 +287,29 @@ class CreateProject extends React.Component {
                                             label={lng === "fr" ? spe.name.fr : spe.name.en}
                                         />
                                     </Tooltip>
+                                </Grid>
+                            )}
+                        </Grid>
+                    </Grid>
+                    <br />
+
+                    <Grid item>
+                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                            {i18n.t('keywords.label', { lng })}
+                        </Typography>
+                        <Grid container direction="row">
+                            {this.state.keywords.map(kw =>
+                                <Grid item key={kw._id} xs={12} md={6} lg={4} xl={3}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                onChange={this.handleChange}
+                                                value={kw._id}
+                                                name="keywords"
+                                            />
+                                        }
+                                        label={lng === "fr" ? kw.name.fr : kw.name.en}
+                                    />
                                 </Grid>
                             )}
                         </Grid>

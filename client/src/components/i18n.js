@@ -103,6 +103,7 @@ i18next
 						fillTitle: "Please fill the title field",
 						fillYear: "Please select at least one year concerned by that project",
 						fillSpecialization: "Please select at least one specialiaztion concerned by that project",
+						fillKeywords: "Please select at least one keyword for this project",
 						fillDescription: "Please fill the description field"
 					},
 					createProject: {
@@ -302,6 +303,7 @@ i18next
 						fillTitle: "Merci de remplir le champ titre du projet",
 						fillYear: "Merci de sélectionner au moins une année concernée par ce projet",
 						fillSpecialization: "Merci de sélectionner au moins une majeure concernée par ce projet",
+						fillKeywords: "Merci de sélectionner au moins un mot clé concerné pour le projet",
 						fillDescription: "Merci de remplir le champ description du projet"
 					},
 					home: {
