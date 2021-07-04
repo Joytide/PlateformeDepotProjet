@@ -23,6 +23,8 @@ import Typography from '@material-ui/core/Typography';
 import UserProvider from "./providers/UserProvider/UserProvider";
 import SnackbarProvider from "./providers/SnackbarProvider/SnackbarProvider";
 
+import { api } from "./config.json"
+
 class App extends Component {
 	constructor(props) {
 		super(props)
@@ -41,7 +43,7 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		fetch("/api/open")
+		fetch(api.host + ":" + api.port +"/api/open", { crossDomain: true })
 			.then(res => res.json())
 			.then(data => {
 				this.setState({ isOpen: data.open, description: data.description });

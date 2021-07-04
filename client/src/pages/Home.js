@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 
 import ReactMarkdown from "react-markdown/with-html";
 
+import { api } from "../config.json"
 
 const styles = theme => ({
 	root: {
@@ -48,7 +49,7 @@ class HomePage extends React.Component {
 	}
 
 	loadHomeText = () => {
-		fetch("/api/settings/home")
+		fetch(api.host + ":" + api.port +"/api/settings/home", { crossDomain: true })
 			.then(res => {
 				if (res.ok)
 					return res.json();
