@@ -5,8 +5,18 @@ const Schema = mongoose.Schema;
 
 //Comment Class
 const KeywordSchema = new Schema({
-    displayName: String,
-    lcName: String
+    //displayName: String,
+    //lcName: String
+    name: {
+        fr: {
+            type: String,
+            required: true
+        },
+        en: {
+            type: String,
+            required: true
+        }
+    }
 });
 const Keyword = mongoose.model('Keyword', KeywordSchema);
 

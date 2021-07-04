@@ -1,91 +1,118 @@
-const { ExistingNameError, MongoError, isValidType, areValidTypes } = require('../../helpers/Errors');
 const mongoose = require('mongoose');
 const Keyword = mongoose.model('Keyword');
+const Project = mongoose.model('Project');
+const { isValidType, areValidTypes, KeywordNotFoundError, ExistingNameError, MongoError } = require('../../helpers/Errors');
+
 
 /**
  * Creates a new keyword
  * @param {Object} keyword
- * @param {string} keyword.name Keyword's display name
+ * @param {string} keyword.name.en Keyword's display name in english
+ * * @param {string} keyword.name.fr Keyword's display name in french
  */
-exports.create = ({ name }) =>
-    new Promise((resolve, reject) => {
-        isValidType(name, "name", "string")
-            .then(() => countKeywords(name))
-            .then(count => {
-                if (count > 0)
-                    throw new ExistingNameError();
-                else {
-                    let keyword = new Keyword();
-                    keyword.displayName = name;
-                    keyword.lcName = name.toLowerCase();
+exports.create = ({ ...data }) =>
+new Promise((resolve, reject) => {
+    areValidTypes(
+        [data.nameEn, data.nameFr],
+        ["nameEn", "nameFr"],
+        ["string", "string"]
+    )
+        .then(() => {
+            let keyword = new Keyword();
+            keyword.name.en = data.nameEn;
+            keyword.name.fr = data.nameFr;
 
-                    return keyword.save();
-                }
-            })
-            .then(resolve)
-            .catch(reject);
-    });
-
-/**
- * Returns all existing keywords
- */
-exports.getAll = () =>
-    Keyword
-        .find({})
-        .lean()
-        .exec();
+            return keyword.save();
+        })
+        .then(savedKeyword => resolve(savedKeyword))
+        .catch(reject);
+});
 
 /**
- * Update a keyword name
- * @param {Object} keyword
- * @param {ObjectId} keyword.id Keyword's object id
- * @param {string} keyword.name Keyword's new name
+ * Returns the list of existing keyword(s)
  */
-exports.update = ({ id, name }) =>
-    new Promise((resolve, reject) => {
-        areValidTypes([id, name], ["id", "name"], ["ObjectId", "string"])
-            // Ensure that the new name isn't already used
-            .then(() => countKeywords(name))
-            .then(count => {
-                if (count > 0)
-                    throw new ExistingNameError();
-                else
-                    return Keyword
-                        .updateOne(
-                            { _id: id },
-                            {
-                                displayName: name,
-                                lcName: name.toLowerCase()
-                            }
-                        ).exec();
-            })
-            .then(resolve)
-            .catch(reject);
-    });
+ exports.list = () =>
+ new Promise((resolve, reject) => {
+     Keyword
+         .find({})
+         .sort({ abbreviation: 1 })
+         .lean()
+         .exec()
+         .then(keywords => {
+             if (keywords)
+                 resolve(keywords);
+             else
+                 resolve([]);
+         })
+         .catch(reject);
+ });
+
+/**
+* Update a keyword 
+* @param {ObjectId} id Id of the keyword to delete
+* @param {string} [nameFr] Optional - New french name
+* @param {string} [nameEn] Optional - New english name
+*/
+exports.update = ({ id, ...data }) =>
+new Promise((resolve, reject) => {
+    isValidType(id, "id", "ObjectId")
+        .then(() => {
+            let update = {};
+
+            if (data.nameFr != undefined) update['name.fr'] = data.nameFr;
+            if (data.nameEn != undefined) update['name.en'] = data.nameEn;
+
+            return Keyword
+                .updateOne({ _id: id }, update)
+                .exec()
+
+        })
+        .then(resolve)
+        .catch(reject);
+});
 
 /**
  * Delete a keyword
  * @param {Object} keyword
- * @param {ObjectId} keyword.id Keyword's id to delete
+ * @param {string} id Id of the keyword to delete
  */
 exports.delete = ({ id }) =>
-    new Promise((resolve, reject) => {
-        isValidType(id, "id", "ObjectId")
-            .then(() => Keyword.deleteOne({ _id: id }))
-            .then(resolve)
-            .catch(reject);
-    });
+new Promise((resolve, reject) => {
+    isValidType(id, "id", "ObjectId")
+        .then(() => {
+            let deleteKeyword = Keyword
+                .deleteOne({ _id: id })
+                .exec();
+            let updateProjects = Project
+                .updateMany({ selected_keywords: id }, { $pull: { selected_keywords: id } })
+                .exec()
+
+            return Promise.all([deleteKeyword, updateProjects]);
+        })
+        .then(() => resolve({ ok: 1 }))
+        .catch(reject);
+});
+
+
 
 /**
- * Count how many keywords are already using a given name
- * @param {string} name Keyword name
+ * Find a keyword given his id
+ * @param {ObjectId} id Id of the keyword to delete
  */
-const countKeywords = name =>
-    new Promise((resolve, reject) => {
-        Keyword.countDocuments({ lcName: name.toLowerCase() }, (err, count) => {
-            if (err)
-                reject(new MongoError(err));
+exports.findById = ({ id }) =>
+new Promise((resolve, reject) => {
+    isValidType(id, "id", "ObjectId")
+        .then(() =>
+            Keyword.findById({ _id: id })
+                .lean()
+                .exec()
+        )
+        .then(keyword => {
+            if (keyword)
+                resolve(keyword);
             else
-                resolve(count);
-        });
-    });
+                throw new KeywordNotFoundError();
+        })
+        .catch(reject);
+});
+

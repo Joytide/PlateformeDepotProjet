@@ -80,6 +80,20 @@
     "CreateYear": {
         "value": "EGPE"
     },
+    "KeywordList": {
+        "value": [
+            "EGPE",
+            "Administrator"
+        ],
+        "DeleteKeyword": "EGPE"
+    },
+    "KeywordProfile": {
+        "value": "",
+        "EditKeyword": "EGPE"
+    },
+    "CreateKeyword": {
+        "value": "EGPE"
+    },
     "Settings": {
         "value": "",
         "EditPlatform": ["EGPE", "Administrator"]

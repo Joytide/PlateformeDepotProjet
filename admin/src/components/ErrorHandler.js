@@ -25,6 +25,8 @@ exports.handleXhrError = snackbar => err => {
                             snackbar.notification("error", "Utilisateur introuvable.");
                         else if (data.code === "YearNotFoundError")
                             snackbar.notification("error", "Année introuvable.");
+                        else if (data.code === "KeywordNotFoundError")
+                            snackbar.notification("error", "Mot-clé introuvable.");
 
                         else
                             throw data;
