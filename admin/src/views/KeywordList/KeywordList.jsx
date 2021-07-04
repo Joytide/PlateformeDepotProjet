@@ -85,7 +85,6 @@ class KeywordList extends React.Component {
     loadData = () => {
         fetch(api.host + ":" + api.port + "/api/keyword", { crossDomain: true })
             .then(res => {
-                console.log(res)
                 if (!res.ok)
                     throw res;
                 return res.json();

@@ -112,7 +112,7 @@ class CreateKeyword extends React.Component {
                     if (!res.ok)
                         throw res;
                     else {
-                        this.props.snackbar.success("Mot-clé créée avec succès. Vous allez être redirigé vers la liste des mot-clés.");
+                        this.props.snackbar.success("Mot-clé créé avec succès. Vous allez être redirigé vers la liste des mot-clés.");
 
                         setTimeout(() => {
                             this.setState({ redirect: true });

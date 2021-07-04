@@ -321,6 +321,6 @@ class ProjectList extends React.Component {
 export default withSnackbar(withUser(withStyles(styles)(ProjectList)));
 
 const applyFilters = (filters, datas) => {
-    console.log(filters, datas)
+    //console.log(filters, datas)
     return filters.reduce((acc, f) => acc.filter(f), datas)
 }
