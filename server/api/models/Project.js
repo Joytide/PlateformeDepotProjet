@@ -51,10 +51,11 @@ const ProjectSchema = new Schema({
         ref: "Year",
         required: true
     }], //(Number)
-    keywords: [
+    selected_keywords: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Keyword'
+            ref: 'Keyword',
+            required: true,
         }
     ],
     status: {
@@ -100,6 +101,11 @@ const ProjectSchema = new Schema({
     },
     number: String,
     maxTeams: {
+        type: Number,
+        default: 1,
+        required: true
+    },
+    maxStudents: {
         type: Number,
         default: 1,
         required: true

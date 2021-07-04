@@ -27,21 +27,24 @@ class CreateProject extends React.Component {
 
         this.state = {
             title: "",
-            years: [],
-            specializations: [],
+            years: [], //All possible
+            specializations: [], //All possible
             description: "",
-            study_year: [],
-            majors_concerned: [],
+            study_year: [], //Selected
+            majors_concerned: [], //Selected
             files: [],
             infos: "",
             skills: "",
             confidential: false,
             international: false,
             multipleTeams: false,
+            biggerTeam: false,
             RandD: false,
-            maxNumber: 1,
-            keywords:  [],
-            selected_keywords: []
+            maxTeamNumber: 1,
+            maxStudentNumber: 5,
+            keywords:  [], //All possible
+            selected_keywords: [], //Selected
+            suggestedKeywords: ""
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -113,7 +116,6 @@ class CreateProject extends React.Component {
                 temp = this.state.majors_concerned;
                 if (e.target.checked) {
                     temp.push(e.target.value);
-                    console.log("adding",e.target.value,"to",temp,this.specializations)
                 }
                 else {
                     let index = temp.indexOf(e.target.value)
@@ -124,8 +126,9 @@ class CreateProject extends React.Component {
                 this.setState({ majors_concerned: temp });
                 break;
             
-            case "keywords":
+            case "selected_keywords":
                 temp = this.state.selected_keywords;
+                console.log("adding",e.target.value,"to",temp)
                 if (e.target.checked) {
                     temp.push(e.target.value);
                 }
@@ -138,6 +141,11 @@ class CreateProject extends React.Component {
                 this.setState({ selected_keywords: temp });
                 break;
             case "multipleTeams":
+                this.setState({
+                    [e.target.name]: e.target.checked
+                });
+                break;
+            case "biggerTeam":
                 this.setState({
                     [e.target.name]: e.target.checked
                 });
@@ -170,10 +178,12 @@ class CreateProject extends React.Component {
                 description: this.state.description,
                 skills: this.state.skills,
                 infos: this.state.infos,
-                maxNumber: this.state.maxNumber,
+                maxTeamNumber: this.state.maxTeamNumber,
+                maxStudentNumber: this.state.maxStudentNumber,
                 confidential: this.state.confidential,
                 international: this.state.international,
                 selected_keywords: this.state.keywords,
+                suggestedKeywords: this.state.suggestedKeywords,
             };
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
@@ -267,7 +277,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
-
+                    
                     <Grid item>
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('majors.label', { lng })}
@@ -292,7 +302,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
-
+                                        
                     <Grid item>
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('keywords.label', { lng })}
@@ -305,9 +315,11 @@ class CreateProject extends React.Component {
                                             <Checkbox
                                                 onChange={this.handleChange}
                                                 value={kw._id}
-                                                name="keywords"
+                                                name="selected_keywords"
                                             />
+                                            
                                         }
+                                        
                                         label={lng === "fr" ? kw.name.fr : kw.name.en}
                                     />
                                 </Grid>
@@ -315,42 +327,99 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
-                    
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
-                            {i18n.t('createProject.multipleTeams', { lng })}
-                        </Typography>
-                        <Grid container direction="row" justify='center'>
-                            <Grid item xs={4} md={3} lg={2}>
-                                {i18n.t("createPartner.no", { lng })}
-                                <Switch
-                                    checked={this.state.multipleTeams}
-                                    onChange={this.handleChange}
-                                    name="multipleTeams"
-                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                />
-                                {i18n.t("createPartner.yes", { lng })}
-                            </Grid>
 
-                            <Grid item xs={12} md={6} lg={4}>
-                                {this.state.multipleTeams &&
-                                    <TextValidator
-                                        label={i18n.t('createProject.maxNumber', { lng })}
-                                        value={this.state.maxNumber}
-                                        validators={['required', 'matchRegexp:^[0-9]+$']}
 
-                                        errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
-                                        name="maxNumber"
+                    {/* Not working yet
+                                            <Button lng={lng} name="selected_keywords" variant='contained' value={kw._id} onChange={this.handleChange}>
+                                                <Typography color="inherit">
+                                                    {lng === "fr" ? kw.name.fr : kw.name.en}
+                                                </Typography>
+                                            </Button>
+                    */}
+
+
+                    <br />
+                    {i18n.t('createProject.teamInfo', { lng })}
+                    <br/>
+
+                    {!this.state.multipleTeams &&
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                                {i18n.t('createProject.biggerTeam', { lng })}
+                            </Typography>
+                            <Grid container direction="row" justify='center'>
+                                <Grid item xs={4} md={3} lg={2}>
+                                    {i18n.t("createPartner.no", { lng })}
+                                    <Switch
+                                        checked={this.state.biggerTeam}
                                         onChange={this.handleChange}
-                                        fullWidth={true}
-                                        variant="outlined"
-
+                                        name="biggerTeam"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
                                     />
-                                }
+                                    {i18n.t("createPartner.yes", { lng })}
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    {this.state.biggerTeam &&
+                                        <TextValidator
+                                            label={i18n.t('createProject.maxStudentNumber', { lng })}
+                                            value={this.state.maxStudentNumber}
+                                            validators={['required', 'matchRegexp:^[0-9]+$']}
+
+                                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
+                                            name="maxStudentNumber"
+                                            onChange={this.handleChange}
+                                            fullWidth={true}
+                                            variant="outlined"
+
+                                        />
+                                    }
+                                </Grid>
                             </Grid>
+                            <br />
                         </Grid>
-                        <br />
-                    </Grid>
+                    }   
+
+                    {!this.state.biggerTeam &&
+                        <Grid item xs={12}>
+                        
+                            <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                                {i18n.t('createProject.multipleTeams', { lng })}
+                            </Typography>
+                            <Grid container direction="row" justify='center'>
+                                <Grid item xs={4} md={3} lg={2}>
+                                    {i18n.t("createPartner.no", { lng })}
+                                    <Switch
+                                        checked={this.state.multipleTeams}
+                                        onChange={this.handleChange}
+                                        name="multipleTeams"
+                                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                    />
+                                    {i18n.t("createPartner.yes", { lng })}
+                                </Grid>
+
+                                <Grid item xs={12} md={6} lg={4}>
+                                    {this.state.multipleTeams &&
+                                        <TextValidator
+                                            label={i18n.t('createProject.maxTeamNumber', { lng })}
+                                            value={this.state.maxTeamNumber}
+                                            validators={['required', 'matchRegexp:^[0-9]+$']}
+
+                                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
+                                            name="maxTeamNumber"
+                                            onChange={this.handleChange}
+                                            fullWidth={true}
+                                            variant="outlined"
+
+                                        />
+                                    }
+                                </Grid>
+                            </Grid>
+                            <br />
+                        
+                        </Grid>
+                    }
+                    
 
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
@@ -411,17 +480,17 @@ class CreateProject extends React.Component {
 
                     <Grid item>
                         <TextValidator
-                            label={i18n.t('createProject.keywords', { lng })}
-                            value={this.state.keywords}
+                            label={i18n.t('createProject.suggestedKeywords', { lng })}
+                            value={this.state.suggestedKeywords}
                             validators={['maxStringLength:250']}
                             errorMessages={[i18n.t('field_length.label', { lng })]}
-                            name="keywords"
+                            name="suggestedKeywords"
                             onChange={this.handleChange}
                             fullWidth={true}
                             variant="outlined"
                         />
                     </Grid>
-
+                    
                     <Grid item>
                         <TextValidator
                             label={i18n.t('createProject.skills', { lng })}

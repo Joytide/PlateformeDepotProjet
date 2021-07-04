@@ -12,6 +12,7 @@ const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const File = mongoose.model('File');
+const Keyword = mongoose.model('Keyword');
 const Specialization = mongoose.model('Specialization');
 const Year = mongoose.model('Year');
 
@@ -205,18 +206,21 @@ exports.listAllProjects = () =>
  * @param {string} title Title of the new project
  * @param {string} description Description of the new project
  * @param {Array} majors_concerned Array containing list of specializations' objectid
+ * @param {Array} selected_keywords Array containing list of selected keywords' objectid
  * @param {Array} study_year Array containing list of years' objectid
- * @param {number} maxNumber Max number of teams allowed to work on the project
+ * @param {number} maxTeamNumber Max number of teams allowed to work on the project
+ * @param {number} maxStudentNumber Max number of student allowed to work on the single-team project
  * @param {Array} [files] Optional - Array of files' id attached to project
  * @param {string} [skills] Optional - Skills requiered for the project
+ * @param {string} [suggestedKeywords] Optional - Suggested keywords for the project
  * @param {string} [infos] Optional - Complementary informations on the project 
  */
 exports.createProject = ({ user, ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber, data.confidential, data.international],
-			["title", "description", "majors_concerned", "study_year", "maxNumber", "confidential","international"],
-			["string", "string", "Array", "Array", "number", "boolean", "boolean"]
+			[data.title, data.description, data.majors_concerned, data.selected_keywords, data.study_year, data.maxTeamNumber, data.maxStudentNumber, data.confidential, data.international, data.suggestedKeywords],
+			["title", "description", "majors_concerned", "selected_keywords", "study_year", "maxTeamNumber", "maxStudentNumber", "confidential","international","suggestedKeywords"],
+			["string", "string", "Array", "Array", "Array", "number", "number", "boolean", "boolean","string"]
 		)
 			.then(() =>
 				Project
@@ -228,17 +232,19 @@ exports.createProject = ({ user, ...data }) =>
 					title: data.title,
 					specializations: data.majors_concerned.map(spe => ({ specialization: spe })),
 					study_year: data.study_year,
+					selected_keywords: data.selected_keywords,
 					description: data.description,
 					partner: user._id,
 					confidential: data.confidential,
 					international: data.international,
-					maxTeams: parseInt(data.maxNumber, 10),
-					suggestedKeywords: data.keywords,
+					maxTeams: parseInt(data.maxTeamNumber, 10),
+					maxStudents: parseInt(data.maxStudentNumber, 10),
 					submissionDate: Date.now()
 				});
 
 				if (data.files) newProject.files = data.files;
 				if (data.skills) newProject.skills = data.skills;
+				if (data.suggestedKeywords) newProject.suggestedKeywords= data.suggestedKeywords;
 				if (data.infos) newProject.infos = data.infos;
 
 				newProject.number = (count + 1).toString().padStart(3, '0');
@@ -281,6 +287,7 @@ exports.findById = ({ id, user }) =>
 				Project.findById(id)
 					.populate('partner')
 					.populate('specializations.specialization')
+					.populate('selected_keywords')
 					.populate('study_year')
 					.populate('lastUpdate.by')
 					.populate({
@@ -355,6 +362,7 @@ exports.update = ({ user, id, ...data }) =>
 				if (data.title) update.title = data.title;
 				if (data.infos) update.infos = data.infos;
 				if (data.maxTeams) update.maxTeams = data.maxTeams;
+				if (data.maxStudents) update.maxStudents = data.maxStudents;
 				if (data.skills) update.skills = data.skills;
 				if (data.description) update.description = data.description;
 				if (data.confidential !== undefined) update.confidential = data.confidential;
