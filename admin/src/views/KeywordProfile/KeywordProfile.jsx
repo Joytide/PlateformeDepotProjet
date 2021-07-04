@@ -157,8 +157,8 @@ class KeywordProfile extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Année</h4>
-                                <p className={classes.cardCategoryWhite}>Informations sur l'année</p>
+                                <h4 className={classes.cardTitleWhite}>Mot-clé</h4>
+                                <p className={classes.cardCategoryWhite}>Informations sur le mot-clé</p>
                             </CardHeader>
                             <CardBody>
 
