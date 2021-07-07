@@ -151,6 +151,7 @@ exports.listProjects = ({ user, ...data }) =>
 				.find(query)
 				.populate('partner')
 				.populate('specializations.specialization')
+				.populate('selected_keywords')
 				.populate('study_year')
 				.lean()
 				.exec();
@@ -520,7 +521,7 @@ exports.addKeyword = ({ keywordId, projectId }) =>
 		)
 			.then(() =>
 				Project
-					.updateOne({ _id: projectId }, { $addToSet: { keywords: keywordId } })
+					.updateOne({ _id: projectId }, { $addToSet: { selected_keywords: keywordId } })
 					.exec()
 			)
 			.then(writeOps => resolve(writeOps))
@@ -542,8 +543,8 @@ exports.removeKeyword = ({ keywordId, projectId }) =>
 			.then(() =>
 				Project
 					.updateOne(
-						{ _id: projectId, keywords: keywordId },
-						{ $pull: { keywords: keywordId } }
+						{ _id: projectId, selected_keywords: keywordId },
+						{ $pull: { selected_keywords: keywordId } }
 					)
 					.exec()
 
@@ -559,7 +560,7 @@ exports.getCSV = (find = {}) => () =>
 	new Promise((resolve, reject) => {
 		let findProject = Project
 			.find(find)
-			.populate("partner specializations.specialization study_year keywords")
+			.populate("partner specializations.specialization study_year selected_keywords")
 			.lean()
 			.exec();
 		let findYear = Year.find({}).lean().exec();
@@ -639,7 +640,7 @@ exports.getCSV = (find = {}) => () =>
 						value: "skills"
 					},
 					{
-						label: "Mots clefs",
+						label: "Mots-clés",
 						value: row => row.keywords.map(k => k.displayName).join(", ")
 					},
 					{
@@ -680,16 +681,17 @@ exports.studentFolder = () =>
 		let baseDirectory = process.cwd() + "/exports/" + date;
 
 		let findYears = Year.find({}).lean().exec();
+		let findKeywords = Keyword.find({}).lean().exec();
 		let findSpecializations = Specialization.find({}).lean().exec();
 		let findProjects = Project
 			.find({ status: "validated" })
-			.populate("files pdf specializations.specialization study_year")
+			.populate("files pdf specializations.specialization selected_keywords study_year")
 			.lean()
 			.exec();
 
 		Promise
-			.all([findYears, findSpecializations, findProjects])
-			.then(([years, specializations, projects]) => {
+			.all([findYears, findKeywords, findSpecializations, findProjects])
+			.then(([years, keywords, specializations, projects]) => {
 				if (projects) {
 					fs.mkdirSync(baseDirectory, { recursive: true });
 
@@ -746,14 +748,15 @@ exports.studentFolder = () =>
  */
 exports.getStats = () =>
 	new Promise((resolve, reject) => {
-		Promise.all([Stats.count(), Stats.general(), Stats.byYear(), Stats.bySpe(), Stats.byYearSubSpe()])
+		Promise.all([Stats.count(), Stats.general(), Stats.byYear(), Stats.byKeyword(), Stats.bySpe(), Stats.byYearSubSpe()])
 			.then(values =>
 				resolve({
 					count: values[0],
 					general: values[1],
 					byYear: values[2],
-					bySpe: values[3],
-					byYearSubSpe: values[4]
+					byKeyword: values[3],
+					bySpe: values[4],
+					byYearSubSpe: values[5]
 				})
 			)
 			.catch(reject);
@@ -833,7 +836,56 @@ const Stats = {
 				"$unwind": "$_id.study_year"
 			}
 		]),
-
+	
+	byKeyword: () => Project
+	.aggregate([
+		{
+			"$unwind": "$selected_keywords"
+		},
+		{
+			"$group":
+			{
+				"_id":
+				{
+					"selected_keywords": "$selected_keywords",
+					"status": "$status"
+				},
+				"count":
+				{
+					"$sum": 1
+				}
+			}
+		},
+		{
+			"$group":
+			{
+				"_id":
+				{
+					"selected_keywords": "$_id.selected_keywords"
+				},
+				"stats": {
+					"$addToSet": {
+						"status": "$_id.status",
+						"total": {
+							"$sum": "$count"
+						}
+					}
+				}
+			}
+		},
+		{
+			"$lookup":
+			{
+				"from": "keywords",
+				"localField": "_id.selected_keywords",
+				"foreignField": "_id",
+				"as": "_id.selected_keywords"
+			}
+		},
+		{
+			"$unwind": "$_id.selected_keywords"
+		}
+	]),
 	// Gets number of project validated, pending, rejected grouped by spe
 	bySpe: () => Project.aggregate(
 		[

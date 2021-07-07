@@ -57,6 +57,7 @@ class Dashboard extends React.Component {
 				count: 0,
 				general: [],
 				byYear: [],
+				byKeyword: [],
 				bySpe: [],
 				byYearSubSpe: []
 			},
@@ -160,19 +161,19 @@ class Dashboard extends React.Component {
 							<GridItem xs={12} md={12} lg={12}>
 								<Card>
 									<CardHeader color="primary">
-										<h4 className={classes.cardTitleWhite}>Projets triés par majeure</h4>
+										<h4 className={classes.cardTitleWhite}>Projets triés par mot-clé</h4>
 									</CardHeader>
 									<CardBody>
 										<GridContainer>
-											{this.state.stats.bySpe
-												.sort((s1, s2) => s1._id.specialization.name.fr > s2._id.specialization.name.fr)
-												.map(spe =>
-													<GridItem xs={12} md={6} lg={2} key={spe._id.specialization._id}>
-														<h4>{spe._id.specialization.name.fr}</h4>
+											{this.state.stats.byKeyword
+												.sort((s1, s2) => s1._id.selected_keywords.name.fr > s2._id.selected_keywords.name.fr)
+												.map(kw =>
+													<GridItem xs={12} md={6} lg={2} key={kw._id.selected_keywords._id}>
+														<h4>{kw._id.selected_keywords.name.fr}</h4>
 														<Doughnut data={{
-															labels: formatLabels(spe.stats),
+															labels: formatLabels(kw.stats),
 															datasets: [{
-																data: formatStats(spe.stats),
+																data: formatStats(kw.stats),
 																backgroundColor: [
 																	'#4caf50',
 																	'rgb(255, 152, 0)',
