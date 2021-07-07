@@ -194,6 +194,10 @@ exports.listAllProjects = () =>
 				path: 'study_year',
 				select: "abbreviation"
 			})
+			.populate({
+				path: 'selected_keywords',
+				select: "name.fr"
+			})
 			.select('title number status confidential submissionDate specializations.status')
 			.lean()
 			.exec()
@@ -368,6 +372,7 @@ exports.update = ({ user, id, ...data }) =>
 				if (data.confidential !== undefined) update.confidential = data.confidential;
 				if (data.international !== undefined) update.international = data.international;
 				if (data.study_year) update.study_year = data.study_year;
+				if (data.selected_keywords) update.selected_keywords = data.selected_keywords;
 				if (data.suggestedKeywords) update.suggestedKeywords = data.suggestedKeywords;
 
 				update.lastUpdate = {

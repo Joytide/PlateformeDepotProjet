@@ -209,7 +209,7 @@ class ProjectProfile extends React.Component {
                     editable={this.state.canEditProject && this.state.project.status === "pending"}
                 />
             );
-
+            /*
             keywords = (
                 <Keywords
                     color={this.state.color}
@@ -218,7 +218,7 @@ class ProjectProfile extends React.Component {
                     editable={this.state.canManageKeywords}
                 />
             );
-
+            */
             files = (
                 <Files
                     color={this.state.color}
@@ -237,6 +237,16 @@ class ProjectProfile extends React.Component {
                     projectId={this.props.match.params.id}
                     studyYears={this.state.project.study_year}
                     editable={this.state.canManageYears && this.state.project.status === "pending"}
+                />
+            );
+
+            keywords = (
+                <Keywords
+                    color={this.state.color}
+                    projectStatus={this.state.project.status}
+                    projectId={this.props.match.params.id}
+                    selected_keywords={this.state.project.selected_keywords}
+                    editable={this.state.canManageKeywords && this.state.project.status === "pending"}
                 />
             );
 
@@ -300,11 +310,11 @@ class ProjectProfile extends React.Component {
 
                         {projectInfo}
 
-                        {keywords}
-
                         {files}
 
                         {years}
+
+                        {keywords}
 
                         {specializations}
 

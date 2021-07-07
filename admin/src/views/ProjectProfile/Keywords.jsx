@@ -2,29 +2,23 @@ import React from "react";
 import PropTypes from 'prop-types';
 
 // @material-ui/core components
-import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
-import Divider from '@material-ui/core/Divider';
-
-import Add from "@material-ui/icons/Add"
-import Remove from "@material-ui/icons/Remove"
-import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 // core components
-import CustomInput from "components/CustomInput/CustomInput.jsx";
 import GridItem from "components/Grid/GridItem.jsx";
 import GridContainer from "components/Grid/GridContainer.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
-import Button from "components/CustomButtons/Button.jsx";
 
-import AuthService from "components/AuthService"
+import AuthService from "components/AuthService";
 import { withSnackbar } from "../../providers/SnackbarProvider/SnackbarProvider";
 import { handleXhrError } from "../../components/ErrorHandler";
 
-import { api } from "../../config"
+import { api } from "../../config";
 
 const styles = {
     cardCategoryWhite: {
@@ -54,20 +48,15 @@ class Keywords extends React.Component {
 
         this.state = {
             keywords: [],
-            newKeyword: "",
-            projectKeywords: this.props.projectKeywords,
+            checkedKeywords: [],
+            loadingKeyword: true,
+            selected_keywords: this.props.selected_keywords.map(kw => kw._id),
             editable: false
         }
-
-        this.loadKeywords = this.loadKeywords.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.createKeyword = this.createKeyword.bind(this);
-        this.addKeyword = this.addKeyword.bind(this);
-        this.removeKeyword = this.removeKeyword.bind(this);
     }
 
     componentWillMount() {
-        this.loadKeywords();
+        this.loadStaticData();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -75,188 +64,141 @@ class Keywords extends React.Component {
             this.setState({ editable: nextProps.editable });
     }
 
-    // Loads keywords from database and put it in keywords state
-    loadKeywords() {
-        AuthService.fetch(api.host + ":" + api.port + "/api/keyword", {
-            method: "GET",
-        })
+    // Load all keywords informations
+    loadStaticData() {
+        fetch(api.host + ":" + api.port + "/api/keyword")
             .then(res => {
-                if (res.ok)
-                    return res.json();
-                else
+                if (!res.ok)
                     throw res;
+                return res.json();
             })
-            .then(data => {
-                this.setState({
-                    keywords: data
-                        .sort((ka, kb) => ka.lcName > kb.lcName ? 1 : -1)
+            .then(keywords => {
+                let checkedKeywords = {};
+
+                keywords.forEach(keyword => {
+                    checkedKeywords[keyword._id] = false;
                 });
+
+                this.setState({
+                    keywords: keywords,
+                    checkedKeywords: checkedKeywords,
+                    loadingKeyword: false,
+                }, this.checkboxMapping);
             })
             .catch(handleXhrError(this.props.snackbar));
     }
 
-    // Create a new keyword entry in database and at it in keywords state list
-    createKeyword = () => {
-        const body = {
-            name: this.state.newKeyword
-        };
+    // Check or uncheck checkboxes depending on the state
+    checkboxMapping() {
+        if (!this.state.loadingKeyword) {
+            let checkedKeywords = {};
 
-        AuthService.fetch(api.host + ":" + api.port + "/api/keyword", {
-            method: "POST",
-            body: JSON.stringify(body)
-        })
-            .then(res => {
-                if (res.ok)
-                    return res.json();
-                else
-                    throw res;
-            })
-            .then(data => {
-                if (data.name !== "Error")
-                    this.setState({
-                        newKeyword: "",
-                        keywords: [...this.state.keywords, data]
-                    });
-            })
-            .catch(handleXhrError(this.props.snackbar));
+            this.state.keywords.forEach(keyword => {
+                if (this.state.selected_keywords.indexOf(keyword._id) !== -1) checkedKeywords[keyword._id] = true;
+                else checkedKeywords[keyword._id] = false;
+            });
+
+            this.setState({
+                checkedKeywords: checkedKeywords
+            });
+        }
     }
 
-    // Add a keyword to a project
-    addKeyword = id => () => {
-        if (this.state.editable) {
-            const body = {
-                projectId: this.props.projectId,
-                keywordId: id
-            };
-
-            AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
-                method: "POST",
-                body: JSON.stringify(body)
+    handleCheckboxChange = event => {
+        const checked = event.target.checked;
+        const id = event.target.id;
+        console.log("Detected checkbox change on",id,":",checked)
+        // Count the number of checkbox checked
+        let checkedCount = 0;
+        for (const id in this.state.checkedKeywords)
+            if (this.state.checkedKeywords[id])
+                checkedCount++;
+        console.log("CheckCount is now",checkedCount)
+        
+        // If there is at least 2 checkbox checked (so 1 after change) or the checkbox is getting checked (so at least 1 after change)
+        if (checkedCount >= 2 || checked) {
+            let keywordList = [];
+            
+            for (let keywordId in this.state.checkedKeywords)
+                // uncheck if checked || check if unchecked
+                if ((this.state.checkedKeywords[keywordId] && keywordId !== id) || (!this.state.checkedKeywords[keywordId] && keywordId === id))
+                keywordList.push(keywordId);
+            console.log("keywordList is",keywordList)
+            const data = {
+                id: this.props.projectId,
+                selected_keywords: keywordList
+            }
+            console.log("data is ",data)
+            AuthService.fetch(api.host + ":" + api.port + "/api/project", {
+                method: "PUT",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
             })
                 .then(res => {
-                    if (res.ok)
-                        return res.json();
-                    else
-                        throw res;
+                    if (!res.ok) throw res;
+                    else return res.json()
                 })
                 .then(data => {
                     this.setState({
-                        projectKeywords: [id, ...this.state.projectKeywords]
+                        selected_keywords: data.selected_keywords
                     });
+                    this.checkboxMapping();
                 })
                 .catch(handleXhrError(this.props.snackbar));
-        }
-        else
-            this.props.snackbar.error("Vous n'avez pas les droits pour modifier ce projet");
+            
+        } else
+            this.props.snackbar.error("Le projet doit à minima concerner un mot-clé.")
+        
     }
-
-    // Remove a keyword from a project
-    removeKeyword = id => () => {
-        if (this.state.editable) {
-            const body = {
-                projectId: this.props.projectId,
-                keywordId: id
-            };
-
-            AuthService.fetch(api.host + ":" + api.port + "/api/project/keyword", {
-                method: "DELETE",
-                body: JSON.stringify(body)
-            })
-                .then(res => {
-                    if (res.ok)
-                        return res.json();
-                    else
-                        throw res;
-                })
-                .then(data => {
-                    this.setState({
-                        projectKeywords: this.state.projectKeywords.filter(keyword => keyword !== id)
-                    });
-                })
-                .catch(handleXhrError(this.props.snackbar));
-        }
-        else
-            this.props.snackbar.error("Vous n'avez pas les droits nécessaires pour modifier ce projet");
-    }
-
-    // Handle changes on the new keyword's textbox
-    handleChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
-    };
 
     render() {
         const { classes, color } = this.props;
-
-        let addedKeywords = [],
-            nonAddedKeywords = [];
-
-        // Puts keywords already associated to the project and the other ones in two different lists
-        this.state.keywords
-            .forEach(keyword => {
-                if (this.state.projectKeywords.indexOf(keyword._id) !== -1) {
-                    addedKeywords.push(
-                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.removeKeyword(keyword._id)}><Remove />{keyword.displayName}</Button>
-                    );
-
-                }
-                else {
-                    nonAddedKeywords.push(
-                        <Button key={keyword._id} component="span" size="sm" color="info" onClick={this.addKeyword(keyword._id)}><Add />{keyword.displayName}</Button>
-                    );
-                }
-            });
-
+        
         return (
             <Card>
                 <CardHeader color={color}>
-                    <h4 className={classes.cardTitleWhite}>Mots-clefs</h4>
+                    <h4 className={classes.cardTitleWhite}>Années</h4>
+                    <p className={classes.cardCategoryWhite}>Années concernées par le projet</p>
                 </CardHeader>
                 <CardBody>
                     <GridContainer>
-                        <GridItem xs={12}>
-                            <Typography>
-                                Mots-clefs déjà associés au projet (cliquer sur le mot clef pour le retirer) :
-                                </Typography>
-                            {addedKeywords}
-                            <Divider />
-                            <Typography>
-                                Mots-clefs non-associés au projet (cliquer sur le mot clef pour l'ajouter) :
-                                </Typography>
-                            {nonAddedKeywords}
+                        <GridItem xs={12} md={12}>
+                            <GridContainer alignItems="center" justify="center">
+                                {this.state.keywords.map(keyword =>
+                                    <GridItem xs={12} md={3} key={keyword._id}>
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    onChange={this.handleCheckboxChange}
+                                                    checked={this.state.checkedKeywords[keyword._id]}
+                                                    id={keyword._id}
+                                                    disabled={this.props.projectStatus !== "pending" || !this.state.editable}
+                                                    color="primary"
+                                                />
+                                            }
+                                            label={keyword.name.fr}
+                                        />
+                                    </GridItem>
+                                )}
+                            </GridContainer>
                         </GridItem>
                     </GridContainer>
                 </CardBody>
-                {this.state.editable &&
-                    <CardFooter>
-                        <GridContainer >
-                            <GridItem xs={12}>
-                                <FormControl>
-                                    <CustomInput
-                                        labelText="Nouveau mot clef"
-                                        inputProps={{
-                                            value: this.state.newKeyword,
-                                            onChange: this.handleChange,
-                                            name: "newKeyword"
-                                        }}
-                                        formControlProps={{
-                                            fullWidth: false
-                                        }}
-                                    />
-                                </FormControl>
-                                <Button component="span" size="sm" color="info" onClick={this.createKeyword}><Add />Ajouter un nouveau mot clef</Button>
-                            </GridItem>
-                        </GridContainer>
-                    </CardFooter>
-                }
-            </Card>
-        )
+                <CardFooter>
+                </CardFooter>
+            </Card >
+        );
     }
 }
 
 Keywords.propTypes = {
     color: PropTypes.string.isRequired,
-    projectKeywords: PropTypes.array.isRequired,
     projectId: PropTypes.string.isRequired,
+    projectStatus: PropTypes.string.isRequired,
+    selected_keywords: PropTypes.array.isRequired,
 }
 
 export default withSnackbar(withStyles(styles)(Keywords));
