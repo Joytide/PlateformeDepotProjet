@@ -111,7 +111,7 @@ class CreateProject extends React.Component {
                 }
                 this.setState({ study_year: temp });
                 break;
-            
+            /*
             case "spe":
                 temp = this.state.majors_concerned;
                 if (e.target.checked) {
@@ -125,10 +125,9 @@ class CreateProject extends React.Component {
                 }
                 this.setState({ majors_concerned: temp });
                 break;
-            
+            */
             case "selected_keywords":
                 temp = this.state.selected_keywords;
-                console.log("adding",e.target.value,"to",temp)
                 if (e.target.checked) {
                     temp.push(e.target.value);
                 }
@@ -170,11 +169,11 @@ class CreateProject extends React.Component {
     }
 
     handleNext = e => {
-        if (this.state.title !== "" && this.state.study_year.length > 0 && this.state.selected_keywords.length > 0 && this.state.majors_concerned.length > 0 && this.state.description !== "") {
+        if (this.state.title !== "" && this.state.study_year.length > 0 && this.state.selected_keywords.length > 0 && this.state.description !== "") {
             let data = {
                 title: this.state.title,
                 study_year: this.state.study_year,
-                majors_concerned: this.state.majors_concerned,
+                majors_concerned: this.state.specializations, // Instead of majors_concernet so that all spes' resp have to check out project
                 description: this.state.description,
                 skills: this.state.skills,
                 infos: this.state.infos,
@@ -182,9 +181,10 @@ class CreateProject extends React.Component {
                 maxStudentNumber: this.state.maxStudentNumber,
                 confidential: this.state.confidential,
                 international: this.state.international,
-                selected_keywords: this.state.keywords,
+                selected_keywords: this.state.selected_keywords,
                 suggestedKeywords: this.state.suggestedKeywords,
             };
+
             if (this.state.files.length > 0) data.files = this.state.files.map(file => file._id);
 
             AuthService.fetch("/api/project/", {
@@ -205,10 +205,10 @@ class CreateProject extends React.Component {
         }
         else if (this.state.study_year.length === 0)
             this.props.snackbar.notification("error", i18n.t("errors.fillYear", { lng: this.props.lng }));
-
+        /*
         else if (this.state.majors_concerned.length === 0)
             this.props.snackbar.notification("error", i18n.t("errors.fillSpecialization", { lng: this.props.lng }));
-
+        */
         else if (this.state.selected_keywords.length === 0)
             this.props.snackbar.notification("error", i18n.t("errors.fillKeywords", { lng: this.props.lng }));
 
@@ -277,7 +277,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
-                    
+                    {/*
                     <Grid item>
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('majors.label', { lng })}
@@ -300,9 +300,9 @@ class CreateProject extends React.Component {
                                 </Grid>
                             )}
                         </Grid>
-                    </Grid>
+                    </Grid>                
                     <br />
-                                        
+                    */}                 
                     <Grid item>
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('keywords.label', { lng })}
