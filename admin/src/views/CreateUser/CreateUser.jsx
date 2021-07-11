@@ -274,7 +274,7 @@ class CreateUser extends React.Component {
         }
 
         if (this.state.redirect) 
-            return <Redirect to="/admin/user" />
+            return <Redirect to="/user" />
         
         return (
             <GridContainer>
