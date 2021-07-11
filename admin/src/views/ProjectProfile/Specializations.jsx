@@ -134,7 +134,7 @@ class Specializations extends React.Component {
                 })
                 .catch(err => {
                     if(err.status === 409)
-                        this.props.snackbar.error("Veuillez saisir à minima 2 mots clefs")
+                        this.props.snackbar.error("Veuillez saisir à minima 1 mot-clé")
                     else 
                         handleXhrError(this.props.snackbar)(err);
                 });
