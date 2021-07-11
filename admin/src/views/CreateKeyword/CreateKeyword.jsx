@@ -4,6 +4,7 @@ import { Redirect } from 'react-router'
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -70,19 +71,18 @@ class CreateKeyword extends React.Component {
             labelWidth: 0,
             nameEn: "",
             nameFr: "",
+            keywordData: "",
             redirect: false
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.createKeyword = this.createKeyword.bind(this);
+        this.importKeyword = this.importKeyword.bind(this);
     }
 
     handleChange = event => {
-        this.setState({ [event.target.id]: event.target.value });
-    };
-
-    handleCheckboxChange = name => event => {
-        this.setState({ [name]: event.target.checked });
+        this.setState({ [event.target.id]: event.target.value.trim() });
+        console.log(this.state.keywordData)
     };
 
     createKeyword() {
@@ -122,6 +122,53 @@ class CreateKeyword extends React.Component {
                 .catch(handleXhrError(this.props.snackbar));
         }
     }
+
+
+    importKeyword(){
+        let keywordslist=[];
+        if (this.state.keywordData === "") 
+            this.props.snackbar.error("Veuillez saisir une liste de mot-clés.");
+        else
+        {
+            let lines = this.state.keywordData.split('\n');
+
+            for (let i = 0; i < lines.length; i++) {
+                let splittedData = lines[i].split(',');
+
+                let keyword = {
+                    nameFr: splittedData[0],
+                    nameEn: splittedData[1]
+                }
+                keywordslist.push(keyword)
+            }
+            
+
+        }
+        let data={keywords:keywordslist}
+        if (data !== []) {
+            AuthService.fetch(api.host + ":" + api.port + "/api/keywords", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res => {
+                    if (!res.ok)
+                        throw res;
+                    else {
+                        this.props.snackbar.success("Mots-clés créés avec succès. Vous allez être redirigé vers la liste des mot-clés.");
+
+                        setTimeout(() => {
+                            this.setState({ redirect: true });
+                        }, 2500);
+                    }
+                })
+                .catch(handleXhrError(this.props.snackbar));
+        }
+    }
+        
 
     render() {
         const { classes } = this.props;
@@ -174,6 +221,38 @@ class CreateKeyword extends React.Component {
                         </CardBody>
                         <CardFooter>
                             <Button color="primary" onClick={this.createKeyword}>Créer le mot-clé</Button>
+                        </CardFooter>
+                    </Card>
+                </GridItem>
+
+                <GridItem xs={12} sm={12} md={12}>
+                    <Card>
+                        <CardHeader color="primary">
+                            <h4 className={classes.cardTitleWhite}>Importer plusieurs mots-clés</h4>
+                            <p className={classes.cardCategoryWhite}></p>
+                        </CardHeader>
+                        <CardBody>
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={12}>
+                                    <TextField
+                                        id="keywordData"
+                                        label="Mots-clés"
+                                        multiline={true}
+                                        rows="12"
+                                        className={classes.textField}
+                                        margin="normal"
+                                        fullWidth={true}
+                                        inputProps={{
+                                            value: this.state.keywordData,
+                                            onChange: this.handleChange
+                                        }}
+                                    />
+                                </GridItem>
+                            </GridContainer>
+
+                        </CardBody>
+                        <CardFooter>
+                            <Button color="primary" onClick={this.importKeyword}>Importer les mots-clés</Button>
                         </CardFooter>
                     </Card>
                 </GridItem>

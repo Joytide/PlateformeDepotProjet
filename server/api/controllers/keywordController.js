@@ -29,6 +29,31 @@ new Promise((resolve, reject) => {
 });
 
 /**
+ * Creates a new keyword
+ * @param {Array} keywords Array of keyword containing their name in french and english
+ */
+ exports.createMany = ({ keywords  }) =>
+ new Promise((resolve, reject) => {
+    console.log("aa",keywords)
+    isValidType(keywords, 'keywords', 'Array')
+    .then(() => {
+        let kwlist = [];
+
+        for (let i = 0; i < keywords.length; i++) {
+            let keyword = new Keyword();
+            keyword.name.fr = keywords[i].nameFr,
+            keyword.name.en = keywords[i].nameEn,
+
+            kwlist.push(keyword);
+        }
+        return Keyword.insertMany(kwlist)
+    })
+    .then(resolve)
+    .catch(reject);
+    
+});
+
+/**
  * Returns the list of existing keyword(s)
  */
  exports.list = () =>

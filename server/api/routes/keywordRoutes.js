@@ -28,6 +28,12 @@ module.exports = app => {
             auth.areAuthorized("EPGE"),
             handleRequest(keyword.delete)
         );
+    app.route('/api/keywords')
+        .post(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized(["Administration", "EPGE"]),
+            handleRequest(keyword.createMany)
+        );
 
     
 
