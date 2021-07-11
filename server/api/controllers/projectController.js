@@ -462,7 +462,7 @@ exports.projectValidation = ({ ...data }) =>
 						if (rejected)
 							project.status = "rejected";
 						else
-							if (project.keywords.length < 2)
+							if (project.selected_keywords.length < 2)
 								throw new MissingKeywordsError();
 							else
 								project.status = "validated";
