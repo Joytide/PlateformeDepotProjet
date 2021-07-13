@@ -126,7 +126,6 @@ class ProjectList extends React.Component {
     }
 
     handleChange = name => event => {
-        console.log("##",name,event.target.value) //name=keywordSort
         if (name !== "keywordSort"){
             this.setState(
                 { [name]: event.target.checked },
@@ -164,8 +163,6 @@ class ProjectList extends React.Component {
         if (this.state.keywordSort && this.state.keywordSort !== "None")
             filters.push(p => p.selected_keywords.map(kw => kw.name.fr).flat().indexOf(this.state.keywordSort) !== -1);
         
-        
-        console.log(filters)
         this.setState({ filters })
     }
 
