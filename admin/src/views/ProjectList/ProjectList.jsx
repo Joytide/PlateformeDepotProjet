@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
-import { FormControlLabel } from "@material-ui/core";
+import { FormControlLabel, NativeSelect } from "@material-ui/core";
 
 import Visibility from "@material-ui/icons/Visibility"
 
@@ -65,11 +65,13 @@ class ProjectList extends React.Component {
         this.state = {
             loading: true,
             projects: [],
+            keywords: [],
             filters: [],
             confidentialMapping: [],
-            rejectedProjects: false,
-            validatedProjects: false,
+            rejectedProjects: true,
+            validatedProjects: true,
             pendingProjects: true,
+            keywordSort: "",
             //mySpecialization: true,
             notWaitingForMe: true,
             canDownloadPdf: false,
@@ -82,6 +84,7 @@ class ProjectList extends React.Component {
 
     componentWillMount() {
         this.loadProjects();
+        this.loadKeywords();
         this.updateFilters();
     }
 
@@ -103,6 +106,19 @@ class ProjectList extends React.Component {
             .then(data => {
                 this.setState({
                     projects: data,
+                    
+                });
+            })
+            .catch(handleXhrError(this.props.snackbar));
+        
+    }
+
+    loadKeywords(){
+        AuthService.fetch(api.host + ":" + api.port + '/api/keyword')
+            .then(res => res.json())
+            .then(keywords => {
+                this.setState({ 
+                    keywords: keywords,
                     loading: false
                 });
             })
@@ -110,10 +126,20 @@ class ProjectList extends React.Component {
     }
 
     handleChange = name => event => {
-        this.setState(
-            { [name]: event.target.checked },
-            this.updateFilters
-        );
+        console.log("##",name,event.target.value) //name=keywordSort
+        if (name !== "keywordSort"){
+            this.setState(
+                { [name]: event.target.checked },
+                this.updateFilters
+            );
+        }
+        else{
+            this.setState(
+                { [name]: event.target.value },
+                this.updateFilters
+            );
+        }
+        
     }
 
     updateFilters = () => {
@@ -134,7 +160,12 @@ class ProjectList extends React.Component {
         */
         if (this.state.notWaitingForMe)
             filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)));
-
+        
+        if (this.state.keywordSort && this.state.keywordSort !== "None")
+            filters.push(p => p.selected_keywords.map(kw => kw.name.fr).flat().indexOf(this.state.keywordSort) !== -1);
+        
+        
+        console.log(filters)
         this.setState({ filters })
     }
 
@@ -157,7 +188,6 @@ class ProjectList extends React.Component {
                 label="En attente de validation"
                 style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
             />;
-            console.log(this.state.projects)
             let projectsData = applyFilters(this.state.filters, this.state.projects).map(project => {
                 if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
                     return undefined;
@@ -277,6 +307,32 @@ class ProjectList extends React.Component {
                                     label="Afficher uniquement les projets que je n'ai pas encore traité"
                                 />
                             </GridItem>
+                            
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        
+                                        <NativeSelect
+                                            style={{ paddingRight: '20px' }}
+                                            value={this.state.keywordSort}
+                                            onChange={this.handleChange('keywordSort')}
+                                        >
+                                            <option value="None" ></option>
+                                            {this.state.keywords.map(kw => {
+                                                return <option key={kw._id}>{kw.name.fr}</option>
+                                            })},"None"
+                                            
+                                        </NativeSelect>
+                                        
+                                    }
+                                    label="Tri par mot-clé"
+                                />
+                            </GridItem>
+
+
+
+
+
                         </GridContainer>
 
                         {loadedContent}
