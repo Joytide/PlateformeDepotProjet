@@ -7,7 +7,7 @@
 
 ## Installation
 
-1. Dans les dossiers admin et client, faire les modifications nécessaires dans la config et ensuite:
+1. Dans les dossiers admin et client, faire les modifications nécessaires (jetons API, config API) dans la config et ensuite:
 
 ```
 mv config.example.json config.json
