@@ -70,7 +70,7 @@ class ProjectList extends React.Component {
             rejectedProjects: false,
             validatedProjects: false,
             pendingProjects: true,
-            mySpecialization: true,
+            //mySpecialization: true,
             notWaitingForMe: true,
             canDownloadPdf: false,
             canDownloadCsv: false,
@@ -128,10 +128,10 @@ class ProjectList extends React.Component {
             status.push("pending")
 
         filters.push(p => status.indexOf(p.status) !== -1);
-
+        /* superseded by keyword search
         if (this.state.mySpecialization)
             filters.push(p => p.specializations.map(spe => spe.specialization.referent).flat().indexOf(this.props.user.user._id) !== -1);
-
+        */
         if (this.state.notWaitingForMe)
             filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)));
 
@@ -157,7 +157,7 @@ class ProjectList extends React.Component {
                 label="En attente de validation"
                 style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
             />;
-
+            console.log(this.state.projects)
             let projectsData = applyFilters(this.state.filters, this.state.projects).map(project => {
                 if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
                     return undefined;
@@ -168,10 +168,15 @@ class ProjectList extends React.Component {
                     <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
                     <p>{new Date(project.submissionDate).toLocaleDateString()}</p>,
                     project.study_year.map(year => year.abbreviation).sort().join(', '),
+                    /* Superseded by keywords
                     project.specializations
                         .map(spe => spe.specialization.abbreviation + (spe.status === "pending" ? " (En attente)" : (spe.status === "validated" ? " (Validé)" : "(Refusé)")))
                         .sort()
                         .join(', '),
+                    */
+                    project.selected_keywords.map(kw => kw.name.fr)
+                    .sort()
+                    .join(', '),
                     (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
                 ];
             }).filter(p => p !== undefined);
@@ -183,7 +188,7 @@ class ProjectList extends React.Component {
             loadedContent = (
                 <Table
                     tableHeaderColor="primary"
-                    tableHead={["Numéro", "Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
+                    tableHead={["Numéro", "Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Mots-clés", "Actions"]}
                     tableData={projectsData}
                     confidential={confidentialMapping}
                 />
@@ -242,7 +247,7 @@ class ProjectList extends React.Component {
                                     label="Afficher les projets en attente de validation"
                                 />
                             </GridItem>
-
+                            {/*
                             <GridItem xs={12} sm={12} md={6}>
                                 <FormControlLabel
                                     control={
@@ -256,6 +261,8 @@ class ProjectList extends React.Component {
                                     label="Afficher uniquement les projets de ma majeure"
                                 />
                             </GridItem>
+                                */}
+                            
 
                             <GridItem xs={12} sm={12} md={6}>
                                 <FormControlLabel
