@@ -68,12 +68,14 @@ class ProjectList extends React.Component {
             keywords: [],
             filters: [],
             confidentialMapping: [],
-            rejectedProjects: true,
-            validatedProjects: true,
+            rejectedProjects: false,
+            validatedProjects: false,
             pendingProjects: true,
             keywordSort: "",
             //mySpecialization: true,
-            notWaitingForMe: true,
+            WaitingForMe: true,
+            ValidatedByMe: false,
+            RejectedByMe: false,
             canDownloadPdf: false,
             canDownloadCsv: false,
             canDownloadZip: false
@@ -157,9 +159,14 @@ class ProjectList extends React.Component {
         if (this.state.mySpecialization)
             filters.push(p => p.specializations.map(spe => spe.specialization.referent).flat().indexOf(this.props.user.user._id) !== -1);
         */
-        if (this.state.notWaitingForMe)
+        if (this.state.WaitingForMe)
             filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)));
+        if (this.state.ValidatedByMe)
+            filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "validated" ? true : false)));
+        if (this.state.RejectedByMe)
+            filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "rejected" ? true : false)));
         
+
         if (this.state.keywordSort && this.state.keywordSort !== "None")
             filters.push(p => p.selected_keywords.map(kw => kw.name.fr).flat().indexOf(this.state.keywordSort) !== -1);
         
@@ -289,15 +296,43 @@ class ProjectList extends React.Component {
                                 />
                             </GridItem>
                                 */}
-                            
+                            <GridItem xs={12} sm={12} md={6}></GridItem>
 
                             <GridItem xs={12} sm={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={this.state.notWaitingForMe}
-                                            onChange={this.handleChange('notWaitingForMe')}
-                                            value="notWaitingForMe"
+                                            checked={this.state.ValidatedByMe}
+                                            onChange={this.handleChange('ValidatedByMe')}
+                                            value="ValidatedByMe"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Afficher uniquement les projets que j'ai validé"
+                                />
+                            </GridItem>
+
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={this.state.RejectedByMe}
+                                            onChange={this.handleChange('RejectedByMe')}
+                                            value="RejectedByMe"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Afficher uniquement les projets que j'ai refusé"
+                                />
+                            </GridItem>
+
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={this.state.WaitingForMe}
+                                            onChange={this.handleChange('WaitingForMe')}
+                                            value="WaitingForMe"
                                             color="primary"
                                         />
                                     }
@@ -305,6 +340,8 @@ class ProjectList extends React.Component {
                                 />
                             </GridItem>
                             
+                            <GridItem xs={12} sm={12} md={6}></GridItem>
+
                             <GridItem xs={12} sm={12} md={6}>
                                 <FormControlLabel
                                     control={
@@ -325,7 +362,8 @@ class ProjectList extends React.Component {
                                     label="Tri par mot-clé"
                                 />
                             </GridItem>
-
+                            
+                            
 
 
 
