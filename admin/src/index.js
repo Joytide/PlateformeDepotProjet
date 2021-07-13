@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Redirect } from 'react-router'
 import { createBrowserHistory } from "history";
 import {
-	BrowserRouter as Router,
+	Router,
 	Route,
 	Switch
 } from 'react-router-dom'
