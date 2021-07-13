@@ -193,6 +193,12 @@ class Specializations extends React.Component {
                                 className={classes.chip}
                                 style={{ backgroundColor: "#4caf50", color: "white" }}
                             />;
+                        else if (this.state.projectSpecializations[i].status === "validatedInternational")
+                            arr[1] = <Chip
+                                label="Validé (International)"
+                                className={classes.chip}
+                                style={{ backgroundColor: "#00bcd4", color: "white" }}
+                            />;
                         else if (this.state.projectSpecializations[i].status === "rejected")
                             arr[1] = <Chip
                                 label="Refusé"
@@ -217,6 +223,14 @@ class Specializations extends React.Component {
                                             name="validated"
                                             onClick={this.specializationValidation("validated", spe._id)}>
                                             Valider le projet
+                                </Button>
+                                    <Button
+                                            size="sm"
+                                            disabled={this.state.projectSpecializations[i].status === "validatedInternational"}
+                                            style={{ backgroundColor: "#00bcd4", color: "white" }}
+                                            name="validatedInternational"
+                                            onClick={this.specializationValidation("validatedInternational", spe._id)}>
+                                            Valider le projet pour une équipe internationale
                                 </Button>
                                         <Button
                                             size="sm"

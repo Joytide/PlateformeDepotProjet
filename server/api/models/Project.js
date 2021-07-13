@@ -11,7 +11,7 @@ const SpecializationSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["validated", "rejected", "pending"],
+        enum: ["validated", "rejected", "pending", "validatedInternational"],
         required: true,
         default: "pending"
     },

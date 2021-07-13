@@ -432,7 +432,7 @@ exports.projectValidation = ({ ...data }) =>
 			["ObjectId", "ObjectId", "string"]
 		)
 			.then(() => {
-				if (["validated", "pending", "rejected"].indexOf(data.status) != -1) {
+				if (["validated", "pending", "rejected", "validatedInternational"].indexOf(data.status) != -1) {
 					return Project.findOne(
 						{
 							_id: data.projectId,
@@ -441,7 +441,7 @@ exports.projectValidation = ({ ...data }) =>
 						})
 						.exec();
 				} else
-					throw new InvalidParameterError("status", "string (values accepted : validated, pending, rejected)");
+					throw new InvalidParameterError("status", "string (values accepted : validated, pending, rejected, validatedInternational)");
 			})
 			.then(project => {
 				if (project) {
@@ -453,7 +453,7 @@ exports.projectValidation = ({ ...data }) =>
 
 						if (project.specializations[i].status != "pending") {
 							count++;
-							if (project.specializations[i].status == "validated")
+							if (project.specializations[i].status == "validated" || project.specializations[i].status == "validatedInternational")
 								rejected = false;
 						}
 					}
@@ -705,7 +705,7 @@ exports.studentFolder = () =>
 					projects.forEach(project => {
 						project.study_year.forEach(year => {
 							project.specializations
-								.filter(spe => spe.status === "validated")
+								.filter(spe => spe.status === "validated" || spe.status === "validatedInternational")
 								.forEach(spe => {
 									let fileName = project.number + " - " + project.title.replace('/', ' ');
 									if (project.files.length > 0) {
