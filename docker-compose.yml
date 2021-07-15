@@ -54,5 +54,5 @@ services:
             ME_CONFIG_MONGODB_ADMINUSERNAME: root
             ME_CONFIG_MONGODB_ADMINPASSWORD: example
             ME_CONFIG_MONGODB_SERVER: mongo
-            ME_CONFIG_MONGODB_AUTH_USERNAME: root
-            ME_CONFIG_MONGODB_AUTH_PASSWORD: example
+            ME_CONFIG_BASICAUTH_USERNAME: root 
+            ME_CONFIG_BASICAUTH_PASSWORD: example
