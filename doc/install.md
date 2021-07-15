@@ -7,25 +7,32 @@
 
 ## Installation
 
+0. Installer docker et docker-compose:
+https://docs.docker.com/engine/install/debian/
+https://docs.docker.com/compose/install/ 
+
 1. Dans les dossiers admin et client, faire les modifications nécessaires (jetons API, config API) dans la config et ensuite:
 
 ```
 mv config.example.json config.json
 ```
 
-2. Compiler et lancer la plateforme
+2.  Changer les mots de passes pas défault dans le docker-compose.yml
+
+
+3. Compiler et lancer la plateforme
 
 ```
 docker-compose up
 ```
 
-3. Relancer la plateforme après un ```docker-compose up```
+4. Relancer la plateforme après un ```docker-compose up```
 
 ```
 docker-compose start
 ```
 
-4. Lancer la plateforme en recompilant
+5. Lancer la plateforme en recompilant
 
 ```
 docker-compose up --build
