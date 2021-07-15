@@ -8,4 +8,4 @@
 docker-compose up --build
 ```
 
-3. Recréer les utilisateurs (EGPE et responsables), les années, les majeures et les mot-clés.
+3. Recréer les utilisateurs (EGPE et responsables), les années, les majeures et les mots-clés.

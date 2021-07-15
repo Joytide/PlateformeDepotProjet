@@ -160,8 +160,8 @@ class Keywords extends React.Component {
         return (
             <Card>
                 <CardHeader color={color}>
-                    <h4 className={classes.cardTitleWhite}>Années</h4>
-                    <p className={classes.cardCategoryWhite}>Années concernées par le projet</p>
+                    <h4 className={classes.cardTitleWhite}>Mots-clés</h4>
+                    <p className={classes.cardCategoryWhite}>Mots-clés concernés par le projet</p>
                 </CardHeader>
                 <CardBody>
                     <GridContainer>

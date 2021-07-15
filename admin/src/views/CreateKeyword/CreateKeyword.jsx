@@ -111,7 +111,7 @@ class CreateKeyword extends React.Component {
                     if (!res.ok)
                         throw res;
                     else {
-                        this.props.snackbar.success("Mot-clé créé avec succès. Vous allez être redirigé vers la liste des mot-clés.");
+                        this.props.snackbar.success("Mot-clé créé avec succès. Vous allez être redirigé vers la liste des mots-clés.");
 
                         setTimeout(() => {
                             this.setState({ redirect: true });
@@ -126,7 +126,7 @@ class CreateKeyword extends React.Component {
     importKeyword(){
         let keywordslist=[];
         if (this.state.keywordData === "") 
-            this.props.snackbar.error("Veuillez saisir une liste de mot-clés.");
+            this.props.snackbar.error("Veuillez saisir une liste de mots-clés.");
         else
         {
             let lines = this.state.keywordData.split('\n');
@@ -157,7 +157,7 @@ class CreateKeyword extends React.Component {
                     if (!res.ok)
                         throw res;
                     else {
-                        this.props.snackbar.success("Mots-clés créés avec succès. Vous allez être redirigé vers la liste des mot-clés.");
+                        this.props.snackbar.success("Mots-clés créés avec succès. Vous allez être redirigé vers la liste des mots-clés.");
 
                         setTimeout(() => {
                             this.setState({ redirect: true });
@@ -235,7 +235,7 @@ class CreateKeyword extends React.Component {
                                 <GridItem xs={12} sm={12} md={12}>
                                     <TextField
                                         id="keywordData"
-                                        label="Mots-clés"
+                                        label="Mots-clés (Format: [mot-clé fr],[mot-clé eng] à chaque ligne)"
                                         multiline={true}
                                         rows="12"
                                         className={classes.textField}

@@ -151,8 +151,8 @@ const dashboardRoutes = [
   },
   {
     path: "/keyword",
-    sidebarName: "Liste des mot-clés",
-    navbarName: "Liste des mot-clés",
+    sidebarName: "Liste des mots-clés",
+    navbarName: "Liste des mots-clés",
     icon: "list",
     component: KeywordList,
     exact: true,
@@ -160,8 +160,8 @@ const dashboardRoutes = [
   },
   {
     path: "/createKeyword",
-    sidebarName: "Créer un mot-clé",
-    navbarName: "Créer un mot-clé",
+    sidebarName: "Créer un mots-clé",
+    navbarName: "Créer un mots-clé",
     icon: "add",
     component: CreateKeyword,
     permissions: Permissions.CreateKeyword.value

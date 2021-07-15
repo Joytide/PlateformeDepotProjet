@@ -164,9 +164,9 @@ class KeywordList extends React.Component {
                     <GridItem xs={12} sm={12} md={12}>
                         <Card>
                             <CardHeader color="primary">
-                                <h4 className={classes.cardTitleWhite}>Liste des mot-clés</h4>
+                                <h4 className={classes.cardTitleWhite}>Liste des mots-clés</h4>
                                 <p className={classes.cardCategoryWhite}>
-                                    Liste des mot-clés en service
+                                    Liste des mots-clés en service
                                 </p>
                             </CardHeader>
                             <CardBody>

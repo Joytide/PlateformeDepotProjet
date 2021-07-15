@@ -6,8 +6,8 @@
 
 ## 2.5.1 (04 Août 2021)
 
-- :sparkles: Panels ajout/suppression/modification des mot-clés pour les admins (`25ea358551a52bdffd1024b2b4a5297783591e20`)
-- :sparkles: Champ sélection mot-clés lors du dépot de projet (`1f8062433cccff39366fb4af138c5409a1728d70`)
+- :sparkles: Panels ajout/suppression/modification des mots-clés pour les admins (`25ea358551a52bdffd1024b2b4a5297783591e20`)
+- :sparkles: Champ sélection mots-clés lors du dépot de projet (`1f8062433cccff39366fb4af138c5409a1728d70`)
 - :bug: Redirection vers liste au lieu de dashboard lors de la création d'années, users ou majeures (`637d3792281c25bc4e9d5fc9ebebc83929456781` et `c3345b93c83e746df4963e3f2a4a3c3d35572e99`)
 - :sparkles: Champ booléen pour plus grande équipe et nombre étudiants lors du dépot de projet, mutuellement exclusif avec le champ plusieurs équipes (`1cf895bb6145478aa9b4a66d9dcff2cf229c4d98`)
 
