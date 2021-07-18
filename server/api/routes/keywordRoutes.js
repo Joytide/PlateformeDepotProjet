@@ -34,6 +34,10 @@ module.exports = app => {
             auth.areAuthorized(["Administration", "EPGE"]),
             handleRequest(keyword.createMany)
         );
+    app.route('/api/suggested')
+        .get(
+            handleRequest(keyword.suggestedList)
+        )
 
     
 

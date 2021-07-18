@@ -73,6 +73,23 @@ new Promise((resolve, reject) => {
  });
 
 /**
+ * Returns the list of existing keyword(s)
+ */
+ exports.suggestedList = () =>
+ new Promise((resolve, reject) => {
+    Project
+        .find()
+        .select('suggestedKeywords')
+        .lean()
+        .exec()
+        .then(resolve)
+        .catch(reject);
+});
+
+
+
+
+/**
 * Update a keyword 
 * @param {ObjectId} id Id of the keyword to delete
 * @param {string} [nameFr] Optional - New french name

@@ -5,6 +5,9 @@ import { Redirect } from 'react-router'
 import withStyles from "@material-ui/core/styles/withStyles";
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -72,7 +75,8 @@ class CreateKeyword extends React.Component {
             nameEn: "",
             nameFr: "",
             keywordData: "",
-            redirect: false
+            redirect: false,
+            suggestedKeywords: [],
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -83,6 +87,40 @@ class CreateKeyword extends React.Component {
     handleChange = event => {
         this.setState({ [event.target.id]: event.target.value.trim() });
     };
+
+    componentWillMount() {
+        this.loadSuggested()
+    }
+
+    loadSuggested = () => {
+        fetch(api.host + ":" + api.port + "/api/suggested", { crossDomain: true })
+            .then(res => {
+                if (!res.ok)
+                    throw res;
+                return res.json();
+            })
+            .then(data => {
+                let suggestedData= []
+                for (let i = 0; i < data.length; i++){
+                    if (data[i].suggestedKeywords){
+                        let splitted=data[i].suggestedKeywords.split(',')
+                        for (let j = 0; j<splitted.length;j++){
+                            suggestedData.push(
+                                <ListItem key={data[i]._id+splitted[j]} button>
+                                    <ListItemText  primary={splitted[j]} />
+                                </ListItem>
+                                )
+                        }
+                            
+                    }
+                }
+                this.setState({ suggestedKeywords: suggestedData });
+            })
+            .catch(handleXhrError(this.props.snackbar));
+    }
+
+
+
 
     createKeyword() {
         this.setState({ error: false, success: false });
@@ -109,7 +147,7 @@ class CreateKeyword extends React.Component {
             })
                 .then(res => {
                     if (!res.ok)
-                        throw res;
+                        throw res;  
                     else {
                         this.props.snackbar.success("Mot-clé créé avec succès. Vous allez être redirigé vers la liste des mots-clés.");
 
@@ -167,6 +205,8 @@ class CreateKeyword extends React.Component {
                 .catch(handleXhrError(this.props.snackbar));
         }
     }
+
+
         
 
     render() {
@@ -255,6 +295,26 @@ class CreateKeyword extends React.Component {
                         </CardFooter>
                     </Card>
                 </GridItem>
+
+                <GridItem xs={12} sm={12} md={12}>
+                    <Card>
+                        <CardHeader color="primary">
+                            <h4 className={classes.cardTitleWhite}>Mots-clés proposés par les partenaires</h4>
+                            <p className={classes.cardCategoryWhite}></p>
+                        </CardHeader>
+                        <CardBody>
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={12}>
+                                    <List component="nav">
+                                        {this.state.suggestedKeywords}
+                                    </List>
+                                </GridItem>
+                            </GridContainer>
+
+                        </CardBody>
+                    </Card>
+                </GridItem>
+
             </GridContainer >
         );
     }
