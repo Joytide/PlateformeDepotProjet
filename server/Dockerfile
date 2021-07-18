@@ -16,6 +16,9 @@ RUN npm update
 # Bundle app source
 COPY . .
 
+RUN mkdir /usr/src/app/.uploads
+RUN chown node:node -R /usr/src/app/.uploads
+
 EXPOSE 3000
 USER node
 CMD [ "node", "--trace-warnings", "app.js" ]
