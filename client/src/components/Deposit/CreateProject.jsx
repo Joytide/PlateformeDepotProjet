@@ -74,7 +74,10 @@ class CreateProject extends React.Component {
         AuthService.fetch('/api/keyword')
             .then(res => res.json())
             .then(keywords => {
-                this.setState({ keywords: keywords })
+                if (this.props.lng==="fr")
+                    this.setState({ keywords: keywords.sort((a, b) => a.name.fr.localeCompare(b.name.fr)) })
+                else
+                this.setState({ keywords: keywords.sort((a, b) => a.name.eng.localeCompare(b.name.eng)) })
             })
             .catch(console.error.bind(console));
         
@@ -236,7 +239,7 @@ class CreateProject extends React.Component {
         const { lng, classes } = this.props;
         return (
             <ValidatorForm ref="form" onSubmit={this.handleNext} onError={() => this.props.snackbar.notification("error", i18n.t("errors.fillAll", { lng: this.props.lng }))}>
-                <Grid container direction="column" justify="center" spacing={24} className={classes.paper}>
+                <Grid container direction="column" justify="center" spacing={32} className={classes.paper}>
                     <Grid item>
                         <Typography align='center' variant='h6'>{i18n.t('projectPres.h2', { lng })}</Typography>
                     </Grid>
@@ -326,8 +329,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
-
-
+                    <br /><br /><br /><br />
                     {/* Not working yet
                                             <Button lng={lng} name="selected_keywords" variant='contained' value={kw._id} onChange={this.handleChange}>
                                                 <Typography color="inherit">
@@ -336,11 +338,9 @@ class CreateProject extends React.Component {
                                             </Button>
                     */}
 
-
-                    <br />
+                    <Grid item xs={12}>
                     {i18n.t('createProject.teamInfo', { lng })}
-                    <br/>
-
+                    </Grid>
                     {!this.state.multipleTeams &&
                         <Grid item xs={12}>
                             <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
@@ -473,7 +473,7 @@ class CreateProject extends React.Component {
                             onChange={this.handleChange}
                             fullWidth={true}
                             variant="outlined"
-                            helperText={i18n.t('createProject.descriptionHelper', { lng })}
+                            /*helperText={i18n.t('createProject.descriptionHelper', { lng })}*/
                         />
                     </Grid>
 
