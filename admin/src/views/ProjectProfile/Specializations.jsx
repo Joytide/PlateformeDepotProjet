@@ -224,14 +224,14 @@ class Specializations extends React.Component {
                                             onClick={this.specializationValidation("validated", spe._id)}>
                                             Valider le projet
                                 </Button>
-                                    <Button
+                                    {/*<Button
                                             size="sm"
                                             disabled={this.state.projectSpecializations[i].status === "validatedInternational"}
                                             style={{ backgroundColor: "#00bcd4", color: "white" }}
                                             name="validatedInternational"
                                             onClick={this.specializationValidation("validatedInternational", spe._id)}>
                                             Valider le projet pour une équipe internationale
-                                </Button>
+                                    </Button>*/}
                                         <Button
                                             size="sm"
                                             disabled={this.state.projectSpecializations[i].status === "pending"}
