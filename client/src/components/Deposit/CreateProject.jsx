@@ -39,8 +39,8 @@ class CreateProject extends React.Component {
             multipleTeams: false,
             biggerTeam: false,
             RandD: false,
-            maxTeamNumber: 1,
-            maxStudentNumber: 5,
+            maxTeamNumber: "",
+            maxStudentNumber: "",
             keywords:  [], //All possible
             selected_keywords: [], //Selected
             suggestedKeywords: ""
@@ -343,10 +343,11 @@ class CreateProject extends React.Component {
                     </Grid>
                     {!this.state.multipleTeams &&
                         <Grid item xs={12}>
-                            <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                            <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                                 {i18n.t('createProject.biggerTeam', { lng })}
                             </Typography>
-                            <Grid container direction="row" justify='center'>
+                            <br />
+                            <Grid container direction="row" justify='left'>
                                 <Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
@@ -357,14 +358,14 @@ class CreateProject extends React.Component {
                                     />
                                     {i18n.t("createPartner.yes", { lng })}
                                 </Grid>
-
+                                
                                 <Grid item xs={12} md={6} lg={4}>
                                     {this.state.biggerTeam &&
                                         <TextValidator
                                             label={i18n.t('createProject.maxStudentNumber', { lng })}
                                             value={this.state.maxStudentNumber}
                                             validators={['required', 'matchRegexp:^[0-9]+$']}
-
+                                            style ={{width: '100%'}}
                                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
                                             name="maxStudentNumber"
                                             onChange={this.handleChange}
@@ -382,10 +383,11 @@ class CreateProject extends React.Component {
                     {!this.state.biggerTeam &&
                         <Grid item xs={12}>
                         
-                            <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                            <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                                 {i18n.t('createProject.multipleTeams', { lng })}
                             </Typography>
-                            <Grid container direction="row" justify='center'>
+                            <br />
+                            <Grid container direction="row" justify='left'>
                                 <Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
@@ -396,14 +398,13 @@ class CreateProject extends React.Component {
                                     />
                                     {i18n.t("createPartner.yes", { lng })}
                                 </Grid>
-
                                 <Grid item xs={12} md={6} lg={4}>
                                     {this.state.multipleTeams &&
                                         <TextValidator
                                             label={i18n.t('createProject.maxTeamNumber', { lng })}
                                             value={this.state.maxTeamNumber}
                                             validators={['required', 'matchRegexp:^[0-9]+$']}
-
+                                            
                                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
                                             name="maxTeamNumber"
                                             onChange={this.handleChange}
@@ -421,10 +422,10 @@ class CreateProject extends React.Component {
                     
 
                     <Grid item xs={12}>
-                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                        <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.confidential', { lng })}
                         </Typography>
-                        <Grid container direction="row" justify='center'>
+                        <Grid container direction="row" justify='left'>
                             <Grid item xs={4} md={3} lg={2}>
                                 {i18n.t("createPartner.no", { lng })}
                                 <Switch
@@ -441,10 +442,10 @@ class CreateProject extends React.Component {
 
 
                     <Grid item xs={12}>
-                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                        <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.international', { lng })}
                         </Typography>
-                        <Grid container direction="row" justify='center'>
+                        <Grid container direction="row" justify='left'>
                             <Grid item xs={4} md={3} lg={2}>
                                 {i18n.t("createPartner.no", { lng })}
                                 <Switch
@@ -462,8 +463,11 @@ class CreateProject extends React.Component {
 
 
                     <Grid item>
+                        <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
+                            {i18n.t('descriptionProj.label', { lng })}
+                        </Typography>
                         <TextValidator
-                            label={i18n.t('descriptionProj.label', { lng })}
+                            label={i18n.t('descriptionProj.subtext', {lng})}
                             value={this.state.description}
                             validators={['required', 'maxStringLength:10000']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
@@ -522,7 +526,9 @@ class CreateProject extends React.Component {
                     <Grid item>
                         <FilesInputs lng={lng} setFiles={this.setFiles} />
                     </Grid>
+
                 </Grid>
+
                 <Grid item>
                     <Grid container spacing={40} justify="center">
                         <Grid item xs={2}>
@@ -534,6 +540,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                 </Grid>
+                
             </ValidatorForm>
         );
     }
