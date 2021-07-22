@@ -4,12 +4,14 @@ import { withStyles } from '@material-ui/core/styles';
 
 import FilesInputs from './FormComponents/FilesInputs';
 
+import NativeSelect from "@material-ui/core/NativeSelect";
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
+
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import AuthService from '../AuthService';
@@ -42,8 +44,10 @@ class CreateProject extends React.Component {
             maxTeamNumber: "",
             maxStudentNumber: "",
             keywords:  [], //All possible
+            unselected_keywords: [], //All minus selected
             selected_keywords: [], //Selected
-            suggestedKeywords: ""
+            suggestedKeywords: "",
+            keywordSelectID: "aaa",
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -77,7 +81,9 @@ class CreateProject extends React.Component {
                 if (this.props.lng==="fr")
                     this.setState({ keywords: keywords.sort((a, b) => a.name.fr.localeCompare(b.name.fr)) })
                 else
-                this.setState({ keywords: keywords.sort((a, b) => a.name.eng.localeCompare(b.name.eng)) })
+                    this.setState({ keywords: keywords.sort((a, b) => a.name.en.localeCompare(b.name.en)) })
+                
+                this.setState({ unselected_keywords: this.state.keywords})
             })
             .catch(console.error.bind(console));
         
@@ -128,7 +134,8 @@ class CreateProject extends React.Component {
                 this.setState({ majors_concerned: temp });
                 break;
             */
-            case "selected_keywords":
+            
+            /*case "selected_keywords":
                 temp = this.state.selected_keywords;
                 if (e.target.checked) {
                     temp.push(e.target.value);
@@ -140,6 +147,56 @@ class CreateProject extends React.Component {
                     }
                 }
                 this.setState({ selected_keywords: temp });
+                break;*/
+
+            case "keywordSelect":
+                let tempSelected=this.state.selected_keywords;
+                tempSelected.push(this.state.keywords.find(kw => kw._id === e.target.value));
+
+                let tempUnselected = this.state.unselected_keywords;
+                tempUnselected = tempUnselected.filter(kw => kw._id !== e.target.value);
+
+                if (this.props.lng==="fr"){
+                    tempUnselected.sort((a, b) => a.name.fr.localeCompare(b.name.fr));
+                    tempSelected.sort((a, b) => a.name.fr.localeCompare(b.name.fr));
+                }
+                else{
+                    tempUnselected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
+                    tempSelected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
+                }
+                
+                this.setState({
+                    unselected_keywords: tempUnselected,
+                    selected_keywords: tempSelected
+                });
+                break;
+            
+            case "keywordUnselect":
+                tempSelected = this.state.selected_keywords;
+                if (e.target.checked) {
+                    console.log("What");
+                }
+                else {
+                    let tempUnselected = this.state.unselected_keywords;
+                    tempUnselected.push(this.state.keywords.find(kw => kw._id === e.target.value));
+
+                    tempSelected=tempSelected.filter(kw => kw._id !== e.target.value);
+
+                    if (this.props.lng==="fr"){
+                        tempUnselected.sort((a, b) => a.name.fr.localeCompare(b.name.fr));
+                        tempSelected.sort((a, b) => a.name.fr.localeCompare(b.name.fr));
+                    }
+                    else{
+                        tempUnselected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
+                        tempSelected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
+                    }
+                    
+
+                    this.setState({ 
+                        selected_keywords: tempSelected,
+                        unselected_keywords: tempUnselected
+                    });
+                }
                 break;
             case "multipleTeams":
                 this.setState({
@@ -304,20 +361,37 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>                
                     <br />
-                    */}                 
+                    */}
                     <Grid item>
                         <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
                             {i18n.t('keywords.label', { lng })}
                         </Typography>
+                        <Grid container>
+                            <NativeSelect
+                                style={{ paddingRight: '20px' }}
+                                value={this.state.keywordSelectID}
+                                onChange={this.handleChange}
+                                name="keywordSelect"
+                            >
+                                <option value="None"></option>
+                                {this.state.unselected_keywords.map(kw => {
+                                    return <option value={kw._id} key={kw._id}>{lng === "fr" ? kw.name.fr : kw.name.en}</option>
+                                })},"None"
+                                
+                            </NativeSelect>
+                        </Grid>
+
                         <Grid container direction="row">
-                            {this.state.keywords.map(kw =>
+                            {this.state.selected_keywords.map(kw =>
+                                
                                 <Grid item key={kw._id} xs={12} md={6} lg={4} xl={3}>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
                                                 onChange={this.handleChange}
+                                                defaultChecked={true}
                                                 value={kw._id}
-                                                name="selected_keywords"
+                                                name="keywordUnselect"
                                             />
                                             
                                         }
@@ -325,11 +399,11 @@ class CreateProject extends React.Component {
                                         label={lng === "fr" ? kw.name.fr : kw.name.en}
                                     />
                                 </Grid>
+                                
                             )}
                         </Grid>
                     </Grid>
-                    <br />
-                    <br /><br /><br /><br />
+
                     {/* Not working yet
                                             <Button lng={lng} name="selected_keywords" variant='contained' value={kw._id} onChange={this.handleChange}>
                                                 <Typography color="inherit">
@@ -347,7 +421,7 @@ class CreateProject extends React.Component {
                                 {i18n.t('createProject.biggerTeam', { lng })}
                             </Typography>
                             <br />
-                            <Grid container direction="row" justify='left'>
+                            <Grid container direction="row" justify='center'>
                                 <Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
@@ -387,7 +461,7 @@ class CreateProject extends React.Component {
                                 {i18n.t('createProject.multipleTeams', { lng })}
                             </Typography>
                             <br />
-                            <Grid container direction="row" justify='left'>
+                            <Grid container direction="row" justify='center'>
                                 <Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
@@ -425,7 +499,7 @@ class CreateProject extends React.Component {
                         <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.confidential', { lng })}
                         </Typography>
-                        <Grid container direction="row" justify='left'>
+                        <Grid container direction="row" justify='center'>
                             <Grid item xs={4} md={3} lg={2}>
                                 {i18n.t("createPartner.no", { lng })}
                                 <Switch
@@ -445,7 +519,7 @@ class CreateProject extends React.Component {
                         <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.international', { lng })}
                         </Typography>
-                        <Grid container direction="row" justify='left'>
+                        <Grid container direction="row" justify='center'>
                             <Grid item xs={4} md={3} lg={2}>
                                 {i18n.t("createPartner.no", { lng })}
                                 <Switch
@@ -493,7 +567,7 @@ class CreateProject extends React.Component {
                             variant="outlined"
                         />
                     </Grid>
-                    
+
                     <Grid item>
                         <TextValidator
                             label={i18n.t('createProject.skills', { lng })}
@@ -540,7 +614,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                 </Grid>
-                
+
             </ValidatorForm>
         );
     }
