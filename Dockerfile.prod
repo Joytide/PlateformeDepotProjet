@@ -1,27 +1,45 @@
-# pull official base image
-FROM node:14.15.4-alpine as build
+# Staged build
+#
+# Command to build for prod:
+# docker build -t react-app -f Dockerfile.prod .
+# docker run -p 443:443 react-app
+#
+# Stage 1 Client
+FROM node:14.15.4-alpine as client
 
-# set working directory
 WORKDIR /app
 
-# add `/app/node_modules/.bin` to $PATH
+COPY ./client/package*.json /app/
+
 ENV PATH /app/node_modules/.bin:$PATH
 
-# install app dependencies
-COPY package.json .
-COPY package-lock.json .
+RUN npm install
 
-RUN npm ci --silent
-RUN npm install react-scripts@3.4.1 -g
-RUN npm install -g serve
+COPY ./client /app/
 
-# add app
-COPY . ./
+RUN npm run build
+
+# Stage 2 Admin
+FROM node:14.15.4-alpine as admin
+
+WORKDIR /app
+
+COPY ./admin/package*.json /app/
+
+ENV PATH /app/node_modules/.bin:$PATH
+
+RUN npm install
+
+COPY ./admin /app/
 
 RUN npm run build
 
 
+# Stage 3, based on Nginx, to have only the compiled app, ready for production with Nginx
+FROM nginx:1.15
 
+COPY --from=client /app/build/ /usr/share/nginx/html
+COPY --from=admin /app/build/ /usr/share/nginx/html
 
-
-CMD ["serve" , "-s build"]
+# Copy the default nginx.conf provided
+COPY ./doc/config/dvp.conf /etc/nginx/conf.d/default.conf
