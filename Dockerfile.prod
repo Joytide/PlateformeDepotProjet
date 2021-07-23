@@ -43,4 +43,5 @@ COPY --from=admin /app/build/ /usr/share/nginx/html/admin/build
 
 # Copy the default nginx.conf provided
 COPY ./doc/config/dvp_docker.conf /etc/nginx/conf.d/default.conf
-COPY /etc/letsencrypt/live/projets-esilv.devinci.fr/ /etc/letsencrypt/live/projets-esilv.devinci.fr/
+COPY ./nginx /app/nginx
+
