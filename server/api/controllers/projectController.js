@@ -565,10 +565,11 @@ exports.getCSV = (find = {}) => () =>
 			.exec();
 		let findYear = Year.find({}).lean().exec();
 		let findSpecializations = Specialization.find({}).lean().exec();
+		let findKeywords = Keyword.find({}).lean().exec();
 
-		Promise.all([findProject, findYear, findSpecializations])
-			.then(([projects, years, specializations]) => {
-				let yearsFields = [], specializationsFields = [];
+		Promise.all([findProject, findYear, findSpecializations, findKeywords])
+			.then(([projects, years, specializations, selected_keywords]) => {
+				let yearsFields = [], specializationsFields = [], keywordsFields = [];
 
 				for (let i = 0; i < years.length; i++) {
 					yearsFields.push({
@@ -581,6 +582,13 @@ exports.getCSV = (find = {}) => () =>
 					specializationsFields.push({
 						label: specializations[i].abbreviation,
 						value: row => row.specializations.filter(s => s.status === "validated" && s.specialization.abbreviation === specializations[i].abbreviation).length > 0 ? "X" : ""
+					});
+				}
+
+				for (let i = 0; i < selected_keywords.length; i++) {
+					keywordsFields.push({
+						label: selected_keywords[i].name.fr,
+						value: row => row.selected_keywords.filter(y => y.name.fr === selected_keywords[i].name.fr).length > 0 ? "X" : ""
 					});
 				}
 
@@ -627,6 +635,7 @@ exports.getCSV = (find = {}) => () =>
 					},
 					...yearsFields,
 					...specializationsFields,
+					...keywordsFields,
 					{
 						label: "Titre du projet",
 						value: "title"
@@ -639,10 +648,10 @@ exports.getCSV = (find = {}) => () =>
 						label: "Compétences développées",
 						value: "skills"
 					},
-					{
+					/*{
 						label: "Mots-clés",
-						value: row => row.keywords.map(k => k.displayName).join(", ")
-					},
+						value: row => row.selected_keywords.map(kw => kw.name.fr).join(", ")
+					},*/
 					{
 						label: "Plusieurs groupes ?",
 						value: row => row.maxTeams > 1 ? "Oui" : "Non"
@@ -657,16 +666,18 @@ exports.getCSV = (find = {}) => () =>
 					}
 				];
 
+				console.log("process.cwd()",process.cwd())
+
 				const json2csvParser = new Parser({ fields });
 				const csv = json2csvParser.parse(projects);
 
 				const date = Date.now();
 
-				fs.writeFile(date + ".csv", csv, err => {
+				fs.writeFile(".exports/" + date + ".csv", csv, err => {
 					if (err)
 						throw err;
 					else
-						resolve({ path: process.cwd() + "/" + date + ".csv", filename: "Projets.csv" });
+						resolve({ path: process.cwd() + "/.exports/" + date + ".csv", filename: "Projets.csv" });
 				})
 			})
 			.catch(reject);

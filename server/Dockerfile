@@ -18,6 +18,8 @@ COPY . .
 
 RUN mkdir -p /usr/src/app/.uploads
 RUN chown node:node -R /usr/src/app/.uploads
+RUN mkdir -p /usr/src/app/.exports
+RUN chown node:node -R /usr/src/app/.exports
 
 EXPOSE 3000
 USER node
