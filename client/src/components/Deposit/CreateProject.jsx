@@ -163,8 +163,8 @@ class CreateProject extends React.Component {
                     tempSelected.sort((a, b) => a.name.fr.localeCompare(b.name.fr));
                 }
                 else{
-                    tempUnselected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
-                    tempSelected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
+                    tempUnselected.sort((a, b) => a.name.en.localeCompare(b.name.en));
+                    tempSelected.sort((a, b) => a.name.en.localeCompare(b.name.en));
                 }
                 
                 this.setState({
@@ -189,8 +189,8 @@ class CreateProject extends React.Component {
                         tempSelected.sort((a, b) => a.name.fr.localeCompare(b.name.fr));
                     }
                     else{
-                        tempUnselected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
-                        tempSelected.sort((a, b) => a.name.eng.localeCompare(b.name.eng));
+                        tempUnselected.sort((a, b) => a.name.en.localeCompare(b.name.en));
+                        tempSelected.sort((a, b) => a.name.en.localeCompare(b.name.en));
                     }
                     
 
