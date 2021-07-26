@@ -238,8 +238,8 @@ class CreateProject extends React.Component {
                 description: this.state.description,
                 skills: this.state.skills,
                 infos: this.state.infos,
-                maxTeamNumber: this.state.maxTeamNumber,
-                maxStudentNumber: this.state.maxStudentNumber,
+                maxTeamNumber: this.state.maxTeamNumber === "" ? 1 : this.state.maxTeamNumber,
+                maxStudentNumber: this.state.maxStudentNumber === "" ? 5 : this.state.maxStudentNumber,
                 confidential: this.state.confidential,
                 international: this.state.international,
                 selected_keywords: this.state.selected_keywords,
@@ -548,7 +548,7 @@ class CreateProject extends React.Component {
                             {i18n.t('descriptionProj.label', { lng })}
                         </Typography>
                         <TextValidator
-                            helperText={i18n.t('descriptionProj.subtext', {lng})}
+                            label={i18n.t('descriptionProj.subtext', {lng})}
                             value={this.state.description}
                             validators={['required', 'maxStringLength:10000']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
