@@ -8,9 +8,11 @@ import NativeSelect from "@material-ui/core/NativeSelect";
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Switch from '@material-ui/core/Switch';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
@@ -363,22 +365,26 @@ class CreateProject extends React.Component {
                     <br />
                     */}
                     <Grid item>
-                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
+                        <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('keywords.label', { lng })}
                         </Typography>
                         <Grid container>
-                            <NativeSelect
-                                style={{ paddingRight: '20px' }}
-                                value={this.state.keywordSelectID}
-                                onChange={this.handleChange}
-                                name="keywordSelect"
-                            >
-                                <option value="None"></option>
-                                {this.state.unselected_keywords.map(kw => {
-                                    return <option value={kw._id} key={kw._id}>{lng === "fr" ? kw.name.fr : kw.name.en}</option>
-                                })},"None"
-                                
-                            </NativeSelect>
+                            <FormControl>
+                                <NativeSelect
+                                    style={{ paddingRight: '20px' }}
+                                    value={this.state.keywordSelectID}
+                                    onChange={this.handleChange}
+                                    name="keywordSelect"
+                                    label={i18n.t('keywords.label', { lng })}
+                                >
+                                    <option value="None"></option>
+                                    {this.state.unselected_keywords.map(kw => {
+                                        return <option value={kw._id} key={kw._id}>{lng === "fr" ? kw.name.fr : kw.name.en}</option>
+                                    })},"None"
+                                    
+                                </NativeSelect>
+                                <FormHelperText>{i18n.t('keywords.choose', { lng })}</FormHelperText>
+                            </FormControl>
                         </Grid>
 
                         <Grid container direction="row">
@@ -389,6 +395,7 @@ class CreateProject extends React.Component {
                                         control={
                                             <Checkbox
                                                 onChange={this.handleChange}
+                                                
                                                 defaultChecked={true}
                                                 value={kw._id}
                                                 name="keywordUnselect"
@@ -412,16 +419,16 @@ class CreateProject extends React.Component {
                                             </Button>
                     */}
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} align='left'>
                     {i18n.t('createProject.teamInfo', { lng })}
                     </Grid>
                     {!this.state.multipleTeams &&
-                        <Grid item xs={12}>
+                        <Grid item xs={12} >
                             <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                                 {i18n.t('createProject.biggerTeam', { lng })}
                             </Typography>
                             <br />
-                            <Grid container direction="row" justify='center'>
+                            <Grid container direction="row" justify='flex-start'>
                                 <Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
@@ -433,7 +440,7 @@ class CreateProject extends React.Component {
                                     {i18n.t("createPartner.yes", { lng })}
                                 </Grid>
                                 
-                                <Grid item xs={12} md={6} lg={4}>
+                                <Grid item xs={12} md={6} lg={6}>
                                     {this.state.biggerTeam &&
                                         <TextValidator
                                             label={i18n.t('createProject.maxStudentNumber', { lng })}
@@ -461,7 +468,7 @@ class CreateProject extends React.Component {
                                 {i18n.t('createProject.multipleTeams', { lng })}
                             </Typography>
                             <br />
-                            <Grid container direction="row" justify='center'>
+                            <Grid container direction="row" justify='flex-start'>
                                 <Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
@@ -472,7 +479,7 @@ class CreateProject extends React.Component {
                                     />
                                     {i18n.t("createPartner.yes", { lng })}
                                 </Grid>
-                                <Grid item xs={12} md={6} lg={4}>
+                                <Grid item xs={12} md={6} lg={6}>
                                     {this.state.multipleTeams &&
                                         <TextValidator
                                             label={i18n.t('createProject.maxTeamNumber', { lng })}
@@ -499,7 +506,7 @@ class CreateProject extends React.Component {
                         <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.confidential', { lng })}
                         </Typography>
-                        <Grid container direction="row" justify='center'>
+                        <Grid container direction="row" justify='flex-start'>
                             <Grid item xs={4} md={3} lg={2}>
                                 {i18n.t("createPartner.no", { lng })}
                                 <Switch
@@ -519,7 +526,7 @@ class CreateProject extends React.Component {
                         <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.international', { lng })}
                         </Typography>
-                        <Grid container direction="row" justify='center'>
+                        <Grid container direction="row" justify='flex-start'>
                             <Grid item xs={4} md={3} lg={2}>
                                 {i18n.t("createPartner.no", { lng })}
                                 <Switch
@@ -541,7 +548,7 @@ class CreateProject extends React.Component {
                             {i18n.t('descriptionProj.label', { lng })}
                         </Typography>
                         <TextValidator
-                            label={i18n.t('descriptionProj.subtext', {lng})}
+                            helperText={i18n.t('descriptionProj.subtext', {lng})}
                             value={this.state.description}
                             validators={['required', 'maxStringLength:10000']}
                             errorMessages={[i18n.t('field.label', { lng }), i18n.t('field_length.label', { lng })]}
