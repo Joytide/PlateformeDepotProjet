@@ -653,13 +653,25 @@ exports.getCSV = (find = {}) => () =>
 						value: row => row.selected_keywords.map(kw => kw.name.fr).join(", ")
 					},*/
 					{
-						label: "Plusieurs groupes ?",
+						label: "Plusieurs équipes ?",
 						value: row => row.maxTeams > 1 ? "Oui" : "Non"
 					},
 					{
-						label: "Nombre de groupes",
+						label: "Nombre d'équipes",
 						value: row => row.maxTeams > 1 ? row.maxTeams : ""
 					},
+					{
+					label: "Grosse équipe ?",
+					value: row => row.maxStudents > 5 ? "Oui" : "Non"
+					},
+					{
+					label: "Nombre d'étudiants",
+					value: row => row.maxStudents > 5 ? row.maxTeams : ""
+					},
+					{
+						label: "International",
+						value: row => row.international ? "X" : ""
+						},
 					{
 						label: "Informations supplémentaires",
 						value: "infos"

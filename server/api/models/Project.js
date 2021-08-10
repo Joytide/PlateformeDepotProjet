@@ -107,7 +107,7 @@ const ProjectSchema = new Schema({
     },
     maxStudents: {
         type: Number,
-        default: 1,
+        default: 5,
         required: true
     },
     confidential: {
