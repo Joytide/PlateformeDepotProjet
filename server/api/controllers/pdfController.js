@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { spawn } = require('child_process');
+const { spawn, exec } = require('child_process');
 const ejs = require('ejs');
 const fs = require('fs');
 const Project = mongoose.model('Project');
@@ -34,7 +34,7 @@ const PDFUtils = {
         return new Promise((resolve, reject) => {
             Project
                 .findById(projectID)
-                .populate("study_year files partner keywords")
+                .populate("study_year files partner selected_keywords")
                 .populate("specializations.specialization")
                 .lean()
                 .exec()
@@ -77,25 +77,23 @@ const PDFUtils = {
     generatePDF: (project, HTMLpath) => {
         return new Promise((resolve, reject) => {
             let PDFpath = process.cwd() + "/PDF/" + project._id + ".pdf";
+            // Using xvfb because of https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2037
+            // Using -a because of https://stackoverflow.com/questions/16726227/xvfb-failed-start-error
+            let wkhtmltopdf = exec("xvfb-run -a wkhtmltopdf "+HTMLpath+" "+PDFpath, function(err, stdout, stderr){
+                if (err){
+                    reject(err)
+                }
+                else{
+                    console.log("#stdout:",stdout);
+                    console.log("#stderr:",stderr);
 
-            let wkhtmltopdf = spawn("wkhtmltopdf", [
-                HTMLpath,
-                PDFpath]
-            );
-
-            wkhtmltopdf.on('error', err => {
-                reject(err);
-            })
-
-            wkhtmltopdf.on('close', exitCode => {
-                if (exitCode === 0) {
                     let pdf = new File({
                         projectID: project._id,
                         owner: project.partner._id,
                         originalName: project.number + " - " + project.title + ".pdf",
                         path: PDFpath
-                    })
-
+                    });
+        
                     pdf.save(err => {
                         if (err)
                             reject(err);
@@ -105,12 +103,29 @@ const PDFUtils = {
                                 else resolve(pdf);
                             });
                         }
-                    });
+                    })
+                }
+                
+            });
+            
 
+            //console.log("#####",wkhtmltopdf)
+            /*
+            wkhtmltopdf.on('error', err => {
+                console.log("!!!!",err);
+            });
+            */
+            
+                //if (exitCode === 0) {
+            
+                    
+                    
+            /*wkhtmltopdf.on('close', exitCode => {
                 } else {
                     reject(new Error("Something wrong happening while generating PDF"));
                 }
-            });
+            });*/
+            
         });
     },
 
@@ -121,7 +136,7 @@ const PDFUtils = {
     chainPDF: async (projects) => {
         return new Promise((resolve, reject) => {
             let files = projects.map(p => p.pdf ? p.pdf.path : undefined).filter(p => p !== undefined)
-
+            console.log("FILES",files)
             let pdfunite = spawn("pdfunite", [
                 ...files,
                 "./PDF/AllProjects.pdf"]

@@ -5,8 +5,7 @@ const Schema = mongoose.Schema;
 
 //Comment Class
 const KeywordSchema = new Schema({
-    //displayName: String,
-    //lcName: String
+    //name: String
     name: {
         fr: {
             type: String,

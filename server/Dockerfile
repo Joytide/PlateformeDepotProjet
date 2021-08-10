@@ -20,7 +20,11 @@ RUN mkdir -p /usr/src/app/.uploads
 RUN chown node:node -R /usr/src/app/.uploads
 RUN mkdir -p /usr/src/app/.exports
 RUN chown node:node -R /usr/src/app/.exports
+RUN chown node:node -R /usr/src/app/PDF
+
+RUN apt update -y
+RUN apt install wkhtmltopdf xvfb poppler-utils -y
 
 EXPOSE 3000
-USER node
+#USER node
 CMD [ "node", "--trace-warnings", "app.js" ]

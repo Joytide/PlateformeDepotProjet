@@ -17,7 +17,7 @@ https://docs.docker.com/compose/install/
 mv config.example.json config.json
 ```
 
-2.  Changer les mots de passes pas défault dans le docker-compose.yml
+2.  Changer les mots de passes pas défaut dans le docker-compose.yml
 
 
 3. Compiler et lancer la plateforme
@@ -47,6 +47,10 @@ front client http://localhost:3002
 mongo-express: http://localhost:8081
 
 
+
+## Développement
+
+- Utiliser ``docker system prune`` fréquemment car la commande apt upgrade du docker de l'api prend de la place.
 
 
 
