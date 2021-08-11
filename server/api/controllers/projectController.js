@@ -701,7 +701,7 @@ exports.getCSV = (find = {}) => () =>
 exports.studentFolder = () =>
 	new Promise((resolve, reject) => {
 		let date = Date.now();
-		let baseDirectory = process.cwd() + "/exports/" + date;
+		let baseDirectory = process.cwd() + "/.exports/" + date;
 
 		let findYears = Year.find({}).lean().exec();
 		let findKeywords = Keyword.find({}).lean().exec();
@@ -753,7 +753,7 @@ exports.studentFolder = () =>
 						});
 					});
 
-					exec("cd exports && zip -9 -r " + date + ".zip " + date, err => {
+					exec("cd .exports && zip -9 -r " + date + ".zip " + date, err => {
 						if (err)
 							throw err;
 						else {
