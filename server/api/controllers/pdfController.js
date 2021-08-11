@@ -108,24 +108,6 @@ const PDFUtils = {
                 
             });
             
-
-            //console.log("#####",wkhtmltopdf)
-            /*
-            wkhtmltopdf.on('error', err => {
-                console.log("!!!!",err);
-            });
-            */
-            
-                //if (exitCode === 0) {
-            
-                    
-                    
-            /*wkhtmltopdf.on('close', exitCode => {
-                } else {
-                    reject(new Error("Something wrong happening while generating PDF"));
-                }
-            });*/
-            
         });
     },
 
