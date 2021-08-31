@@ -288,7 +288,7 @@ exports.createProject = ({ user, ...data }) =>
 exports.findById = ({ id, user }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
-			.then(() =>
+			.then(() => 
 				Project.findById(id)
 					.populate('partner')
 					.populate('specializations.specialization')
@@ -301,7 +301,7 @@ exports.findById = ({ id, user }) =>
 					})
 					.lean()
 					.exec()
-			)
+				)
 			.then(project => {
 				if (user.__t == "Partner" && project.partner._id.toString() != user._id.toString())
 					reject(new ForbiddenError());
@@ -311,6 +311,47 @@ exports.findById = ({ id, user }) =>
 			.catch(reject);
 	});
 
+/**
+ * Find the previous project by number.
+ * @param {string} number Number of the original project
+ */
+ exports.findPrevByNum = ({ number, user }) =>
+ new Promise((resolve, reject) => {
+	 isValidType(number, "number","string")
+		 .then(() => 
+			Project.findOne({"number":(parseInt(number)-1).toString().padStart(3,0)})
+				.lean()
+				.exec()
+		 )
+		 .then( prev => {
+			 if (user.__t == "Partner" && prev.partner._id.toString() != user._id.toString())
+				 reject(new ForbiddenError());
+			 else
+				 resolve(prev)
+		 })
+		 .catch(reject);
+ });
+
+/**
+ * Find the next project by number.
+ * @param {string} number Number of the original project
+ */
+ exports.findNextByNum = ({ number, user }) =>
+ new Promise((resolve, reject) => {
+	 isValidType(number, "number","string")
+		 .then(() => 
+		 Project.findOne({"number":(parseInt(number)+1).toString().padStart(3,0)})
+				.lean()
+				.exec()
+		 )
+		 .then( prev => {
+			 if (user.__t == "Partner" && prev.partner._id.toString() != user._id.toString())
+				 reject(new ForbiddenError());
+			 else
+				 resolve(prev)
+		 })
+		 .catch(reject);
+ });
 /**
  * Find a project by id and only returns files part populated
  * @param {ObjectId} id Id of the project to search for

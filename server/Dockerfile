@@ -22,8 +22,8 @@ RUN mkdir -p /usr/src/app/.exports
 RUN chown node:node -R /usr/src/app/.exports
 RUN chown node:node -R /usr/src/app/PDF
 
-RUN apt -qq update -y
-RUN apt -qq install wkhtmltopdf xvfb poppler-utils zip -y
+RUN apt -qqy update
+RUN apt -qqy install wkhtmltopdf xvfb poppler-utils zip
 
 EXPOSE 3000
 USER node

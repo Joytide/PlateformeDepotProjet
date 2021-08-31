@@ -117,6 +117,20 @@ module.exports = function (app) {
 			handleRequest(project.update)
 		)
 
+	app.route('/api/project/prev/:number([0-9]{1,6})')
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized(["Administration", "EPGE", "Partner"]),
+			handleRequest(project.findPrevByNum)
+		)
+	
+	app.route('/api/project/next/:number([0-9]{1,6})')
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized(["Administration", "EPGE", "Partner"]),
+			handleRequest(project.findNextByNum)
+		)
+
 	app.route('/api/project/csv')
 		.get(
 			auth.passport.authenticate('jwt'),
