@@ -44,6 +44,6 @@ COPY --from=client /app/build/ /usr/share/nginx/html/client/build
 COPY --from=admin /app/build/ /usr/share/nginx/html/admin/build
 
 # Copy the default nginx.conf provided
-#COPY ./doc/config/dvp_docker.conf /etc/nginx/conf.d/default.conf
-#COPY ./nginx /app/nginx
+COPY ./doc/config/dvp_docker.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx /app/nginx
 
