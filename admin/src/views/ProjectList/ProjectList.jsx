@@ -8,6 +8,8 @@ import Chip from '@material-ui/core/Chip';
 import { FormControlLabel, NativeSelect } from "@material-ui/core";
 
 import Visibility from "@material-ui/icons/Visibility"
+import SortByAlpha from "@material-ui/icons/SortByAlpha"
+
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -78,8 +80,13 @@ class ProjectList extends React.Component {
             RejectedByMe: false,
             canDownloadPdf: false,
             canDownloadCsv: false,
-            canDownloadZip: false
+            canDownloadZip: false,
+            alphaSortYear: false,
+            alphaSortCompany: false,
+            alphaSortProject: false,
         };
+
+        
 
         this.handleChange = this.handleChange.bind(this);
     }
@@ -128,17 +135,48 @@ class ProjectList extends React.Component {
     }
 
     handleChange = name => event => {
-        if (name !== "keywordSort"){
-            this.setState(
-                { [name]: event.target.checked },
-                this.updateFilters
-            );
-        }
-        else{
-            this.setState(
-                { [name]: event.target.value },
-                this.updateFilters
-            );
+        let temp
+        switch (name) {
+            case "keywordSort":
+                this.setState(
+                    { [name]: event.target.value },
+                    this.updateFilters
+                );
+                break;
+            case "alphaSortYear":
+                temp=this.state.alphaSortYear;
+                this.setState(
+                    { alphaSortYear: !temp ,
+                    alphaSortCompany: false,
+                    alphaSortProject: false
+                    },
+                );
+                break;
+            case "alphaSortCompany":
+                temp=this.state.alphaSortCompany;
+                this.setState(
+                    { alphaSortYear: false ,
+                    alphaSortCompany: !temp,
+                    alphaSortProject: false
+                    },
+                );
+                break;
+            case "alphaSortProject":
+                temp=this.state.alphaSortProject;
+                this.setState(
+                    { alphaSortYear: false ,
+                    alphaSortCompany: false,
+                    alphaSortProject: !temp
+                    },
+                );
+                break;
+            default:
+                
+                this.setState(
+                    { [name]: event.target.checked },
+                    this.updateFilters
+                );
+                break;
         }
         
     }
@@ -192,7 +230,30 @@ class ProjectList extends React.Component {
                 label="En attente de validation"
                 style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
             />;
-            let projectsData = applyFilters(this.state.filters, this.state.projects).map(project => {
+
+            let sortedProjects = this.state.projects.sort(function(a, b) {
+                return a.number.localeCompare(b.number);
+             });
+            if (this.state.alphaSortCompany){
+                sortedProjects= this.state.projects.sort(function(a, b) {
+                    return a.partner.company.localeCompare(b.partner.company);
+                 });
+            }
+
+            if (this.state.alphaSortProject){
+                sortedProjects= this.state.projects.sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                 });
+            }
+
+            if (this.state.alphaSortYear){
+                sortedProjects = this.state.projects.sort(function(a, b) {
+                    return a.study_year.map(year => year.abbreviation).sort().join(', ').localeCompare(b.study_year.map(year => year.abbreviation).sort().join(', '));
+                 });
+            }
+            
+
+            let projectsData = applyFilters(this.state.filters, sortedProjects).map(project => {
                 if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
                     return undefined;
                 return [
@@ -214,6 +275,7 @@ class ProjectList extends React.Component {
                     (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
                 ];
             }).filter(p => p !== undefined);
+            
 
             let confidentialMapping = applyFilters(this.state.filters, this.state.projects).map(project =>
                 (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization))) ? undefined : project.confidential
@@ -359,10 +421,34 @@ class ProjectList extends React.Component {
                                         </NativeSelect>
                                         
                                     }
-                                    label="Tri par mot-clé"
+                                    label="Filtrer par mot-clé"
                                 />
                             </GridItem>
                             
+                            
+                            <GridItem xs={12} sm={12} md={6}>
+                                
+                                <Button
+                                    color= {this.state.alphaSortProject ? "success" : "white"}
+                                    onClick={this.handleChange("alphaSortProject")}
+                                >
+                                    <SortByAlpha/> Tri par nom
+                                </Button>
+
+                                <Button
+                                    color= {this.state.alphaSortYear ? "success" : "white"}
+                                    onClick={this.handleChange("alphaSortYear")}
+                                >
+                                    <SortByAlpha/> Tri par année
+                                </Button>
+
+                                <Button
+                                    color= {this.state.alphaSortCompany ? "success" : "white"}
+                                    onClick={this.handleChange("alphaSortCompany")}
+                                >
+                                    <SortByAlpha/> Tri par partenaire
+                                </Button>
+                            </GridItem>
                             
 
 
