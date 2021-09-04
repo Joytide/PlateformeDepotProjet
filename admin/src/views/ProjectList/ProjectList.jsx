@@ -427,7 +427,7 @@ class ProjectList extends React.Component {
                             
                             
                             <GridItem xs={12} sm={12} md={6}>
-                                
+                                <Button>test</Button>
                                 <Button
                                     color= {this.state.alphaSortProject ? "success" : "white"}
                                     onClick={this.handleChange("alphaSortProject")}
