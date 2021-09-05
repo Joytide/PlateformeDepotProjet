@@ -293,6 +293,44 @@ class ProjectList extends React.Component {
 
         return (<GridContainer>
             <GridItem xs={12} sm={12} md={12}>
+                {(this.props.user.user.EPGE || this.props.user.user.admin) &&
+                    <Card>
+                        <CardHeader color="primary">
+                            <h4 className={classes.cardTitleWhite}>Téléchargement</h4>
+                            <p className={classes.cardCategoryWhite}>
+                                Téléchargements disponibles
+                            </p>
+                        </CardHeader>
+                        <CardBody>
+                            <a href={api.host + ":" + api.port + "/api/pdf/all?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets validés au format PDF
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/csv?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets validés au format CSV
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/csv/full?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger tous les projets au format CSV
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/student?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets zippés
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/pdf/regenerateAll?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Regénérer tous les pdfs (attention, ne cliquer qu'une fois)
+                                </Button>
+                            </a>
+                        </CardBody>
+                    </Card>
+                }
+
                 <Card>
                     <CardHeader color="primary">
                         <h4 className={classes.cardTitleWhite}>Liste des projets</h4>
@@ -459,43 +497,7 @@ class ProjectList extends React.Component {
                     </CardBody>
                 </Card>
 
-                {(this.props.user.user.EPGE || this.props.user.user.admin) &&
-                    <Card>
-                        <CardHeader color="primary">
-                            <h4 className={classes.cardTitleWhite}>Téléchargement</h4>
-                            <p className={classes.cardCategoryWhite}>
-                                Téléchargements disponibles
-                            </p>
-                        </CardHeader>
-                        <CardBody>
-                            <a href={api.host + ":" + api.port + "/api/pdf/all?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger les projets validés au format PDF
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/project/csv?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger les projets validés au format CSV
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/project/csv/full?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger tous les projets au format CSV
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/project/student?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger les projets zippés
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/pdf/regenerateAll?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Regénérer tous les pdfs (attention, ne cliquer qu'une fois)
-                                </Button>
-                            </a>
-                        </CardBody>
-                    </Card>
-                }
+               
             </GridItem>
         </GridContainer>);
     }
