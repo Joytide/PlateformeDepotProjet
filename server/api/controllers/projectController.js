@@ -748,7 +748,7 @@ exports.studentFolder = () =>
 		let findKeywords = Keyword.find({}).lean().exec();
 		let findSpecializations = Specialization.find({}).lean().exec();
 		let findProjects = Project
-			.find({ status: "validated" })
+			.find().or([{ status: "validated" },{ status: "pending" }])
 			.populate("files pdf specializations.specialization selected_keywords study_year")
 			.lean()
 			.exec();
@@ -780,15 +780,27 @@ exports.studentFolder = () =>
 										);
 
 										project.files.forEach(file => {
-											fs.copyFileSync(
-												file.path,
-												baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + "/" + file.originalName)
+											try{
+												fs.copyFileSync(
+													file.path,
+													baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + "/" + file.originalName)
+												console.log("Found file:",file.path," !")
+												
+											}
+											catch{
+												console.log("Error finding file:",file.path)
+											}
 										});
 									} else {
-										fs.copyFileSync(
-											project.pdf.path,
-											baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + ".pdf"
-										);
+										try{
+											fs.copyFileSync(
+												project.pdf.path,
+												baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + ".pdf"
+											);
+										}
+										catch{
+											console.log("Error finding file:",file.path)
+										}
 									}
 								});
 						});
