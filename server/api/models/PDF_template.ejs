@@ -102,9 +102,9 @@
                 <%- project.infos %>
             </p>
     
-            <!--<p><span class="bold">Majeure(s) concernée(s) :
-                </span><%= project.specializations.filter(spe => spe.status === "validated").map(spe => spe.specialization.abbreviation).join(',') %>
-            </p>-->
+            <p><span class="bold">Majeure(s) concernée(s) :
+                </span><%= project.specializations.filter(spe => spe.status === "validated").map(spe => spe.specialization.abbreviation).join(', ') %>
+            </p>
             <p><span class="bold">Année(s) concernée(s) :
                 </span><%= project.study_year.map(year => year.abbreviation).join(', ') %>
             </p>
