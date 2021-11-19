@@ -19,5 +19,7 @@ New keys will be in: ``/etc/letsencrypt/live/projets-esilv.devinci.fr/fullchain.
 ```bash
 docker stop $(reactapp)
 sudo certbot renew --cert-name projets-esilv.devinci.fr --dry-run
+# Move new keys in archive to ./nginx
+# Update dvp_docker.conf for new keys
 # Follow build and run steps in prod dockerfile
 ```
