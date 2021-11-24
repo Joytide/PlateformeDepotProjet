@@ -1,0 +1,18 @@
+version: '3'
+services:
+  nginx:
+    build:
+     context: .
+     dockerfile: Dockerfile.prod
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+        - ./doc/config/certbot:/etc/nginx/conf.d
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
+  certbot:
+    image: certbot/certbot
+    volumes:
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
