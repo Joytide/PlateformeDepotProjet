@@ -8,35 +8,79 @@
 ## Installation
 
 0. Installer docker et docker-compose:
-https://docs.docker.com/engine/install/debian/
-https://docs.docker.com/compose/install/ 
+   https://docs.docker.com/engine/install/debian/
+   https://docs.docker.com/compose/install/ 
 
-1. Dans les dossiers admin et client, faire les modifications nécessaires (jetons API, config API) dans la config et ensuite:
+1. Clone le repo
+
+2. Dans les dossiers admin et client, adapter les fichiers ``config.json``:
 
 ```
 mv config.example.json config.json
 ```
 
-2.  Changer les mots de passes pas défaut dans le docker-compose.yml
+Exemple d'un ``config.json`` en dev:
 
+```json
+{
+    "api": {
+        "host": "http://localhost",
+        "port": 3000
+    }
+}
+```
 
-3. Compiler et lancer la plateforme
+Exemple d'un ``config.json`` en prod:
+
+```json
+{
+    "api": {
+        "host": "https://projets-esilv.devinci.fr",
+        "port": 443
+    }
+}
+```
+
+3. Dans le dossier server, faire les modifications nécessaires (jetons API, config API) dans la config et ensuite:
 
 ```
-docker-compose up
+mv config.example.json config.json
+```
+
+
+
+4. Changer les mots de passes pas défaut dans le docker-compose.yml
+
+5. Compiler et lancer la plateforme
+
+```bash
+docker-compose up --build
 ```
 
 4. Relancer la plateforme après un ```docker-compose up```
 
-```
+```bash
 docker-compose start
 ```
 
 5. Lancer la plateforme en recompilant
 
-```
+```bash
 docker-compose up --build
 ```
+
+6. Si prod, stopper les client et server, puis lancer le multi-stage dockerfile présent à la racine:
+
+```bash
+docker build -t react-app -f Dockerfile.prod .
+docker run -dp 443:443 react-app 
+```
+
+
+
+## Développement
+
+- Utiliser ``docker system prune`` fréquemment car la commande apt upgrade du docker de l'api prend de la place.
 
 api: http://localhost:3000
 
@@ -46,11 +90,9 @@ front client http://localhost:3002
 
 mongo-express: http://localhost:8081
 
+Default user: ``root@member.com``:``azerT1234``
 
 
-## Développement
-
-- Utiliser ``docker system prune`` fréquemment car la commande apt upgrade du docker de l'api prend de la place.
 
 
 ## Update certificat
