@@ -196,6 +196,11 @@ class Navs extends React.Component {
 							<img alt="logo PULV" src="./logo_esilv.png" height="60" width="60" style={{ margin:"5px" }} />
 							<img alt="logo EGPE" src="./logo_egpe.png" height="60" width="60" style={{ marginTop: "5px", marginBottom: "5px" }} />
 						</Link>
+                        <Link to="/admin" style={{ textDecoration: "none" }}>
+								<Button color="inherit" className={classes.button}>
+									<div>{i18n.t('navs.admin', { lng })}</div>
+								</Button>
+						</Link>
 
 						{this.context.user._id && user}
 						<div className={classes.grow} />

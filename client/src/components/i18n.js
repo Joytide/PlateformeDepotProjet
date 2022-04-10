@@ -158,6 +158,7 @@ i18next
 					},
 					navs: {
 						home: 'Home',
+                        admin: 'Administration',
 						projects: 'Projects',
 						myprojects: 'My projects',
 						submit: 'Submit a project',
@@ -346,6 +347,7 @@ i18next
 					},
 					navs: {
 						home: 'Accueil',
+                        admin: 'Administration',
 						projects: 'Projets',
 						myprojects: 'Mes projets',
 						submit: 'Soumettre un projet',
