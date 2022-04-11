@@ -4,11 +4,14 @@ const { handleRequest } = require('../../helpers/Request');
 
 
 module.exports = app => {
+    app.route('/api/keyword/:id([a-zA-Z0-9]{24})')
+    .get(
+        handleRequest(keyword.findById)
+        );
+
     app.route('/api/keyword')
         .get(
-            auth.passport.authenticate('jwt'),
-            auth.areAuthorized(["Administration", "EPGE"]),
-            handleRequest(keyword.getAll)
+            handleRequest(keyword.list)
         )
         .post(
             auth.passport.authenticate('jwt'),
@@ -25,4 +28,18 @@ module.exports = app => {
             auth.areAuthorized("EPGE"),
             handleRequest(keyword.delete)
         );
+    app.route('/api/keywords')
+        .post(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized(["Administration", "EPGE"]),
+            handleRequest(keyword.createMany)
+        );
+    app.route('/api/suggested')
+        .get(
+            handleRequest(keyword.suggestedList)
+        )
+
+    
+
+
 };

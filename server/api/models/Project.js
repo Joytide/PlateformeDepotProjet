@@ -11,7 +11,7 @@ const SpecializationSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["validated", "rejected", "pending"],
+        enum: ["validated", "rejected", "pending", "validatedInternational"],
         required: true,
         default: "pending"
     },
@@ -51,10 +51,11 @@ const ProjectSchema = new Schema({
         ref: "Year",
         required: true
     }], //(Number)
-    keywords: [
+    selected_keywords: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Keyword'
+            ref: 'Keyword',
+            required: true,
         }
     ],
     status: {
@@ -104,7 +105,17 @@ const ProjectSchema = new Schema({
         default: 1,
         required: true
     },
+    maxStudents: {
+        type: Number,
+        default: 5,
+        required: true
+    },
     confidential: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
+    international: {
         type: Boolean,
         default: false,
         required: true

@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import withStyles from "@material-ui/core/styles/withStyles";
 import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
-import { FormControlLabel } from "@material-ui/core";
+import { FormControlLabel, NativeSelect } from "@material-ui/core";
 
 import Visibility from "@material-ui/icons/Visibility"
+import SortByAlpha from "@material-ui/icons/SortByAlpha"
+
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -65,23 +67,33 @@ class ProjectList extends React.Component {
         this.state = {
             loading: true,
             projects: [],
+            keywords: [],
             filters: [],
             confidentialMapping: [],
             rejectedProjects: false,
             validatedProjects: false,
             pendingProjects: true,
-            mySpecialization: true,
-            notWaitingForMe: true,
+            keywordSort: "",
+            //mySpecialization: true,
+            WaitingForMe: true,
+            ValidatedByMe: false,
+            RejectedByMe: false,
             canDownloadPdf: false,
             canDownloadCsv: false,
-            canDownloadZip: false
+            canDownloadZip: false,
+            alphaSortYear: false,
+            alphaSortCompany: false,
+            alphaSortProject: false,
         };
+
+        
 
         this.handleChange = this.handleChange.bind(this);
     }
 
     componentWillMount() {
         this.loadProjects();
+        this.loadKeywords();
         this.updateFilters();
     }
 
@@ -103,6 +115,19 @@ class ProjectList extends React.Component {
             .then(data => {
                 this.setState({
                     projects: data,
+                    
+                });
+            })
+            .catch(handleXhrError(this.props.snackbar));
+        
+    }
+
+    loadKeywords(){
+        AuthService.fetch(api.host + ":" + api.port + '/api/keyword')
+            .then(res => res.json())
+            .then(keywords => {
+                this.setState({ 
+                    keywords: keywords,
                     loading: false
                 });
             })
@@ -110,10 +135,50 @@ class ProjectList extends React.Component {
     }
 
     handleChange = name => event => {
-        this.setState(
-            { [name]: event.target.checked },
-            this.updateFilters
-        );
+        let temp
+        switch (name) {
+            case "keywordSort":
+                this.setState(
+                    { [name]: event.target.value },
+                    this.updateFilters
+                );
+                break;
+            case "alphaSortYear":
+                temp=this.state.alphaSortYear;
+                this.setState(
+                    { alphaSortYear: !temp ,
+                    alphaSortCompany: false,
+                    alphaSortProject: false
+                    },
+                );
+                break;
+            case "alphaSortCompany":
+                temp=this.state.alphaSortCompany;
+                this.setState(
+                    { alphaSortYear: false ,
+                    alphaSortCompany: !temp,
+                    alphaSortProject: false
+                    },
+                );
+                break;
+            case "alphaSortProject":
+                temp=this.state.alphaSortProject;
+                this.setState(
+                    { alphaSortYear: false ,
+                    alphaSortCompany: false,
+                    alphaSortProject: !temp
+                    },
+                );
+                break;
+            default:
+                
+                this.setState(
+                    { [name]: event.target.checked },
+                    this.updateFilters
+                );
+                break;
+        }
+        
     }
 
     updateFilters = () => {
@@ -128,13 +193,21 @@ class ProjectList extends React.Component {
             status.push("pending")
 
         filters.push(p => status.indexOf(p.status) !== -1);
-
+        /* superseded by keyword search
         if (this.state.mySpecialization)
             filters.push(p => p.specializations.map(spe => spe.specialization.referent).flat().indexOf(this.props.user.user._id) !== -1);
-
-        if (this.state.notWaitingForMe)
+        */
+        if (this.state.WaitingForMe)
             filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "pending" ? true : false)));
+        if (this.state.ValidatedByMe)
+            filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "validated" ? true : false)));
+        if (this.state.RejectedByMe)
+            filters.push(p => p.specializations.every(spe => spe.specialization.referent.indexOf(this.props.user.user._id) === -1 ? true : (spe.status === "rejected" ? true : false)));
+        
 
+        if (this.state.keywordSort && this.state.keywordSort !== "None")
+            filters.push(p => p.selected_keywords.map(kw => kw.name.fr).flat().indexOf(this.state.keywordSort) !== -1);
+        
         this.setState({ filters })
     }
 
@@ -158,7 +231,29 @@ class ProjectList extends React.Component {
                 style={{ backgroundColor: "rgb(255, 152, 0)", color: "white" }}
             />;
 
-            let projectsData = applyFilters(this.state.filters, this.state.projects).map(project => {
+            let sortedProjects = this.state.projects.sort(function(a, b) {
+                return a.number.localeCompare(b.number);
+             });
+            if (this.state.alphaSortCompany){
+                sortedProjects= this.state.projects.sort(function(a, b) {
+                    return a.partner.company.localeCompare(b.partner.company);
+                 });
+            }
+
+            if (this.state.alphaSortProject){
+                sortedProjects= this.state.projects.sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                 });
+            }
+
+            if (this.state.alphaSortYear){
+                sortedProjects = this.state.projects.sort(function(a, b) {
+                    return a.study_year.map(year => year.abbreviation).sort().join(', ').localeCompare(b.study_year.map(year => year.abbreviation).sort().join(', '));
+                 });
+            }
+            
+
+            let projectsData = applyFilters(this.state.filters, sortedProjects).map(project => {
                 if (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization)))
                     return undefined;
                 return [
@@ -168,13 +263,19 @@ class ProjectList extends React.Component {
                     <div>{project.status === "validated" ? validatedChip : (project.status === "pending" ? pendingChip : refusedChip)}</div>,
                     <p>{new Date(project.submissionDate).toLocaleDateString()}</p>,
                     project.study_year.map(year => year.abbreviation).sort().join(', '),
+                    /* Superseded by keywords
                     project.specializations
                         .map(spe => spe.specialization.abbreviation + (spe.status === "pending" ? " (En attente)" : (spe.status === "validated" ? " (Validé)" : "(Refusé)")))
                         .sort()
                         .join(', '),
+                    */
+                    project.selected_keywords.map(kw => kw.name.fr)
+                    .sort()
+                    .join(', '),
                     (<Link to={"/project/" + project._id}><Button size="sm" type="button" color="info"><Visibility /> Voir le projet</Button></Link>)
                 ];
             }).filter(p => p !== undefined);
+            
 
             let confidentialMapping = applyFilters(this.state.filters, this.state.projects).map(project =>
                 (project.confidential && !hasPermission(Permissions.SeeConfidential, this.props.user.user, project.specializations.map(spe => spe.specialization))) ? undefined : project.confidential
@@ -183,7 +284,7 @@ class ProjectList extends React.Component {
             loadedContent = (
                 <Table
                     tableHeaderColor="primary"
-                    tableHead={["Numéro", "Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Majeure", "Actions"]}
+                    tableHead={["Numéro", "Nom du projet", "Entreprise", "Statut", "Date de soumission", "Année", "Mots-clés", "Actions"]}
                     tableData={projectsData}
                     confidential={confidentialMapping}
                 />
@@ -192,6 +293,44 @@ class ProjectList extends React.Component {
 
         return (<GridContainer>
             <GridItem xs={12} sm={12} md={12}>
+                {(this.props.user.user.EPGE || this.props.user.user.admin) &&
+                    <Card>
+                        <CardHeader color="primary">
+                            <h4 className={classes.cardTitleWhite}>Téléchargement</h4>
+                            <p className={classes.cardCategoryWhite}>
+                                Téléchargements disponibles
+                            </p>
+                        </CardHeader>
+                        <CardBody>
+                            <a href={api.host + ":" + api.port + "/api/pdf/all?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets validés au format PDF
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/csv?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets validés au format CSV
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/csv/full?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger tous les projets au format CSV
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/project/student?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Télécharger les projets zippés
+                                </Button>
+                            </a>
+                            <a href={api.host + ":" + api.port + "/api/pdf/regenerateAll?token=" + AuthService.getToken()}>
+                                <Button size="sm" color="info">
+                                    Regénérer tous les pdfs (attention, ne cliquer qu'une fois)
+                                </Button>
+                            </a>
+                        </CardBody>
+                    </Card>
+                }
+
                 <Card>
                     <CardHeader color="primary">
                         <h4 className={classes.cardTitleWhite}>Liste des projets</h4>
@@ -242,7 +381,7 @@ class ProjectList extends React.Component {
                                     label="Afficher les projets en attente de validation"
                                 />
                             </GridItem>
-
+                            {/*
                             <GridItem xs={12} sm={12} md={6}>
                                 <FormControlLabel
                                     control={
@@ -256,63 +395,109 @@ class ProjectList extends React.Component {
                                     label="Afficher uniquement les projets de ma majeure"
                                 />
                             </GridItem>
+                                */}
+                            <GridItem xs={12} sm={12} md={6}></GridItem>
 
                             <GridItem xs={12} sm={12} md={6}>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={this.state.notWaitingForMe}
-                                            onChange={this.handleChange('notWaitingForMe')}
-                                            value="notWaitingForMe"
+                                            checked={this.state.ValidatedByMe}
+                                            onChange={this.handleChange('ValidatedByMe')}
+                                            value="ValidatedByMe"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Afficher uniquement les projets que j'ai validé"
+                                />
+                            </GridItem>
+
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={this.state.RejectedByMe}
+                                            onChange={this.handleChange('RejectedByMe')}
+                                            value="RejectedByMe"
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Afficher uniquement les projets que j'ai refusé"
+                                />
+                            </GridItem>
+
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={this.state.WaitingForMe}
+                                            onChange={this.handleChange('WaitingForMe')}
+                                            value="WaitingForMe"
                                             color="primary"
                                         />
                                     }
                                     label="Afficher uniquement les projets que je n'ai pas encore traité"
                                 />
                             </GridItem>
+                            
+                            <GridItem xs={12} sm={12} md={6}></GridItem>
+
+                            <GridItem xs={12} sm={12} md={6}>
+                                <FormControlLabel
+                                    control={
+                                        
+                                        <NativeSelect
+                                            style={{ paddingRight: '20px' }}
+                                            value={this.state.keywordSort}
+                                            onChange={this.handleChange('keywordSort')}
+                                        >
+                                            <option value="None" ></option>
+                                            {this.state.keywords.map(kw => {
+                                                return <option key={kw._id}>{kw.name.fr}</option>
+                                            })},"None"
+                                            
+                                        </NativeSelect>
+                                        
+                                    }
+                                    label="Filtrer par mot-clé"
+                                />
+                            </GridItem>
+                            
+                            
+                            <GridItem xs={12} sm={12} md={6}>
+                                <Button
+                                    color= {this.state.alphaSortProject ? "success" : "white"}
+                                    onClick={this.handleChange("alphaSortProject")}
+                                >
+                                    <SortByAlpha/> Tri par nom
+                                </Button>
+
+                                <Button
+                                    color= {this.state.alphaSortYear ? "success" : "white"}
+                                    onClick={this.handleChange("alphaSortYear")}
+                                >
+                                    <SortByAlpha/> Tri par année
+                                </Button>
+
+                                <Button
+                                    color= {this.state.alphaSortCompany ? "success" : "white"}
+                                    onClick={this.handleChange("alphaSortCompany")}
+                                >
+                                    <SortByAlpha/> Tri par partenaire
+                                </Button>
+                            </GridItem>
+                            
+
+
+
+
                         </GridContainer>
 
                         {loadedContent}
                     </CardBody>
                 </Card>
 
-                {(this.props.user.user.EPGE || this.props.user.user.admin) &&
-                    <Card>
-                        <CardHeader color="primary">
-                            <h4 className={classes.cardTitleWhite}>Téléchargement</h4>
-                            <p className={classes.cardCategoryWhite}>
-                                Téléchargements disponibles
-                            </p>
-                        </CardHeader>
-                        <CardBody>
-                            <a href={api.host + ":" + api.port + "/api/pdf/all?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger les projets validés au format PDF
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/project/csv?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger les projets validés au format CSV
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/project/csv/full?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger tous les projets au format CSV
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/project/student?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Télécharger les projets zippés
-                                </Button>
-                            </a>
-                            <a href={api.host + ":" + api.port + "/api/pdf/regenerateAll?token=" + AuthService.getToken()}>
-                                <Button size="sm" color="info">
-                                    Regénérer tous les pdfs (attention, ne cliquer qu'une fois)
-                                </Button>
-                            </a>
-                        </CardBody>
-                    </Card>
-                }
+               
             </GridItem>
         </GridContainer>);
     }
@@ -321,6 +506,6 @@ class ProjectList extends React.Component {
 export default withSnackbar(withUser(withStyles(styles)(ProjectList)));
 
 const applyFilters = (filters, datas) => {
-    console.log(filters, datas)
+    //console.log(filters, datas)
     return filters.reduce((acc, f) => acc.filter(f), datas)
 }

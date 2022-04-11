@@ -12,6 +12,7 @@ const Project = mongoose.model('Project');
 const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const File = mongoose.model('File');
+const Keyword = mongoose.model('Keyword');
 const Specialization = mongoose.model('Specialization');
 const Year = mongoose.model('Year');
 
@@ -150,6 +151,7 @@ exports.listProjects = ({ user, ...data }) =>
 				.find(query)
 				.populate('partner')
 				.populate('specializations.specialization')
+				.populate('selected_keywords')
 				.populate('study_year')
 				.lean()
 				.exec();
@@ -193,6 +195,10 @@ exports.listAllProjects = () =>
 				path: 'study_year',
 				select: "abbreviation"
 			})
+			.populate({
+				path: 'selected_keywords',
+				select: "name.fr"
+			})
 			.select('title number status confidential submissionDate specializations.status')
 			.lean()
 			.exec()
@@ -205,18 +211,21 @@ exports.listAllProjects = () =>
  * @param {string} title Title of the new project
  * @param {string} description Description of the new project
  * @param {Array} majors_concerned Array containing list of specializations' objectid
+ * @param {Array} selected_keywords Array containing list of selected keywords' objectid
  * @param {Array} study_year Array containing list of years' objectid
- * @param {number} maxNumber Max number of teams allowed to work on the project
+ * @param {number} maxTeamNumber Max number of teams allowed to work on the project
+ * @param {number} maxStudentNumber Max number of student allowed to work on the single-team project
  * @param {Array} [files] Optional - Array of files' id attached to project
  * @param {string} [skills] Optional - Skills requiered for the project
+ * @param {string} [suggestedKeywords] Optional - Suggested keywords for the project
  * @param {string} [infos] Optional - Complementary informations on the project 
  */
 exports.createProject = ({ user, ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.title, data.description, data.majors_concerned, data.study_year, data.maxNumber, data.confidential],
-			["title", "description", "majors_concerned", "study_year", "maxNumber", "confidential"],
-			["string", "string", "Array", "Array", "number", "boolean"]
+			[data.title, data.description, data.majors_concerned, data.selected_keywords, data.study_year, data.maxTeamNumber, data.maxStudentNumber, data.confidential, data.international, data.suggestedKeywords],
+			["title", "description", "majors_concerned", "selected_keywords", "study_year", "maxTeamNumber", "maxStudentNumber", "confidential","international","suggestedKeywords"],
+			["string", "string", "Array", "Array", "Array", "number", "number", "boolean", "boolean","string"]
 		)
 			.then(() =>
 				Project
@@ -228,16 +237,19 @@ exports.createProject = ({ user, ...data }) =>
 					title: data.title,
 					specializations: data.majors_concerned.map(spe => ({ specialization: spe })),
 					study_year: data.study_year,
+					selected_keywords: data.selected_keywords,
 					description: data.description,
 					partner: user._id,
 					confidential: data.confidential,
-					maxTeams: parseInt(data.maxNumber, 10),
-					suggestedKeywords: data.keywords,
+					international: data.international,
+					maxTeams: parseInt(data.maxTeamNumber, 10),
+					maxStudents: parseInt(data.maxStudentNumber, 10),
 					submissionDate: Date.now()
 				});
 
 				if (data.files) newProject.files = data.files;
 				if (data.skills) newProject.skills = data.skills;
+				if (data.suggestedKeywords) newProject.suggestedKeywords= data.suggestedKeywords;
 				if (data.infos) newProject.infos = data.infos;
 
 				newProject.number = (count + 1).toString().padStart(3, '0');
@@ -276,10 +288,11 @@ exports.createProject = ({ user, ...data }) =>
 exports.findById = ({ id, user }) =>
 	new Promise((resolve, reject) => {
 		isValidType(id, "id", "ObjectId")
-			.then(() =>
+			.then(() => 
 				Project.findById(id)
 					.populate('partner')
 					.populate('specializations.specialization')
+					.populate('selected_keywords')
 					.populate('study_year')
 					.populate('lastUpdate.by')
 					.populate({
@@ -288,7 +301,7 @@ exports.findById = ({ id, user }) =>
 					})
 					.lean()
 					.exec()
-			)
+				)
 			.then(project => {
 				if (user.__t == "Partner" && project.partner._id.toString() != user._id.toString())
 					reject(new ForbiddenError());
@@ -298,6 +311,47 @@ exports.findById = ({ id, user }) =>
 			.catch(reject);
 	});
 
+/**
+ * Find the previous project by number.
+ * @param {string} number Number of the original project
+ */
+ exports.findPrevByNum = ({ number, user }) =>
+ new Promise((resolve, reject) => {
+	 isValidType(number, "number","string")
+		 .then(() => 
+			Project.findOne({"number":(parseInt(number)-1).toString().padStart(3,0)})
+				.lean()
+				.exec()
+		 )
+		 .then( prev => {
+			 if (user.__t == "Partner" && prev.partner._id.toString() != user._id.toString())
+				 reject(new ForbiddenError());
+			 else
+				 resolve(prev)
+		 })
+		 .catch(reject);
+ });
+
+/**
+ * Find the next project by number.
+ * @param {string} number Number of the original project
+ */
+ exports.findNextByNum = ({ number, user }) =>
+ new Promise((resolve, reject) => {
+	 isValidType(number, "number","string")
+		 .then(() => 
+		 Project.findOne({"number":(parseInt(number)+1).toString().padStart(3,0)})
+				.lean()
+				.exec()
+		 )
+		 .then( prev => {
+			 if (user.__t == "Partner" && prev.partner._id.toString() != user._id.toString())
+				 reject(new ForbiddenError());
+			 else
+				 resolve(prev)
+		 })
+		 .catch(reject);
+ });
 /**
  * Find a project by id and only returns files part populated
  * @param {ObjectId} id Id of the project to search for
@@ -354,10 +408,13 @@ exports.update = ({ user, id, ...data }) =>
 				if (data.title) update.title = data.title;
 				if (data.infos) update.infos = data.infos;
 				if (data.maxTeams) update.maxTeams = data.maxTeams;
+				if (data.maxStudents) update.maxStudents = data.maxStudents;
 				if (data.skills) update.skills = data.skills;
 				if (data.description) update.description = data.description;
 				if (data.confidential !== undefined) update.confidential = data.confidential;
+				if (data.international !== undefined) update.international = data.international;
 				if (data.study_year) update.study_year = data.study_year;
+				if (data.selected_keywords) update.selected_keywords = data.selected_keywords;
 				if (data.suggestedKeywords) update.suggestedKeywords = data.suggestedKeywords;
 
 				update.lastUpdate = {
@@ -416,7 +473,7 @@ exports.projectValidation = ({ ...data }) =>
 			["ObjectId", "ObjectId", "string"]
 		)
 			.then(() => {
-				if (["validated", "pending", "rejected"].indexOf(data.status) != -1) {
+				if (["validated", "pending", "rejected", "validatedInternational"].indexOf(data.status) != -1) {
 					return Project.findOne(
 						{
 							_id: data.projectId,
@@ -425,7 +482,7 @@ exports.projectValidation = ({ ...data }) =>
 						})
 						.exec();
 				} else
-					throw new InvalidParameterError("status", "string (values accepted : validated, pending, rejected)");
+					throw new InvalidParameterError("status", "string (values accepted : validated, pending, rejected, validatedInternational)");
 			})
 			.then(project => {
 				if (project) {
@@ -437,7 +494,7 @@ exports.projectValidation = ({ ...data }) =>
 
 						if (project.specializations[i].status != "pending") {
 							count++;
-							if (project.specializations[i].status == "validated")
+							if (project.specializations[i].status == "validated" || project.specializations[i].status == "validatedInternational")
 								rejected = false;
 						}
 					}
@@ -446,7 +503,7 @@ exports.projectValidation = ({ ...data }) =>
 						if (rejected)
 							project.status = "rejected";
 						else
-							if (project.keywords.length < 2)
+							if (project.selected_keywords.length < 1)
 								throw new MissingKeywordsError();
 							else
 								project.status = "validated";
@@ -505,7 +562,7 @@ exports.addKeyword = ({ keywordId, projectId }) =>
 		)
 			.then(() =>
 				Project
-					.updateOne({ _id: projectId }, { $addToSet: { keywords: keywordId } })
+					.updateOne({ _id: projectId }, { $addToSet: { selected_keywords: keywordId } })
 					.exec()
 			)
 			.then(writeOps => resolve(writeOps))
@@ -527,8 +584,8 @@ exports.removeKeyword = ({ keywordId, projectId }) =>
 			.then(() =>
 				Project
 					.updateOne(
-						{ _id: projectId, keywords: keywordId },
-						{ $pull: { keywords: keywordId } }
+						{ _id: projectId, selected_keywords: keywordId },
+						{ $pull: { selected_keywords: keywordId } }
 					)
 					.exec()
 
@@ -544,15 +601,16 @@ exports.getCSV = (find = {}) => () =>
 	new Promise((resolve, reject) => {
 		let findProject = Project
 			.find(find)
-			.populate("partner specializations.specialization study_year keywords")
+			.populate("partner specializations.specialization study_year selected_keywords")
 			.lean()
 			.exec();
 		let findYear = Year.find({}).lean().exec();
 		let findSpecializations = Specialization.find({}).lean().exec();
+		let findKeywords = Keyword.find({}).lean().exec();
 
-		Promise.all([findProject, findYear, findSpecializations])
-			.then(([projects, years, specializations]) => {
-				let yearsFields = [], specializationsFields = [];
+		Promise.all([findProject, findYear, findSpecializations, findKeywords])
+			.then(([projects, years, specializations, selected_keywords]) => {
+				let yearsFields = [], specializationsFields = [], keywordsFields = [];
 
 				for (let i = 0; i < years.length; i++) {
 					yearsFields.push({
@@ -565,6 +623,13 @@ exports.getCSV = (find = {}) => () =>
 					specializationsFields.push({
 						label: specializations[i].abbreviation,
 						value: row => row.specializations.filter(s => s.status === "validated" && s.specialization.abbreviation === specializations[i].abbreviation).length > 0 ? "X" : ""
+					});
+				}
+
+				for (let i = 0; i < selected_keywords.length; i++) {
+					keywordsFields.push({
+						label: selected_keywords[i].name.fr,
+						value: row => row.selected_keywords.filter(y => y.name.fr === selected_keywords[i].name.fr).length > 0 ? "X" : ""
 					});
 				}
 
@@ -611,6 +676,7 @@ exports.getCSV = (find = {}) => () =>
 					},
 					...yearsFields,
 					...specializationsFields,
+					...keywordsFields,
 					{
 						label: "Titre du projet",
 						value: "title"
@@ -623,34 +689,48 @@ exports.getCSV = (find = {}) => () =>
 						label: "Compétences développées",
 						value: "skills"
 					},
+					/*{
+						label: "Mots-clés",
+						value: row => row.selected_keywords.map(kw => kw.name.fr).join(", ")
+					},*/
 					{
-						label: "Mots clefs",
-						value: row => row.keywords.map(k => k.displayName).join(", ")
-					},
-					{
-						label: "Plusieurs groupes ?",
+						label: "Plusieurs équipes ?",
 						value: row => row.maxTeams > 1 ? "Oui" : "Non"
 					},
 					{
-						label: "Nombre de groupes",
+						label: "Nombre d'équipes",
 						value: row => row.maxTeams > 1 ? row.maxTeams : ""
 					},
+					{
+					label: "Grosse équipe ?",
+					value: row => row.maxStudents > 5 ? "Oui" : "Non"
+					},
+					{
+					label: "Nombre d'étudiants",
+					value: row => row.maxStudents > 5 ? row.maxTeams : ""
+					},
+					{
+						label: "International",
+						value: row => row.international ? "X" : ""
+						},
 					{
 						label: "Informations supplémentaires",
 						value: "infos"
 					}
 				];
 
+				console.log("process.cwd()",process.cwd())
+
 				const json2csvParser = new Parser({ fields });
 				const csv = json2csvParser.parse(projects);
 
 				const date = Date.now();
 
-				fs.writeFile(date + ".csv", csv, err => {
+				fs.writeFile(".exports/" + date + ".csv", csv, err => {
 					if (err)
 						throw err;
 					else
-						resolve({ path: process.cwd() + "/" + date + ".csv", filename: "Projets.csv" });
+						resolve({ path: process.cwd() + "/.exports/" + date + ".csv", filename: "Projets.csv" });
 				})
 			})
 			.catch(reject);
@@ -662,19 +742,20 @@ exports.getCSV = (find = {}) => () =>
 exports.studentFolder = () =>
 	new Promise((resolve, reject) => {
 		let date = Date.now();
-		let baseDirectory = process.cwd() + "/exports/" + date;
+		let baseDirectory = process.cwd() + "/.exports/" + date;
 
 		let findYears = Year.find({}).lean().exec();
+		let findKeywords = Keyword.find({}).lean().exec();
 		let findSpecializations = Specialization.find({}).lean().exec();
 		let findProjects = Project
-			.find({ status: "validated" })
-			.populate("files pdf specializations.specialization study_year")
+			.find().or([{ status: "validated" },{ status: "pending" }])
+			.populate("files pdf specializations.specialization selected_keywords study_year")
 			.lean()
 			.exec();
 
 		Promise
-			.all([findYears, findSpecializations, findProjects])
-			.then(([years, specializations, projects]) => {
+			.all([findYears, findKeywords, findSpecializations, findProjects])
+			.then(([years, keywords, specializations, projects]) => {
 				if (projects) {
 					fs.mkdirSync(baseDirectory, { recursive: true });
 
@@ -688,7 +769,7 @@ exports.studentFolder = () =>
 					projects.forEach(project => {
 						project.study_year.forEach(year => {
 							project.specializations
-								.filter(spe => spe.status === "validated")
+								.filter(spe => spe.status === "validated" || spe.status === "validatedInternational")
 								.forEach(spe => {
 									let fileName = project.number + " - " + project.title.replace('/', ' ');
 									if (project.files.length > 0) {
@@ -699,21 +780,33 @@ exports.studentFolder = () =>
 										);
 
 										project.files.forEach(file => {
-											fs.copyFileSync(
-												file.path,
-												baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + "/" + file.originalName)
+											try{
+												fs.copyFileSync(
+													file.path,
+													baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + "/" + file.originalName)
+												console.log("Found file:",file.path," !")
+												
+											}
+											catch{
+												console.log("Error finding file:",file.path)
+											}
 										});
 									} else {
-										fs.copyFileSync(
-											project.pdf.path,
-											baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + ".pdf"
-										);
+										try{
+											fs.copyFileSync(
+												project.pdf.path,
+												baseDirectory + "/" + year.abbreviation + "/" + spe.specialization.abbreviation + "/" + fileName + ".pdf"
+											);
+										}
+										catch{
+											console.log("Error finding file:",file.path)
+										}
 									}
 								});
 						});
 					});
 
-					exec("cd exports && zip -9 -r " + date + ".zip " + date, err => {
+					exec("cd .exports && zip -9 -r " + date + ".zip " + date, err => {
 						if (err)
 							throw err;
 						else {
@@ -731,14 +824,15 @@ exports.studentFolder = () =>
  */
 exports.getStats = () =>
 	new Promise((resolve, reject) => {
-		Promise.all([Stats.count(), Stats.general(), Stats.byYear(), Stats.bySpe(), Stats.byYearSubSpe()])
+		Promise.all([Stats.count(), Stats.general(), Stats.byYear(), Stats.byKeyword(), Stats.bySpe(), Stats.byYearSubSpe()])
 			.then(values =>
 				resolve({
 					count: values[0],
 					general: values[1],
 					byYear: values[2],
-					bySpe: values[3],
-					byYearSubSpe: values[4]
+					byKeyword: values[3],
+					bySpe: values[4],
+					byYearSubSpe: values[5]
 				})
 			)
 			.catch(reject);
@@ -818,7 +912,56 @@ const Stats = {
 				"$unwind": "$_id.study_year"
 			}
 		]),
-
+	
+	byKeyword: () => Project
+	.aggregate([
+		{
+			"$unwind": "$selected_keywords"
+		},
+		{
+			"$group":
+			{
+				"_id":
+				{
+					"selected_keywords": "$selected_keywords",
+					"status": "$status"
+				},
+				"count":
+				{
+					"$sum": 1
+				}
+			}
+		},
+		{
+			"$group":
+			{
+				"_id":
+				{
+					"selected_keywords": "$_id.selected_keywords"
+				},
+				"stats": {
+					"$addToSet": {
+						"status": "$_id.status",
+						"total": {
+							"$sum": "$count"
+						}
+					}
+				}
+			}
+		},
+		{
+			"$lookup":
+			{
+				"from": "keywords",
+				"localField": "_id.selected_keywords",
+				"foreignField": "_id",
+				"as": "_id.selected_keywords"
+			}
+		},
+		{
+			"$unwind": "$_id.selected_keywords"
+		}
+	]),
 	// Gets number of project validated, pending, rejected grouped by spe
 	bySpe: () => Project.aggregate(
 		[

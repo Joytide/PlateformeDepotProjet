@@ -6,6 +6,8 @@ import { Typography } from '@material-ui/core';
 import i18n from '../components/i18n';
 import { withSnackbar } from "../providers/SnackbarProvider/SnackbarProvider";
 
+import { api } from "../config.json"
+
 class ForgetPass extends Component {
 
     constructor(props) {
@@ -18,13 +20,14 @@ class ForgetPass extends Component {
     }
 
     handleSubmit(event) {
+        
         event.preventDefault();
 
         const form = {
             email: this.state.email
         };
-
-        fetch('/api/partner/reset', {
+        
+        fetch(api.host + ":" + api.port +'/api/partner/reset', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
@@ -32,15 +35,19 @@ class ForgetPass extends Component {
             body: JSON.stringify(form)
         })
             .then(res => {
+                console.log(res)
                 if (!res.ok) throw res
                 else return res.json()
             })
             .then(res => {
+                console.log("Submitted2")
                 this.props.snackbar.notification("success", i18n.t("forgetPass.mailSent", { lng: this.props.lng }));
+                console.log("Submitted3")
             })
             .catch(error => {
                 error.json()
                     .then(data => {
+                        console.log("Submitted4")
                         if (data.code === "PartnerNotFound")
                             this.props.snackbar.notification("danger", i18n.t("errors.partnerNotFound", { lng: this.props.lng }));
                         else
@@ -53,6 +60,7 @@ class ForgetPass extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
+        console.log(e.target.name,this.state.email)
     }
 
     render() {

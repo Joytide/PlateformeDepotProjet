@@ -28,7 +28,7 @@
         }
 
         .header .img img {
-            width: 100%;
+            width: 100px;
         }
 
         .header div p {
@@ -67,7 +67,7 @@
     <div class="header">
         <!--fs.workingDirectory pour le file-->
         <div class="img">
-            <img src="<%= "file:///" + imagePath %>" />
+            <img src="https://projets-esilv.devinci.fr/logo_esilv.png" />
         </div>
         <div>
             <p><span style="font-weight: bold">P</span>rojet D'<span style="font-weight: bold">I</span>nnovation <span
@@ -91,31 +91,31 @@
         </div>
     </div>
     <div class="body">
+        
         <div class="description">
-            <p><span style="font-weight:bold">Mots clefs : </span>
-                <%= project.keywords.map(k => k.displayName).join(", ") %>
-            </p>
+            <p><u><span class="bold">Informations sur le projet</span></u></p>
             <p><span style="font-weight:bold">Compétences développées : </span>
                 <%- project.skills %>
             </p>
             <p><span style="font-weight:bold">Informations complémentaires : </span>
                 <%- project.infos %>
             </p>
-        </div>
-    </div>
-    <div class="body">
-        <div class="description">
+    
             <p><span class="bold">Majeure(s) concernée(s) :
-                </span><%= project.specializations.filter(spe => spe.status === "validated").map(spe => spe.specialization.abbreviation).join(',') %>
+                </span><%= project.specializations.filter(spe => spe.status === "validated").map(spe => spe.specialization.abbreviation).join(', ') %>
             </p>
             <p><span class="bold">Année(s) concernée(s) :
-                </span><%= project.study_year.map(year => year.abbreviation).join(',') %></p>
+                </span><%= project.study_year.map(year => year.abbreviation).join(', ') %>
+            </p>
+            <p><span class="bold">Mot(s)-clé(s) concerné(s) :
+                </span><%= project.selected_keywords.map(kw => kw.name.fr).join(', ') %>
+            </p>
         </div>
     </div>
 
     <div class="body">
         <div class="description">
-            <p><span class="bold">Informations sur le partenaire</span></p>
+            <p><u><span class="bold">Informations sur le partenaire</span></u></p>
             <p><span class="bold">Entreprise / Association / &Eacute;cole : </span><%= project.partner.company %></p>
             <p><span class="bold">Nom : </span><%= project.partner.last_name %></p>
             <p><span class="bold">Prénom : </span><%= project.partner.first_name %></p>

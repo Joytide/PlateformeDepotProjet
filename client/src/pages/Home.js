@@ -1,16 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom'
 import Grid from '@material-ui/core/Grid';
-import i18n from '../components/i18n';
-import Carousel from '../components/Carousel.js';
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 
 import ReactMarkdown from "react-markdown/with-html";
 
+import { api } from "../config.json"
 
 const styles = theme => ({
 	root: {
@@ -48,7 +44,7 @@ class HomePage extends React.Component {
 	}
 
 	loadHomeText = () => {
-		fetch("/api/settings/home")
+		fetch(api.host + ":" + api.port +"/api/settings/home", { crossDomain: true })
 			.then(res => {
 				if (res.ok)
 					return res.json();
@@ -64,7 +60,6 @@ class HomePage extends React.Component {
 	}
 
 	render() {
-		let lng = this.props.lng;
 		const { classes } = this.props;
 
 		return (

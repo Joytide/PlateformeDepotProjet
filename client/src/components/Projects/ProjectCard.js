@@ -54,7 +54,6 @@ class ProjectCard extends React.Component {
 	render() {
 		const project = this.props.project;
 		const lng = this.props.lng;
-
 		let partner;
 		if (this.props.showPartner) {
 			partner =
@@ -154,15 +153,20 @@ class ProjectCard extends React.Component {
 											)
 									}
 								</Grid>
+								
 								<Grid container spacing={8}>
 									{
-										project.keywords.sort().map((keyword, index) => {
-											return (<Grid key={index} item>
-												<Chip label={keyword} />
+										project.selected_keywords
+										.sort()
+										.map(keyword => {
+											return (
+											<Grid item>
+												<Chip label={lng === "fr" ? keyword.name.fr : keyword.name.en} />
 											</Grid>);
 										})
 									}
 								</Grid>
+								
 							</CardActions>
 						</Card>
 					</Link>

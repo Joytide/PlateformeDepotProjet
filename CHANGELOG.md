@@ -1,4 +1,18 @@
+## 2.5.2 (13 Août 2021)
+
+- :lipstick: Ajout de nouveau filtres de tri sur la liste des projets pour le status ainsi qu'un tri par mot-clé (`56aa6bd25c61ea42058dfd0ec0e712a6027e9391` et `c46da3aeec0a92c52fbe7a216fbc754d0f58dacf`)
+
+- :sparkles: Ajout du status de validation internationale (`0789172da05ef1a8d2ee5252b8944f8e95c8b1df`)
+
+## 2.5.1 (04 Août 2021)
+
+- :sparkles: Panels ajout/suppression/modification des mots-clés pour les admins (`25ea358551a52bdffd1024b2b4a5297783591e20`)
+- :sparkles: Champ sélection mots-clés lors du dépot de projet (`1f8062433cccff39366fb4af138c5409a1728d70`)
+- :bug: Redirection vers liste au lieu de dashboard lors de la création d'années, users ou majeures (`637d3792281c25bc4e9d5fc9ebebc83929456781` et `c3345b93c83e746df4963e3f2a4a3c3d35572e99`)
+- :sparkles: Champ booléen pour plus grande équipe et nombre étudiants lors du dépot de projet, mutuellement exclusif avec le champ plusieurs équipes (`1cf895bb6145478aa9b4a66d9dcff2cf229c4d98`)
+
 # 2.5.0 (11 octobre 2021)
+
 * :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
 * :lipstick: Message d'information sur la manière d'importer les PRMs
 * :lipstick: Affichage des mots clefs associés aux PRMs directement dans la liste des PRMs

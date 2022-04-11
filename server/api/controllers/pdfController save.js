@@ -40,33 +40,26 @@ const PDFUtils = {
                 .exec()
                 .then(project => {
                     if (project) {
-                        console.log("Generating",projectID)
-                        if (project.specializations.filter(spe => spe.status === "validated").length != 0){
                         // No promises with ejs :(
-                            ejs.renderFile(
-                                process.cwd() + "/api/models/PDF_template.ejs",
-                                {
-                                    //imagePath: process.cwd() + "/PDF/logo-esilv.png",
-                                    //imagePath: process.cwd() + "/PDF/logo-esilv.png",
-                                    project: project
-                                },
-                                (err, html) => {
-                                    if (err)
-                                        reject(err);
-                                    else {
-                                        let path = process.cwd() + "/PDF/" + projectID + ".html";
-                                        fs.writeFile(path, html, 'utf8', err => {
-                                            if (err)
-                                                reject(err);
-                                            else
-                                                resolve({ project, path });
-                                        })
-                                    }
+                        ejs.renderFile(
+                            process.cwd() + "/api/models/PDF_template.ejs",
+                            {
+                                imagePath: process.cwd() + "/PDF/logo-esilv.png",
+                                project: project
+                            },
+                            (err, html) => {
+                                if (err)
+                                    reject(err);
+                                else {
+                                    let path = process.cwd() + "/PDF/" + projectID + ".html";
+                                    fs.writeFile(path, html, 'utf8', err => {
+                                        if (err)
+                                            reject(err);
+                                        else
+                                            resolve({ project, path });
+                                    })
+                                }
                             });
-                        }
-                        else{
-                            console.log("No specializations accepted this project")
-                        }
                     }
                     else
                         throw new ProjectNotFoundError();
@@ -88,12 +81,11 @@ const PDFUtils = {
             // Using -a because of https://stackoverflow.com/questions/16726227/xvfb-failed-start-error
             let wkhtmltopdf = exec("xvfb-run -a wkhtmltopdf "+HTMLpath+" "+PDFpath, function(err, stdout, stderr){
                 if (err){
-                    reject(err);
-                    console.log("#stdout:",stdout);
-                    console.log("#stderr:",stderr);
+                    reject(err)
                 }
                 else{
-                    console.log("Done wkhtmltopdf for ",project._id)
+                    console.log("#stdout:",stdout);
+                    console.log("#stderr:",stderr);
 
                     let pdf = new File({
                         projectID: project._id,
@@ -127,21 +119,19 @@ const PDFUtils = {
         return new Promise((resolve, reject) => {
             let files = projects.map(p => p.pdf ? p.pdf.path : undefined).filter(p => p !== undefined)
             console.log("FILES",files)
+            let pdfunite = spawn("pdfunite", [
+                ...files,
+                "./PDF/AllProjects.pdf"]
+            );
 
+            pdfunite.on('error', reject);
 
-            let pdfunite = exec("pdfunite /usr/src/app/PDF/*.pdf /usr/src/app/.exports/AllProjects.pdf", function(err, stdout, stderr){
-                if (err){
-                    
-                    console.log("#stdout:",stdout);
-                    console.log("#stderr:",stderr);
-                    reject(err);
-                }
-                else{
-                    console.log("Done pdfunite");
+            pdfunite.on('close', exitCode => {
+                if (exitCode != 0)
+                    reject(new Error("Something wrong happened while chaining PDF"))
+                else
                     resolve();
-                }
             });
-
         });
     },
 
@@ -195,7 +185,7 @@ exports.regeneratePDF = (req, res, next) => {
 
 exports.regenerateAllPDF = (req, res, next) => {
     Project
-        .find().or([{ status: "validated" },{ status: "pending" }])
+        .find({ status: "validated" })
         .exec((err, projects) => {
             if (err) next(err);
             else if (projects.length > 0) {
@@ -210,7 +200,7 @@ exports.regenerateAllPDF = (req, res, next) => {
 }
 
 exports.generateAllProjectsPDF = (req, res, next) => {
-    Project.find().or([{ status: "validated" },{ status: "pending" }])
+    Project.find({ status: "validated" })
         .populate("pdf")
         .exec((err, projects) => {
             if (err) next(err);
@@ -218,7 +208,7 @@ exports.generateAllProjectsPDF = (req, res, next) => {
                 PDFUtils
                     .chainPDF(projects)
                     .then(() => {
-                        res.download(process.cwd() + "/.exports/AllProjects.pdf");
+                        res.download(process.cwd() + "/PDF/AllProjects.pdf");
                     })
                     .catch(next);
             }

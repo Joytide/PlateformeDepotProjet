@@ -131,7 +131,7 @@ class CreateYear extends React.Component {
         const { classes } = this.props;
 
         if (this.state.redirect) 
-            return <Redirect to="/years" />
+            return <Redirect to="/year" />
         
         return (
             <GridContainer>

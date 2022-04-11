@@ -14,3 +14,5 @@ server/lock
 
 admin/src/config.json
 client/src/config.json
+
+docker-compose.yml

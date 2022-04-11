@@ -16,6 +16,15 @@ RUN npm update
 # Bundle app source
 COPY . .
 
+RUN mkdir -p /usr/src/app/.uploads
+RUN chown node:node -R /usr/src/app/.uploads
+RUN mkdir -p /usr/src/app/.exports
+RUN chown node:node -R /usr/src/app/.exports
+RUN chown node:node -R /usr/src/app/PDF
+
+RUN apt -qqy update
+RUN apt -qqy install wkhtmltopdf xvfb poppler-utils zip
+
 EXPOSE 3000
 USER node
 CMD [ "node", "--trace-warnings", "app.js" ]

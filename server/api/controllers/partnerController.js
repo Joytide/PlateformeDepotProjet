@@ -22,7 +22,7 @@ exports.myself = ({ user }) =>
 		.findOne({ _id: user._id })
 		.populate({
 			path: "projects",
-			populate: { path: "specializations.specialization study_year files" }
+			populate: { path: "specializations.specialization study_year selected_keywords files" }
 		})
 		.lean()
 		.exec();

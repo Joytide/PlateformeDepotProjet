@@ -162,7 +162,7 @@ class CreateSpecialization extends React.Component {
         let redirect;
 
         if (this.state.redirect) {
-            redirect = <Redirect to="/specializations" />
+            redirect = <Redirect to="/specialization" />
         }
         return (
             <GridContainer>

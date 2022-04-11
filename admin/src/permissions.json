@@ -27,7 +27,6 @@
             "EGPE"
         ],
         "ManageYears": [
-            "Referent",
             "EGPE"
         ],
         "ManageSpecializations": [
@@ -78,6 +77,20 @@
         "EditYear": "EGPE"
     },
     "CreateYear": {
+        "value": "EGPE"
+    },
+    "KeywordList": {
+        "value": [
+            "EGPE",
+            "Administrator"
+        ],
+        "DeleteKeyword": "EGPE"
+    },
+    "KeywordProfile": {
+        "value": "",
+        "EditKeyword": "EGPE"
+    },
+    "CreateKeyword": {
         "value": "EGPE"
     },
     "Settings": {

@@ -2,9 +2,13 @@ import React from "react";
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
+import { Link } from 'react-router-dom';
+
 
 import Add from "@material-ui/icons/Add"
 import Cached from "@material-ui/icons/Cached"
+import ArrowBack from "@material-ui/icons/ArrowBack"
+import ArrowForward from "@material-ui/icons/ArrowForward"
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -91,14 +95,18 @@ class ProjectProfile extends React.Component {
             canManageYears: false,
             canManageSpecializations: false,
             canRegeneratePDF: false,
-            canChangeConfidentiality: false
+            canChangeConfidentiality: false,
+            nextProjectId: "",
+            prevProjectId: "",
         }
 
         this.loadProjectData = this.loadProjectData.bind(this);
+        this.loadNeighbourProjects = this.loadNeighbourProjects.bind(this);
     }
 
     componentWillMount() {
         this.loadProjectData();
+        this.loadNeighbourProjects();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -147,8 +155,45 @@ class ProjectProfile extends React.Component {
                     color: color
                 });
                 this.setPermissions();
+                this.loadNeighbourProjects();
             })
             .catch(handleXhrError(this.props.snackbar));
+    }
+    
+    loadNeighbourProjects(){
+        if (!this.state.loadingProject){
+            AuthService.fetch(api.host + ":" + api.port + "/api/project/next/" + this.state.project.number)
+                .then(res => {
+                    if (res.ok){
+                        return res.json();
+                    }
+                    else
+                        throw res;
+                })
+                .then(data => {
+                    if (data)
+                        this.setState({
+                            nextProjectId: data._id,
+                        });
+                })
+                .catch(handleXhrError(this.props.snackbar));
+
+            AuthService.fetch(api.host + ":" + api.port + "/api/project/prev/" + this.state.project.number)
+                .then(res => {
+                    if (res.ok){
+                        return res.json();
+                    }
+                    else
+                        throw res;
+                })
+                .then(data => {
+                    if (data)
+                        this.setState({
+                            prevProjectId: data._id,
+                        });
+                })
+                .catch(handleXhrError(this.props.snackbar));
+            }
     }
 
     regeneratePDF = () => {
@@ -191,8 +236,7 @@ class ProjectProfile extends React.Component {
 
     render() {
         const { classes } = this.props;
-
-        let partnerInfo, projectInfo, years, files, specializations, other, keywords;
+        let partnerInfo, projectInfo, years, files, specializations, other, keywords, prevProfile, nextProfile;
 
         if (!this.state.loadingProject) {
             partnerInfo = (
@@ -209,7 +253,7 @@ class ProjectProfile extends React.Component {
                     editable={this.state.canEditProject && this.state.project.status === "pending"}
                 />
             );
-
+            /*
             keywords = (
                 <Keywords
                     color={this.state.color}
@@ -218,7 +262,7 @@ class ProjectProfile extends React.Component {
                     editable={this.state.canManageKeywords}
                 />
             );
-
+            */
             files = (
                 <Files
                     color={this.state.color}
@@ -240,6 +284,16 @@ class ProjectProfile extends React.Component {
                 />
             );
 
+            keywords = (
+                <Keywords
+                    color={this.state.color}
+                    projectStatus={this.state.project.status}
+                    projectId={this.props.match.params.id}
+                    selected_keywords={this.state.project.selected_keywords}
+                    editable={this.state.canManageKeywords && this.state.project.status === "pending"}
+                />
+            );
+
             specializations = (
                 <Specializations
                     color={this.state.color}
@@ -249,6 +303,23 @@ class ProjectProfile extends React.Component {
                     reloadProject={this.loadProjectData}
                 />
             );
+
+            if (this.state.prevProjectId){
+                prevProfile = (
+                    <Link onClick={this.forceUpdate} to={"/project/" + this.state.prevProjectId}>
+                        <Button size="sm" color="info"><ArrowBack />Projet précédent</Button>
+                    </Link>
+                );
+            }
+                
+            if (this.state.nextProjectId){
+                nextProfile = (
+                    <Link onClick={this.forceUpdate} to={"/project/" +this.state.nextProjectId }>
+                        <Button size="sm" color="info"><ArrowForward />Projet suivant</Button>
+                    </Link>
+                );
+            }
+            
         }
 
         let changeConfidentialityText = this.state.project.confidential ? "Retirer le status confidentiel" : "Ajouter le status confidentiel";
@@ -282,6 +353,14 @@ class ProjectProfile extends React.Component {
             <div>
                 <Comments projectId={this.props.match.params.id} />
                 <GridContainer>
+                    <GridItem>
+                        {prevProfile}
+                    </GridItem>
+                    
+                    <GridItem>
+                        {nextProfile}
+                    </GridItem>
+                    
                     <GridItem xs={12} sm={12} md={12}>
                         {this.state.project.confidential &&
                             <Card>
@@ -300,16 +379,26 @@ class ProjectProfile extends React.Component {
 
                         {projectInfo}
 
-                        {keywords}
-
                         {files}
 
                         {years}
 
+                        {keywords}
+
                         {specializations}
 
                         {other}
+
                     </GridItem>
+                    
+                    <GridItem>
+                        {prevProfile}
+                    </GridItem>
+                    
+                    <GridItem>
+                        {nextProfile}
+                    </GridItem>
+
                 </GridContainer >
             </div >
         );

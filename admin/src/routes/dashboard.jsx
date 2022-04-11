@@ -27,6 +27,11 @@ import YearList from "views/YearList/YearList.jsx";
 import CreateYear from "views/CreateYear/CreateYear.jsx";
 import YearProfile from "views/YearProfile/YearProfile.jsx";
 
+// Keywords related things
+import KeywordList from "views/KeywordList/KeywordList.jsx";
+import CreateKeyword from "views/CreateKeyword/CreateKeyword.jsx";
+import KeywordProfile from "views/KeywordProfile/KeywordProfile.jsx";
+
 // PRM
 import PRMList from "views/PRMList/PRMList";
 import CreatePRM from "views/CreatePRM/CreatePRM";
@@ -76,6 +81,13 @@ const dashboardRoutes = [
     invisible: true,
     exact: true,
     permissions: Permissions.YearProfile.value
+  },
+  {
+    path: "/keyword/:id([a-zA-Z0-9]{24})",
+    component: KeywordProfile,
+    invisible: true,
+    exact: true,
+    permissions: Permissions.KeywordProfile.value
   },
   {
     path: "/project/",
@@ -136,6 +148,23 @@ const dashboardRoutes = [
     icon: "add",
     component: CreateYear,
     permissions: Permissions.CreateYear.value
+  },
+  {
+    path: "/keyword",
+    sidebarName: "Liste des mots-clés",
+    navbarName: "Liste des mots-clés",
+    icon: "list",
+    component: KeywordList,
+    exact: true,
+    permissions: Permissions.KeywordList.value
+  },
+  {
+    path: "/createKeyword",
+    sidebarName: "Créer un mots-clé",
+    navbarName: "Créer un mots-clé",
+    icon: "add",
+    component: CreateKeyword,
+    permissions: Permissions.CreateKeyword.value
   },
   {
     path: "/settings",
