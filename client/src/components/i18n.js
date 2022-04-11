@@ -100,6 +100,7 @@ i18next
 						default: "Something wrong happened. Please retry later",
 						unauthorized: "Action denied. Please ensure that you are correctly logged in.",
 						invalidFile: "Please only deposit PDF, jpeg or png file",
+                        largeFile: "Please only deposit file under 10MB",
 						fillTitle: "Please fill the title field",
 						fillYear: "Please select at least one year concerned by that project",
 						fillSpecialization: "Please select at least one specialiaztion concerned by that project",
@@ -158,7 +159,6 @@ i18next
 					},
 					navs: {
 						home: 'Home',
-                        admin: 'Administration',
 						projects: 'Projects',
 						myprojects: 'My projects',
 						submit: 'Submit a project',
@@ -309,6 +309,7 @@ i18next
 						default: "Une erreur est survenue. Merci de réessayer",
 						unauthorized: "Action refusée. Assurez vous d'être correctement connecté.",
 						invalidFile: "Merci de déposer uniquement des PDF, des jpeg ou des png",
+                        largeFile: "Merci de déposer uniquement des fichiers de taille inférieur à 10MB",
 						fillTitle: "Merci de remplir le champ titre du projet",
 						fillYear: "Merci de sélectionner au moins une année concernée par ce projet",
 						fillSpecialization: "Merci de sélectionner au moins une majeure concernée par ce projet",
@@ -347,7 +348,6 @@ i18next
 					},
 					navs: {
 						home: 'Accueil',
-                        admin: 'Administration',
 						projects: 'Projets',
 						myprojects: 'Mes projets',
 						submit: 'Soumettre un projet',

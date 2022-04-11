@@ -12,20 +12,22 @@ class FilesInputs extends React.Component {
         super(props);
 
         this.state = {
-            files: []
+            files: [],
+            errorCode: 0
         }
 
         this.onChange = this.onChange.bind(this);
         this.setFiles = this.props.setFiles || (() => { });
+        this.OnFilesError = this.OnFilesError.bind(this);
     }
 
     OnFilesError(error, file) {
-        console.error('error code ' + error.code + ': ' + error.message)
+        this.setState({errorCode:error.code});
     }
 
     onChange(event) {
         const file = event[event.length - 1];
-
+    
         if (file) {
             var formData = new FormData();
             formData.append("file", new Blob([file], { type: file.type }), file.name || 'file');
@@ -62,8 +64,18 @@ class FilesInputs extends React.Component {
                     this.props.snackbar.notification("error", i18n.t('errors.default', { lng }), 10000);
                 });
         }
-        else {
-            this.props.snackbar.notification("error", i18n.t('errors.invalidFile', { lng: this.props.lng }), 10000)
+        else{
+            switch(this.state.errorCode){
+                case 1:
+                    this.props.snackbar.notification("error", i18n.t('errors.invalidFile', { lng: this.props.lng }), 10000);
+                    break;
+                case 2:
+                    this.props.snackbar.notification("error", i18n.t('errors.largeFile', { lng: this.props.lng }), 10000);
+                    break;
+                default:
+                    this.props.snackbar.notification("error", i18n.t('errors.default', { lng: this.props.lng }), 10000);
+                    break;
+            };
         }
     }
 
@@ -116,7 +128,7 @@ class FilesInputs extends React.Component {
                             <a key={index} className="justify-content-between file-add list-group-item list-group-item-action">
                                 <div>
                                     <p>{file.name}</p>
-                                    <p className="text-right" onClick={this.deleteFile(file._id)}>{i18n.t('delete.label', { lng })} </p>
+                                    <button onClick={this.deleteFile(file._id)}>{i18n.t('delete.label', { lng })} </button>
                                 </div>
                             </a>)
                     )
