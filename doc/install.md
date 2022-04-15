@@ -47,6 +47,8 @@ Exemple d'un ``config.json`` en prod:
 mv config.example.json config.json
 ```
 
+Changer le mot de passe par défaut de l'admin dans ``server/app.js``
+
 
 
 4. Changer les mots de passes pas défaut dans le docker-compose.yml
@@ -57,19 +59,19 @@ mv config.example.json config.json
 docker-compose up --build
 ```
 
-4. Relancer la plateforme après un ```docker-compose up```
+6. Relancer la plateforme après un ```docker-compose up```
 
 ```bash
 docker-compose start
 ```
 
-5. Lancer la plateforme en recompilant
+7. Lancer la plateforme en recompilant
 
 ```bash
 docker-compose up --build
 ```
 
-6. Si prod, stopper les client et server, puis lancer le multi-stage dockerfile présent à la racine:
+8. Si prod, stopper les client et server, puis lancer le multi-stage dockerfile présent à la racine:
 
 ```bash
 docker build -t react-app -f Dockerfile.prod .
