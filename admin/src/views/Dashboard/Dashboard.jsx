@@ -94,8 +94,9 @@ class Dashboard extends React.Component {
 	}
 	render() {
 		const { classes } = this.props;
-
+        console.log(this.state.stats);
 		return (
+            
 			<GridContainer>
 				<GridItem xs={12}>
 					<img alt="Phoque you" src="/admin/phoque_you.jpg"></img>
@@ -161,19 +162,19 @@ class Dashboard extends React.Component {
 							<GridItem xs={12} md={12} lg={12}>
 								<Card>
 									<CardHeader color="primary">
-										<h4 className={classes.cardTitleWhite}>Projets triés par mot-clé</h4>
+										<h4 className={classes.cardTitleWhite}>Projets triés par majeures</h4>
 									</CardHeader>
 									<CardBody>
 										<GridContainer>
-											{this.state.stats.byKeyword
-												.sort((s1, s2) => s1._id.selected_keywords.name.fr > s2._id.selected_keywords.name.fr)
-												.map(kw =>
-													<GridItem xs={12} md={6} lg={2} key={kw._id.selected_keywords._id}>
-														<h4>{kw._id.selected_keywords.name.fr}</h4>
+											{this.state.stats.bySpe
+												//.sort((s1, s2) => s1._id.selected_keywords.name.fr > s2._id.selected_keywords.name.fr)
+												.map(spe =>
+													<GridItem xs={12} md={6} lg={2} key={spe._id.specialization._id}>
+														<h4>{spe._id.specialization.abbreviation}</h4>
 														<Doughnut data={{
-															labels: formatLabels(kw.stats),
+															labels: formatLabels(spe.stats),
 															datasets: [{
-																data: formatStats(kw.stats),
+																data: formatStats(spe.stats),
 																backgroundColor: [
 																	'#4caf50',
 																	'rgb(255, 152, 0)',
