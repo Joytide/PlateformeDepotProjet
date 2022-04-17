@@ -11,7 +11,8 @@ services:
             MONGO_PASSWORD: example
             API_LISTEN_IP: "0.0.0.0"
         volumes:
-            - api:/usr/src/app/
+            - api_uploads:/usr/src/app/.uploads
+            - api_pdf:/usr/src/app/PDF
         depends_on:
             - mongo
             - redis
