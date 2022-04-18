@@ -229,6 +229,13 @@ class UserList extends React.Component {
                                     Liste de tous les utilisateurs existants sur la plateforme
             </p>
                             </CardHeader>
+                            <GridItem>
+                                <a href={api.host + ":" + api.port + "/api/user/csv?token=" + AuthService.getToken()}>
+                                    <Button size="sm" color="info">
+                                        Télécharger les partenaires au format CSV
+                                    </Button>
+                                </a>
+                            </GridItem>
                             <GridItem xs={12} sm={12} md={6}>
                                 <Button
                                     color= {this.state.alphaSortCompany ? "success" : "white"}

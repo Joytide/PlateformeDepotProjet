@@ -2,6 +2,8 @@
 
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const { Parser } = require('json2csv');
+const fs = require('fs');
 
 const Person = mongoose.model('Person');
 const Student = mongoose.model('Student');
@@ -256,6 +258,106 @@ exports.changePassword = ({ user, id, oldPassword, newPassword }) =>
                     throw new InvalidCredentialsError();
             })
             .then(administration => resolve(administration))
+            .catch(reject);
+    });
+
+    /**
+ * Exports all partners into a csv
+ */
+exports.getCSVPartners = (find = {}) => () =>
+    new Promise((resolve, reject) => {
+        let partnerFind = Partner.find({}).lean().exec();
+
+        Promise.all([partnerFind])
+            .then(([partners]) => {
+                let nameField = [], phoneField = [], addressField = [];
+
+
+                const fields = [
+                    {
+                        label: "Nom",
+                        value: row => row.first_name + " " + row.last_name
+                    },
+                    {
+                        label: "Email",
+                        value: "email"
+                    },
+                    {
+                        label: "Type de partenaire",
+                        value: "kind"
+                    },
+                    {
+                        label: "Entreprise",
+                        value: "company"
+                    },
+                    {
+                        label: "Phone",
+                        value: "phone"
+                    },
+                    {
+                        label: "Adresse",
+                        value: "adress"
+                    }
+                    
+                    /*
+                    
+                    
+                    ...yearsFields,
+                    ...specializationsFields,
+                    ...keywordsFields,
+                    {
+                        label: "Titre du projet",
+                        value: "title"
+                    },
+                    {
+                        label: "Description",
+                        value: "description"
+                    },
+                    {
+                        label: "Compétences développées",
+                        value: "skills"
+                    },
+                    {
+                        label: "Plusieurs équipes ?",
+                        value: row => row.maxTeams > 1 ? "Oui" : "Non"
+                    },
+                    {
+                        label: "Nombre d'équipes",
+                        value: row => row.maxTeams > 1 ? row.maxTeams : ""
+                    },
+                    {
+                    label: "Grosse équipe ?",
+                    value: row => row.maxStudents > 5 ? "Oui" : "Non"
+                    },
+                    {
+                    label: "Nombre d'étudiants",
+                    value: row => row.maxStudents > 5 ? row.maxTeams : ""
+                    },
+                    {
+                        label: "International",
+                        value: row => row.international ? "X" : ""
+                        },
+                    {
+                        label: "Informations supplémentaires",
+                        value: "infos"
+                    }
+                    */
+                ];
+
+                console.log("process.cwd()",process.cwd())
+
+                const json2csvParser = new Parser({ fields });
+                const csv = json2csvParser.parse(partners);
+
+                const date = Date.now();
+
+                fs.writeFile(".exports/" + date + ".csv", csv, err => {
+                    if (err)
+                        throw err;
+                    else
+                        resolve({ path: process.cwd() + "/.exports/" + date + ".csv", filename: "Users.csv" });
+                })
+            })
             .catch(reject);
     });
 

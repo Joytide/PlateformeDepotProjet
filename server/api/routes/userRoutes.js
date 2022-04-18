@@ -1,6 +1,6 @@
 const userController = require('../controllers/userController');
 const auth = require('../controllers/authController');
-const { handleRequest } = require('../../helpers/Request');
+const { handleRequest, handleDownloadRequest} = require('../../helpers/Request');
 
 module.exports = (app) => {
     app.route('/api/user/administration')
@@ -58,5 +58,18 @@ module.exports = (app) => {
             auth.passport.authenticate('jwt'),
             auth.areAuthorized("Administration"),
             handleRequest(userController.changePassword)
+        );
+
+    app.route('/api/user/csv')
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("EPGE"),
+			handleDownloadRequest(userController.getCSVPartners({ status: "validated" }))
+		);
+    app.route('/api/user/administration')
+        .get(
+            auth.passport.authenticate('jwt'),
+            auth.areAuthorized("EPGE"),
+            handleRequest(userController.listAdministration())
         );
 }
