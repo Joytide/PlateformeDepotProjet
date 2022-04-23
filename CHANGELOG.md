@@ -1,3 +1,10 @@
+## 2.5.3 (23 Avril 2022)
+
+- :sparkles: Ajout tri et export partenaires pour la page des users (``73a66612a02f7f7aa677c3720ed4ce7e9b35178d`` et ``7f4ee28c54650d482172c1f1d7d0b1b36c9b8a28``)
+- :sparkles: Bouton Admin sur le client (``659df57d935ced54ac25858d20028f0a81a90361``)
+- :bug: Ajout des volumes mongo/redis/api pour éviter les pertes de données (``91690ca490a33e840cdf5add2f7678d3f172ad91``)
+- :lipstick: Meilleur message d'erreur et bouton supprimer pour le dépot de fichier lors du dépot de projet (``b594f0e5c631913b82a04738d5284df478f7026d``)
+
 ## 2.5.2 (13 Août 2021)
 
 - :lipstick: Ajout de nouveau filtres de tri sur la liste des projets pour le status ainsi qu'un tri par mot-clé (`56aa6bd25c61ea42058dfd0ec0e712a6027e9391` et `c46da3aeec0a92c52fbe7a216fbc754d0f58dacf`)
@@ -11,7 +18,7 @@
 - :bug: Redirection vers liste au lieu de dashboard lors de la création d'années, users ou majeures (`637d3792281c25bc4e9d5fc9ebebc83929456781` et `c3345b93c83e746df4963e3f2a4a3c3d35572e99`)
 - :sparkles: Champ booléen pour plus grande équipe et nombre étudiants lors du dépot de projet, mutuellement exclusif avec le champ plusieurs équipes (`1cf895bb6145478aa9b4a66d9dcff2cf229c4d98`)
 
-# 2.5.0 (11 octobre 2021)
+# 2.5.0 (11 octobre 2020)
 
 * :lipstick: Changement de l'ordre des colonnes pour l'importation des PRMs
 * :lipstick: Message d'information sur la manière d'importer les PRMs
