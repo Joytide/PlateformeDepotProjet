@@ -85,7 +85,7 @@ class CreateKeyword extends React.Component {
     }
 
     handleChange = event => {
-        this.setState({ [event.target.id]: event.target.value.trim() });
+        this.setState({ [event.target.id]: event.target.value});
     };
 
     componentWillMount() {
@@ -276,8 +276,8 @@ class CreateKeyword extends React.Component {
                                     <TextField
                                         id="keywordData"
                                         label="Mots-clés (Format: [mot-clé fr],[mot-clé eng] à chaque ligne)"
-                                        multiline={true}
-                                        rows="12"
+                                        multiline
+                                        rows={4}
                                         className={classes.textField}
                                         margin="normal"
                                         fullWidth={true}
@@ -285,6 +285,8 @@ class CreateKeyword extends React.Component {
                                             value: this.state.keywordData,
                                             onChange: this.handleChange
                                         }}
+                                        variant="standard"
+                                        defaultValue=""
                                     />
                                 </GridItem>
                             </GridContainer>
