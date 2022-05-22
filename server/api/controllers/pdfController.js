@@ -86,7 +86,7 @@ const PDFUtils = {
             let PDFpath = process.cwd() + "/PDF/" + project._id + ".pdf";
             // Using xvfb because of https://github.com/wkhtmltopdf/wkhtmltopdf/issues/2037
             // Using -a because of https://stackoverflow.com/questions/16726227/xvfb-failed-start-error
-            let wkhtmltopdf = exec("xvfb-run -a wkhtmltopdf "+HTMLpath+" "+PDFpath, function(err, stdout, stderr){
+            let wkhtmltopdf = exec("xvfb-run -a wkhtmltopdf --disable-javascript "+HTMLpath+" "+PDFpath, function(err, stdout, stderr){
                 if (err){
                     reject(err);
                     console.log("#stdout:",stdout);
