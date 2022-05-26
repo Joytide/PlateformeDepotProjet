@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter } from "react-router-dom";
-import ReactMarkdown from "react-markdown";
+
 
 import Home from './pages/Home';
 import Projects from './pages/Projects';
@@ -13,12 +13,13 @@ import LoginPartner from './pages/LoginPartner';
 import ForgetPass from './pages/ForgetPass';
 //import ProjectValidation from './pages/ProjectValidation';
 import ProjectPage from './pages/ProjectPage';
+import Contact from './pages/Contact';
+import Closed from './pages/Closed';
+import NotFound from './pages/NotFound';
 
 import Nav from './components/nav/Navs'
 
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 
 import UserProvider from "./providers/UserProvider/UserProvider";
 import SnackbarProvider from "./providers/SnackbarProvider/SnackbarProvider";
@@ -72,7 +73,7 @@ class App extends Component {
 										{/*<Route exact path="/Admin/Validation" render={(routeProps) => (<ProjectValidation lng={lng} {...routeProps} />)} />*/}
 										{/*<Route exact path="/login" render={(routeProps) => (<Login lng={lng} {...routeProps} />)} />*/}
 										{<Route exact path="/login/partner/:key([a-zA-Z0-9]{16})" render={(routeProps) => (<LoginPartner lng={lng} {...routeProps} />)} />}
-										<Route component={NoMatch} />
+										<Route render={(routeProps) => (<NotFound lng={lng} {...routeProps} />)} />
 									</Switch>
 								</Grid>
 								<div style={{
@@ -90,45 +91,36 @@ class App extends Component {
 			)
 		}
 		else {
-			return (
-				<div>
-					<Grid container justify="center">
-						<Grid item xs={6}>
-							<Paper elevation={1}>
-								<Grid container justify="center">
-									<Grid item xs={11}>
-										<ReactMarkdown source={this.state.description} />
-									</Grid>
+            /*
+			
+            */
+            return (
+				<SnackbarProvider>
+					<UserProvider>
+						<BrowserRouter>
+							<div>
+								<Nav lng={lng} handleLngChange={this.handleLngChange} />
+								<Grid style={{ marginTop: 85 }}>
+									<Switch>
+										{<Route exact path="/contact" render={(routeProps) => (<Contact lng={lng} {...routeProps} />)} />}
+                                        <Route render={(routeProps) => (<Closed lng={lng} {...routeProps} />)} />
+									</Switch>
 								</Grid>
-							</Paper>
-						</Grid>
-					</Grid>
-				</div>
+								<div style={{
+									color: "#F3F3F3",
+									position: "fixed",
+									bottom: "15px",
+									right: "15px"
+								}}>
+									v2.5.0
+								</div>
+							</div>
+						</BrowserRouter>
+					</UserProvider>
+				</SnackbarProvider>
 			)
 		}
 	}
 }
 
 export default App;
-
-function NoMatch({ location }) {
-	return (
-		<div>
-			<Grid container justify="center">
-				<Grid item xs={6}>
-					<Paper elevation={1}>
-						<Typography variant="h1" align="center">
-							404 !
-						</Typography>
-						<Typography variant="h4" align="center">
-							<span role="img" aria-labelledby="jsx-a11y/accessible-emoji" >😢</span>
-						</Typography>
-						<Typography variant="subtitle1" align="center">
-							La page n'existe pas
-						</Typography>
-					</Paper>
-				</Grid>
-			</Grid>
-		</div>
-	);
-}

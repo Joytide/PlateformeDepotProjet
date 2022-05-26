@@ -101,6 +101,9 @@ pdfRoutes(app);
 var project_routes = require('./api/routes/projectRoutes');
 project_routes(app);
 
+var contact_routes = require('./api/routes/contactRoutes');
+contact_routes(app);
+
 var partner_routes = require('./api/routes/partnerRoutes');
 partner_routes(app);
 

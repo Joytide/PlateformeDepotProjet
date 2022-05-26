@@ -92,9 +92,11 @@ i18next
 						invalidPhone: "Invalid phone number"
 					},
 					errors: {
+                        createContact: "An error occured while trying to create your contact. Please retry.",
 						emailUsed: "This email has already been used to create an account. Connect to your account before submitting a new project",
-						createPartner: "An error happened while trying to create your account. Please retry.",
-						createProject: "An error happened while trying to create your project. Please retry.",
+						createPartner: "An error occured while trying to create your account. Please retry.",
+						createProject: "An error occured while trying to create your project. Please retry.",
+                        emailUsedContact: "This email has already been used to create a contact.",
 						NaN: "Please input a number",
 						fillAll: "Please fill correctly all required fields",
 						partnerNotFound: "No user found with that email",
@@ -129,6 +131,12 @@ i18next
 						possible constraints,
 						 "deliverables" expected at the end of the project`
 					},
+                    contactPage: {
+                        title: "Please leave us your contact!",
+                        title_l2: "You'll contacted when the project deposit open next summer.",
+                        leave_contact: "Send",
+                        success: "Your contact has been saved"
+                    },
 					home: {
 						title: 'Industrial Innovation Projects',
 						title_p1: 'You are a company, a laboratory, a student? You want to test an idea, create a prototype, decipher and / or explore a field of innovation, ...?',
@@ -267,6 +275,12 @@ i18next
 						textfield: "Votre adresse mail",
 						mailSent: "Un mail vous a été envoyé avec votre nouveau lien de connexion"
 					},
+                    contactPage: {
+                        title: "Laissez-nous votre contact!",
+                        title_l2: "Vous serez contacté quand les dépôts de projets ouvriront l'été prochain.",
+                        leave_contact: "Envoyer",
+                        success: "Votre contact a été sauvergardé"
+                    },
 					createPartner: {
 						phone: 'Numéro de téléphone',
 						address: "Adresse",
@@ -303,7 +317,9 @@ i18next
 						 « livrables »  attendus à la fin du projet`
 					},
 					errors: {
+                        createContact: "Une erreur est seurvenue lors de la création de votre contact. Merci de réessayer.",
 						emailUsed: "Cette adresse mail à déjà été utilisé pour créer un compte. Connectez vous avec le lien reçu par mail pour déposer un nouveau projet",
+                        emailUsedContact: "Cette adresse mail à déjà été utilisé pour créer un contact.",
 						createPartner: "Une erreur est survenue lors de la création de votre compte. Merci de réessayer.",
 						createProject: "Une erreur est survenue lors de la création de votre projet. Merci de réessayer.",
 						NaN: "Merci de saisir un nombre",

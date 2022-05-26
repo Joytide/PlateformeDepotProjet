@@ -78,4 +78,28 @@ const PartnerSchema = new Schema({
 });
 const Partner = mongoose.model('Partner', PartnerSchema);
 
-module.exports = { Person, Student, Partner, Administration };
+const ContactSchema = new Schema({
+	__t: {
+		type: String,
+		default: "Contact",
+		required: true
+	},
+	first_name: {
+		type: String,
+		required: true
+	},
+	last_name: {
+		type: String,
+		required: true
+	},
+	email: {
+		type: String,
+		required: true
+	},
+	company: String,
+	phone: String,
+	kind: String,
+});
+const Contact = mongoose.model('Contact', ContactSchema);
+
+module.exports = { Person, Student, Partner, Administration, Contact };
