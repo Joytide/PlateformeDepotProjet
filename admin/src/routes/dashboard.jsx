@@ -11,6 +11,7 @@ import DashboardPage from "views/Dashboard/Dashboard.jsx";
 // User related things
 import UserProfile from "views/UserProfile/UserProfile.jsx";
 import UserList from "views/UserList/UserList.jsx";
+import ContactList from "../views/ContactList/ContactList";
 import CreateUser from "views/CreateUser/CreateUser.jsx";
 
 // Project related things
@@ -205,6 +206,15 @@ const dashboardRoutes = [
     icon: "settings",
     component: TeamList,
     permissions: Permissions.TeamList.value
+  },
+  {
+    path: "/contact",
+    sidebarName: "Liste des contacts",
+    navbarName: "Liste des contacts",
+    icon: People,
+    component: ContactList,
+    exact: true,
+    permissions: Permissions.ContactList.value
   },
 ];
 

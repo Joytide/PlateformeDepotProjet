@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
-const sha256 = require('js-sha256')
-const jwt = require('jsonwebtoken');
-const { isValidType, areValidTypes, ExistingEmailError } = require('../../helpers/Errors');
-const mailController = require('./mailController');
+const { areValidTypes, ExistingEmailError } = require('../../helpers/Errors');
+
+'use strict';
+
+const { Parser } = require('json2csv');
+const fs = require('fs');
 
 const Contact = mongoose.model('Contact');
-const config = require('../../config');
 
 /**
  * List all contacts
@@ -63,3 +63,50 @@ exports.createContact = ({ ...data }) =>
 			.catch(reject);
 	});
 
+exports.getCSVContacts = (find = {}) => () =>
+    new Promise((resolve, reject) => {
+        let contactFind = Contact.find({}).lean().exec();
+
+        Promise.all([contactFind])
+            .then(([contacts]) => {
+
+
+                const fields = [
+                    {
+                        label: "Nom",
+                        value: row => row.first_name + " " + row.last_name
+                    },
+                    {
+                        label: "Email",
+                        value: "email"
+                    },
+                    {
+                        label: "Type de partenaire",
+                        value: "kind"
+                    },
+                    {
+                        label: "Entreprise",
+                        value: "company"
+                    },
+                    {
+                        label: "Phone",
+                        value: "phone"
+                    }
+                ];
+
+                console.log("process.cwd()",process.cwd())
+
+                const json2csvParser = new Parser({ fields });
+                const csv = json2csvParser.parse(contacts);
+
+                const date = Date.now();
+
+                fs.writeFile(".exports/" + date + ".csv", csv, err => {
+                    if (err)
+                        throw err;
+                    else
+                        resolve({ path: process.cwd() + "/.exports/" + date + ".csv", filename: "Contacts.csv" });
+                })
+            })
+            .catch(reject);
+    });

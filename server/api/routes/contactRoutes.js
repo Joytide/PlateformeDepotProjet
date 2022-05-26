@@ -1,6 +1,6 @@
-const contact = require('../controllers/contactController');
+const contactController = require('../controllers/contactController');
 const auth = require('../controllers/authController');
-const { handleRequest } = require('../../helpers/Request');
+const { handleRequest, handleDownloadRequest } = require('../../helpers/Request');
 
 
 module.exports = app => {
@@ -8,9 +8,15 @@ module.exports = app => {
 		.get(
 			auth.passport.authenticate('jwt'),
 			auth.areAuthorized("Administration"),
-			handleRequest(contact.getAll)
+			handleRequest(contactController.getAll)
 		)
 		.post(
-			handleRequest(contact.createContact)
+			handleRequest(contactController.createContact)
 		)
+    app.route('/api/contact/csv')
+		.get(
+			auth.passport.authenticate('jwt'),
+			auth.areAuthorized("EPGE"),
+			handleDownloadRequest(contactController.getCSVContacts({ status: "validated" }))
+		);
 };
