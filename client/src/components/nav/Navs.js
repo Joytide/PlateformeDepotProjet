@@ -142,6 +142,12 @@ class Navs extends React.Component {
 				open={isMobileMenuOpen}
 				onClose={this.handleMobileMenuClose}
 			>
+
+                <Link to="/admin" >
+                    <MenuItem color="inherit">
+                        <div>{i18n.t('navs.admin', { lng })}</div>
+                    </MenuItem>
+				</Link>
 				<Link to="/" >
 					<MenuItem color="inherit">
 						<div>{i18n.t('navs.home', { lng })}</div>
