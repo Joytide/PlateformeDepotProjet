@@ -10,6 +10,7 @@ i18next
 			en: {
 				translation: {
 					deposit: { label: "Deposit project" },
+                    notfound: {label: "We looked everywhere but couldn't find the page you're looking for."},
 					year: { label: 'Year', },
 					partner: { label: 'Submit date', },
 					firm: { label: 'Company' },
@@ -192,6 +193,7 @@ i18next
 			},
 			fr: {
 				translation: {
+                    notfound: { label: "Nous avons bien cherché partout, mais nous ne trouvons pas la page que vous avez recherchée."},
 					deposit: { label: "Deposer le projet" },
 					year: { label: 'Année', },
 					partner: { label: 'Proposé le', },
