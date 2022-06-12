@@ -1,12 +1,9 @@
 import React from "react";
-import { Link } from 'react-router-dom';
 
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 
-import Visibility from "@material-ui/icons/Visibility"
 import SortByAlpha from "@material-ui/icons/SortByAlpha"
-
 
 // core components
 import GridItem from "components/Grid/GridItem.jsx";
@@ -17,7 +14,6 @@ import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 
 import Button from "components/CustomButtons/Button.jsx";
-import Danger from "components/Typography/Danger.jsx";
 
 import { api } from "config.json"
 import AuthService from "components/AuthService"
