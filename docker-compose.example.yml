@@ -73,4 +73,5 @@ services:
 volumes:
     mongo:
     redis:
-    api:
+    api_uploads:
+    api_pdf:

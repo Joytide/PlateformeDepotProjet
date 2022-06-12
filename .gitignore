@@ -2,17 +2,20 @@ server/node_modules
 client/node_modules
 admin/node_modules
 
-server/.uploads
-server/PDF/*.html
-server/PDF/*.pdf
-.vscode
-
 server/config.json
-server/exports/*
-server/lock
-*.csv
-
 admin/src/config.json
 client/src/config.json
 
+server/.uploads
+server/PDF/*.html
+server/PDF/*.pdf
+server/app.js
+server/exports/*
+server/lock
+server/app.js
+*.csv
+
+.vscode
+
 docker-compose.yml
+
