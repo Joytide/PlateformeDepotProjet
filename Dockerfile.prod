@@ -1,8 +1,8 @@
 # Staged build
 #
 # Command to build for prod:
-# docker build -t react-app -f Dockerfile.prod .
-# docker run -dp 443:443 react-app 
+# docker build -t react-prod -f Dockerfile.prod .
+# docker run --name react-prod -dp 443:443 react-prod
 #
 # Stage 1 Client
 FROM node:14.15.4-alpine as client
