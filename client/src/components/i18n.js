@@ -114,11 +114,12 @@ i18next
 					createProject: {
 						skills: "Skills developped",
 						infos: "Further informations",
-						multipleTeams: "Would you want several separate teams work on the project ?",
-						maxTeamNumber: "If so, how many teams ?",
-						biggerTeam:"Would you want a bigger team to work on the project ?",
-						maxStudentNumber: "If so, how many students?",
-						teamInfo: "Teams are initially formed by 4 or 5 students, working around 10h per week per student. Thus, your project is originally made up of one team of 4 or 5 students. However, you can have if you want either a bigger team (several teams in cooperation), or multiple teams simultaneously or in competion.",
+						multipleTeams: "How many maximum teams (of 5 students) would you want on your project ?",
+						minTeamNumber: "Select a number higher than 1",
+						biggerTeam:"How many students does your project needs ?",
+						minStudentNumber: "Select a number higher than 5",
+						teamInfo1: "Teams are initially formed by 4 or 5 students, working around 10h per week per student. Thus, your project is originally made up of one team of 5 students.",
+                        teamInfo2: "However, you can have if you want either a bigger team (several teams in cooperation), or multiple teams simultaneously or in competion.",
 						RandD: "Is it a research and development project ?",
 						confidential: "Is your project confidential ?",
 						international: "Do you agree to have international students working on your project? (full english project for monitoring, deliverables, etc...)",
@@ -129,7 +130,8 @@ i18next
 						prerequisites that may be necessary (e.g. required skills, knowledge in the use of software, etc.),
 						project objectives,
 						possible constraints,
-						 "deliverables" expected at the end of the project`
+						 "deliverables" expected at the end of the project`,
+                        downgrade: "If your project is only for Year 5, to you want to submit it to Year 4 in the event it isn't picked by Year 5 ? "
 					},
                     contactPage: {
                         title: "Please leave us your contact!",
@@ -299,12 +301,14 @@ i18next
 					createProject: {
 						skills: "Compétences développées",
 						infos: "Informations complémentaires",
-						multipleTeams: "Souhaitez-vous plusieurs équipes travaillant en parallèle et/ou en concurrence sur votre projet ?",
-						biggerTeam:"Souhaitez-vous une seule « grosse équipe » pour réaliser votre projet ?",
-						maxTeamNumber: " Si oui combien d’équipes maximum acceptez-vous ? ",
-						maxStudentNumber: " Si oui combien d’étudiants envisagez-vous au maximum ?",
-						teamInfo: "Les équipes sont formées a priori de 4 ou 5 étudiants, travaillant à raison de 10h par semaine par étudiant. Votre projet est ainsi proposé a priori à une seule équipe de 4 ou 5 étudiants. Mais vous pouvez aussi, si vous le souhaitez, avoir une plus grosse équipe sur votre sujet (i.e plusieurs équipes en collaborations), ou plusieurs équipes en parallèle et/ou en concurrence.",
-						RandD: "Est-ce un projet de recherche et développement ?",
+						multipleTeams: "Combien d’équipes (de 5 étudiants) maximum acceptez-vous d’avoir sur votre sujet ? ",
+						minStudentNumber:"Saisir un nombre supérieur à 5",
+						minTeamNumber: "Saisir un nombre supérieur à 1",
+						biggerTeam: "Combien d’étudiants le travail que vous demandez nécessite-t-il ?",
+						teamInfoOld: "Les équipes sont formées a priori de 4 ou 5 étudiants, travaillant à raison de 10h par semaine par étudiant. Votre projet est ainsi proposé a priori à une seule équipe de 4 ou 5 étudiants. Mais vous pouvez aussi, si vous le souhaitez, avoir une plus grosse équipe sur votre sujet (i.e plusieurs équipes en collaborations), ou plusieurs équipes en parallèle et/ou en concurrence.",
+						teamInfo1: "Les équipes sont formées a priori de 4 ou 5 étudiants, travaillant à raison de 10h par semaine par étudiant. Ainsi vous pouvez avoir a priori une seule équipe de 5 étudiants pour travailler sur votre projet.",
+                        teamInfo2: "Mais si le travail demandé nécessite plus d’étudiants, ou si vous souhaitez mettre plusieurs équipes en concurrence sur ce sujet, c’est possible.",
+                        RandD: "Est-ce un projet de recherche et développement ?",
 						keywords: "Mot-clés décrivants le projet",
 						suggestedKeywords: "Mot-clés supplémentaires que vous voudriez soumettre",
 						confidential: "Votre projet est-il confidentiel ?",
@@ -314,7 +318,8 @@ i18next
 						prérequis éventuellement nécessaires (ex : compétences requises , connaissances dans l’utilisation de logiciels…),
 						objectifs du projet,
 						contraintes éventuelles,
-						 « livrables »  attendus à la fin du projet`
+						 « livrables »  attendus à la fin du projet`,
+                        downgrade:"Si vous n’avez proposé votre projet qu’aux étudiants d’année 5, acceptez-vous de le soumettre aux années 4 s’il n‘est pas pris en année 5 ?"
 					},
 					errors: {
                         createContact: "Une erreur est seurvenue lors de la création de votre contact. Merci de réessayer.",

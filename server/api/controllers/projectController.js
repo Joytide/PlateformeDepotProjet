@@ -223,9 +223,9 @@ exports.listAllProjects = () =>
 exports.createProject = ({ user, ...data }) =>
 	new Promise((resolve, reject) => {
 		areValidTypes(
-			[data.title, data.description, data.majors_concerned, data.selected_keywords, data.study_year, data.maxTeamNumber, data.maxStudentNumber, data.confidential, data.international, data.suggestedKeywords],
-			["title", "description", "majors_concerned", "selected_keywords", "study_year", "maxTeamNumber", "maxStudentNumber", "confidential","international","suggestedKeywords"],
-			["string", "string", "Array", "Array", "Array", "number", "number", "boolean", "boolean","string"]
+			[data.title, data.description, data.majors_concerned, data.selected_keywords, data.study_year, data.maxTeamNumber, data.maxStudentNumber, data.confidential, data.downgrade, data.international, data.suggestedKeywords],
+			["title", "description", "majors_concerned", "selected_keywords", "study_year", "maxTeamNumber", "maxStudentNumber", "confidential","downgrade", "international","suggestedKeywords"],
+			["string", "string", "Array", "Array", "Array", "number", "number", "boolean", "boolean", "boolean","string"]
 		)
 			.then(() =>
 				Project
@@ -241,6 +241,7 @@ exports.createProject = ({ user, ...data }) =>
 					description: data.description,
 					partner: user._id,
 					confidential: data.confidential,
+                    downgrade: data.downgrade,
 					international: data.international,
 					maxTeams: parseInt(data.maxTeamNumber, 10),
 					maxStudents: parseInt(data.maxStudentNumber, 10),
@@ -412,6 +413,7 @@ exports.update = ({ user, id, ...data }) =>
 				if (data.skills) update.skills = data.skills;
 				if (data.description) update.description = data.description;
 				if (data.confidential !== undefined) update.confidential = data.confidential;
+                if (data.downgrade !== undefined) update.downgrade = data.downgrade;
 				if (data.international !== undefined) update.international = data.international;
 				if (data.study_year) update.study_year = data.study_year;
 				if (data.selected_keywords) update.selected_keywords = data.selected_keywords;

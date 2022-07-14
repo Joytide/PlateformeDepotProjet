@@ -39,12 +39,13 @@ class CreateProject extends React.Component {
             infos: "",
             skills: "",
             confidential: false,
+            downgrade: true,
             international: false,
             multipleTeams: false,
             biggerTeam: false,
             RandD: false,
-            maxTeamNumber: "",
-            maxStudentNumber: "",
+            maxTeamNumber: "1",
+            maxStudentNumber: "5",
             keywords:  [], //All possible
             unselected_keywords: [], //All minus selected
             selected_keywords: [], //Selected
@@ -215,6 +216,11 @@ class CreateProject extends React.Component {
                     [e.target.name]: e.target.checked
                 });
                 break;
+            case "downgrade":
+                this.setState({
+                    [e.target.name]: e.target.checked
+                });
+                break;
             case "international":
                 this.setState({
                     [e.target.name]: e.target.checked
@@ -241,6 +247,7 @@ class CreateProject extends React.Component {
                 maxTeamNumber: this.state.maxTeamNumber === "" ? 1 : this.state.maxTeamNumber,
                 maxStudentNumber: this.state.maxStudentNumber === "" ? 5 : this.state.maxStudentNumber,
                 confidential: this.state.confidential,
+                downgrade: this.state.downgrade,
                 international: this.state.international,
                 selected_keywords: this.state.selected_keywords,
                 suggestedKeywords: this.state.suggestedKeywords,
@@ -338,32 +345,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     </Grid>
                     <br />
-                    {/*
-                    <Grid item>
-                        <Typography variant="subtitle1" align='center' style={{ fontWeight: "bold" }}>
-                            {i18n.t('majors.label', { lng })}
-                        </Typography>
-                        <Grid container direction="row">
-                            {this.state.specializations.map(spe =>
-                                <Grid item key={spe._id} xs={12} md={6} lg={4} xl={3}>
-                                    <Tooltip placement="bottom" title={lng === "fr" ? spe.description.fr : spe.description.en}>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    onChange={this.handleChange}
-                                                    value={spe._id}
-                                                    name="spe"
-                                                />
-                                            }
-                                            label={lng === "fr" ? spe.name.fr : spe.name.en}
-                                        />
-                                    </Tooltip>
-                                </Grid>
-                            )}
-                        </Grid>
-                    </Grid>                
-                    <br />
-                    */}
+
                     <Grid item>
                         <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('keywords.label', { lng })}
@@ -420,7 +402,10 @@ class CreateProject extends React.Component {
                     */}
 
                     <Grid item xs={12} align='left'>
-                    {i18n.t('createProject.teamInfo', { lng })}
+                    {i18n.t('createProject.teamInfo1', { lng })}
+                    </Grid>
+                    <Grid item xs={12} align='left'>
+                    {i18n.t('createProject.teamInfo2', { lng })}
                     </Grid>
                     {!this.state.multipleTeams &&
                         <Grid item xs={12} >
@@ -429,7 +414,7 @@ class CreateProject extends React.Component {
                             </Typography>
                             <br />
                             <Grid container direction="row" justify='flex-start'>
-                                <Grid item xs={4} md={3} lg={2}>
+                                {/*<Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
                                         checked={this.state.biggerTeam}
@@ -438,23 +423,23 @@ class CreateProject extends React.Component {
                                         inputProps={{ 'aria-label': 'secondary checkbox' }}
                                     />
                                     {i18n.t("createPartner.yes", { lng })}
+                    
                                 </Grid>
-                                
+                                */}
                                 <Grid item xs={12} md={6} lg={6}>
-                                    {this.state.biggerTeam &&
-                                        <TextValidator
-                                            label={i18n.t('createProject.maxStudentNumber', { lng })}
-                                            value={this.state.maxStudentNumber}
-                                            validators={['required', 'matchRegexp:^[0-9]+$']}
-                                            style ={{width: '100%'}}
-                                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
-                                            name="maxStudentNumber"
-                                            onChange={this.handleChange}
-                                            fullWidth={true}
-                                            variant="outlined"
-
-                                        />
-                                    }
+                                    
+                                    <TextValidator
+                                        label={i18n.t('createProject.minStudentNumber', { lng })}
+                                        value={this.state.maxStudentNumber}
+                                        validators={['required', 'matchRegexp:^([5-9]{1}|[0-9]{2})$']}
+                                        style ={{width: '100%'}}
+                                        errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
+                                        name="maxStudentNumber"
+                                        onChange={this.handleChange}
+                                        fullWidth={true}
+                                        variant="outlined"
+                                    />
+                                    
                                 </Grid>
                             </Grid>
                             <br />
@@ -468,7 +453,9 @@ class CreateProject extends React.Component {
                                 {i18n.t('createProject.multipleTeams', { lng })}
                             </Typography>
                             <br />
+                            
                             <Grid container direction="row" justify='flex-start'>
+                                {/*
                                 <Grid item xs={4} md={3} lg={2}>
                                     {i18n.t("createPartner.no", { lng })}
                                     <Switch
@@ -479,21 +466,20 @@ class CreateProject extends React.Component {
                                     />
                                     {i18n.t("createPartner.yes", { lng })}
                                 </Grid>
+                            */}
                                 <Grid item xs={12} md={6} lg={6}>
-                                    {this.state.multipleTeams &&
-                                        <TextValidator
-                                            label={i18n.t('createProject.maxTeamNumber', { lng })}
-                                            value={this.state.maxTeamNumber}
-                                            validators={['required', 'matchRegexp:^[0-9]+$']}
-                                            
-                                            errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
-                                            name="maxTeamNumber"
-                                            onChange={this.handleChange}
-                                            fullWidth={true}
-                                            variant="outlined"
+                                    <TextValidator
+                                        label={i18n.t('createProject.minTeamNumber', { lng })}
+                                        value={this.state.maxTeamNumber}
+                                        validators={['required', 'matchRegexp:^([1-9]{1})$']}
+                                        
+                                        errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
+                                        name="maxTeamNumber"
+                                        onChange={this.handleChange}
+                                        fullWidth={true}
+                                        variant="outlined"
 
-                                        />
-                                    }
+                                    />
                                 </Grid>
                             </Grid>
                             <br />
@@ -501,7 +487,7 @@ class CreateProject extends React.Component {
                         </Grid>
                     }
                     
-
+                    
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.confidential', { lng })}
@@ -521,7 +507,26 @@ class CreateProject extends React.Component {
                         
                     </Grid>
 
-
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
+                            {i18n.t('createProject.downgrade', { lng })}
+                        </Typography>
+                        <Grid container direction="row" justify='flex-start'>
+                            <Grid item xs={4} md={3} lg={2}>
+                                {i18n.t("createPartner.no", { lng })}
+                                <Switch
+                                    checked={this.state.downgrade}
+                                    onChange={this.handleChange}
+                                    name="downgrade"
+                                    inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                />
+                                {i18n.t("createPartner.yes", { lng })}
+                            </Grid>
+                        </Grid>
+                        
+                    </Grid>
+                    
+                    {/*
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" align='left' style={{ fontWeight: "bold" }}>
                             {i18n.t('createProject.international', { lng })}
@@ -540,7 +545,7 @@ class CreateProject extends React.Component {
                         </Grid>
                         <br />
                     </Grid>
-
+                    */}
 
 
                     <Grid item>

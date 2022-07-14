@@ -249,6 +249,7 @@ class ProjectInfo extends React.Component {
                         <br />
                         <Divider />
                         <br />
+
                         <Typography >
                             Compétences développées :
                          </Typography>
@@ -256,6 +257,7 @@ class ProjectInfo extends React.Component {
                             {this.state.project.skills}
                         </Typography>
                         <br />
+
                         <Typography >
                             Informations supplémentaires :
                          </Typography>
@@ -263,6 +265,16 @@ class ProjectInfo extends React.Component {
                             {this.state.project.infos}
                         </Typography>
                         <br />
+
+                        
+                        <Typography >
+                            Nombre maximum d'étudiant sur le projet :
+                         </Typography>
+                        <Typography>
+                            {this.state.project.maxStudents}
+                        </Typography>
+                        <br />
+
                         <Typography >
                             Nombre maximum d'équipes sur le projet :
                          </Typography>
@@ -270,13 +282,34 @@ class ProjectInfo extends React.Component {
                             {this.state.project.maxTeams}
                         </Typography>
                         <br />
+
+                        <Typography >
+                            Accepté pour A4 si uniquement A5:
+                         </Typography>
+                        <Typography>
+                            <Bool b={this.state.project.downgrade}/>
+                        </Typography>
+                        <br />
+
+                        <Typography >
+                            Confidentiel:
+                         </Typography>
+                        <Typography>
+                        <Bool b={this.state.project.confidential}/>
+                        </Typography>
+                        <br />
+
                         <Typography >
                             Mots clefs suggérés par le partenaire :
                          </Typography>
                         <Typography>
                             {this.state.project.suggestedKeywords}
                         </Typography>
+            
                         <br />
+                        <Divider />
+                        <br />
+
                         <Typography >
                             Déposé le {new Date(this.state.project.submissionDate).toLocaleDateString()}
                         </Typography>
@@ -299,6 +332,14 @@ class ProjectInfo extends React.Component {
             );
         }
     }
+}
+
+function Bool(props) {
+    const b = props.b;
+    if (b) {
+        return "Vrai";
+    } 
+    return "Faux";
 }
 
 ProjectInfo.propTypes = {

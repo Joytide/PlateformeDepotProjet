@@ -115,6 +115,11 @@ const ProjectSchema = new Schema({
         default: false,
         required: true
     },
+    downgrade: {
+        type: Boolean,
+        default: true,
+        required: true
+    },
     international: {
         type: Boolean,
         default: false,
