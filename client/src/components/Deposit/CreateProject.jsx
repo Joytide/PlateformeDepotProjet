@@ -471,7 +471,7 @@ class CreateProject extends React.Component {
                                     <TextValidator
                                         label={i18n.t('createProject.minTeamNumber', { lng })}
                                         value={this.state.maxTeamNumber}
-                                        validators={['required', 'matchRegexp:^([1-9]{1})$']}
+                                        validators={['required', 'matchRegexp:^([1-9]{1}|[0-9]{2})$']}
                                         
                                         errorMessages={[i18n.t('field.label', { lng }), i18n.t('errors.NaN', { lng })]}
                                         name="maxTeamNumber"
