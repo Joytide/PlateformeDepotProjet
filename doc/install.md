@@ -1,30 +1,63 @@
-# Procédure d'installation de la plateforme sur Debian 10 avec Docker
+# Procédure d'installation de la plateforme sur Debian avec Docker
 
 ## Liste des logiciels nécessaires pour le fonctionnement de la plateforme
 
-* Docker (testé avec la version 20.10.7)
-* Docker-compose (testé avec la version 1.29.2)
+* Docker et Docker-compose
+
+Testé avec les versions suivantes:
+
+Debian 10 / Docker 20.10.7 / Docker compose 1.29.2
+
+Debian 11 / Docker 20.10.17 / Docker compose 2.6.0
+
+
 
 ## Installation
 
-0. Installer docker et docker-compose:
-   https://docs.docker.com/engine/install/debian/
-   https://docs.docker.com/compose/install/ 
+0. Installer [docker](https://docs.docker.com/engine/install/debian/) et [docker-compose](https://docs.docker.com/compose/install/compose-plugin/#installing-compose-on-linux-systems)
+    This might require other commands such as:
 
-1. Clone le repo
+    ```bash
+    sudo usermod -aG docker $USER
+    ```
 
-2. Dans les dossiers admin et client, adapter les fichiers ``config.json``:
+1. Clone le [repo](https://github.com/Joytide/PlateformeDepotProjet)
+
+2. Installer [certbot](https://certbot.eff.org/instructions?ws=nginx&os=debianbuster)
+
+3. Generate and move certificates:
+   ```bash
+   sudo certbot certonly --nginx
+   cd PlateformeDepotProjet/
+   mkdir nginx
+   sudo cp /etc/letsencrypt/live/projets-esilv.devinci.fr/fullchain.pem .
+   sudo cp /etc/letsencrypt/live/projets-esilv.devinci.fr/privkey.pem .
+   sudo chown -R debian:debian .
+   ```
+
+4. Dans les dossiers ``admin/src`` et ``client/src``, adapter les fichiers ``config.json``:
 
 ```
-mv config.example.json config.json
+cp config.example.json config.json
 ```
 
-Exemple d'un ``config.json`` en dev:
+Exemple d'un ``config.json`` en dev local:
 
 ```json
 {
     "api": {
         "host": "http://localhost",
+        "port": 3000
+    }
+}
+```
+
+Exemple d'un ``config.json`` en staging:
+
+```json
+{
+    "api": {
+        "host": "http://projets-esilv.devinci.fr",
         "port": 3000
     }
 }
@@ -41,17 +74,18 @@ Exemple d'un ``config.json`` en prod:
 }
 ```
 
-3. Dans le dossier server, faire les modifications nécessaires (jetons API, config API) dans la config et ensuite:
+3. Dans le dossier server, faire les modifications nécessaires (jetons API, config API) dans la config, ainsi que le mdp root user dans ``App.js``, ensuite:
 
+```bash
+cp config.example.json config.json
 ```
-mv config.example.json config.json
-```
 
-Changer le mot de passe par défaut de l'admin dans ``server/app.js``
+4. Changer les mots de passes pas défaut dans le ``docker-compose.example.yml ``, puis:
+   ```bash
+   cp docker-compose.example.yml docker-compose.yml
+   ```
 
-
-
-4. Changer les mots de passes pas défaut dans le docker-compose.yml
+   
 
 5. Compiler et lancer la plateforme
 
@@ -102,15 +136,22 @@ Default user: ``root@member.com``:``azerT1234``
 
 
 ```bash
-
 docker stop [react-app]
 sudo certbot certonly --force-renew -d projets-esilv.devinci.fr
 # 1 standalone
-cd ~/PING/nginx
+cd ~/PlateformeDepotProjet/nginx
 rm *.pem
-sudo cp /etc/letsencrypt/live/projets-esilv.devinci.fr/fullchain.pem
-sudo cp /etc/letsencrypt/live/projets-esilv.devinci.fr/privkey.pem
-sudo chown -R clovis:clovis .
+sudo cp /etc/letsencrypt/live/projets-esilv.devinci.fr/fullchain.pem .
+sudo cp /etc/letsencrypt/live/projets-esilv.devinci.fr/privkey.pem .
+sudo chown -R debian:debian .
 # [follow command to rebuild and start react prod dockerfile]
 
 ```
+
+
+
+## Dump and restore MongoDB collections
+
+
+
+Restore: https://stackoverflow.com/questions/6770498/how-to-import-bson-file-format-on-mongodb
