@@ -677,8 +677,6 @@ exports.getCSV = (find = {}) => () =>
 						value: "partner.alreadyPartner"
 					},
 					...yearsFields,
-					...specializationsFields,
-					...keywordsFields,
 					{
 						label: "Titre du projet",
 						value: "title"
@@ -694,27 +692,29 @@ exports.getCSV = (find = {}) => () =>
 					/*{
 						label: "Mots-clés",
 						value: row => row.selected_keywords.map(kw => kw.name.fr).join(", ")
-					},*/
+					},
 					{
 						label: "Plusieurs équipes ?",
 						value: row => row.maxTeams > 1 ? "Oui" : "Non"
-					},
+					},*/
 					{
 						label: "Nombre d'équipes",
-						value: row => row.maxTeams > 1 ? row.maxTeams : ""
+						value: row => row.maxTeams
 					},
-					{
+					/*{
 					label: "Grosse équipe ?",
 					value: row => row.maxStudents > 5 ? "Oui" : "Non"
+					},*/
+					{
+                        label: "Nombre d'étudiants",
+                        value: row => row.maxStudents
 					},
 					{
-					label: "Nombre d'étudiants",
-					value: row => row.maxStudents > 5 ? row.maxTeams : ""
+                        label: "Possibilité A4",
+                        value: row => row.downgrade ? "Oui" : "Non"
 					},
-					{
-						label: "International",
-						value: row => row.international ? "X" : ""
-						},
+                    ...specializationsFields,
+					...keywordsFields,
 					{
 						label: "Informations supplémentaires",
 						value: "infos"

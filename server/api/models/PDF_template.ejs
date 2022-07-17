@@ -107,6 +107,14 @@
             <p><span class="bold">Année(s) concernée(s) :
                 </span><%= project.study_year.map(year => year.abbreviation).join(', ') %>
             </p>
+            <p><span class="bold">Acceptera une équipe A4 si aucune équipe A5 ne se positionne :
+                </span>
+                <% if(project.downgrade){ %>
+                    Oui
+                  <% } else{ %>  
+                    Non
+                 <% } %>
+            </p>
             <p><span class="bold">Mot(s)-clé(s) concerné(s) :
                 </span><%= project.selected_keywords.map(kw => kw.name.fr).join(', ') %>
             </p>
