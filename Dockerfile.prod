@@ -2,6 +2,7 @@
 #
 # Command to build for prod:
 # docker build -t react-prod -f Dockerfile.prod .
+# docker stop react-prod && docker rm react-prod
 # docker run --name react-prod -dp 443:443 react-prod
 #
 # Stage 1 Client
