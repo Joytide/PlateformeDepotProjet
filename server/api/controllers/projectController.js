@@ -13,6 +13,7 @@ const Partner = mongoose.model('Partner');
 const User = mongoose.model('Person');
 const File = mongoose.model('File');
 const Keyword = mongoose.model('Keyword');
+const Comment = mongoose.model('Comment');
 const Specialization = mongoose.model('Specialization');
 const Year = mongoose.model('Year');
 
@@ -609,10 +610,28 @@ exports.getCSV = (find = {}) => () =>
 		let findYear = Year.find({}).lean().exec();
 		let findSpecializations = Specialization.find({}).lean().exec();
 		let findKeywords = Keyword.find({}).lean().exec();
+		let findComments = Comment.find({}).lean().exec();
 
-		Promise.all([findProject, findYear, findSpecializations, findKeywords])
-			.then(([projects, years, specializations, selected_keywords]) => {
-				let yearsFields = [], specializationsFields = [], keywordsFields = [];
+		Promise.all([findProject, findYear, findSpecializations, findKeywords, findComments])
+			.then(([projects, years, specializations, selected_keywords, all_comments]) => {
+				let yearsFields = [], specializationsFields = [], keywordsFields = [], commentsField = [];
+
+				// This is a mess, but I'm iterating other each project and then each comment (different mongose models)
+				// and population a dictionnary of {"proj_id": "contactaned list of comments"} for the lambda to go fetch 
+				let comment_map = {}
+				for (let i = 0; i < projects.length; i++) {
+					let project_comments = "";
+					for (let j = 0; j < all_comments.length; j++) {
+						if (projects[i]._id.toString() == all_comments[j].projectId){
+							project_comments += all_comments[j].content + "; ";
+						}
+					}
+					comment_map[projects[i]._id.toString()] = project_comments != "" ? project_comments : "";
+				}
+				commentsField.push({
+					label: "EGPE Comments",
+					value: row => comment_map[row._id.toString()]
+				});
 
 				for (let i = 0; i < years.length; i++) {
 					yearsFields.push({
@@ -620,6 +639,7 @@ exports.getCSV = (find = {}) => () =>
 						value: row => row.study_year.filter(y => y.abbreviation === years[i].abbreviation).length > 0 ? "X" : ""
 					});
 				}
+				console.log(yearsFields);
 
 				for (let i = 0; i < specializations.length; i++) {
 					specializationsFields.push({
@@ -627,6 +647,7 @@ exports.getCSV = (find = {}) => () =>
 						value: row => row.specializations.filter(s => s.status === "validated" && s.specialization.abbreviation === specializations[i].abbreviation).length > 0 ? "X" : ""
 					});
 				}
+				console.log(specializationsFields);
 
 				for (let i = 0; i < selected_keywords.length; i++) {
 					keywordsFields.push({
@@ -718,7 +739,9 @@ exports.getCSV = (find = {}) => () =>
 					{
 						label: "Informations supplémentaires",
 						value: "infos"
-					}
+					},
+					...commentsField
+					
 				];
 
 				console.log("process.cwd()",process.cwd())
