@@ -16,7 +16,7 @@
     "react-material-ui-form-validator": "^2.0.3",
     "react-newline-to-break": "^1.0.6",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.0",
+    "react-scripts": "5.0.1",
     "reactstrap": "^5.0.0-beta.2"
   },
   "scripts": {
